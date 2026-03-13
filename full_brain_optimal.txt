@@ -1,0 +1,133 @@
+✓ MLX (Apple Metal) available - using GPU acceleration
+✓ Using GPU-accelerated engines (MLX)
+
+======================================================================
+  FULL FLY BRAIN OLFACTORY EXPERIMENT
+======================================================================
+Loading 139K-neuron connectome with wave-based olfaction...
+This will take ~1 minute to initialize...
+======================================================================
+ WAVE-BASED FLY BRAIN CONSCIOUSNESS - FULLY INTEGRATED
+======================================================================
+
+[Layer 1: Physical Substrate]
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+Loading spatial index from cache...
+✓ Loaded spatial index from cache (instant)
+Mapping sensory and motor neurons...
+
+Sensory/Motor Neuron Map:
+Visual motion neurons:
+  front: 2983
+  back: 3035
+  upward: 3246
+  downward: 3038
+Olfactory (PNs): 5670
+Mechanosensory: 1143
+Descending neurons (DNs): 1342
+Flight control: 429
+Gustatory: 6066
+Proprioceptive: 2558
+
+Total I/O neurons: 29510
+
+[Layer 2: Oscillator Engine - The Soul]
+Initializing oscillator engine (MLX, 139,255 neurons)...
+GPU memory used: 3.7 MB
+Initializing coupling engine (MLX)...
+Building vectorized coupling matrices for GPU...
+Built GPU coupling matrices: 5,342,446 synapses
+GPU memory used: 81.5 MB
+Assigning natural frequencies...
+
+Frequency band distribution (139255 neurons):
+  delta  (  0.5-  4.0 Hz):   4330 (  3.1%)
+  theta  (  4.0-  8.0 Hz):  86596 ( 62.2%)
+  alpha  (  8.0- 13.0 Hz):  20167 ( 14.5%)
+  beta   ( 13.0- 30.0 Hz):  23892 ( 17.2%)
+  gamma  ( 30.0-100.0 Hz):   4270 (  3.1%)
+
+[Layer 3: Hive Formation]
+
+[Layer 4.5: Thought Patterns - COMPLETE]
+
+[Layer 4: Wave-Based Memory - COMPLETE]
+
+[Layer 5: Consciousness States]
+
+[Layer 7: Dissent Engine]
+
+[Layer 6: Evolution & Self-Modification - COMPLETE]
+
+[Layer 8: Sensory/Motor Interface]
+
+[Layer 8.5: Olfactory System - INTEGRATED]
+  20 glomerular PN clusters built from 5670 PNs
+Olfactory system initialized:
+  20 glomerular channels
+  20 PN clusters
+  5670 projection neurons
+  10 odors in library
+
+[Layer 9: Vision System - INTEGRATED]
+Compound eye initialized: 800 ommatidia
+Visual motion neurons mapped:
+  front: 2983 T4/T5 neurons
+  back: 3035 T4/T5 neurons
+  upward: 3246 T4/T5 neurons
+  downward: 3038 T4/T5 neurons
+No image stimuli found, using synthetic stimuli
+Stimulus generator initialized:
+  15 stimuli loaded
+  40 frames per stimulus
+  20 frames ISI
+
+[Layer 10: Monitoring & Anomaly Detection - INTEGRATED]
+OdorTracker configured:
+  PNs: 5670, MBs: 5595, LH: 2972
+  Mushroom body Kenyon cells: 5595
+  Lateral horn neurons: 2972
+
+[Storage: SQLite Logging]
+
+======================================================================
+ ALL SYSTEMS OPERATIONAL - Ready to simulate
+ - 139K neurons with real connectome
+ - Compound eye with 800 ommatidia
+ - 5-level anomaly detection
+ - Stimulus-response correlation tracking
+======================================================================
+✓ Brain initialized in 70.5s
+
+======================================================================
+  EXPERIMENT PROTOCOL
+======================================================================
+
+Trials: 11
+Simulation time: 5.50 seconds
+Integration steps: 11,000,000
+Estimated runtime: ~33.0 minutes
+
+Odors to present:
+  1. fruit_ferment        (conc=1.0)
+  2. danger_mold          (conc=1.0)
+  3. social_female        (conc=1.0)
+  4. yeast                (conc=1.0)
+  5. clean_air            (conc=0.5)
+  6. fruit_ferment        (conc=0.3)
+  7. fruit_ferment        (conc=0.7)
+  8. fruit_ferment        (conc=1.0)
+  9. danger_mold          (conc=1.0)
+  10. danger_mold          (conc=1.0)
+  11. danger_mold          (conc=1.0)
+
+======================================================================
+  STARTING SIMULATION
+======================================================================
+Press Ctrl+C to abort
+
+
+[Trial 1/11] fruit_ferment (conc=1.0)
+  Onset: 0.0ms, Duration: 200.0ms
+    Progress: 0.0% | Elapsed: 25s | ETA: 27864706s    Progress: 0.0% | Elapsed: 48s | ETA: 26608297s    Progress: 0.0% | Elapsed: 73s | ETA: 26924851s    Progress: 0.0% | Elapsed: 97s | ETA: 26560343s    Progress: 0.0% | Elapsed: 121s | ETA: 26665746s    Progress: 0.0% | Elapsed: 144s | ETA: 26397570s    Progress: 0.0% | Elapsed: 168s | ETA: 26476250s    Progress: 0.0% | Elapsed: 191s | ETA: 26326781s    Progress: 0.0% | Elapsed: 217s | ETA: 26461869s    Progress: 0.0% | Elapsed: 240s | ETA: 26371647s    Progress: 0.0% | Elapsed: 265s | ETA: 26489947s    Progress: 0.0% | Elapsed: 288s | ETA: 26405094s    Progress: 0.0% | Elapsed: 313s | ETA: 26464809s    Progress: 0.0% | Elapsed: 336s | ETA: 26366921s    Progress: 0.0% | Elapsed: 360s | ETA: 26411065s    Progress: 0.0% | Elapsed: 383s | ETA: 26326457s    Progress: 0.0% | Elapsed: 407s | ETA: 26366280s    Progress: 0.0% | Elapsed: 430s | ETA: 26292393s    Progress: 0.0% | Elapsed: 455s | ETA: 26344043s    Progress: 0.0% | Elapsed: 478s | ETA: 26297465s    Progress: 0.0% | Elapsed: 503s | ETA: 26351975s    Progress: 0.0% | Elapsed: 526s | ETA: 26293040s    Progress: 0.0% | Elapsed: 551s | ETA: 26335293s    Progress: 0.0% | Elapsed: 574s | ETA: 26293104s    Progress: 0.0% | Elapsed: 599s | ETA: 26338413s    Progress: 0.0% | Elapsed: 622s | ETA: 26297022s    Progress: 0.0% | Elapsed: 646s | ETA: 26335241s    Progress: 0.0% | Elapsed: 670s | ETA: 26304974s    Progress: 0.0% | Elapsed: 695s | ETA: 26346342s    Progress: 0.0% | Elapsed: 717s | ETA: 26300838s    Progress: 0.0% | Elapsed: 742s | ETA: 26342683s    Progress: 0.0% | Elapsed: 765s | ETA: 26309933s    Progress: 0.0% | Elapsed: 790s | ETA: 26341935s    Progress: 0.0% | Elapsed: 814s | ETA: 26318489s    Progress: 0.0% | Elapsed: 838s | ETA: 26341245s    Progress: 0.0% | Elapsed: 861s | ETA: 26303240s    Progress: 0.0% | Elapsed: 886s | ETA: 26341881s    Progress: 0.0% | Elapsed: 909s | ETA: 26312957s    Progress: 0.0% | Elapsed: 935s | ETA: 26357462s    Progress: 0.0% | Elapsed: 958s | ETA: 26344415s    Progress: 0.0% | Elapsed: 984s | ETA: 26386248s    Progress: 0.0% | Elapsed: 1007s | ETA: 26372868s    Progress: 0.0% | Elapsed: 1032s | ETA: 26409678s    Progress: 0.0% | Elapsed: 1056s | ETA: 26397101s    Progress: 0.0% | Elapsed: 1081s | ETA: 26430424s    Progress: 0.0% | Elapsed: 1105s | ETA: 26418251s    Progress: 0.0% | Elapsed: 1130s | ETA: 26450444s    Progress: 0.0% | Elapsed: 1153s | ETA: 26422756s    Progress: 0.0% | Elapsed: 1178s | ETA: 26438268s    Progress: 0.0% | Elapsed: 1200s | ETA: 26408278s    Progress: 0.0% | Elapsed: 1225s | ETA: 26420957s    Progress: 0.0% | Elapsed: 1248s | ETA: 26394861s    Progress: 0.0% | Elapsed: 1272s | ETA: 26408562s    Progress: 0.0% | Elapsed: 1295s | ETA: 26381185s    Progress: 0.0% | Elapsed: 1320s | ETA: 26394109s    Progress: 0.0% | Elapsed: 1342s | ETA: 26367590s    Progress: 0.0% | Elapsed: 1367s | ETA: 26377134s    Progress: 0.0% | Elapsed: 1390s | ETA: 26351845s    Progress: 0.0% | Elapsed: 1414s | ETA: 26370012s    Progress: 0.0% | Elapsed: 1437s | ETA: 26350997s    Progress: 0.0% | Elapsed: 1462s | ETA: 26364154s    Progress: 0.0% | Elapsed: 1485s | ETA: 26353576s    Progress: 0.0% | Elapsed: 1513s | ETA: 26414025s    Progress: 0.0% | Elapsed: 1537s | ETA: 26420266s    Progress: 0.0% | Elapsed: 1563s | ETA: 26454496s    Progress: 0.0% | Elapsed: 1587s | ETA: 26443815s    Progress: 0.0% | Elapsed: 1613s | ETA: 26488180s    Progress: 0.0% | Elapsed: 1636s | ETA: 26466886s    Progress: 0.0% | Elapsed: 1661s | ETA: 26480704s    Progress: 0.0% | Elapsed: 1684s | ETA: 26464687s    Progress: 0.0% | Elapsed: 1710s | ETA: 26487823s

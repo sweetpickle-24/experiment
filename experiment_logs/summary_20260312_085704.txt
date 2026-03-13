@@ -1,0 +1,21 @@
+================================================================================
+WAVE-BASED FLY BRAIN CONSCIOUSNESS - STANDALONE EXPERIMENT
+================================================================================
+Start time: 2026-03-12 08:57:04
+Duration: 3000.0ms (3.0s)
+Log file: experiment_logs/experiment_20260312_085704.jsonl
+Summary file: experiment_logs/summary_20260312_085704.txt
+================================================================================
+
+Initializing fly brain system...
+
+================================================================================
+RUNNING SIMULATION
+================================================================================
+
+[Step      1 | t=    0.0ms | 4.3s elapsed | 0.00x realtime]
+  Consciousness: WAKE
+  Coherence: 0.002 | Energy: 1834755.6
+  Active: 0 hives | 0 patterns | 0 memories
+  Stimulus: grating_back_5
+

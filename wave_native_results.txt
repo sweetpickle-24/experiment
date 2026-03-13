@@ -1,0 +1,27 @@
+======================================================================
+WAVE-NATIVE OLFACTORY EXPERIMENT
+Pure electromagnetic field theory - NO discrete timesteps!
+======================================================================
+
+[1] Loading connectome...
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+✓ Loaded 139,255 neurons, 5,342,446 synapses
+
+[2] Initializing wave field...
+
+======================================================================
+INITIALIZING WAVE-NATIVE BRAIN (Pure Field Theory)
+======================================================================
+Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/run_wave_native_odor.py", line 231, in <module>
+    run_wave_native_experiment()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vladyslav/Documents/GitHub/experiment/run_wave_native_odor.py", line 65, in run_wave_native_experiment
+    brain = WaveNativeBrain(connectome, grid_spacing=20.0)  # 20μm resolution
+  File "/Users/vladyslav/Documents/GitHub/experiment/hive/engine/wave_native.py", line 52, in __init__
+    self._build_spatial_grid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vladyslav/Documents/GitHub/experiment/hive/engine/wave_native.py", line 80, in _build_spatial_grid
+    min_pos -= padding
+numpy._core._exceptions._UFuncOutputCastingError: Cannot cast ufunc 'subtract' output from dtype('float64') to dtype('int64') with casting rule 'same_kind'

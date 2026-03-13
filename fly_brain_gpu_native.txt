@@ -1,0 +1,141 @@
+✓ MLX (Apple Metal) available - using GPU acceleration
+✓ Using GPU-accelerated engines (MLX)
+
+======================================================================
+  FULL FLY BRAIN OLFACTORY EXPERIMENT
+======================================================================
+Loading 139K-neuron connectome with wave-based olfaction...
+This will take ~1 minute to initialize...
+======================================================================
+ WAVE-BASED FLY BRAIN CONSCIOUSNESS - FULLY INTEGRATED
+======================================================================
+
+[Layer 1: Physical Substrate]
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+Loading spatial index from cache...
+✓ Loaded spatial index from cache (instant)
+Mapping sensory and motor neurons...
+
+Sensory/Motor Neuron Map:
+Visual motion neurons:
+  front: 2983
+  back: 3035
+  upward: 3246
+  downward: 3038
+Olfactory (PNs): 5670
+Mechanosensory: 1143
+Descending neurons (DNs): 1342
+Flight control: 429
+Gustatory: 6066
+Proprioceptive: 2558
+
+Total I/O neurons: 29510
+
+[Layer 2: Oscillator Engine - The Soul]
+Initializing oscillator engine (MLX, 139,255 neurons)...
+GPU memory used: 3.7 MB
+Initializing coupling engine (MLX)...
+Building vectorized coupling matrices for GPU...
+Built GPU coupling matrices: 5,342,446 synapses
+GPU memory used: 81.5 MB
+Assigning natural frequencies...
+
+Frequency band distribution (139255 neurons):
+  delta  (  0.5-  4.0 Hz):   4330 (  3.1%)
+  theta  (  4.0-  8.0 Hz):  86596 ( 62.2%)
+  alpha  (  8.0- 13.0 Hz):  20167 ( 14.5%)
+  beta   ( 13.0- 30.0 Hz):  23892 ( 17.2%)
+  gamma  ( 30.0-100.0 Hz):   4270 (  3.1%)
+
+[Layer 3: Hive Formation]
+
+[Layer 4.5: Thought Patterns - COMPLETE]
+
+[Layer 4: Wave-Based Memory - COMPLETE]
+
+[Layer 5: Consciousness States]
+
+[Layer 7: Dissent Engine]
+
+[Layer 6: Evolution & Self-Modification - COMPLETE]
+
+[Layer 8: Sensory/Motor Interface]
+
+[Layer 8.5: Olfactory System - INTEGRATED]
+  20 glomerular PN clusters built from 5670 PNs
+Olfactory system initialized:
+  20 glomerular channels
+  20 PN clusters
+  5670 projection neurons
+  10 odors in library
+
+[Layer 9: Vision System - INTEGRATED]
+Compound eye initialized: 800 ommatidia
+Visual motion neurons mapped:
+  front: 2983 T4/T5 neurons
+  back: 3035 T4/T5 neurons
+  upward: 3246 T4/T5 neurons
+  downward: 3038 T4/T5 neurons
+No image stimuli found, using synthetic stimuli
+Stimulus generator initialized:
+  15 stimuli loaded
+  40 frames per stimulus
+  20 frames ISI
+
+[Layer 10: Monitoring & Anomaly Detection - INTEGRATED]
+OdorTracker configured:
+  PNs: 5670, MBs: 5595, LH: 2972
+  Mushroom body Kenyon cells: 5595
+  Lateral horn neurons: 2972
+
+[Storage: SQLite Logging]
+
+======================================================================
+ ALL SYSTEMS OPERATIONAL - Ready to simulate
+ - 139K neurons with real connectome
+ - Compound eye with 800 ommatidia
+ - 5-level anomaly detection
+ - Stimulus-response correlation tracking
+======================================================================
+✓ Brain initialized in 67.7s
+
+======================================================================
+  EXPERIMENT PROTOCOL
+======================================================================
+
+Trials: 11
+Simulation time: 5.50 seconds
+Integration steps: 11,000,000
+Estimated runtime: ~33.0 minutes
+
+Odors to present:
+  1. fruit_ferment        (conc=1.0)
+  2. danger_mold          (conc=1.0)
+  3. social_female        (conc=1.0)
+  4. yeast                (conc=1.0)
+  5. clean_air            (conc=0.5)
+  6. fruit_ferment        (conc=0.3)
+  7. fruit_ferment        (conc=0.7)
+  8. fruit_ferment        (conc=1.0)
+  9. danger_mold          (conc=1.0)
+  10. danger_mold          (conc=1.0)
+  11. danger_mold          (conc=1.0)
+
+======================================================================
+  STARTING SIMULATION
+======================================================================
+Press Ctrl+C to abort
+
+
+[Trial 1/11] fruit_ferment (conc=1.0)
+  Onset: 0.0ms, Duration: 200.0ms
+    Progress: 0.0% | Time: 0.0ms | Elapsed: 25s | ETA: 27354054s    Progress: 0.0% | Time: 0.0ms | Elapsed: 47s | ETA: 26027141s    Progress: 0.0% | Time: 0.0ms | Elapsed: 72s | ETA: 26286013s    Progress: 0.0% | Time: 0.0ms | Elapsed: 94s | ETA: 25912225s    Progress: 0.0% | Time: 0.0ms | Elapsed: 119s | ETA: 26077191s    Progress: 0.0% | Time: 0.1ms | Elapsed: 141s | ETA: 25881613s    Progress: 0.0% | Time: 0.1ms | Elapsed: 165s | ETA: 25995754s    Progress: 0.0% | Time: 0.1ms | Elapsed: 188s | ETA: 25851471s    Progress: 0.0% | Time: 0.1ms | Elapsed: 213s | ETA: 25973044s    Progress: 0.0% | Time: 0.1ms | Elapsed: 235s | ETA: 25843659s    Progress: 0.0% | Time: 0.1ms | Elapsed: 259s | ETA: 25933913s    Progress: 0.0% | Time: 0.1ms | Elapsed: 282s | ETA: 25842799s    Progress: 0.0% | Time: 0.1ms | Elapsed: 307s | ETA: 25980184s    Progress: 0.0% | Time: 0.1ms | Elapsed: 330s | ETA: 25898568s    Progress: 0.0% | Time: 0.1ms | Elapsed: 354s | ETA: 25968717s    Progress: 0.0% | Time: 0.2ms | Elapsed: 377s | ETA: 25892914s    Progress: 0.0% | Time: 0.2ms | Elapsed: 401s | ETA: 25974098s    Progress: 0.0% | Time: 0.2ms | Elapsed: 424s | ETA: 25930744s    Progress: 0.0% | Time: 0.2ms | Elapsed: 449s | ETA: 26018395s    Progress: 0.0% | Time: 0.2ms | Elapsed: 472s | ETA: 25976141s    Progress: 0.0% | Time: 0.2ms | Elapsed: 497s | ETA: 26052017s    Progress: 0.0% | Time: 0.2ms | Elapsed: 520s | ETA: 25997326s    Progress: 0.0% | Time: 0.2ms | Elapsed: 545s | ETA: 26049084s    Progress: 0.0% | Time: 0.2ms | Elapsed: 567s | ETA: 26009012s    Progress: 0.0% | Time: 0.2ms | Elapsed: 592s | ETA: 26053120s    Progress: 0.0% | Time: 0.3ms | Elapsed: 615s | ETA: 26015469s    Progress: 0.0% | Time: 0.3ms | Elapsed: 640s | ETA: 26062346s    Progress: 0.0% | Time: 0.3ms | Elapsed: 663s | ETA: 26032978s    Progress: 0.0% | Time: 0.3ms | Elapsed: 687s | ETA: 26074072s    Progress: 0.0% | Time: 0.3ms | Elapsed: 711s | ETA: 26051309s    Progress: 0.0% | Time: 0.3ms | Elapsed: 736s | ETA: 26099756s    Progress: 0.0% | Time: 0.3ms | Elapsed: 758s | ETA: 26061082s    Progress: 0.0% | Time: 0.3ms | Elapsed: 783s | ETA: 26096648s    Progress: 0.0% | Time: 0.3ms | Elapsed: 806s | ETA: 26066319s    Progress: 0.0% | Time: 0.3ms | Elapsed: 830s | ETA: 26097501s    Progress: 0.0% | Time: 0.4ms | Elapsed: 853s | ETA: 26063062s    Progress: 0.0% | Time: 0.4ms | Elapsed: 878s | ETA: 26095939s    Progress: 0.0% | Time: 0.4ms | Elapsed: 901s | ETA: 26067486s    Progress: 0.0% | Time: 0.4ms | Elapsed: 925s | ETA: 26099634s    Progress: 0.0% | Time: 0.4ms | Elapsed: 949s | ETA: 26086212s    Progress: 0.0% | Time: 0.4ms | Elapsed: 974s | ETA: 26123089s    Progress: 0.0% | Time: 0.4ms | Elapsed: 997s | ETA: 26102029s    Progress: 0.0% | Time: 0.4ms | Elapsed: 1021s | ETA: 26119262s    Progress: 0.0% | Time: 0.4ms | Elapsed: 1044s | ETA: 26098884s    Progress: 0.0% | Time: 0.4ms | Elapsed: 1069s | ETA: 26123570s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1092s | ETA: 26104003s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1117s | ETA: 26133218s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1140s | ETA: 26125552s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1165s | ETA: 26163075s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1188s | ETA: 26136716s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1213s | ETA: 26155333s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1236s | ETA: 26134680s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1260s | ETA: 26157230s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1283s | ETA: 26140530s    Progress: 0.0% | Time: 0.5ms | Elapsed: 1308s | ETA: 26157250s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1331s | ETA: 26143160s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1356s | ETA: 26161188s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1378s | ETA: 26137291s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1403s | ETA: 26151795s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1425s | ETA: 26128333s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1450s | ETA: 26138539s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1472s | ETA: 26116039s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1497s | ETA: 26129522s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1519s | ETA: 26112760s    Progress: 0.0% | Time: 0.6ms | Elapsed: 1544s | ETA: 26131716s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1567s | ETA: 26117943s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1591s | ETA: 26126777s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1614s | ETA: 26106778s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1638s | ETA: 26116556s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1661s | ETA: 26098525s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1686s | ETA: 26113645s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1708s | ETA: 26098873s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1733s | ETA: 26107967s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1755s | ETA: 26089568s    Progress: 0.0% | Time: 0.7ms | Elapsed: 1780s | ETA: 26101238s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1802s | ETA: 26083050s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1827s | ETA: 26092288s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1849s | ETA: 26075269s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1874s | ETA: 26088113s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1896s | ETA: 26071072s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1921s | ETA: 26082082s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1943s | ETA: 26065374s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1968s | ETA: 26076247s    Progress: 0.0% | Time: 0.8ms | Elapsed: 1990s | ETA: 26060144s    Progress: 0.0% | Time: 0.8ms | Elapsed: 2015s | ETA: 26068418s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2037s | ETA: 26055642s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2062s | ETA: 26064367s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2084s | ETA: 26049671s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2109s | ETA: 26058892s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2131s | ETA: 26044346s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2155s | ETA: 26051262s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2178s | ETA: 26036510s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2202s | ETA: 26045327s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2225s | ETA: 26031110s    Progress: 0.0% | Time: 0.9ms | Elapsed: 2249s | ETA: 26040720s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2272s | ETA: 26027180s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2296s | ETA: 26036425s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2319s | ETA: 26022495s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2343s | ETA: 26033163s
+[Evolution] Generation 0
+  Fitness: 0.230 (previous: 0.500)
+  ✗ Reverting 0 mutations (decline: -0.270)
+    Progress: 0.0% | Time: 1.0ms | Elapsed: 2366s | ETA: 26021054s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2390s | ETA: 26027450s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2412s | ETA: 26014317s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2437s | ETA: 26021861s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2459s | ETA: 26009609s    Progress: 0.0% | Time: 1.0ms | Elapsed: 2484s | ETA: 26022770s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2507s | ETA: 26011010s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2531s | ETA: 26018721s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2554s | ETA: 26010747s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2579s | ETA: 26025016s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2602s | ETA: 26018485s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2627s | ETA: 26029364s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2649s | ETA: 26018089s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2674s | ETA: 26024302s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2696s | ETA: 26013603s    Progress: 0.0% | Time: 1.1ms | Elapsed: 2721s | ETA: 26021217s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2743s | ETA: 26010141s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2768s | ETA: 26016872s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2790s | ETA: 26005759s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2814s | ETA: 26013253s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2837s | ETA: 26002322s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2861s | ETA: 26008101s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2884s | ETA: 25999228s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2908s | ETA: 26006114s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2931s | ETA: 25995761s    Progress: 0.0% | Time: 1.2ms | Elapsed: 2955s | ETA: 26003255s    Progress: 0.0% | Time: 1.3ms | Elapsed: 2978s | ETA: 25996880s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3003s | ETA: 26003483s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3025s | ETA: 25993439s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3050s | ETA: 26001033s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3072s | ETA: 25991084s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3096s | ETA: 25996944s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3119s | ETA: 25987306s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3143s | ETA: 25993801s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3166s | ETA: 25984171s    Progress: 0.0% | Time: 1.3ms | Elapsed: 3190s | ETA: 25989864s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3213s | ETA: 25980749s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3237s | ETA: 25987177s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3259s | ETA: 25977989s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3284s | ETA: 25984555s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3306s | ETA: 25975318s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3331s | ETA: 25980586s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3353s | ETA: 25971586s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3378s | ETA: 25978460s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3400s | ETA: 25969448s    Progress: 0.0% | Time: 1.4ms | Elapsed: 3425s | ETA: 25976450s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3447s | ETA: 25967953s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3472s | ETA: 25973976s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3494s | ETA: 25965376s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3518s | ETA: 25971985s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3541s | ETA: 25963707s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3565s | ETA: 25970055s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3588s | ETA: 25961696s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3612s | ETA: 25967343s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3635s | ETA: 25959125s    Progress: 0.0% | Time: 1.5ms | Elapsed: 3660s | ETA: 25967156s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3683s | ETA: 25965022s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3708s | ETA: 25975146s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3730s | ETA: 25967362s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3755s | ETA: 25972925s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3777s | ETA: 25965049s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3802s | ETA: 25970012s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3824s | ETA: 25962103s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3848s | ETA: 25967042s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3871s | ETA: 25959610s    Progress: 0.0% | Time: 1.6ms | Elapsed: 3896s | ETA: 25966513s    Progress: 0.0% | Time: 1.7ms | Elapsed: 3918s | ETA: 25959304s    Progress: 0.0% | Time: 1.7ms | Elapsed: 3943s | ETA: 25966328s    Progress: 0.0% | Time: 1.7ms | Elapsed: 3965s | ETA: 25959119s    Progress: 0.0% | Time: 1.7ms | Elapsed: 3990s | ETA: 25968616s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4014s | ETA: 25967060s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4040s | ETA: 25984437s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4063s | ETA: 25983169s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4089s | ETA: 25993079s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4112s | ETA: 25993354s    Progress: 0.0% | Time: 1.7ms | Elapsed: 4138s | ETA: 26004500s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4161s | ETA: 25998980s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4186s | ETA: 26010510s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4210s | ETA: 26010375s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4235s | ETA: 26022662s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4259s | ETA: 26023082s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4284s | ETA: 26033613s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4308s | ETA: 26031978s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4334s | ETA: 26044337s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4357s | ETA: 26041775s    Progress: 0.0% | Time: 1.8ms | Elapsed: 4381s | ETA: 26046156s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4405s | ETA: 26047092s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4431s | ETA: 26057769s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4454s | ETA: 26055350s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4479s | ETA: 26061547s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4502s | ETA: 26057055s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4527s | ETA: 26065335s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4550s | ETA: 26060674s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4574s | ETA: 26066768s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4597s | ETA: 26062557s    Progress: 0.0% | Time: 1.9ms | Elapsed: 4623s | ETA: 26072366s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4646s | ETA: 26068178s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4670s | ETA: 26073473s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4693s | ETA: 26069348s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4719s | ETA: 26079091s
+[Evolution] Generation 1
+  Fitness: 0.221 (previous: 0.500)
+  ✗ Reverting 5 mutations (decline: -0.279)
+    Progress: 0.0% | Time: 2.0ms | Elapsed: 4742s | ETA: 26077976s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4767s | ETA: 26084770s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4790s | ETA: 26081067s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4815s | ETA: 26088276s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4839s | ETA: 26085121s    Progress: 0.0% | Time: 2.0ms | Elapsed: 4863s | ETA: 26091311s    Progress: 0.0% | Time: 2.1ms | Elapsed: 4886s | ETA: 26085086s    Progress: 0.0% | Time: 2.1ms | Elapsed: 4910s | ETA: 26088912s    Progress: 0.0% | Time: 2.1ms | Elapsed: 4933s | ETA: 26082635s    Progress: 0.0% | Time: 2.1ms | Elapsed: 4957s | ETA: 26086338s    Progress: 0.0% | Time: 2.1ms | Elapsed: 4980s | ETA: 26080056s    Progress: 0.0% | Time: 2.1ms | Elapsed: 5004s | ETA: 26083961s    Progress: 0.0% | Time: 2.1ms | Elapsed: 5027s | ETA: 26077695s    Progress: 0.0% | Time: 2.1ms | Elapsed: 5051s | ETA: 26081180s    Progress: 0.0% | Time: 2.1ms | Elapsed: 5074s | ETA: 26074973s    Progress: 0.0% | Time: 2.1ms | Elapsed: 5098s | ETA: 26079315s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5121s | ETA: 26073127s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5145s | ETA: 26076749s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5168s | ETA: 26070569s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5192s | ETA: 26074778s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5215s | ETA: 26068698s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5239s | ETA: 26071814s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5262s | ETA: 26066027s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5286s | ETA: 26069187s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5309s | ETA: 26063264s    Progress: 0.0% | Time: 2.2ms | Elapsed: 5333s | ETA: 26066617s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5355s | ETA: 26060619s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5380s | ETA: 26064256s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5402s | ETA: 26058398s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5427s | ETA: 26061845s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5449s | ETA: 26056046s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5473s | ETA: 26058659s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5496s | ETA: 26052895s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5520s | ETA: 26056893s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5543s | ETA: 26051204s    Progress: 0.0% | Time: 2.3ms | Elapsed: 5567s | ETA: 26054189s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5590s | ETA: 26048468s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5614s | ETA: 26052322s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5637s | ETA: 26046649s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5661s | ETA: 26050185s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5684s | ETA: 26044615s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5708s | ETA: 26047691s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5731s | ETA: 26042220s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5755s | ETA: 26044761s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5777s | ETA: 26039305s    Progress: 0.0% | Time: 2.4ms | Elapsed: 5802s | ETA: 26042003s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5824s | ETA: 26036648s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5849s | ETA: 26040675s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5871s | ETA: 26035294s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5895s | ETA: 26038454s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5918s | ETA: 26033097s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5942s | ETA: 26035894s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5965s | ETA: 26030685s    Progress: 0.0% | Time: 2.5ms | Elapsed: 5989s | ETA: 26034757s    Progress: 0.0% | Time: 2.5ms | Elapsed: 6012s | ETA: 26029482s    Progress: 0.0% | Time: 2.5ms | Elapsed: 6036s | ETA: 26031967s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6059s | ETA: 26027017s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6083s | ETA: 26030732s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6106s | ETA: 26025547s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6130s | ETA: 26028911s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6153s | ETA: 26023835s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6177s | ETA: 26027671s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6200s | ETA: 26022608s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6224s | ETA: 26025530s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6247s | ETA: 26021072s    Progress: 0.0% | Time: 2.6ms | Elapsed: 6272s | ETA: 26030428s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6298s | ETA: 26038665s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6324s | ETA: 26047605s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6349s | ETA: 26051639s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6375s | ETA: 26063257s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6398s | ETA: 26061049s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6424s | ETA: 26068095s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6447s | ETA: 26064436s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6472s | ETA: 26070819s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6495s | ETA: 26069912s    Progress: 0.0% | Time: 2.7ms | Elapsed: 6521s | ETA: 26079293s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6545s | ETA: 26079781s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6574s | ETA: 26100922s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6598s | ETA: 26100527s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6623s | ETA: 26106912s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6647s | ETA: 26105441s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6673s | ETA: 26113836s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6696s | ETA: 26112825s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6722s | ETA: 26119276s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6744s | ETA: 26114887s    Progress: 0.0% | Time: 2.8ms | Elapsed: 6769s | ETA: 26120647s    Progress: 0.0% | Time: 2.9ms | Elapsed: 6792s | ETA: 26117029s    Progress: 0.0% | Time: 2.9ms | Elapsed: 6817s | ETA: 26122830s    Progress: 0.0% | Time: 2.9ms | Elapsed: 6840s | ETA: 26118341s

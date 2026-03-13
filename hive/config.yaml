@@ -1,0 +1,233 @@
+# Wave-Based Fly Brain Configuration
+# All system parameters in one place
+
+# Data paths
+data:
+  connectome_dir: "Fly Brain Female"
+  experiments_dir: "data/experiments"
+  
+# Oscillator dynamics
+oscillator:
+  dt: 0.0005  # Integration timestep (0.5ms)
+  damping_default: 0.1  # Default damping coefficient γ
+  amplitude_init: 1.0  # Initial amplitude
+  phase_init_random: true  # Random initial phases
+  
+  # Transmission delays
+  use_delays: true
+  transmission_speed: 100.0  # μm/ms (0.1 m/s)
+  max_delay: 10.0  # Maximum delay in ms
+  
+# Frequency bands (Hz)
+frequency_bands:
+  delta: [0.5, 4.0]
+  theta: [4.0, 8.0]
+  alpha: [8.0, 13.0]
+  beta: [13.0, 30.0]
+  gamma: [30.0, 100.0]
+
+# Neurotransmitter properties
+neurotransmitters:
+  # Frequency band preferences
+  gaba:
+    preferred_band: "alpha"
+    phase_offset: 180  # degrees (inhibitory)
+  glut:
+    preferred_band: "beta"
+    phase_offset: 0  # degrees (excitatory)
+  ach:
+    preferred_band: "theta"
+    phase_offset: 0  # degrees (modulatory)
+  
+  # Neuromodulators
+  dopamine:
+    frequency_multiplier: 1.2  # Increase ω₀
+    coupling_multiplier: 1.0
+  serotonin:
+    damping_multiplier: 0.8  # Decrease γ (longer timescales)
+    coupling_multiplier: 0.9
+  octopamine:
+    coupling_multiplier: 1.3  # Fly's adrenaline
+    frequency_multiplier: 1.1
+
+# Hive formation
+hives:
+  min_size: 10  # Minimum neurons per hive
+  coherence_threshold: 0.7  # Minimum coherence to form
+  coherence_duration: 100  # ms to sustain coherence
+  mutual_info_threshold: 0.5  # bits
+  
+  # Death conditions
+  death_coherence: 0.3
+  death_duration: 500  # ms below threshold
+  
+  # Spatial clustering
+  spatial_radius: 50.0  # μm for spatial clusters
+  
+  # Growth
+  recruitment_coherence: 0.6
+  recruitment_radius: 100.0  # μm
+
+# Consciousness states
+consciousness:
+  # State-specific parameters
+  wake:
+    sensory_gain: 1.0
+    motor_enabled: true
+    global_coherence_target: 0.4  # Metastable
+  
+  sleep:
+    sensory_gain: 0.1
+    motor_enabled: false
+    global_coherence_target: 0.9  # High sync
+    replay_speed: 10.0  # 10x replay
+  
+  dream:
+    sensory_gain: 0.5  # Self-generated
+    motor_enabled: false
+    global_coherence_target: 0.6
+    mutation_rate_multiplier: 5.0
+  
+  shock:
+    sensory_gain: 2.0  # Hyperaware
+    motor_enabled: true
+    hive_dissolution_threshold: 0.9  # Dissolve 90% of hives
+  
+  meditation:
+    sensory_gain: 0.05
+    motor_enabled: false
+    global_coherence_target: 0.95  # Maximum sync
+    hive_dynamics_frozen: true
+  
+  # Transition thresholds
+  transitions:
+    wake_to_shock_anomaly: 5.0  # Std devs
+    shock_to_wake_time: 1000  # ms
+    wake_to_meditation_idle: 10000  # ms
+
+# Memory
+memory:
+  # Phase patterns
+  hebbian_learning_rate: 0.01
+  phase_lock_threshold: 0.8
+  
+  # Attractor basins
+  attractor_carving_rate: 0.005
+  attractor_strength_threshold: 0.3
+  
+  # Consolidation
+  consolidation_cycles: 100
+  consolidation_strength_multiplier: 1.5
+
+# Patterns
+patterns:
+  # Detection
+  pattern_window: 100  # Number of recent patterns to track
+  pattern_similarity_threshold: 0.7
+  novelty_threshold: 0.3
+  
+  # Completion
+  completion_confidence_threshold: 0.6
+  max_competing_completions: 5
+  
+  # Inhibition
+  alpha_suppression_strength: 0.8
+  rumination_detection_cycles: 50
+
+# Dissent
+dissent:
+  minority_threshold: 0.15  # 15% can be minority
+  dissent_strength_threshold: 0.5
+  historical_success_threshold: 0.5
+  false_consensus_amplitude_threshold: 0.3
+
+# Evolution
+evolution:
+  # Mutation bounds
+  weight_mutation_rate: 0.05  # ±5%
+  weight_max_multiplier: 2.0
+  weight_min_multiplier: 0.5
+  
+  frequency_mutation_rate: 0.1  # ±10%
+  damping_mutation_rate: 0.2  # ±20%
+  
+  # Selection
+  fitness_evaluation_interval: 1000  # cycles
+  mutation_history_length: 100
+  
+  # Dream lab
+  dream_experiments_per_cycle: 5
+  dream_experiment_duration: 100  # ms
+
+# Visualization
+visualization:
+  websocket_update_rate: 50  # ms
+  max_bees_display: 1000  # Sample for performance
+  hive_display_max: 50
+
+# Simulation
+simulation:
+  target_realtime_factor: 1.0  # 1x real-time
+  max_timesteps: 1000000  # 500 seconds at 0.5ms steps
+  checkpoint_interval: 10000  # Save every 5 seconds
+
+# Olfactory system
+olfactory:
+  receptors:
+    num_channels: 50  # synthetic receptor types
+    frequency_range: [5.0, 30.0]  # Hz
+    spatial_tuning: 20.0  # degrees (directional if needed)
+  
+  glomeruli:
+    num_glomeruli: 50  # PN clusters
+    pns_per_glomerulus: 100  # average
+    receptors_per_glomerulus: 4  # convergence
+  
+  plume:
+    whiff_interval_mean: 50  # ms between whiffs
+    whiff_duration_mean: 30  # ms per whiff
+    rise_time: 5  # ms
+    decay_time: 20  # ms
+    turbulence_sigma: 0.15
+    turbulence_tau: 10  # ms
+  
+  forcing:
+    amplitude_scale: 10.0  # force strength
+    frequency_jitter: 0.1  # ±10% frequency variation
+  
+  tracking:
+    response_window: 1000  # ms to track after onset
+    discrimination_threshold: 0.7  # similarity for "same odor"
+    memory_formation_threshold: 0.5  # attractor strength
+
+# Vision system
+vision:
+  compound_eye:
+    num_ommatidia: 800
+    field_of_view_h: 270  # degrees horizontal
+    field_of_view_v: 180  # degrees vertical
+    ommatidium_acceptance_angle: 20  # degrees
+    
+  stimulus:
+    frame_rate: 200  # Hz (5ms per frame)
+    stimulus_duration: 200  # ms
+    inter_stimulus_interval: 100  # ms
+    randomize: true
+    
+  processing:
+    motion_threshold: 0.1
+    optical_flow_method: "farneback"
+    spatial_smoothing: 3  # pixels
+
+# Anomaly detection and monitoring
+monitoring:
+  thresholds:
+    amplitude_sigma: 3.0  # Neuron amplitude spike threshold (std devs)
+    coherence_jump: 0.3  # Global coherence jump threshold
+    pattern_novelty_threshold: 0.8  # Pattern similarity for novelty
+    memory_rapid_encoding: 0.5  # Memory strength increase threshold
+    
+  tracking:
+    anomaly_history_size: 1000  # Max anomalies to keep
+    response_tracking_window: 5.0  # seconds to track stimulus responses
+

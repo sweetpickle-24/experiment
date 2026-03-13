@@ -1,0 +1,43 @@
+{
+  "metadata_version": "1.0",
+  "description": "Visual stimuli for fly brain experiments",
+  "categories": {
+    "food": {
+      "description": "Images of food sources (fruit, sugar, etc.)",
+      "expected_response": "Approach behavior, moderate coherence increase"
+    },
+    "flies": {
+      "description": "Images of other flies (various poses, genders)",
+      "expected_response": "Social behavior circuits, complex patterns"
+    },
+    "predators": {
+      "description": "Images of predators (wasps, spiders)",
+      "expected_response": "Alert state, high coherence, avoid behavior"
+    },
+    "patterns": {
+      "description": "Synthetic motion patterns (gratings, looming)",
+      "expected_response": "Directional motion detection, T4/T5 activation"
+    },
+    "natural": {
+      "description": "Natural scenes (flowers, leaves, landscapes)",
+      "expected_response": "Variable, context-dependent"
+    }
+  },
+  "stimuli": {
+    "NOTE": "Add stimulus metadata here as images are added",
+    "example_format": {
+      "filename": "stimulus_name.png",
+      "category": "food",
+      "description": "Rotting banana",
+      "motion": false,
+      "size": [100, 100],
+      "notes": "High contrast, yellow/brown"
+    }
+  },
+  "generation_info": {
+    "note": "Synthetic patterns are generated programmatically",
+    "gratings": "Drifting sinusoidal gratings in 4 directions at 3 speeds = 12 patterns",
+    "looming": "Expanding circles at 3 expansion rates = 3 patterns",
+    "total_synthetic": 15
+  }
+}

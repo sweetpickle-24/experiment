@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tahoe-bg: #0B0B0C;
+  --tahoe-panel: rgba(22, 22, 24, 0.8);
+  --tahoe-border: rgba(255, 255, 255, 0.12);
+  --tahoe-accent: #0A84FF;
+  --tahoe-text: #F5F5F7;
+  --tahoe-text-muted: #98989D;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+.tahoe-panel {
+  background: var(--tahoe-panel);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--tahoe-border);
+  border-radius: 18px;
+  transition: all 180ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.tahoe-panel:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.tahoe-button {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: var(--tahoe-accent);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.tahoe-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
+}
+
+.tahoe-button:active {
+  transform: translateY(0);
+}
