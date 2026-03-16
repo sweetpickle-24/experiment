@@ -1,0 +1,64 @@
+{
+  "experiment": "odor_similarity_retest",
+  "num_odors": 4,
+  "num_pairs": 6,
+  "pairs_tested": [
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "2-heptanone",
+      "chem_sim": 0.03945785864722745,
+      "neural_sim": -0.013180446697970041
+    },
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "geosmin",
+      "chem_sim": 0.05877316144581444,
+      "neural_sim": 0.010381889271750178
+    },
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "1-hexanol",
+      "chem_sim": 0.25166689460080793,
+      "neural_sim": 0.017113985263098798
+    },
+    {
+      "odor1": "2-heptanone",
+      "odor2": "geosmin",
+      "chem_sim": -0.18118582112732856,
+      "neural_sim": 0.27966572892569563
+    },
+    {
+      "odor1": "2-heptanone",
+      "odor2": "1-hexanol",
+      "chem_sim": 0.08272642404974688,
+      "neural_sim": 0.04404236922849331
+    },
+    {
+      "odor1": "geosmin",
+      "odor2": "1-hexanol",
+      "chem_sim": 0.06199250454413369,
+      "neural_sim": 0.36045088082187987
+    }
+  ],
+  "summary": {
+    "chem_neural_correlation": -0.5108527740685012,
+    "chemical_similarity": {
+      "mean": 0.0522385036934003,
+      "std": 0.126154203905326,
+      "range": [
+        -0.18118582112732856,
+        0.25166689460080793
+      ]
+    },
+    "neural_similarity": {
+      "mean": 0.1164124011354913,
+      "std": 0.14682234228872204,
+      "range": [
+        -0.013180446697970041,
+        0.36045088082187987
+      ]
+    },
+    "validation": "FAIL",
+    "biological_benchmark": "Bhandawat et al. 2007: r \u2248 0.3-0.5"
+  }
+}
