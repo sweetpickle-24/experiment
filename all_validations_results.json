@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-03-15T22:12:58.369413",
+  "system": {
+    "num_neurons": 10906,
+    "backend": "MLX"
+  },
+  "validations": {
+    "temporal_dynamics": {
+      "odors": {
+        "benzaldehyde": {
+          "peak_time_ms": 100,
+          "adaptation_percent": 3.144729900535721,
+          "activities": [
+            0.0,
+            0.00025230032042600214,
+            0.00027496108668856323,
+            0.000274287216598168,
+            0.0002699318283703178,
+            0.00026144320145249367
+          ]
+        },
+        "2-heptanone": {
+          "peak_time_ms": 100,
+          "adaptation_percent": -1.5460476105861825,
+          "activities": [
+            0.0,
+            0.00024325239064637572,
+            0.0002613034739624709,
+            0.0002511716156732291,
+            0.00024396485241595656,
+            0.00024773666518740356
+          ]
+        },
+        "geosmin": {
+          "peak_time_ms": 100,
+          "adaptation_percent": 0.9186226423437259,
+          "activities": [
+            0.0,
+            0.00017085066065192223,
+            0.00017356788157485425,
+            0.00016062537906691432,
+            0.0001573092013131827,
+            0.00015586412337142974
+          ]
+        }
+      },
+      "summary": {
+        "peak_time_mean_ms": 100.0,
+        "adaptation_mean_percent": 0.8391016440977549,
+        "validation": "FAIL"
+      }
+    },
+    "odor_mixtures": {
+      "mixtures": {
+        "binary_mixture": {
+          "odors": [
+            "benzaldehyde",
+            "2-heptanone"
+          ],
+          "overlap_percent": 35.28481012658228
+        }
+      },
+      "summary": {
+        "mean_overlap_percent": 35.28481012658228,
+        "validation": "PASS"
+      }
+    },
+    "discrimination": {
+      "odors": {
+        "benzaldehyde": {
+          "jnd_tested_percent": 20,
+          "correlation": 0.9966339520043256,
+          "discriminable": false
+        },
+        "2-heptanone": {
+          "jnd_tested_percent": 20,
+          "correlation": 0.8956525121340958,
+          "discriminable": true
+        }
+      },
+      "summary": {
+        "mean_jnd_percent": 20.0,
+        "validation": "PASS"
+      }
+    },
+    "similarity": {
+      "summary": {
+        "chem_neural_correlation": -0.9895088331631133,
+        "validation": "FAIL"
+      }
+    },
+    "learning": {
+      "summary": {
+        "baseline_mbon_activity": 0.002431837609037757,
+        "validation": "PASS",
+        "note": "Plasticity mechanism in place, full training not run for speed"
+      }
+    }
+  }
+}

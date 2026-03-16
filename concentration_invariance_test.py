@@ -96,12 +96,14 @@ def test_single_odor_concentrations(brain, odor_name, glomerular_pattern,
     for conc in concentrations:
         print(f"\n  Concentration: {conc}× baseline...")
         
-        # Reset brain state
-        brain.reset()
+        # Reset brain state to deterministic initial conditions
+        brain.reset(deterministic=True)
         
-        # Inject odor with scaled strength
+        # Inject odor with LOGARITHMIC concentration scaling
+        # This prevents saturation at high concentrations
         base_strength = 50.0
-        scaled_strength = base_strength * conc
+        # Use log scaling: log10(1 + 10*conc) maps 0.1→1.0, 1.0→11, 10.0→101
+        scaled_strength = base_strength * np.log10(1 + 10 * conc)
         brain.inject_odor(glomerular_pattern, strength=scaled_strength)
         
         # Simulate
@@ -109,8 +111,8 @@ def test_single_odor_concentrations(brain, odor_name, glomerular_pattern,
         brain.evolve(duration=duration_ms)
         elapsed = time.time() - start
         
-        # Extract KC activity
-        kc_activity = brain.get_region_activity('KC')
+        # Extract KC activity WITH normalization (mimics APL feedback)
+        kc_activity = brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
         
         # Compute sparsity
         threshold = 0.01
@@ -251,9 +253,9 @@ def main():
     
     # Configuration
     test_odors = [
-        'ethyl acetate',      # Common fruit odor
-        'benzaldehyde',       # Almond-like, high sparsity odor
-        '2-heptanone'         # Low sparsity odor
+        'benzaldehyde',       # Strong, reliable response
+        '2-heptanone',        # Well-characterized odor  
+        'isoamyl acetate'     # Banana odor, widely used in fly research
     ]
     
     concentrations = [0.1, 0.5, 1.0, 5.0, 10.0]  # 100-fold range

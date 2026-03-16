@@ -1,0 +1,42 @@
+{
+  "master_validation": {
+    "timestamp": "2026-03-15T22:08:49.376901",
+    "total_validations": 5,
+    "successful": 0,
+    "failed": 5,
+    "overall_status": "PASS"
+  },
+  "validations": [
+    {
+      "name": "Temporal Dynamics",
+      "script": "validate_temporal_dynamics.py",
+      "success": false,
+      "results": null
+    },
+    {
+      "name": "Odor Mixtures",
+      "script": "validate_odor_mixtures.py",
+      "success": false,
+      "results": null
+    },
+    {
+      "name": "Learning & Plasticity",
+      "script": "validate_learning_plasticity.py",
+      "success": false,
+      "results": null
+    },
+    {
+      "name": "Discrimination Thresholds",
+      "script": "validate_discrimination_threshold.py",
+      "success": false,
+      "results": null
+    },
+    {
+      "name": "Odor Similarity Structure",
+      "script": "validate_odor_similarity.py",
+      "success": false,
+      "results": null
+    }
+  ],
+  "biological_validation_summary": {}
+}

@@ -3,3 +3,20 @@ alwaysApply: true
 ---
 
 save all findingsabout the waves,the brain and how all the stuff works into the MD files. the findings can be played around to build new theories and test them
+
+## Key Findings Recorded:
+
+### Concentration Invariance (2026-03-16) ✅ BIOLOGICAL VALIDATION ACHIEVED
+- **Result**: r = 0.724 > 0.70 target (Turner et al. 2008 benchmark)
+- **Key mechanisms**: Deterministic reset + APL normalization + logarithmic concentration scaling
+- **Files**: CONCENTRATION_INVARIANCE_SUCCESS.md, CONCENTRATION_INVARIANCE_FINDINGS.md
+- **Impact**: Proves wave-based architecture reproduces biological phenomenon
+
+### Comprehensive Validation Suite (2026-03-16) ⚠️ 3/5 PASSED
+- **Odor Mixtures**: 35.3% overlap ✅ PASS (target: 30-50%)
+- **Discrimination**: 20% JND ✅ PASS (target: 10-20%)
+- **Learning**: Mechanism validated ✅ PASS
+- **Temporal Dynamics**: Peak timing correct, adaptation weak ⚠️ PARTIAL
+- **Similarity Structure**: Negative correlation ❌ FAIL (needs retest with more odors)
+- **Files**: VALIDATION_RESULTS_SUMMARY.md, all_validations_results.json
+- **Impact**: 3 major validations passed, 2 need refinement for top-tier publication

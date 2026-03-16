@@ -314,13 +314,50 @@ class SparseProbabilisticBrain:
                 for pn_idx in pn_indices[start_idx:end_idx]:
                     self.external_force[pn_idx] = channel_strength * strength
     
-    def reset(self):
-        """Reset to initial state."""
-        self._initialize_fields()
+    def reset(self, deterministic=False):
+        """
+        Reset to initial state.
+        
+        Args:
+            deterministic: If True, use fixed initial conditions for reproducibility.
+                         If False, randomize phases (default behavior).
+        """
+        if deterministic:
+            # Fixed initial conditions for concentration invariance testing
+            self.mean_phase = np.zeros(self.num_neurons, dtype=np.float32)
+            self.mean_velocity = np.zeros(self.num_neurons, dtype=np.float32)
+            self.mean_amplitude = np.ones(self.num_neurons, dtype=np.float32) * 0.1
+        else:
+            # Random initialization (original behavior)
+            self.mean_phase = np.random.uniform(-np.pi, np.pi, self.num_neurons).astype(np.float32)
+            self.mean_velocity = np.zeros(self.num_neurons, dtype=np.float32)
+            self.mean_amplitude = np.ones(self.num_neurons, dtype=np.float32) * 0.1
+        
+        # Always reset variances and external force
+        self.var_phase = np.ones(self.num_neurons, dtype=np.float32) * 0.1
+        self.var_amplitude = np.ones(self.num_neurons, dtype=np.float32) * 0.01
+        self.external_force = np.zeros(self.num_neurons, dtype=np.float32)
+        
+        # Move to GPU if using MLX
+        if self.use_mlx:
+            self.mean_phase = mx.array(self.mean_phase)
+            self.mean_velocity = mx.array(self.mean_velocity)
+            self.mean_amplitude = mx.array(self.mean_amplitude)
+            self.var_phase = mx.array(self.var_phase)
+            self.var_amplitude = mx.array(self.var_amplitude)
+            self.external_force = mx.array(self.external_force)
+        
         self.time = 0.0
     
-    def get_region_activity(self, region='PN'):
-        """Extract activity for region."""
+    def get_region_activity(self, region='PN', normalize_kc=False, target_sparsity=0.06):
+        """
+        Extract activity for region.
+        
+        Args:
+            region: 'PN', 'KC', 'LN', or 'MBON'
+            normalize_kc: If True and region='KC', apply APL-like normalization  
+            target_sparsity: Target fraction of active KCs (default 0.06 = 6%)
+        """
         # Filter neurons by type using olfactory classification
         from ..substrate.olfactory_subgraph import classify_olfactory_neuron
         
@@ -364,6 +401,10 @@ class SparseProbabilisticBrain:
                     binned.append(activity[start:end].mean())
                 return np.array(binned)
             
+            # Apply normalization if requested for KC region
+            if normalize_kc and region == 'KC':
+                activity = self._apply_kc_normalization(activity, target_sparsity)
+            
             return activity
         else:
             # No neuron metadata, return all
@@ -371,6 +412,40 @@ class SparseProbabilisticBrain:
                 return np.array(self.mean_amplitude)
             else:
                 return self.mean_amplitude.copy()
+    
+    def _apply_kc_normalization(self, kc_activity, target_sparsity=0.06):
+        """
+        Apply winner-take-all normalization to maintain stable KC sparsity.
+        
+        Mimics APL (Anterior Paired Lateral) neuron feedback inhibition in Drosophila.
+        The APL neuron monitors total KC activity and provides divisive normalization
+        to maintain ~5-7% sparsity regardless of input strength.
+        
+        Reference: Lin et al. (2014) Nature Neuroscience
+        
+        Args:
+            kc_activity: KC activity pattern (continuous amplitudes)
+            target_sparsity: Target fraction of active KCs (default 0.06 = 6%)
+        
+        Returns:
+            normalized_activity: Activity with adaptive threshold applied
+        """
+        if len(kc_activity) == 0:
+            return kc_activity
+        
+        # Compute adaptive threshold to achieve target sparsity
+        sorted_activity = np.sort(kc_activity)[::-1]  # Sort descending
+        threshold_idx = int(len(kc_activity) * target_sparsity)
+        
+        if threshold_idx >= len(sorted_activity):
+            threshold = 0.0
+        else:
+            threshold = sorted_activity[threshold_idx]
+        
+        # Apply soft threshold (subtract and clip to zero)
+        normalized = np.maximum(0.0, kc_activity - threshold)
+        
+        return normalized
     
     def get_state(self):
         """Get current state."""
