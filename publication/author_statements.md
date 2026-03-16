@@ -101,25 +101,25 @@
 **Provisional patent applications filed:**
 
 1. **"Memory-Efficient Probabilistic Oscillator Network for Large-Scale Neural Simulation"**
-   - USPTO Provisional Application No.: [TO BE FILLED AFTER FILING]
-   - Filing Date: [TO BE FILLED]
-   - Status: Pending
-   - Inventors: [Your Name]
-   - Assignee: [Your Name / Your Institution]
+   - USPTO Provisional Application No.: Pending (to be filed)
+   - Filing Date: Expected March 2026
+   - Status: In preparation
+   - Inventors: Vladyslav Byelozerskykh
+   - Assignee: Vladyslav Byelozerskykh (Independent)
 
 2. **"Method and System for Inverse Optimization of Sensory Inputs via Gradient Descent Through Neural Dynamics"**
-   - USPTO Provisional Application No.: [TO BE FILLED AFTER FILING]
-   - Filing Date: [TO BE FILLED]
-   - Status: Pending
-   - Inventors: [Your Name]
-   - Assignee: [Your Name / Your Institution]
+   - USPTO Provisional Application No.: Pending (to be filed)
+   - Filing Date: Expected March 2026
+   - Status: In preparation
+   - Inventors: Vladyslav Byelozerskykh
+   - Assignee: Vladyslav Byelozerskykh (Independent)
 
 3. **"System and Method for Real-Time Large-Scale Neural Network Simulation Using GPU-Accelerated Sparse Probabilistic Dynamics"**
-   - USPTO Provisional Application No.: [TO BE FILLED AFTER FILING]
-   - Filing Date: [TO BE FILLED]
-   - Status: Pending
-   - Inventors: [Your Name]
-   - Assignee: [Your Name / Your Institution]
+   - USPTO Provisional Application No.: Pending (to be filed)
+   - Filing Date: Expected March 2026
+   - Status: In preparation
+   - Inventors: Vladyslav Byelozerskykh
+   - Assignee: Vladyslav Byelozerskykh (Independent)
 
 **Nature of competing interest:**
 These patent applications cover the methods described in this manuscript. The patents do not affect the scientific conclusions or data presented. All code and data will be made publicly available under open-source licenses as described in the Data Availability and Code Availability statements.
@@ -264,8 +264,8 @@ Available at: https://[your-repo].readthedocs.io/ [if applicable]
 
 **Version at Time of Publication:**
 - Version: v1.0.0
-- Commit hash: [TO BE FILLED]
-- Release DOI: [Zenodo DOI]
+- Commit hash: Will be generated at release
+- Release DOI: Will be generated upon Zenodo deposit
 
 ### Reproducibility
 

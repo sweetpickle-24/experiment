@@ -1,6 +1,6 @@
 # Cover Letter for Nature Communications
 
-**Submission Date:** [TO BE FILLED]  
+**Submission Date:** March 16, 2026  
 **Manuscript Title:** Wave-Based Simulation of the Complete Drosophila Olfactory Connectome Reveals Biologically Accurate Sparse Coding  
 **Running Title:** Wave Physics Produces Biological Sparse Coding  
 
@@ -111,11 +111,10 @@ This work was self-funded with no external support. Research was conducted indep
 
 ## Manuscript Statistics
 
-- Main text word count: ~4,000 words
-- Number of figures: 5
-- Number of supplementary figures: [TBD - typically 5-10]
+- Main text word count: ~5,500 words (main text), ~8,000 words (total with methods)
+- Number of figures: 4 main figures + 2 supplementary figures
 - Number of supplementary tables: 3
-- Number of references: ~40
+- Number of references: 16
 
 ## Timeline
 

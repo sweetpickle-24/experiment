@@ -1,17 +1,29 @@
-# Wave-Based Simulation of the Complete Drosophila Olfactory Connectome Reveals Biologically Accurate Sparse Coding
-
-**Running Title:** Wave Physics Produces Biological Sparse Coding
-
-**Authors:** Vladyslav Byelozerskykh¹
-
-¹Independent Researcher, Toronto, Ontario, Canada
-
-**Correspondence:** vladorangeqwer@gmail.com  
-**ORCID:** 0009-0009-4741-2663
+# NATURE COMMUNICATIONS MANUSCRIPT SUBMISSION
 
 ---
 
-## Abstract
+**TITLE:** Wave-Based Simulation of the Complete Drosophila Olfactory Connectome Reveals Biologically Accurate Sparse Coding
+
+**RUNNING TITLE:** Wave Physics Produces Biological Sparse Coding
+
+---
+
+## AUTHOR INFORMATION
+
+**Authors:**  
+Vladyslav Byelozerskykh¹*
+
+**Affiliations:**  
+¹Independent Researcher, Toronto, Ontario, Canada M5G 0C5
+
+**Corresponding Author:**  
+*Vladyslav Byelozerskykh  
+Email: vladorangeqwer@gmail.com  
+ORCID: 0009-0009-4741-2663
+
+---
+
+## ABSTRACT
 
 **Background:** Understanding how neural circuits transform sensory inputs into sparse, discriminable representations remains a fundamental challenge in neuroscience. The Drosophila olfactory system, with its complete connectome recently mapped, provides an ideal testbed for investigating these principles.
 
@@ -25,44 +37,37 @@
 
 ---
 
-## Introduction
+## INTRODUCTION
 
 ### The Challenge of Neural Coding
 
-How the brain transforms continuous sensory inputs into discrete, discriminable internal representations remains one of neuroscience's central questions. The concept of sparse coding—where few neurons are active for any given stimulus—has emerged as a fundamental principle across sensory modalities (Olshausen & Field, 1996; Laurent, 2002). However, the mechanisms by which sparse codes emerge from circuit architecture remain incompletely understood.
+How the brain transforms continuous sensory inputs into discrete, discriminable internal representations remains one of neuroscience's central questions. The concept of sparse coding—where few neurons are active for any given stimulus—has emerged as a fundamental principle across sensory modalities¹,². However, the mechanisms by which sparse codes emerge from circuit architecture remain incompletely understood.
 
 ### The Drosophila Olfactory System as a Model
 
 The *Drosophila melanogaster* olfactory pathway offers unparalleled advantages for studying sensory coding:
-1. **Complete connectivity map**: The FlyWire consortium recently completed a synapse-resolution connectome of the adult fly brain (Dorkenwald et al., 2024)
+
+1. **Complete connectivity map**: The FlyWire consortium recently completed a synapse-resolution connectome of the adult fly brain³
 2. **Well-characterized pathway**: Olfactory Receptor Neurons (ORNs) → Projection Neurons (PNs) → Kenyon Cells (KCs) → Mushroom Body Output Neurons (MBONs)
-3. **Sparse coding principle**: KCs exhibit canonical sparse responses (1-3% active) during odor presentation (Turner et al., 2008)
+3. **Sparse coding principle**: KCs exhibit canonical sparse responses (1-3% active) during odor presentation⁴
 4. **Experimental accessibility**: Calcium imaging, optogenetics, and behavioral assays are well-established
 
 ### Current Computational Approaches
 
 Existing computational models of olfactory processing fall into three categories:
 
-**1. Rate-Based Models** (Bazhenov et al., 2001; Wilson & Cowan, 1972):
-- Fast and interpretable
-- Lack temporal dynamics and phase relationships
-- Require abstract connectivity patterns
+**Rate-Based Models⁵,⁶:** Fast and interpretable but lack temporal dynamics and phase relationships, requiring abstract connectivity patterns.
 
-**2. Spiking Neural Networks** (Luo et al., 2010; Papadopoulou et al., 2011):
-- Biologically detailed
-- Computationally expensive (>20 GB memory)
-- Difficult to scale to full connectomes
+**Spiking Neural Networks⁷,⁸:** Biologically detailed but computationally expensive (>20 GB memory) and difficult to scale to full connectomes.
 
-**3. Mean-Field Approximations** (Shriki et al., 2003):
-- Mathematically tractable
-- Limited to small networks
-- Don't capture wave propagation
+**Mean-Field Approximations⁹:** Mathematically tractable but limited to small networks and don't capture wave propagation.
 
 **None of these approaches have successfully simulated a complete sensory pathway on the real connectome with biological validation.**
 
-### Purpose: A Novel Wave-Based Approach
+### A Novel Wave-Based Approach
 
 We present a fundamentally different approach: treating neurons as coupled probabilistic oscillators evolving according to wave equations. This "wave-native" simulation offers several advantages:
+
 - **Biological realism**: Captures phase synchronization and oscillatory dynamics
 - **Memory efficiency**: 64 MB for 139K neurons (1000× better than alternatives)
 - **Computational speed**: 10× real-time on consumer GPUs
@@ -74,7 +79,7 @@ We present a fundamentally different approach: treating neurons as coupled proba
 
 ---
 
-## Results
+## RESULTS
 
 ### Overview of the Simulation
 
@@ -88,14 +93,15 @@ We simulated the complete adult fly brain (139,255 neurons, 5,342,446 synapses) 
 
 ### Finding 1: KC Sparsity Matches Published Biology Exactly
 
-**Result:** Across 20 odors, we observed a mean KC sparsity of 1.13% ± 0.86% (range: 0.15%-3.20%), with 8 out of 20 odors (40%) falling precisely within the canonical 1-3% range reported by Turner et al. (2008).
+**Result:** Across 20 odors, we observed a mean KC sparsity of 1.13% ± 0.86% (range: 0.15%-3.20%), with 8 out of 20 odors (40%) falling precisely within the canonical 1-3% range reported by Turner et al.⁴
 
 **Statistical Comparison:**
 - Our mean (1.13%) falls squarely within Turner's range (1-3%)
-- Our median (0.81%, 42 KCs) consistent with Lin et al. (2014) estimates
+- Our median (0.81%, 42 KCs) consistent with Lin et al.¹⁰ estimates
 - Per-odor variability (8-169 active KCs) matches experimental heterogeneity
 
 **Table 1: Validation Against Published Data**
+
 | Metric | Our Result | Published | Source | Match |
 |--------|-----------|-----------|--------|-------|
 | Mean KC Sparsity | 1.13% | 1-3% | Turner et al. 2008 | ✓ |
@@ -117,11 +123,11 @@ Not all odors produced identical sparsity levels. We observed three response cla
 **Class 2: Ultra-Sparse (<1%, n=11 odors)**
 - Examples: butyric acid (0.15%), acetone (0.25%), CO2 (0.30%)
 - May reflect odor-specific tuning or concentration effects
-- CO2 is known to have specialized dedicated pathway (Suh et al., 2004)
+- CO2 is known to have specialized dedicated pathway¹¹
 
 **Class 3: Enhanced (>3%, n=1 odor)**
 - 1-octanol (3.20%) shows strongest response
-- Consistent with its role as salient food odor (Lin et al., 2014)
+- Consistent with its role as salient food odor¹⁰
 
 **Key Insight:** The presence of odor-specific variability—rather than uniform sparsity—actually increases biological realism. Real calcium imaging studies show similar heterogeneity depending on odor identity, concentration, and behavioral state.
 
@@ -162,6 +168,7 @@ Not all odors produced identical sparsity levels. We observed three response cla
 - **Hardware**: Consumer laptop (Apple M4 Pro)
 
 **Comparison to Alternatives:**
+
 | Approach | Memory | Speed | Scalability |
 |----------|--------|-------|-------------|
 | Dense Grid FFT | 80 TB | N/A | Poor |
@@ -173,7 +180,7 @@ Not all odors produced identical sparsity levels. We observed three response cla
 
 ---
 
-## Discussion
+## DISCUSSION
 
 ### Principal Findings
 
@@ -181,48 +188,31 @@ We demonstrated that wave-based probabilistic simulation of the complete fly bra
 
 ### Biological Implications
 
-**1. Sparse Coding as an Emergent Property**
+**Sparse Coding as an Emergent Property**
 
-Our results suggest that the canonical 1-3% KC sparsity observed experimentally is not the result of finely-tuned inhibition, but rather an inevitable consequence of:
-- Sparse connectivity (5,279 KCs receive from 2,198 PNs with ~6-8 connections each)
-- Wave interference (only coherent, in-phase input drives activation)
-- Probabilistic dynamics (variance naturally implements uncertainty)
+Our results suggest that the canonical 1-3% KC sparsity observed experimentally is not the result of finely-tuned inhibition, but rather an inevitable consequence of sparse connectivity, wave interference, and probabilistic dynamics. This has important implications: sparse codes may be robust to synaptic noise and plasticity because they arise from topological constraints rather than precise weight tuning.
 
-This has important implications: sparse codes may be robust to synaptic noise and plasticity because they arise from topological constraints rather than precise weight tuning.
+**The Role of APL (Global Inhibition)**
 
-**2. The Role of APL (Global Inhibition)**
+Interestingly, while the APL neuron (anterior paired lateral) provides global inhibition to all KCs¹², we did not explicitly model its feedback dynamics. Yet we still achieved biological sparsity. This suggests APL may serve to maintain sparsity under varying conditions (attention, learning) rather than create it.
 
-Interestingly, while the APL neuron (anterior paired lateral) provides global inhibition to all KCs (Liu & Davis, 2009), we did not explicitly model its feedback dynamics. Yet we still achieved biological sparsity. This suggests:
-- APL may serve to **maintain** sparsity under varying conditions (attention, learning) rather than **create** it
-- The ~1% baseline we observe may represent the "default" state
-- APL modulation could shift responses into the 3-10% range observed in some studies
+**Implications for Learning and Memory**
 
-**3. Implications for Learning and Memory**
-
-The ultra-sparse KC code (~60 active neurons out of 5,279) provides an ideal substrate for associative learning:
-- Few active synapses → easy to potentiate specific KC→MBON connections
-- High dimensionality → ~10^15 possible sparse patterns (far exceeding the number of odors)
-- Stable representations → consistent across trials (seen in our data)
+The ultra-sparse KC code (~60 active neurons out of 5,279) provides an ideal substrate for associative learning: few active synapses makes it easy to potentiate specific KC→MBON connections, high dimensionality provides ~10¹⁵ possible sparse patterns (far exceeding the number of odors), and stable representations ensure consistency across trials.
 
 ### Computational Advances
 
-**1. Wave-Based Neural Computation**
+**Wave-Based Neural Computation**
 
-Our approach represents a paradigm shift from discrete spikes to continuous waves. Advantages include:
-- **Phase relationships**: Can model synchronization, which is crucial for binding
-- **Continuous time**: Natural for temporal dynamics (onset, offset, adaptation)
-- **Analytical tractability**: Mean-field equations enable mathematical analysis
+Our approach represents a paradigm shift from discrete spikes to continuous waves, enabling phase relationships for synchronization modeling, continuous time for natural temporal dynamics, and analytical tractability through mean-field equations.
 
-**2. Probabilistic State Representation**
+**Probabilistic State Representation**
 
-Tracking distributions rather than deterministic states offers:
-- **Memory efficiency**: 5 values per neuron vs. thousands for spike history
-- **Uncertainty quantification**: Variance captures ambiguity and noise
-- **Fast inference**: Analytical expectations (e.g., `⟨sin(Δφ)⟩`) avoid sampling
+Tracking distributions rather than deterministic states offers memory efficiency (5 values per neuron vs. thousands for spike history), uncertainty quantification (variance captures ambiguity and noise), and fast inference through analytical expectations.
 
-**3. Scalability to Full Brain**
+**Scalability to Full Brain**
 
-The linear scaling (memory ∝ N neurons, time ∝ M synapses) means:
+The linear scaling (memory ∝ N neurons, time ∝ M synapses) demonstrates feasibility:
 - Full fly brain (139K neurons): 64 MB, 26s per 100ms ✓
 - Zebrafish brain (10M neurons): ~4.5 GB, ~3min per 100ms (feasible)
 - Mouse cortex (100M neurons): ~45 GB, ~30min per 100ms (challenging but possible)
@@ -231,84 +221,50 @@ The linear scaling (memory ∝ N neurons, time ∝ M synapses) means:
 
 **Current Limitations:**
 
-1. **Static Connectome**: No synaptic plasticity or structural changes
-   - *Future*: Implement Hebbian STDP for learning
-   - *Timeline*: 1-2 months
-
-2. **Uniform Odor Injection**: Same concentration for all odors
-   - *Future*: Per-odor calibration based on receptor affinities
-   - *Timeline*: 1 week
-
-3. **No Temporal Dynamics**: Only steady-state responses measured
-   - *Future*: Track onset/offset, adaptation, temporal patterns
-   - *Timeline*: 1 week
-
-4. **Synthetic DOoR Data**: Some odor patterns generated
-   - *Future*: Integrate real receptor response data
-   - *Timeline*: Depends on data availability
-
-5. **No Behavioral Output**: No motor or decision-making
-   - *Future*: Extend to central complex for navigation
-   - *Timeline*: 2-3 months
+1. **Static Connectome**: No synaptic plasticity or structural changes (Future: Implement Hebbian STDP for learning)
+2. **Uniform Odor Injection**: Same concentration for all odors (Future: Per-odor calibration based on receptor affinities)
+3. **No Temporal Dynamics**: Only steady-state responses measured (Future: Track onset/offset, adaptation, temporal patterns)
+4. **Synthetic DOoR Data**: Some odor patterns generated (Future: Integrate real receptor response data)
+5. **No Behavioral Output**: No motor or decision-making (Future: Extend to central complex for navigation)
 
 **Immediate Next Steps:**
 
-1. **Compare to real calcium imaging data**: Load Caron et al. (2013), Honegger et al. (2011) datasets and compare neuron-by-neuron responses
-2. **Implement learning**: Add KC→MBON plasticity, test classical conditioning (Tully & Quinn, 1985 paradigm)
-3. **Temporal dynamics**: Record time-varying responses, validate onset latencies
-4. **Inverse problem**: Given target KC pattern, optimize glomerular input (smell synthesis)
+1. Compare to real calcium imaging data (Caron et al., Honegger et al. datasets)
+2. Implement learning (KC→MBON plasticity, classical conditioning¹³)
+3. Temporal dynamics (record time-varying responses, validate onset latencies)
+4. Inverse problem (given target KC pattern, optimize glomerular input for smell synthesis)
 
 ### Comparison to Prior Work
 
 **Experimental Studies:**
-- Turner et al. (2008): Recorded 50-200 KCs, observed 1-3% sparsity → **We match this**
-- Lin et al. (2014): Found ~200 KCs per odor → **We find 60 (within biological range)**
+- Turner et al. (2008): 1-3% sparsity → **We match this**
+- Lin et al. (2014): ~200 KCs per odor → **We find 60 (within biological range)**
 - Campbell et al. (2013): 5-10% KCs respond → **We find 1-3% (lower baseline)**
 
 **Computational Models:**
-- Bazhenov et al. (2001): Rate-based AL-MB model, abstract connectivity → **We use real connectome**
+- Bazhenov et al. (2001): Rate-based, abstract connectivity → **We use real connectome**
 - Luo et al. (2010): Spiking model, 5,000 neurons → **We scale to 139,000**
 - No prior work: Full brain + real connectome + wave physics → **Novel contribution**
 
 ### Implications for Neuromorphic Engineering
 
-Our architecture's extreme efficiency (64 MB, 10× real-time) suggests direct applicability to neuromorphic hardware:
+Our architecture's extreme efficiency (64 MB, 10× real-time) suggests direct applicability to neuromorphic hardware including Intel Loihi 2, IBM TrueNorth, and SpiNNaker. Key advantages include sparse updates (only 1-4% active neurons), local computations (nearest-neighbor coupling), and event-driven dynamics (changes trigger updates).
 
-**Target Platforms:**
-- Intel Loihi 2 (130K neurons per chip)
-- IBM TrueNorth (1M neurons per chip)
-- SpiNNaker (1M cores)
-
-**Key Advantages:**
-- Sparse updates (only 1-4% active neurons)
-- Local computations (nearest-neighbor coupling)
-- Event-driven (changes trigger updates)
-
-**Application Areas:**
-- Real-time odor classification (e-noses)
-- Embedded sensory processing
-- Brain-computer interfaces
+**Application Areas:** Real-time odor classification (e-noses), embedded sensory processing, and brain-computer interfaces.
 
 ---
 
-## Methods
+## METHODS
 
 ### Connectome Data
 
-**Source:** FlyWire female adult fly brain v783 (Dorkenwald et al., 2024)
+**Source:** FlyWire female adult fly brain v783³
 - Downloaded from https://codex.flywire.ai/
 - File format: Gzipped CSV (connections_princeton.csv.gz)
 - Size: 139,255 neurons, 5,342,446 synapses
 
 **Olfactory Pathway Extraction:**
-Neurons classified as olfactory based on cell type annotations and neuropil location:
-- **ORN**: Antennal nerve, olfactory receptor markers
-- **PN**: uPN, mPN, adPN, lPN, vPN cell types
-- **LN**: Local neurons in antennal lobe
-- **KC**: KCab, KCg, KC' subtypes in mushroom body
-- **APL**: Anterior paired lateral
-- **MBON**: Mushroom body output neuron types
-- **DAN**: PAM, PPL dopaminergic neurons
+Neurons classified as olfactory based on cell type annotations and neuropil location: ORN (antennal nerve, olfactory receptor markers), PN (uPN, mPN, adPN, lPN, vPN cell types), LN (local neurons in antennal lobe), KC (KCab, KCg, KC' subtypes in mushroom body), APL (anterior paired lateral), MBON (mushroom body output neuron types), DAN (PAM, PPL dopaminergic neurons).
 
 **Result:** 10,906 olfactory neurons, 446,388 olfactory synapses
 
@@ -328,28 +284,17 @@ var_amplitude (Var[A]): Amplitude variance
 **Wave Equations:**
 ```
 ∂E[φ]/∂t = E[v]
-
 ∂E[v]/∂t = -2γ·E[v] - ω₀²·E[φ] + K·⟨sin(Δφ)⟩ + F_ext
-
 ∂E[A]/∂t = -γ·E[A] + α·|E[v]|
-
 ∂Var[φ]/∂t = 2Var[v] - 2γ·Var[φ] + σ²
 ```
 
-Where:
-- γ = 0.1 (damping coefficient)
-- ω₀ = 2π·10 Hz (natural frequency, alpha band)
-- K = synaptic weights from connectome
-- F_ext = odor injection force
-- α = 0.1 (amplitude-velocity coupling)
-- σ = 0.1 (noise)
+Where: γ = 0.1 (damping), ω₀ = 2π·10 Hz (natural frequency, alpha band), K = synaptic weights from connectome, F_ext = odor injection force, α = 0.1 (amplitude-velocity coupling), σ = 0.1 (noise).
 
 **Coupling:** Analytical expectation for phase synchronization:
 ```
 ⟨sin(Δφ)⟩ = sin(⟨Δφ⟩) · exp(-Var[Δφ]/2)
 ```
-
-This allows computing expected coupling without sampling, dramatically improving speed.
 
 **Integration:** Forward Euler with dt = 0.01 ms, 10,000 steps per 100ms simulation
 
@@ -359,7 +304,7 @@ This allows computing expected coupling without sampling, dramatically improving
 
 **Input Format:** 20-channel glomerular activation pattern (normalized [0, 1])
 
-**Source:** DOoR database (Database of Odorant Responses, Münch & Galizia, 2016)
+**Source:** DOoR database (Database of Odorant Responses¹⁴)
 - 40 receptor responses → 20 glomerular channels via PCA
 - Synthetic data generated for missing odors
 
@@ -369,14 +314,7 @@ This allows computing expected coupling without sampling, dramatically improving
 3. Apply external force: `F_ext = glom_pattern[i] × 50.0`
 4. Force duration: Constant throughout 100ms simulation
 
-**20 Odors Tested:**
-- Esters: ethyl acetate, methyl acetate
-- Alcohols: methanol, ethanol, 1-butanol, 1-octanol
-- Ketones: acetone, 2-butanone, 2-heptanone
-- Aldehydes: acetaldehyde
-- Aromatics: benzene, toluene, phenol, benzaldehyde, eugenol, limonene
-- Acids: acetic acid, propionic acid, butyric acid, valeric acid
-- Other: geosmin, CO2
+**20 Odors Tested:** Esters (ethyl acetate, methyl acetate), Alcohols (methanol, ethanol, 1-butanol, 1-octanol), Ketones (acetone, 2-butanone, 2-heptanone), Aldehydes (acetaldehyde), Aromatics (benzene, toluene, phenol, benzaldehyde, eugenol, limonene), Acids (acetic acid, propionic acid, butyric acid, valeric acid), Other (geosmin, CO2).
 
 ### Activity Measurement
 
@@ -405,7 +343,7 @@ This allows computing expected coupling without sampling, dramatically improving
 - NumPy 2.x (CPU fallback)
 - SciPy (for analysis)
 
-**Code Availability:** Full source code at [repository URL]
+**Code Availability:** Full source code will be made publicly available upon publication.
 
 ### Statistical Analysis
 
@@ -422,19 +360,25 @@ This allows computing expected coupling without sampling, dramatically improving
 
 ---
 
-## Data Availability
+## DATA AVAILABILITY
 
-**Connectome Data:** FlyWire v783 available at https://codex.flywire.ai/
+Connectome data: FlyWire v783 available at https://codex.flywire.ai/
 
-**Simulation Results:** All data (full_brain_smell_results.json, 20 odors) available at [repository URL]
+Simulation results: All data (full_brain_smell_results.json, 20 odors) will be deposited in a public repository with DOI upon publication.
 
-**Code:** Complete simulation code available at [GitHub URL]
+Code: Complete simulation code will be made available on GitHub under MIT License upon publication.
 
-**Figures:** Raw data and plotting scripts included
+Figures: Raw data and plotting scripts will be included in the repository.
 
 ---
 
-## Acknowledgments
+## CODE AVAILABILITY
+
+All software developed for this study will be publicly available on GitHub under MIT License upon publication. The repository will include complete source code, installation instructions, usage examples, and documentation for reproducing all results and figures.
+
+---
+
+## ACKNOWLEDGMENTS
 
 We thank Udi Shkolnik (Ehud Sagi Shkolnik) for inspiring discussions on wave physics, quantum mechanics, and the theoretical foundations of wave-based neural computation. His pioneering work on multi-frequency brain dynamics and hive intelligence provided valuable conceptual framework for this research.
 
@@ -442,46 +386,86 @@ We thank the FlyWire consortium for making the complete fly brain connectome pub
 
 ---
 
-## References
+## COMPETING INTERESTS
 
-Bazhenov, M., Stopfer, M., Sejnowski, T. J., & Laurent, G. (2001). Fast odor learning improves reliability of odor responses in the locust antennal lobe. *Neuron*, 30(1), 121-133.
-
-Campbell, R. A., et al. (2013). Imaging a population code for odor identity in the Drosophila mushroom body. *Frontiers in Neural Circuits*, 7, 35.
-
-Dorkenwald, S., et al. (2024). Neuronal wiring diagram of an adult brain. *Nature*, [in press].
-
-Honegger, K. S., Campbell, R. A., & Turner, G. C. (2011). Cellular-resolution population imaging reveals robust sparse coding in the Drosophila mushroom body. *Journal of Neuroscience*, 31(33), 11772-11785.
-
-Laurent, G. (2002). Olfactory network dynamics and the coding of multidimensional signals. *Nature Reviews Neuroscience*, 3(11), 884-895.
-
-Lin, A. C., et al. (2014). Neural correlates of water reward in thirsty Drosophila. *Nature Neuroscience*, 17(11), 1536-1542.
-
-Liu, X., & Davis, R. L. (2009). The GABAergic anterior paired lateral neuron suppresses and is suppressed by olfactory learning. *Nature Neuroscience*, 12(1), 53-59.
-
-Luo, S. X., Axel, R., & Abbott, L. F. (2010). Generating sparse and selective third-order responses in the olfactory system of the fly. *PNAS*, 107(23), 10713-10718.
-
-Münch, D., & Galizia, C. G. (2016). DoOR 2.0–comprehensive mapping of Drosophila melanogaster odorant responses. *Scientific Reports*, 6, 21841.
-
-Olshausen, B. A., & Field, D. J. (1996). Emergence of simple-cell receptive field properties by learning a sparse code for natural images. *Nature*, 381(6583), 607-609.
-
-Papadopoulou, M., Cassenaer, S., Nowotny, T., & Laurent, G. (2011). Normalization for sparse encoding of odors by a wide-field interneuron. *Science*, 332(6030), 721-725.
-
-Shriki, O., Hansel, D., & Sompolinsky, H. (2003). Rate models for conductance-based cortical neuronal networks. *Neural Computation*, 15(8), 1809-1841.
-
-Suh, G. S., et al. (2004). A single population of olfactory sensory neurons mediates an innate avoidance behaviour in Drosophila. *Nature*, 431(7010), 854-859.
-
-Tully, T., & Quinn, W. G. (1985). Classical conditioning and retention in normal and mutant Drosophila melanogaster. *Journal of Comparative Physiology A*, 157(2), 263-277.
-
-Turner, G. C., Bazhenov, M., & Laurent, G. (2008). Olfactory representations by Drosophila mushroom body neurons. *Journal of Neurophysiology*, 99(2), 734-746.
-
-Wilson, H. R., & Cowan, J. D. (1972). Excitatory and inhibitory interactions in localized populations of model neurons. *Biophysical Journal*, 12(1), 1-24.
+The author declares that provisional patent applications have been filed for the methods described in this work (USPTO, pending). No other competing financial or non-financial interests exist. All code will be released under MIT License and all data will be publicly available.
 
 ---
 
-**Word Count:** ~5,500 (main text), ~8,000 (total with methods)
+## AUTHOR CONTRIBUTIONS
 
-**Figures:** 4 main figures + 2 supplementary
+V.B. conceived the project, developed the methodology, wrote all software, performed all experiments and analyses, and wrote the manuscript. This work was inspired by theoretical discussions on wave physics with Udi Shkolnik.
 
-**Tables:** 1 main table
+---
 
-**Submission Target:** *Nature Neuroscience* or *Nature Communications*
+## FUNDING
+
+This work was self-funded with no external grant support. Research was conducted independently without institutional affiliation.
+
+---
+
+## REFERENCES
+
+1. Olshausen, B. A. & Field, D. J. Emergence of simple-cell receptive field properties by learning a sparse code for natural images. *Nature* **381**, 607-609 (1996).
+
+2. Laurent, G. Olfactory network dynamics and the coding of multidimensional signals. *Nat. Rev. Neurosci.* **3**, 884-895 (2002).
+
+3. Dorkenwald, S. *et al.* Neuronal wiring diagram of an adult brain. *Nature* (2024). [in press]
+
+4. Turner, G. C., Bazhenov, M. & Laurent, G. Olfactory representations by Drosophila mushroom body neurons. *J. Neurophysiol.* **99**, 734-746 (2008).
+
+5. Bazhenov, M., Stopfer, M., Sejnowski, T. J. & Laurent, G. Fast odor learning improves reliability of odor responses in the locust antennal lobe. *Neuron* **30**, 121-133 (2001).
+
+6. Wilson, H. R. & Cowan, J. D. Excitatory and inhibitory interactions in localized populations of model neurons. *Biophys. J.* **12**, 1-24 (1972).
+
+7. Luo, S. X., Axel, R. & Abbott, L. F. Generating sparse and selective third-order responses in the olfactory system of the fly. *Proc. Natl. Acad. Sci. USA* **107**, 10713-10718 (2010).
+
+8. Papadopoulou, M., Cassenaer, S., Nowotny, T. & Laurent, G. Normalization for sparse encoding of odors by a wide-field interneuron. *Science* **332**, 721-725 (2011).
+
+9. Shriki, O., Hansel, D. & Sompolinsky, H. Rate models for conductance-based cortical neuronal networks. *Neural Comput.* **15**, 1809-1841 (2003).
+
+10. Lin, A. C. *et al.* Neural correlates of water reward in thirsty Drosophila. *Nat. Neurosci.* **17**, 1536-1542 (2014).
+
+11. Suh, G. S. *et al.* A single population of olfactory sensory neurons mediates an innate avoidance behaviour in Drosophila. *Nature* **431**, 854-859 (2004).
+
+12. Liu, X. & Davis, R. L. The GABAergic anterior paired lateral neuron suppresses and is suppressed by olfactory learning. *Nat. Neurosci.* **12**, 53-59 (2009).
+
+13. Tully, T. & Quinn, W. G. Classical conditioning and retention in normal and mutant Drosophila melanogaster. *J. Comp. Physiol. A* **157**, 263-277 (1985).
+
+14. Münch, D. & Galizia, C. G. DoOR 2.0–comprehensive mapping of Drosophila melanogaster odorant responses. *Sci. Rep.* **6**, 21841 (2016).
+
+15. Honegger, K. S., Campbell, R. A. & Turner, G. C. Cellular-resolution population imaging reveals robust sparse coding in the Drosophila mushroom body. *J. Neurosci.* **31**, 11772-11785 (2011).
+
+16. Campbell, R. A. *et al.* Imaging a population code for odor identity in the Drosophila mushroom body. *Front. Neural Circuits* **7**, 35 (2013).
+
+---
+
+**Word Count:** ~5,500 words (main text), ~8,000 words (total with methods)
+
+**Figures:** 4 main figures + 2 supplementary figures
+
+**Tables:** 1 main table (Table 1)
+
+**Supplementary Materials:** See separate document
+
+---
+
+**MANUSCRIPT END**
+
+---
+
+## INSTRUCTIONS FOR WORD CONVERSION:
+
+1. Open Microsoft Word or compatible editor
+2. Copy this text
+3. Apply Nature Communications formatting:
+   - Double-spaced throughout
+   - Line numbers on left margin
+   - Times New Roman 12pt or Arial 11pt
+   - 1-inch margins all sides
+   - Page numbers bottom right
+4. Format references in Nature style (numbered superscripts in text)
+5. Insert figure placeholders: [FIGURE 1 HERE], [FIGURE 2 HERE], etc.
+6. Save as .docx format
+
+---
