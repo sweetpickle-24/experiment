@@ -1,0 +1,223 @@
+{
+  "experiment": "temporal_adaptation_fix",
+  "description": "Temporal dynamics with receptor adaptation",
+  "biological_benchmark": {
+    "adaptation_percent": [
+      30,
+      70
+    ],
+    "peak_time_ms": [
+      100,
+      500
+    ],
+    "reference": "Nagel & Wilson 2011"
+  },
+  "method": "Exponential decay of input strength (tau=2s)",
+  "odor_responses": [
+    {
+      "odor": "benzaldehyde",
+      "temporal_data": {
+        "odor": "benzaldehyde",
+        "timepoints_ms": [
+          0,
+          50,
+          100,
+          200,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          4000,
+          5000
+        ],
+        "activities": [
+          0.0,
+          0.0002488350437488407,
+          0.00026967949816025794,
+          0.0002648111549206078,
+          0.0002569598436821252,
+          0.00025248597376048565,
+          0.00022835751587990671,
+          0.00023133801005315036,
+          0.00023918726947158575,
+          0.0002464923309162259,
+          0.00026607769541442394,
+          0.0002646218636073172
+        ],
+        "active_counts": [
+          0,
+          96,
+          97,
+          93,
+          93,
+          95,
+          80,
+          81,
+          91,
+          98,
+          65,
+          86
+        ],
+        "adaptation_tau_ms": 2000.0
+      },
+      "analysis": {
+        "peak_time_ms": 100,
+        "peak_activity": 0.00026967949816025794,
+        "adaptation_from_peak_percent": 14.217427861098667,
+        "adaptation_500_2500ms_percent": 6.916479227207658,
+        "time_at_peak": 100,
+        "time_2s_later": 2000,
+        "activity_at_500ms": 0.0002569598436821252,
+        "activity_at_2500ms": 0.00023918726947158575
+      }
+    },
+    {
+      "odor": "2-heptanone",
+      "temporal_data": {
+        "odor": "2-heptanone",
+        "timepoints_ms": [
+          0,
+          50,
+          100,
+          200,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          4000,
+          5000
+        ],
+        "activities": [
+          0.0,
+          0.00024024104641284794,
+          0.00025579569046385586,
+          0.00025602339883334935,
+          0.0002668391971383244,
+          0.00025722564896568656,
+          0.0002299228508491069,
+          0.00023073230113368481,
+          0.0002394978073425591,
+          0.00025111768627539277,
+          0.0002925069711636752,
+          0.0002870571333914995
+        ],
+        "active_counts": [
+          0,
+          154,
+          159,
+          152,
+          139,
+          130,
+          110,
+          115,
+          114,
+          121,
+          16,
+          41
+        ],
+        "adaptation_tau_ms": 2000.0
+      },
+      "analysis": {
+        "peak_time_ms": 4000,
+        "peak_activity": 0.0002925069711636752,
+        "adaptation_from_peak_percent": 1.8631479962664406,
+        "adaptation_500_2500ms_percent": 10.24639186783043,
+        "time_at_peak": 4000,
+        "time_2s_later": 5000,
+        "activity_at_500ms": 0.0002668391971383244,
+        "activity_at_2500ms": 0.0002394978073425591
+      }
+    },
+    {
+      "odor": "geosmin",
+      "temporal_data": {
+        "odor": "geosmin",
+        "timepoints_ms": [
+          0,
+          50,
+          100,
+          200,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          4000,
+          5000
+        ],
+        "activities": [
+          0.0,
+          0.00017576200480107218,
+          0.0001830023102229461,
+          0.0001867463142843917,
+          0.00020391136058606207,
+          0.0002526333264540881,
+          0.00025040985201485455,
+          0.0002438219089526683,
+          0.0002412933827145025,
+          0.0002286202070536092,
+          0.0002587905328255147,
+          0.00027285661781206727
+        ],
+        "active_counts": [
+          0,
+          138,
+          140,
+          139,
+          130,
+          120,
+          114,
+          121,
+          115,
+          104,
+          68,
+          84
+        ],
+        "adaptation_tau_ms": 2000.0
+      },
+      "analysis": {
+        "peak_time_ms": 5000,
+        "peak_activity": 0.00027285661781206727,
+        "adaptation_from_peak_percent": 0.0,
+        "adaptation_500_2500ms_percent": -18.332486243532824,
+        "time_at_peak": 5000,
+        "time_2s_later": 5000,
+        "activity_at_500ms": 0.00020391136058606207,
+        "activity_at_2500ms": 0.0002412933827145025
+      }
+    }
+  ],
+  "summary": {
+    "peak_time_ms": {
+      "mean": 3033.3333333333335,
+      "range": [
+        100,
+        5000
+      ]
+    },
+    "adaptation_from_peak_percent": {
+      "mean": 5.360191952455036,
+      "range": [
+        0.0,
+        14.217427861098667
+      ]
+    },
+    "adaptation_window_percent": {
+      "mean": -0.3898717161649117,
+      "range": [
+        -18.332486243532824,
+        10.24639186783043
+      ]
+    },
+    "validation": {
+      "peak_time": "FAIL",
+      "adaptation": "FAIL",
+      "overall": "FAIL"
+    }
+  }
+}
