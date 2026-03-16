@@ -643,10 +643,11 @@ Total: 10 odors × full pathway response patterns
 
 ---
 
-**Author**: Vladyslav  
-**Date**: March 13, 2026  
-**Institution**: Independent Research  
-**Contact**: GitHub/experiment repository  
+**Author**: Vladyslav Byelozerskykh  
+**ORCID**: 0009-0009-4741-2663  
+**Date**: March 16, 2026  
+**Institution**: Independent Researcher, Toronto, Canada  
+**Contact**: vladorangeqwer@gmail.com  
 
 ---
 

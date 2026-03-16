@@ -8,7 +8,10 @@
 
 **Using CRediT (Contributor Roles Taxonomy)**
 
-### [Your Name] - Corresponding Author
+### Vladyslav Byelozerskykh - Corresponding Author
+
+**ORCID:** 0009-0009-4741-2663  
+**Affiliation:** Independent Researcher, Toronto, Ontario, Canada
 
 **Roles:**
 - **Conceptualization:** Lead (100%)
@@ -152,9 +155,9 @@ The authors declare that provisional patent applications have been filed for the
 
 **Signed:**
 
-[Your Name]: _________________________ Date: _____________
+Vladyslav Byelozerskykh: _________________________ Date: March 16, 2026
 
-[Co-author names if applicable]
+(Sole author - no co-authors)
 
 ---
 
@@ -352,11 +355,9 @@ Key methodological details:
 
 ## ORCID iDs
 
-**[Your Name]:** [Your ORCID, e.g., 0000-0001-2345-6789]
+**Vladyslav Byelozerskykh:** 0009-0009-4741-2663
 
-[If you don't have an ORCID, register at https://orcid.org/ - it's free and takes 2 minutes]
-
-**[Co-author names]:** [Their ORCIDs if applicable]
+(Sole author - no co-authors)
 
 ---
 
@@ -364,16 +365,13 @@ Key methodological details:
 
 **Corresponding Author:**
 
-[Your Full Name]  
-[Your Department]  
-[Your Institution]  
-[Street Address]  
-[City, State/Province, Postal Code]  
-[Country]  
+Vladyslav Byelozerskykh  
+Independent Researcher  
+Toronto, Ontario, M5G 0C5  
+Canada  
 
-Email: [your.email@institution.edu]  
-Phone: [+X (XXX) XXX-XXXX]  
-ORCID: [Your ORCID]  
+Email: vladorangeqwer@gmail.com  
+ORCID: 0009-0009-4741-2663  
 
 **Alternative Contact (if applicable):**
 
@@ -414,4 +412,9 @@ We acknowledge the use of:
 
 **Document Status:** TEMPLATE - Complete before submission  
 **Created:** March 13, 2026  
-**For:** Nature Communications submission package
+**For:** Vladyslav Byelozerskykh  
+**ORCID**: 0009-0009-4741-2663  
+**Institution**: Independent Researcher  
+**Location**: Toronto, Ontario, Canada  
+**Contact**: vladorangeqwer@gmail.com  
+**Date**: March 16, 2026

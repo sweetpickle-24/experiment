@@ -179,6 +179,8 @@ Key papers validating our results:
 ---
 
 For more information:
+- Author: Vladyslav Byelozerskykh (vladorangeqwer@gmail.com)
+- ORCID: 0009-0009-4741-2663
 - Thesis: `/thesis/THESIS_MAIN.md`
 - Publication: `/publication/MANUSCRIPT_PUBLICATION.md`
 - Patents: `/patents/PATENT_FILING_SUMMARY.md`

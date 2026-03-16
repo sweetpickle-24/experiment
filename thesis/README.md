@@ -1,9 +1,9 @@
 # PhD Thesis: Wave-Based Simulation of the Drosophila Olfactory Connectome
 
-**Author:** [Your Name]  
-**Institution:** [Your Institution]  
-**Department:** [Your Department]  
-**Date:** March 2026
+**Author:** Vladyslav Byelozerskykh  
+**ORCID:** 0009-0009-4741-2663  
+**Affiliation:** Independent Researcher, Toronto, Canada  
+**Date:** March 16, 2026
 
 ---
 
@@ -114,6 +114,6 @@ Markdown format for easy editing. Convert to LaTeX when ready for final submissi
 
 ## Contact
 For questions about this thesis:
-- Email: [your email]
+- Email: vladorangeqwer@gmail.com
+- ORCID: 0009-0009-4741-2663
 - GitHub: [repository URL]
-- ORCID: [your ORCID]

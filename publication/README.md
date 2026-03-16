@@ -164,6 +164,9 @@ Suggested reviewers (see cover letter for full list):
 ---
 
 ## Contact
-**Corresponding Author**: [Your name and email]
 
-For questions about this submission package, see PUBLICATION_SUMMARY.md or contact the corresponding author.
+**Vladyslav Byelozerskykh**  
+Independent Researcher  
+Toronto, Ontario, Canada  
+Email: vladorangeqwer@gmail.com  
+ORCID: 0009-0009-4741-2663

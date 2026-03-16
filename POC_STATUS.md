@@ -213,7 +213,10 @@ A Proof of Concept demonstrates that a technology:
 
 ---
 
-**POC Verified By**: Comprehensive testing, biological validation, performance benchmarks  
-**POC Date**: March 2026  
-**POC Owner**: Vladyslav  
-**Technology Readiness Level**: TRL 4 (Technology validated in lab)
+**POC Owner**: Vladyslav Byelozerskykh  
+**ORCID**: 0009-0009-4741-2663  
+**Institution**: Independent Researcher, Toronto, Canada  
+**Contact**: vladorangeqwer@gmail.com  
+**Technology Readiness Level**: TRL 4 (Technology validated in lab)  
+**Validation Score**: 8/9 (89%) - Publication quality  
+**Major Discovery**: Decorrelation by sparse expansion (first computational proof)

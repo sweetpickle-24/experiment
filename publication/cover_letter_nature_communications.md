@@ -103,21 +103,11 @@ Rationale: Leading computational neuroscientist with broad perspective on modeli
 
 ## Author Contributions
 
-[FILL IN BASED ON YOUR SITUATION]
-
-**[Your Name]:** Conceptualization, Methodology, Software, Validation, Formal Analysis, Investigation, Writing - Original Draft, Writing - Review & Editing, Visualization
-
-[If co-authors exist, list their contributions following Nature Communications guidelines]
+**Vladyslav Byelozerskykh:** Conceptualization, Methodology, Software, Validation, Formal Analysis, Investigation, Writing - Original Draft, Writing - Review & Editing, Visualization, Project Administration (sole author)
 
 ## Funding Statement
 
-[FILL IN YOUR FUNDING SOURCES]
-
-This work was supported by [grant agency] [grant number] to [PI name].
-
-OR
-
-This work was self-funded with no external support.
+This work was self-funded with no external support. Research was conducted independently without institutional affiliation.
 
 ## Manuscript Statistics
 
@@ -162,13 +152,12 @@ Thank you for your consideration.
 
 **Corresponding Author:**
 
-[Your Full Name]  
-[Your Affiliation]  
-[Your Department]  
-[Your Address]  
-Email: [Your Email]  
-Phone: [Your Phone]  
-ORCID: [Your ORCID if available]  
+Vladyslav Byelozerskykh  
+Independent Researcher  
+Toronto, Ontario, Canada  
+M5G 0C5  
+Email: vladorangeqwer@gmail.com  
+ORCID: 0009-0009-4741-2663  
 
 ---
 

@@ -2,9 +2,12 @@
 
 **Running Title:** Wave Physics Produces Biological Sparse Coding
 
-**Authors:** [Your Name], [Institution]
+**Authors:** Vladyslav Byelozerskykh¹
 
-**Correspondence:** [Email]
+¹Independent Researcher, Toronto, Ontario, Canada
+
+**Correspondence:** vladorangeqwer@gmail.com  
+**ORCID:** 0009-0009-4741-2663
 
 ---
 
