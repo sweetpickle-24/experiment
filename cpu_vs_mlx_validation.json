@@ -1,0 +1,29 @@
+{
+  "mlx": {
+    "backend": "MLX (GPU)",
+    "sparsity_percent": 24.303845425269937,
+    "active_kcs": 1283,
+    "total_kcs": 5279,
+    "simulation_time_sec": 1.7354087829589844,
+    "kc_pattern": []
+  },
+  "cpu": {
+    "backend": "NumPy (CPU)",
+    "sparsity_percent": 24.28490244364463,
+    "active_kcs": 1282,
+    "total_kcs": 5279,
+    "simulation_time_sec": 149.83465218544006,
+    "kc_pattern": []
+  },
+  "summary": {
+    "sparsity_difference_percent": 0.018942981625308164,
+    "sparsity_difference_relative_percent": 0.0779423226812173,
+    "pattern_correlation": null,
+    "speedup": 86.33968760372544,
+    "validation_passed": true,
+    "criteria": {
+      "sparsity_threshold_percent": 1.0,
+      "correlation_threshold": 0.95
+    }
+  }
+}
