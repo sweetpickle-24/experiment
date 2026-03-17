@@ -58,7 +58,8 @@ def measure_temporal_response(brain, odor_name, door_client, duration_ms=3000, s
     brain.reset(deterministic=True)
     
     # Get glomerular pattern
-    glom_pattern = door_client.project_to_pca_basis(odor_name)
+    receptor_response = door_client.get_odorant_response(odor_name)
+    glom_pattern = door_client.map_to_glomerular_pattern(receptor_response)
     
     if glom_pattern is None or np.sum(np.abs(glom_pattern)) == 0:
         logger.warning(f"Odor {odor_name} has zero glomerular pattern, skipping")
@@ -66,7 +67,7 @@ def measure_temporal_response(brain, odor_name, door_client, duration_ms=3000, s
     
     # Inject odor at t=0
     base_strength = 50.0
-    brain.inject_external_input('ORN', glom_pattern, strength=base_strength)
+    brain.inject_odor(glom_pattern, strength=base_strength)
     
     # Sample activity over time
     num_samples = int(duration_ms / sample_interval_ms)
@@ -191,13 +192,9 @@ def main():
     # Create brain
     logger.info("Creating sparse probabilistic brain...")
     brain = SparseProbabilisticBrain(
-        num_neurons=len(neurons),
-        dt=0.01,  # 0.01 ms timestep
+        connectome=connectome,
         use_mlx=True
     )
-    
-    # Load connectome
-    brain.load_connectome_simple(synapses)
     logger.info(f"Backend: {'MLX (GPU)' if brain.use_mlx else 'NumPy (CPU)'}")
     
     # Initialize DOoR client
@@ -247,7 +244,8 @@ def main():
         analysis = analyze_temporal_dynamics(temporal_data)
         
         logger.info(f"\n📊 Temporal Analysis for {odor_name}:")
-        logger.info(f"  Onset latency: {analysis['onset_latency_ms']:.1f} ms (target: 50-100 ms)")
+        onset_str = f"{analysis['onset_latency_ms']:.1f} ms" if analysis['onset_latency_ms'] is not None else "N/A (no threshold crossing)"
+        logger.info(f"  Onset latency: {onset_str} (target: 50-100 ms)")
         logger.info(f"  Peak time: {analysis['peak_time_ms']:.1f} ms (target: 100-500 ms)")
         logger.info(f"  Peak activity: {analysis['peak_active_kcs']} KCs")
         logger.info(f"  Adaptation (1s→2s): {analysis['adaptation_percent']:.1f}% (target: 30-70%)")

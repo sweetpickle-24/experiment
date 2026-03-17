@@ -1,0 +1,1 @@
+"""Vision validation test suite."""
