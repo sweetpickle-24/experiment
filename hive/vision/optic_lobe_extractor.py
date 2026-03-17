@@ -30,13 +30,17 @@ def main():
     """Extract optic lobe from FlyWire and save to cache."""
     print("\n" + "="*70)
     print("OPTIC LOBE EXTRACTION FROM FLYWIRE")
-    print("="*70)
+    print("="*70 + "\n")
     
     # Step 1: Load full FlyWire brain
-    print("\n[1/4] Loading full FlyWire brain...")
+    print("[1/3] Loading full FlyWire brain...")
+    print("  This may take 5-15 minutes for first load...")
     start_time = time.time()
     
     full_connectome = Connectome(data_dir="Fly Brain Female")
+    print("  Connectome object created, starting load()...")
+    sys.stdout.flush()
+    
     full_connectome.load()
     
     load_time = time.time() - start_time
@@ -45,7 +49,7 @@ def main():
     print(f"  Total synapses: {len(full_connectome.synapses):,}")
     
     # Step 2: Extract visual pathway
-    print("\n[2/4] Extracting visual pathway...")
+    print("\n[2/3] Extracting visual pathway...")
     extract_start = time.time()
     
     visual_connectome = extract_visual_pathway(full_connectome)
@@ -53,12 +57,8 @@ def main():
     extract_time = time.time() - extract_start
     print(f"✓ Extracted in {extract_time:.1f}s")
     
-    # Step 3: Analyze connectivity
-    print("\n[3/4] Analyzing visual connectivity...")
-    analyze_visual_connectivity(visual_connectome)
-    
-    # Step 4: Save to cache
-    print("\n[4/4] Saving to cache...")
+    # Step 3: Save to cache (skip analysis for speed)
+    print("\n[3/3] Saving to cache...")
     output_dir = Path("data/vision/optic_lobe")
     output_dir.mkdir(parents=True, exist_ok=True)
     

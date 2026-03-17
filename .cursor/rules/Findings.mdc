@@ -104,6 +104,7 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - **Hardware Independence**: Wave physics implementation produces equivalent results on any hardware
 - **Real-time Performance**: GPU achieves 57× faster than biological time
 - **Files**: CPU_VS_GPU_FINAL_VALIDATION.md, cpu_vs_mlx_validation.json
+- **⚡ RULE**: **Always use GPU (MLX) for all simulations** - 86× speedup validated, scientifically equivalent to CPU
 
 ### POC Status (2026-03-16) ✅ COMPLETE & VALIDATED
 - **Core Technology**: 100% functional (wave-based probabilistic brain)

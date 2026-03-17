@@ -278,17 +278,26 @@ def analyze_visual_connectivity(connectome: Connectome):
         if not pre_neurons or not post_neurons:
             continue
         
-        # Calculate average fan-out and fan-in
+        # Convert to sets for fast lookup
+        post_neuron_set = set(post_neurons)
+        pre_neuron_set = set(pre_neurons)
+        
+        # Calculate average fan-out and fan-in using adjacency dict (much faster)
         fan_outs = []
         for nid in pre_neurons:
-            fan_out = len([syn for syn in connectome.synapses 
-                          if syn.pre_id == nid and syn.post_id in post_neurons])
-            fan_outs.append(fan_out)
+            if nid in connectome.adjacency:
+                fan_out = sum(1 for post_id, _, _ in connectome.adjacency[nid] 
+                             if post_id in post_neuron_set)
+                fan_outs.append(fan_out)
+            else:
+                fan_outs.append(0)
         
         fan_ins = []
         for nid in post_neurons:
-            fan_in = len([syn for syn in connectome.synapses 
-                         if syn.post_id == nid and syn.pre_id in pre_neurons])
+            # Count incoming connections from pre_neurons
+            fan_in = sum(1 for pre_id in pre_neuron_set 
+                        if pre_id in connectome.adjacency and 
+                        any(post_id == nid for post_id, _, _ in connectome.adjacency[pre_id]))
             fan_ins.append(fan_in)
         
         avg_fan_out = np.mean(fan_outs) if fan_outs else 0

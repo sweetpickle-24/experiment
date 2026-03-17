@@ -226,6 +226,112 @@ class Connectome:
             'spatial_extent': (self.min_pos, self.max_pos),
             'brain_size': self.max_pos - self.min_pos
         }
+    
+    def save(self, filepath: str):
+        """
+        Save connectome to JSON file.
+        
+        Args:
+            filepath: Path to output JSON file
+        """
+        import json
+        from pathlib import Path
+        
+        output_path = Path(filepath)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Prepare data for JSON serialization
+        data = {
+            'neurons': {
+                str(nid): {
+                    'root_id': n.root_id,
+                    'position': n.position.tolist(),
+                    'group': n.group,
+                    'nt_type': n.nt_type,
+                    'nt_scores': n.nt_scores,
+                    'cell_types': n.cell_types
+                }
+                for nid, n in self.neurons.items()
+            },
+            'synapses': [
+                {
+                    'pre_id': s.pre_id,
+                    'post_id': s.post_id,
+                    'weight': s.weight,
+                    'nt_type': s.nt_type,
+                    'neuropil': s.neuropil
+                }
+                for s in self.synapses
+            ],
+            'adjacency': {
+                str(pre): [(post, float(weight), nt) for post, weight, nt in targets]
+                for pre, targets in self.adjacency.items()
+            },
+            'spatial_bounds': {
+                'min': self.min_pos.tolist() if self.min_pos is not None else None,
+                'max': self.max_pos.tolist() if self.max_pos is not None else None,
+                'center': self.center_pos.tolist() if self.center_pos is not None else None
+            }
+        }
+        
+        # Save to JSON
+        with open(output_path, 'w') as f:
+            json.dump(data, f)
+        
+        print(f"  Connectome saved: {len(self.neurons):,} neurons, {len(self.synapses):,} synapses")
+    
+    def load_json(self, filepath: str):
+        """
+        Load connectome from JSON file.
+        
+        Args:
+            filepath: Path to JSON file
+        """
+        import json
+        
+        print(f"Loading connectome from {filepath}...")
+        
+        with open(filepath, 'r') as f:
+            data = json.load(f)
+        
+        # Load neurons
+        self.neurons = {}
+        for nid_str, n_data in data['neurons'].items():
+            nid = int(nid_str)
+            self.neurons[nid] = Neuron(
+                root_id=n_data['root_id'],
+                position=np.array(n_data['position']),
+                group=n_data['group'],
+                nt_type=n_data['nt_type'],
+                nt_scores=n_data['nt_scores'],
+                cell_types=n_data['cell_types']
+            )
+        
+        # Load synapses
+        self.synapses = [
+            Synapse(
+                pre_id=s['pre_id'],
+                post_id=s['post_id'],
+                weight=s['weight'],
+                nt_type=s['nt_type'],
+                neuropil=s['neuropil']
+            )
+            for s in data['synapses']
+        ]
+        
+        # Load adjacency
+        self.adjacency = {
+            int(pre_str): [(post, weight, nt) for post, weight, nt in targets]
+            for pre_str, targets in data['adjacency'].items()
+        }
+        
+        # Load spatial bounds
+        bounds = data['spatial_bounds']
+        self.min_pos = np.array(bounds['min']) if bounds['min'] else None
+        self.max_pos = np.array(bounds['max']) if bounds['max'] else None
+        self.center_pos = np.array(bounds['center']) if bounds['center'] else None
+        
+        print(f"✓ Loaded {len(self.neurons):,} neurons, {len(self.synapses):,} synapses")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,18 @@ data/fly_brain/
 *.csv.gz
 *.csv
 
+# Connectome cache (large binary files)
+connectome_cache.pkl
+*.pkl
+
+# Data directories with large files
+data/flywire/
+data/hemibrain/
+
+# Optic lobe extracted connectome (large JSON files)
+data/vision/optic_lobe/
+flywire_optic_lobe.json
+
 # Python
 __pycache__/
 *.py[cod]
