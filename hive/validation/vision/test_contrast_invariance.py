@@ -170,17 +170,165 @@ def simulate_stimulus_vision(
     duration_ms: float
 ) -> np.ndarray:
     """Simulate stimulus and return medulla pattern."""
+    from hive.vision.lamina_cartridge import LaminaCartridgeMapper
+    
     brain._initialize_fields()
     
-    from hive.validation.vision.test_sparse_coding import convert_photoreceptor_to_forcing
-    lamina_neurons = list(brain.neuron_ids)[:800]
-    forcing = convert_photoreceptor_to_forcing(stimulus.photoreceptor_pattern, lamina_neurons)
+    # Constants
+    VOLTAGE_TO_FIRING_RATE = 50.0
+    FIRING_TO_FORCING = 10.0
+    R7_R8_GAIN = 0.15
+    T4_T5_GAIN = 0.20
     
-    num_steps = int(duration_ms / brain.dt)
-    for _ in range(num_steps):
-        brain.step(forcing)
+    def photon_rate_to_voltage(photon_rate: float) -> float:
+        if photon_rate < 1:
+            return 0.0
+        threshold = 10.0
+        gain = 10.0
+        max_voltage = 40.0
+        voltage = gain * np.log10(photon_rate / threshold)
+        return float(np.clip(voltage, 0, max_voltage))
     
-    return brain.mean_amplitude[medulla_indices]
+    # Initialize cartridge mapper (cached if possible)
+    if not hasattr(simulate_stimulus_vision, '_cartridge_mapper'):
+        simulate_stimulus_vision._cartridge_mapper = LaminaCartridgeMapper(brain.connectome)
+        simulate_stimulus_vision._cartridges = simulate_stimulus_vision._cartridge_mapper.create_cartridges(800)
+        
+        # Identify target neurons
+        medulla_neurons = get_visual_region_neurons(brain.connectome, 'MEDULLA')
+        lobula_neurons = get_visual_region_neurons(brain.connectome, 'LOBULA')
+        
+        medulla_uv_cells = []
+        medulla_blue_cells = []
+        medulla_green_cells = []
+        lobula_t4_cells = []
+        lobula_t5_cells = []
+        
+        for nid in medulla_neurons:
+            neuron = brain.connectome.neurons.get(nid)
+            if neuron:
+                cell_types_str = ' '.join(neuron.cell_types) if neuron.cell_types else ''
+                if 'Mi1' in cell_types_str:
+                    medulla_uv_cells.append(nid)
+                elif 'Tm9' in cell_types_str:
+                    medulla_blue_cells.append(nid)
+                elif any(ct in cell_types_str for ct in ['Tm20', 'Tm5']):
+                    medulla_green_cells.append(nid)
+        
+        for nid in lobula_neurons:
+            neuron = brain.connectome.neurons.get(nid)
+            if neuron:
+                cell_types_str = ' '.join(neuron.cell_types) if neuron.cell_types else ''
+                if 'T4' in cell_types_str:
+                    lobula_t4_cells.append(nid)
+                elif 'T5' in cell_types_str:
+                    lobula_t5_cells.append(nid)
+        
+        simulate_stimulus_vision._medulla_uv = medulla_uv_cells
+        simulate_stimulus_vision._medulla_blue = medulla_blue_cells
+        simulate_stimulus_vision._medulla_green = medulla_green_cells
+        simulate_stimulus_vision._lobula_t4 = lobula_t4_cells
+        simulate_stimulus_vision._lobula_t5 = lobula_t5_cells
+    
+    # Convert photoreceptor responses to voltages
+    photoreceptor_voltages = np.zeros((800, 8))
+    pattern_subset = stimulus.photoreceptor_pattern[:800, :8]
+    photon_rates = pattern_subset * 1e4 * stimulus.intensity
+    photoreceptor_voltages = np.vectorize(photon_rate_to_voltage)(photon_rates)
+    
+    # Apply forcing (5 pathways)
+    if brain.use_mlx:
+        import mlx.core as mx
+        brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        
+        # PATHWAY 1: R1-R6 → LAMINA
+        cartridge_outputs = []
+        for cart_idx, cartridge in enumerate(simulate_stimulus_vision._cartridges[:800]):
+            if cart_idx < photoreceptor_voltages.shape[0]:
+                cartridge.r1_r6_voltages = photoreceptor_voltages[cart_idx, :6]
+                outputs = cartridge.compute_lamina_inputs()
+                cartridge_outputs.append(outputs)
+        
+        cartridge_outputs = simulate_stimulus_vision._cartridge_mapper.apply_lateral_inhibition(
+            cartridge_outputs, kernel_size=3, inhibition_strength=0.3
+        )
+        
+        for cart_idx, (cartridge, outputs) in enumerate(zip(simulate_stimulus_vision._cartridges[:800], cartridge_outputs)):
+            for neuron_type in ['L1', 'L2', 'L3', 'Lai']:
+                forcing_value = outputs.get(neuron_type, 0.0)
+                if forcing_value > 0:
+                    neuron_id = getattr(cartridge, f"{neuron_type}_id")
+                    if neuron_id and neuron_id in brain.id_to_idx:
+                        idx = brain.id_to_idx[neuron_id]
+                        forcing = float(forcing_value * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING)
+                        brain.external_force = brain.external_force.at[idx].add(forcing)
+        
+        # PATHWAY 2: R7 → MEDULLA Mi1
+        for omm_idx in range(min(800, len(simulate_stimulus_vision._medulla_uv))):
+            if omm_idx < photoreceptor_voltages.shape[0]:
+                neuron_id = simulate_stimulus_vision._medulla_uv[omm_idx]
+                if neuron_id in brain.id_to_idx:
+                    idx = brain.id_to_idx[neuron_id]
+                    r7_voltage = photoreceptor_voltages[omm_idx, 6]
+                    forcing = float(r7_voltage * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * R7_R8_GAIN)
+                    brain.external_force = brain.external_force.at[idx].add(forcing)
+        
+        # PATHWAY 3: R8 → MEDULLA Tm9/Tm5
+        num_r8p = min(int(800 * 0.7), len(simulate_stimulus_vision._medulla_blue))
+        for omm_idx in range(num_r8p):
+            if omm_idx < photoreceptor_voltages.shape[0]:
+                neuron_id = simulate_stimulus_vision._medulla_blue[omm_idx]
+                if neuron_id in brain.id_to_idx:
+                    idx = brain.id_to_idx[neuron_id]
+                    r8_voltage = photoreceptor_voltages[omm_idx, 7]
+                    forcing = float(r8_voltage * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * R7_R8_GAIN)
+                    brain.external_force = brain.external_force.at[idx].add(forcing)
+        
+        num_r8y = min(int(800 * 0.3), len(simulate_stimulus_vision._medulla_green))
+        r8y_start = num_r8p
+        for omm_idx in range(r8y_start, min(r8y_start + num_r8y, 800)):
+            if omm_idx < photoreceptor_voltages.shape[0]:
+                neuron_id = simulate_stimulus_vision._medulla_green[omm_idx - r8y_start]
+                if neuron_id in brain.id_to_idx:
+                    idx = brain.id_to_idx[neuron_id]
+                    r8_voltage = photoreceptor_voltages[omm_idx, 7]
+                    forcing = float(r8_voltage * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * R7_R8_GAIN)
+                    brain.external_force = brain.external_force.at[idx].add(forcing)
+        
+        # PATHWAY 4: Mi1/Tm3 → T4
+        num_t4 = min(int(len(simulate_stimulus_vision._lobula_t4) * 0.5), 800 * 2 + 200)
+        for omm_idx in range(num_t4):
+            neuron_id = simulate_stimulus_vision._lobula_t4[omm_idx]
+            if neuron_id in brain.id_to_idx:
+                idx = brain.id_to_idx[neuron_id]
+                omm_pos = omm_idx % 800
+                if omm_pos < photoreceptor_voltages.shape[0]:
+                    r7_v = photoreceptor_voltages[omm_pos, 6]
+                    r1r6_mean = float(np.mean(photoreceptor_voltages[omm_pos, :6]))
+                    combined_v = r7_v * 0.6 + r1r6_mean * 0.4
+                    forcing = float(combined_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * T4_T5_GAIN)
+                    brain.external_force = brain.external_force.at[idx].add(forcing)
+        
+        # PATHWAY 5: Tm1/Tm4 → T5
+        num_t5 = min(int(len(simulate_stimulus_vision._lobula_t5) * 0.3), 800)
+        for omm_idx in range(num_t5):
+            neuron_id = simulate_stimulus_vision._lobula_t5[omm_idx]
+            if neuron_id in brain.id_to_idx:
+                idx = brain.id_to_idx[neuron_id]
+                omm_pos = omm_idx % 800
+                if omm_pos < photoreceptor_voltages.shape[0]:
+                    r1r6_mean = float(np.mean(photoreceptor_voltages[omm_pos, :6]))
+                    forcing = float(r1r6_mean * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * T4_T5_GAIN * 0.5)
+                    brain.external_force = brain.external_force.at[idx].add(forcing)
+    
+    # Simulate
+    brain.evolve(duration=duration_ms)
+    
+    # Extract medulla pattern
+    if brain.use_mlx:
+        return np.array(brain.mean_amplitude[medulla_indices])
+    else:
+        return brain.mean_amplitude[medulla_indices]
 
 
 if __name__ == "__main__":
