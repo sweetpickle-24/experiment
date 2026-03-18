@@ -87,18 +87,23 @@ class Phototransduction:
         self.k_DAG_decay = 50.0      # DAG decay/removal (s^-1)
         
         # TRP channel gating (Scott et al. 1997)
+        # k_TRP_close = 2 gives ~33% open prob at DAG saturation (physiological).
+        # Original 100 gave only 1% — too low for meaningful Ca influx.
         self.K_D_TRP = 0.5           # Half-activation [DAG] (μM)
         self.n_hill_TRP = 3.0        # Hill coefficient
-        self.k_TRP_close = 100.0     # Channel closing rate (s^-1)
+        self.k_TRP_close = 2.0       # Channel closing rate (s^-1)
         
         # TRPL channel (slower kinetics)
         self.K_D_TRPL = 1.0          # Higher threshold
         self.n_hill_TRPL = 2.0       # Lower cooperativity
-        self.k_TRPL_close = 50.0     # Slower closing
+        self.k_TRPL_close = 1.0      # Slower closing; ~50% max open prob
         
-        # Calcium dynamics (Ranganathan et al. 1991)
-        self.Ca_influx_per_channel = 0.1  # Ca2+ per open channel (μM/s)
-        self.k_Ca_pump = 200.0       # Ca2+ pump rate (s^-1)
+        # Calcium dynamics (Ranganathan et al. 1991; Hardie & Minke 1994)
+        # Target: Ca rises from 0.05 μM (rest) to ~1-2 μM at 1e4 photons/s.
+        # At saturation: TRP+TRPL ≈ 0.83. Ca_ss = Ca_rest + influx_total/k_pump
+        # → 15 * 0.83 / 20 ≈ 0.67 μM above rest. Realistic for Drosophila.
+        self.Ca_influx_per_channel = 15.0  # Ca2+ per open channel (μM/s)
+        self.k_Ca_pump = 20.0        # Ca2+ pump rate (s^-1); τ_Ca ≈ 50ms
         self.Ca_rest = 0.05          # Resting [Ca2+] (μM)
         
         # Current and voltage
@@ -108,9 +113,12 @@ class Phototransduction:
         self.g_leak = 0.1            # Leak conductance (nS)
         self.C_m = 50.0              # Membrane capacitance (pF)
         
-        # Adaptation (calcium-dependent feedback)
+        # Calcium-dependent feedback to rhodopsin activation
         self.k_adapt = 5.0           # Adaptation strength
-        self.Ca_adapt_threshold = 0.2  # [Ca2+] for half-maximal adaptation
+        self.Ca_adapt_threshold = 0.5  # [Ca2+] for half-maximal adaptation (μM)
+        
+        # Resting membrane voltage (maintained by K+ channels not explicitly modeled)
+        self.V_rest = -70.0          # Resting potential (mV)
         
         print("✓ Phototransduction cascade initialized")
         print(f"  Quantum efficiency: {self.k_abs}")
@@ -230,7 +238,8 @@ class Phototransduction:
         dI_dt = (I_total - state.I) * 10.0  # Fast current dynamics
         
         # 10. Membrane voltage
-        I_leak = self.g_leak * state.V
+        # Leak toward V_rest (K+ channels hold resting potential)
+        I_leak = self.g_leak * (state.V - self.V_rest)
         dV_dt = (state.I - I_leak) / self.C_m * 1000.0  # Convert to mV/s
         
         return np.array([dR_dt, dM_dt, dG_dt, dPLC_dt, dDAG_dt,
@@ -265,11 +274,12 @@ class Phototransduction:
         
         y_new = y + (dt/6.0) * (k1 + 2*k2 + 2*k3 + k4)
         
-        # Enforce physical bounds
-        y_new = np.clip(y_new, 0, None)  # Non-negative
-        y_new[5] = np.clip(y_new[5], 0, 1)  # TRP probability [0,1]
-        y_new[6] = np.clip(y_new[6], 0, 1)  # TRPL probability [0,1]
-        y_new[9] = np.clip(y_new[9], -80, 0)  # Voltage [-80, 0] mV
+        # Enforce physical bounds — only clip non-negative concentrations
+        y_new[:8] = np.clip(y_new[:8], 0, None)   # R,M,G,PLC,DAG,TRP,TRPL,Ca >= 0
+        y_new[5] = np.clip(y_new[5], 0, 1)         # TRP probability [0,1]
+        y_new[6] = np.clip(y_new[6], 0, 1)         # TRPL probability [0,1]
+        # y_new[8] = I (current) — can be negative (outward), no bound
+        y_new[9] = np.clip(y_new[9], -80, 0)       # Voltage [-80, 0] mV
         
         return PhototransductionState.from_array(y_new)
     

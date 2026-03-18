@@ -1,0 +1,71 @@
+{
+  "property": "calcium_oscillations",
+  "photon_rates_tested": [
+    10.0,
+    100.0,
+    1000.0,
+    10000.0,
+    100000.0
+  ],
+  "oscillation_results": {
+    "1e+01": {
+      "photon_rate": 10.0,
+      "peak_frequency_hz": 12.0,
+      "peak_psd": 4710.1530323351335,
+      "snr": 93.60543729691614,
+      "v_rms_mv": 7.646586832783933,
+      "mean_voltage_mv": -50.30046950367852,
+      "mean_calcium_um": 0.33653989052262695,
+      "oscillating": false
+    },
+    "1e+02": {
+      "photon_rate": 100.0,
+      "peak_frequency_hz": 12.0,
+      "peak_psd": 4783.084072725442,
+      "snr": 94.11483850557576,
+      "v_rms_mv": 7.689666339840295,
+      "mean_voltage_mv": -47.63342440237886,
+      "mean_calcium_um": 0.357469906077286,
+      "oscillating": false
+    },
+    "1e+03": {
+      "photon_rate": 1000.0,
+      "peak_frequency_hz": 12.0,
+      "peak_psd": 4757.277380915656,
+      "snr": 94.35455549513999,
+      "v_rms_mv": 7.661488298677258,
+      "mean_voltage_mv": -46.35215269290262,
+      "mean_calcium_um": 0.36682779503072516,
+      "oscillating": false
+    },
+    "1e+04": {
+      "photon_rate": 10000.0,
+      "peak_frequency_hz": 12.0,
+      "peak_psd": 4729.1056953895995,
+      "snr": 94.48081517121477,
+      "v_rms_mv": 7.634893834093959,
+      "mean_voltage_mv": -45.669629493856526,
+      "mean_calcium_um": 0.3716763747485884,
+      "oscillating": false
+    },
+    "1e+05": {
+      "photon_rate": 100000.0,
+      "peak_frequency_hz": 12.0,
+      "peak_psd": 4708.911311543808,
+      "snr": 94.5519682649057,
+      "v_rms_mv": 7.616399385714251,
+      "mean_voltage_mv": -45.283097355843395,
+      "mean_calcium_um": 0.37438465602632043,
+      "oscillating": false
+    }
+  },
+  "any_oscillation_detected": false,
+  "oscillating_photon_rates": [],
+  "frequency_scales_with_rate": false,
+  "reference": "Juusola_de_Polavieja_2003_JGP",
+  "target_frequency_range_hz": [
+    50,
+    200
+  ],
+  "pass": false
+}

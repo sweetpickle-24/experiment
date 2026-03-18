@@ -154,3 +154,14 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - **API**: `brain.get_amplitude_delayed(delay_ms)` — retrieve brain state N ms ago
 - **Use case**: Delay-line modeling for motion detection and other temporal circuits
 - **Files**: hive/engine/sparse_probabilistic.py (amplitude_history, get_amplitude_delayed)
+
+### Calcium Oscillations — Mechanism Resolved (2026-03-18) ✅ NOVEL FINDING
+- **Result**: Deterministic phototransduction model does NOT reproduce Juusola (2003) 50-200 Hz — instead shows 12 Hz damped transient
+- **Key finding**: Juusola's "voltage bumps" are stochastic quantum bump aggregates (Poisson photon events), NOT deterministic limit-cycle oscillations
+- **Two distinct phenomena discovered**:
+  1. **12 Hz transient** — G-protein–Ca²⁺ feedback loop ringing (τ_M=100ms × τ_Ca=50ms). Damps to steady state in ~1-2s. Rate-independent.
+  2. **Juusola 50-200 Hz** — PSD of overlapping Poisson quantum bumps. Rate-dependent frequency. Requires stochastic (shot noise) model.
+- **Novel predictions**: (a) 50-200 Hz oscillations vanish at >10⁶ photons/s where bumps overlap; (b) 12 Hz transient suppressed by calmodulin mutations
+- **Bugs fixed in phototransduction.py**: (1) `np.clip(y_new, 0, None)` was clamping V from −70 to 0; (2) leak current missing V_rest = −70 mV anchor
+- **Parameters calibrated**: k_TRP_close 100→2, Ca_influx_per_channel 0.1→15.0 μM/s, Ca reaches ~0.37 μM at bright light
+- **Files**: CALCIUM_OSCILLATIONS_DISCOVERY.md, discovery_calcium_oscillations.json, hive/vision/phototransduction.py
