@@ -253,7 +253,12 @@ def measure_velocity_tuning(
     amplitude_per_tf = {}
 
     for tf_hz in TEMPORAL_FREQUENCIES_HZ:
-        brain._reset_state()
+        brain._initialize_fields()
+        if brain.use_mlx:
+            import mlx.core as mx
+            brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        else:
+            brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
         bl.reset()
         amps = []
 
@@ -262,15 +267,16 @@ def measure_velocity_tuning(
             luminance = compute_grating(azimuths, elevations, tf_hz, t_ms)
             t4_output = bl.step(luminance, dt_ms)
 
-            forcing = {}
+            # Set external forcing
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
                 omm = i % N_OMMATIDIA
                 v = photon_rate_to_voltage_adapted(luminance[omm] * 1e4)
-                forcing[nid] = t4_output[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
+                idx = brain.id_to_idx[nid]
+                brain.external_force[idx] = t4_output[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
 
-            brain.step(dt_ms / 1000.0, forcing)
+            brain.evolve(duration=dt_ms)
 
             if step > num_steps // 2:
                 state = brain.get_state()

@@ -415,7 +415,12 @@ def run_hs_vs_optic_flow_test(
             print(f"\n  [{direction_name}, {tf_hz}Hz] Simulating {stimulus_duration_ms}ms...")
 
             # Reset brain and filter states
-            brain._reset_state()
+            brain._initialize_fields()
+            if brain.use_mlx:
+                import mlx.core as mx
+                brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+            else:
+                brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
             bl_filter.reset()
 
             # Track mean HS/VS amplitude over last half of stimulus
@@ -441,7 +446,6 @@ def run_hs_vs_optic_flow_test(
                 t4_output = bl_filter.step(luminance, dt_ms)
 
                 # Build forcing: T4 outputs drive LOBULA_PLATE neurons
-                forcing = {}
                 lp_list = list(lp_all)
                 for i, nid in enumerate(lp_list):
                     if nid not in brain.id_to_idx:
@@ -450,9 +454,10 @@ def run_hs_vs_optic_flow_test(
                     omm_idx = i % N_OMMATIDIA
                     forcing_val = (t4_output[omm_idx] * VOLTAGE_TO_FIRING_RATE
                                    * FIRING_TO_FORCING)
-                    forcing[nid] = forcing_val
+                    idx = brain.id_to_idx[nid]
+                    brain.external_force[idx] = forcing_val
 
-                brain.step(dt_ms / 1000.0, forcing)
+                brain.evolve(duration=dt_ms)
 
                 # Record in measurement window
                 if step >= measurement_start:

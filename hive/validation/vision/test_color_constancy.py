@@ -423,10 +423,21 @@ def run_color_constancy_test(
 
         dt_ms = 0.5
         num_steps = int(simulation_duration_ms / dt_ms)
-        brain._reset_state()
+        brain._initialize_fields()
+        if brain.use_mlx:
+            import mlx.core as mx
+            brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        else:
+            brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+
+        # Set constant forcing from the dict
+        for nid, val in forcing.items():
+            if nid in brain.id_to_idx:
+                idx = brain.id_to_idx[nid]
+                brain.external_force[idx] = val
 
         for step in range(num_steps):
-            brain.step(dt_ms / 1000.0, forcing)
+            brain.evolve(duration=dt_ms)
 
         # Record medulla pattern (amplitude vector across medulla neurons)
         state = brain.get_state()

@@ -264,7 +264,12 @@ def test_orientation_selectivity(
 
     for o_idx, orient_deg in enumerate(orientations_deg):
         print(f"\n  Orientation {orient_deg}°...")
-        brain._reset_state()
+        brain._initialize_fields()
+        if brain.use_mlx:
+            import mlx.core as mx
+            brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        else:
+            brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
 
         amplitudes_over_time = []
         measurement_start = num_steps // 2
@@ -275,15 +280,15 @@ def test_orientation_selectivity(
             photon_rates = luminance * 1e4
 
             # Build forcing for lamina neurons (simplified: direct to medulla)
-            forcing = {}
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
                 omm_idx = i % N_OMMATIDIA
                 v = photon_rate_to_voltage(photon_rates[omm_idx])
-                forcing[nid] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
+                idx = brain.id_to_idx[nid]
+                brain.external_force[idx] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
 
-            brain.step(dt_ms / 1000.0, forcing)
+            brain.evolve(duration=dt_ms)
 
             if step >= measurement_start:
                 state = brain.get_state()
@@ -569,7 +574,12 @@ def test_chromatic_motion_blindness(
         for direction in ['rightward', 'leftward']:
             dir_vec = (1, 0) if direction == 'rightward' else (-1, 0)
 
-            brain._reset_state()
+            brain._initialize_fields()
+            if brain.use_mlx:
+                import mlx.core as mx
+                brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+            else:
+                brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
             amplitudes_meas = []
 
             for step in range(num_steps):
@@ -588,14 +598,14 @@ def test_chromatic_motion_blindness(
                     uv_grating = 1.0 - uv_grating
                     vis_grating = 1.0 - vis_grating
 
-                forcing = {}
                 # Luminance input (R1-R6 → lamina L1/L2 → T4)
                 for i, nid in enumerate(all_medulla):
                     if nid not in brain.id_to_idx:
                         continue
                     omm = i % N_OMMATIDIA
                     lum_v = photon_rate_to_voltage(luminance[omm] * 1e4)
-                    forcing[nid] = lum_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
+                    idx = brain.id_to_idx[nid]
+                    brain.external_force[idx] = lum_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
 
                 # UV-only input (R7 → Mi1/Dm8 → medulla)
                 for i, nid in enumerate(all_medulla[:len(all_medulla) // 2]):
@@ -603,9 +613,8 @@ def test_chromatic_motion_blindness(
                         continue
                     omm = i % N_OMMATIDIA
                     uv_v = photon_rate_to_voltage(uv_grating[omm] * 1e4)
-                    forcing[nid] = (forcing.get(nid, 0.0)
-                                    + uv_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
-                                    * R7_R8_GAIN)
+                    idx = brain.id_to_idx[nid]
+                    brain.external_force[idx] += uv_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * R7_R8_GAIN
 
                 # Visible-only input (R8 → Tm5/Tm9 → medulla)
                 for i, nid in enumerate(all_medulla[len(all_medulla) // 2:]):
@@ -613,11 +622,10 @@ def test_chromatic_motion_blindness(
                         continue
                     omm = i % N_OMMATIDIA
                     vis_v = photon_rate_to_voltage(vis_grating[omm] * 1e4)
-                    forcing[nid] = (forcing.get(nid, 0.0)
-                                    + vis_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
-                                    * R7_R8_GAIN)
+                    idx = brain.id_to_idx[nid]
+                    brain.external_force[idx] += vis_v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * R7_R8_GAIN
 
-                brain.step(dt_ms / 1000.0, forcing)
+                brain.evolve(duration=dt_ms)
 
                 if step >= measurement_start:
                     state = brain.get_state()

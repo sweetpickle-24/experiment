@@ -206,7 +206,12 @@ def measure_velocity_memory(
     medulla_neurons = list(get_visual_region_neurons(visual_connectome, 'MEDULLA'))
 
     bl = BarlowLevickFilter(N_OMMATIDIA)
-    brain._reset_state()
+    brain._initialize_fields()
+    if brain.use_mlx:
+        import mlx.core as mx
+        brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+    else:
+        brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
     bl.reset()
 
     on_steps = int(STIMULUS_DURATION_MS / dt_ms)
@@ -224,14 +229,15 @@ def measure_velocity_memory(
 
         t4_out = bl.step(luminance, dt_ms)
 
-        forcing = {}
+        # Set external forcing
         for i, nid in enumerate(medulla_neurons):
             if nid not in brain.id_to_idx:
                 continue
             omm = i % N_OMMATIDIA
-            forcing[nid] = t4_out[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
+            idx = brain.id_to_idx[nid]
+            brain.external_force[idx] = t4_out[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
 
-        brain.step(dt_ms / 1000.0, forcing)
+        brain.evolve(duration=dt_ms)
 
         if step >= measurement_start:
             state = brain.get_state()
@@ -252,7 +258,13 @@ def measure_velocity_memory(
         t_off_ms = off_step * dt_ms
 
         # Zero forcing (no stimulus)
-        brain.step(dt_ms / 1000.0, {})
+        if brain.use_mlx:
+            import mlx.core as mx
+            brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        else:
+            brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+        
+        brain.evolve(duration=dt_ms)
 
         # Sample at specified intervals
         if any(abs(t_off_ms - sample_ms) < dt_ms * 0.5 for sample_ms in decay_samples_ms):

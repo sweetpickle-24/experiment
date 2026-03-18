@@ -241,7 +241,12 @@ def measure_individual_t4a_dsi(
     dsi_per_neuron = {}
 
     for dir_name, dir_sign in [('preferred_right', 1), ('null_left', -1)]:
-        brain._reset_state()
+        brain._initialize_fields()
+        if brain.use_mlx:
+            import mlx.core as mx
+            brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+        else:
+            brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
         amps_per_neuron = {nid: [] for nid in t4a_subset}
 
         for step in range(num_steps):
@@ -252,7 +257,7 @@ def measure_individual_t4a_dsi(
 
             ON_signal = np.maximum(0, luminance - 0.5)
 
-            forcing = {}
+            # Set external forcing
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
@@ -260,9 +265,10 @@ def measure_individual_t4a_dsi(
                 exc = EXCITATORY_GAIN * ON_signal[omm]
                 inh = INHIBITORY_GAIN * ON_signal[omm]
                 t4_output = max(0, exc - inh)
-                forcing[nid] = t4_output * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
+                idx = brain.id_to_idx[nid]
+                brain.external_force[idx] = t4_output * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
 
-            brain.step(dt_ms / 1000.0, forcing)
+            brain.evolve(duration=dt_ms)
 
             if step > num_steps // 2:
                 state = brain.get_state()

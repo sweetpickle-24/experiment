@@ -264,6 +264,13 @@ def simulate_repetition_protocol(
 
     medulla_neurons = list(get_visual_region_neurons(visual_connectome, 'MEDULLA'))
 
+    brain._initialize_fields()
+    if brain.use_mlx:
+        import mlx.core as mx
+        brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+    else:
+        brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+
     on_steps = int(STIMULUS_ON_MS / dt_ms)
     off_steps = int(STIMULUS_OFF_MS / dt_ms)
 
@@ -279,15 +286,16 @@ def simulate_repetition_protocol(
             t_ms = cumulative_time + step * dt_ms
             luminance = compute_grating_luminance(azimuths, elevations, t_ms)
 
-            forcing = {}
+            # Set external forcing
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
                 omm = i % N_OMMATIDIA
                 v = photon_rate_to_voltage(luminance[omm] * 1e4)
-                forcing[nid] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
+                idx = brain.id_to_idx[nid]
+                brain.external_force[idx] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
 
-            brain.step(dt_ms / 1000.0, forcing)
+            brain.evolve(duration=dt_ms)
 
             if step > on_steps // 3:  # Skip onset transient
                 state = brain.get_state()
@@ -300,7 +308,12 @@ def simulate_repetition_protocol(
 
         # OFF period: blank screen (zero forcing)
         for step in range(off_steps):
-            brain.step(dt_ms / 1000.0, {})
+            if brain.use_mlx:
+                import mlx.core as mx
+                brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+            else:
+                brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+            brain.evolve(duration=dt_ms)
         cumulative_time += STIMULUS_OFF_MS
 
         print(f"    LP mean amplitude: {peak:.6f}")

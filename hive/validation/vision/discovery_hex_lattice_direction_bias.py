@@ -347,7 +347,13 @@ def run_hex_lattice_direction_bias(
         responses = {}
         for dir_label, dir_deg in [('preferred', direction_deg),
                                     ('null', null_direction_deg)]:
-            brain._reset_state()
+            brain._initialize_fields()
+            if brain.use_mlx:
+                import mlx.core as mx
+                brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
+            else:
+                brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+            
             amps = []
 
             for step in range(num_steps):
@@ -356,15 +362,16 @@ def run_hex_lattice_direction_bias(
                     azimuths, elevations, dir_deg, t_ms
                 )
 
-                forcing = {}
+                # Set external forcing
                 for i, nid in enumerate(medulla_neurons):
                     if nid not in brain.id_to_idx:
                         continue
                     omm = i % N_OMMATIDIA
                     v = photon_rate_to_voltage(luminance[omm] * 1e4)
-                    forcing[nid] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
+                    idx = brain.id_to_idx[nid]
+                    brain.external_force[idx] = v * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING * 0.01
 
-                brain.step(dt_ms / 1000.0, forcing)
+                brain.evolve(duration=dt_ms)
 
                 if step > num_steps // 2:
                     state = brain.get_state()
