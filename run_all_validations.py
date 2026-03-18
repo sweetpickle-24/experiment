@@ -226,49 +226,80 @@ def validate_odor_mixtures(brain, door_client, test_odors):
     return {'mixtures': results, 'summary': summary}
 
 def validate_discrimination(brain, door_client, test_odors):
-    """Discrimination thresholds."""
+    """
+    Discrimination thresholds via concentration sweep.
+
+    Tests 5 concentration deltas (5%, 10%, 15%, 20%, 25%) for each odor.
+    Finds the actual Just Noticeable Difference (JND): the smallest delta
+    at which KC patterns are reliably distinct (Pearson r < 0.9).
+
+    Biological target (Weber's law for olfaction):
+        JND = 10-20% concentration change (Bodyak & Bhatt 2001; Wilson 2003)
+    """
     results = {}
-    
-    for odor in test_odors[:2]:  # Test 2 odors
-        brain.reset(deterministic=True)
+    # Sweep of concentration deltas to test (percent increase over reference)
+    DELTA_PERCENTS = [5, 10, 15, 20, 25]
+    DISCRIMINATION_THRESHOLD = 0.9  # KC correlation below this = discriminable
+    REFERENCE_STRENGTH = 50.0
+
+    for odor in test_odors[:2]:
         glom_pattern = door_client.get_glomerular_pattern(odor)
         if glom_pattern is None:
             continue
-        
-        # Reference concentration
-        brain.inject_odor(glom_pattern, strength=50.0)
-        brain.evolve(duration=100.0)
-        ref_kc = get_active_kc_binary(brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06))
-        
-        # Test +20% concentration
+
+        # Reference response
         brain.reset(deterministic=True)
-        brain.inject_odor(glom_pattern, strength=50.0 * 1.2)
+        brain.inject_odor(glom_pattern, strength=REFERENCE_STRENGTH)
         brain.evolve(duration=100.0)
-        test_kc = get_active_kc_binary(brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06))
-        
-        # Compute correlation
-        if np.std(ref_kc) > 0 and np.std(test_kc) > 0:
-            corr = np.corrcoef(ref_kc, test_kc)[0, 1]
-        else:
-            corr = 1.0
-        
-        discriminable = corr < 0.9
+        ref_kc = get_active_kc_binary(
+            brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
+        )
+
+        # Sweep each delta concentration
+        delta_results = {}
+        jnd_percent = None
+        for delta_pct in DELTA_PERCENTS:
+            brain.reset(deterministic=True)
+            brain.inject_odor(glom_pattern, strength=REFERENCE_STRENGTH * (1 + delta_pct / 100.0))
+            brain.evolve(duration=100.0)
+            test_kc = get_active_kc_binary(
+                brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
+            )
+
+            if np.std(ref_kc) > 0 and np.std(test_kc) > 0:
+                corr = float(np.corrcoef(ref_kc, test_kc)[0, 1])
+            else:
+                corr = 1.0
+
+            discriminable = corr < DISCRIMINATION_THRESHOLD
+            delta_results[delta_pct] = {
+                'correlation': corr,
+                'discriminable': bool(discriminable),
+            }
+
+            # First delta where discrimination succeeds = JND
+            if discriminable and jnd_percent is None:
+                jnd_percent = delta_pct
+
+            logger.info(f"  {odor} +{delta_pct}%: r={corr:.3f}, discriminable={discriminable}")
+
         results[odor] = {
-            'jnd_tested_percent': 20,
-            'correlation': float(corr),
-            'discriminable': bool(discriminable)
+            'jnd_percent': jnd_percent,
+            'delta_sweep': delta_results,
         }
-        
-        logger.info(f"  {odor}: 20% JND, r={corr:.3f}, discriminable={discriminable}")
-    
-    jnds = [20 if r['discriminable'] else None for r in results.values()]
-    jnds = [j for j in jnds if j is not None]
-    
+        logger.info(f"  {odor}: JND = {jnd_percent}%")
+
+    # Pass if all tested odors have JND within biological target 10-20%
+    jnds = [r['jnd_percent'] for r in results.values() if r['jnd_percent'] is not None]
+    all_pass = len(jnds) > 0 and all(10 <= j <= 20 for j in jnds)
+
     summary = {
+        'jnd_per_odor': {odor: r['jnd_percent'] for odor, r in results.items()},
         'mean_jnd_percent': float(np.mean(jnds)) if jnds else None,
-        'validation': 'PASS' if jnds and 10 <= np.mean(jnds) <= 20 else 'FAIL'
+        'validation': 'PASS' if all_pass else 'FAIL',
+        'biological_target': '10-20% (Weber\'s law, Bodyak & Bhatt 2001)',
     }
-    
+
     return {'odors': results, 'summary': summary}
 
 def validate_similarity(brain, door_client, test_odors):
@@ -317,33 +348,154 @@ def validate_similarity(brain, door_client, test_odors):
     
     return {'summary': summary}
 
+def _apply_hebbian_stdp(brain, learning_rate: float = 0.05):
+    """
+    Apply one step of Hebbian STDP to synapse weights.
+
+    Rule: Δw_ij = η × A_i × A_j × cos(φ_i - φ_j)
+
+    - A_i, A_j  : mean amplitudes of pre / post neurons
+    - φ_i - φ_j : phase difference encodes temporal order
+      cos > 0 (pre leads post)  → LTP (potentiation)
+      cos < 0 (post leads pre)  → LTD (depression)
+
+    This is the wave-field equivalent of STDP:
+    neurons phase-locked to each other strengthen their synapses
+    (Bi & Poo 1998; Song et al. 2000).
+
+    Weights are clipped to [0, 1] and re-normalised after each update
+    to prevent runaway potentiation.
+    """
+    import numpy as _np
+
+    # Pull current state to numpy (handle both MLX and NumPy backends)
+    if hasattr(brain, 'use_mlx') and brain.use_mlx:
+        import mlx.core as _mx
+        amp  = _np.array(brain.mean_amplitude.tolist())
+        phase = _np.array(brain.mean_phase.tolist())
+        w     = _np.array(brain.syn_weights.tolist())
+    else:
+        amp   = _np.asarray(brain.mean_amplitude, dtype=_np.float32)
+        phase = _np.asarray(brain.mean_phase,     dtype=_np.float32)
+        w     = _np.asarray(brain.syn_weights,    dtype=_np.float32)
+
+    pre_idx  = brain.pre_indices   # int32 numpy arrays always
+    post_idx = brain.post_indices
+
+    amp_pre   = amp[pre_idx]
+    amp_post  = amp[post_idx]
+    phase_pre = phase[pre_idx]
+    phase_post= phase[post_idx]
+
+    delta_w = learning_rate * amp_pre * amp_post * _np.cos(phase_pre - phase_post)
+    w = w + delta_w
+
+    # Keep weights non-negative and normalised
+    _np.clip(w, 0.0, None, out=w)
+    max_w = _np.max(w)
+    if max_w > 0:
+        w /= max_w
+
+    # Write back
+    if hasattr(brain, 'use_mlx') and brain.use_mlx:
+        import mlx.core as _mx
+        brain.syn_weights = _mx.array(w)
+    else:
+        brain.syn_weights = w.astype(_np.float32)
+
+
 def validate_learning(brain, door_client, odor):
-    """Learning & plasticity (simplified)."""
-    logger.info(f"  Testing plasticity with {odor}...")
-    
+    """
+    Learning & plasticity via Hebbian STDP.
+
+    Protocol:
+      1. Measure baseline MBON response (pre-training).
+      2. Run N_TRIALS training episodes:
+           inject odor → evolve 100 ms → apply Hebbian STDP weight update.
+      3. Measure post-training MBON response.
+      4. Pass if MBON response changed by at least MIN_CHANGE_PCT.
+
+    Biological basis:
+      Mushroom-body learning (Aso et al. 2014): repeated odor presentation
+      paired with reinforcement modifies KC→MBON synapses.  Hebbian
+      co-activation (Bi & Poo 1998) is the underlying cellular rule.
+      Even without explicit dopamine, repeated odor exposure produces
+      detectable plasticity in MBON activity (Hige et al. 2015).
+
+    Pass criterion:
+      |MBON_post - MBON_pre| / (|MBON_pre| + ε) ≥ 1% change —
+      demonstrates that weight updates propagate to measurable output change.
+    """
+    N_TRIALS = 5
+    LEARNING_RATE = 0.05
+    MIN_CHANGE_PCT = 1.0   # 1% minimum response change to count as learning
+    REFERENCE_STRENGTH = 50.0
+
+    logger.info(f"  Testing plasticity with {odor} ({N_TRIALS} training trials)...")
+
     glom_pattern = door_client.get_glomerular_pattern(odor)
     if glom_pattern is None:
         return {'summary': {'validation': 'FAIL'}}
-    
-    # Pre-training response
+
+    # --- Pre-training baseline ---
     brain.reset(deterministic=True)
-    brain.inject_odor(glom_pattern, strength=50.0)
+    brain.inject_odor(glom_pattern, strength=REFERENCE_STRENGTH)
     brain.evolve(duration=100.0)
-    mbon_pre = brain.get_region_activity('MBON')
-    
-    # Simulate training (just measure, don't actually modify weights for now)
-    mbon_pre_mean = float(np.mean(mbon_pre))
-    
-    # Post-training would show enhancement (we'll report potential)
-    logger.info(f"    MBON baseline: {mbon_pre_mean:.4f}")
-    logger.info(f"    Plasticity mechanism demonstrated (weight updates would occur here)")
-    
+    mbon_pre = float(np.mean(brain.get_region_activity('MBON')))
+    kc_pre   = brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
+    kc_pre_active = int(np.sum(get_active_kc_binary(kc_pre)))
+    logger.info(f"    Pre-training  MBON={mbon_pre:.4f}, active KCs={kc_pre_active}")
+
+    # --- Training loop ---
+    weight_changes = []
+    for trial in range(N_TRIALS):
+        brain.reset(deterministic=True)
+        brain.inject_odor(glom_pattern, strength=REFERENCE_STRENGTH)
+        brain.evolve(duration=100.0)
+
+        # Save old weights for monitoring
+        if hasattr(brain, 'use_mlx') and brain.use_mlx:
+            w_before = np.array(brain.syn_weights.tolist())
+        else:
+            w_before = np.asarray(brain.syn_weights).copy()
+
+        _apply_hebbian_stdp(brain, learning_rate=LEARNING_RATE)
+
+        if hasattr(brain, 'use_mlx') and brain.use_mlx:
+            w_after = np.array(brain.syn_weights.tolist())
+        else:
+            w_after = np.asarray(brain.syn_weights).copy()
+
+        mean_dw = float(np.mean(np.abs(w_after - w_before)))
+        weight_changes.append(mean_dw)
+        logger.info(f"    Trial {trial+1}/{N_TRIALS}: mean |Δw|={mean_dw:.6f}")
+
+    # --- Post-training response (with updated weights; no reset to keep weights) ---
+    brain.reset(deterministic=True)  # reset activity but weights stay modified above
+    brain.inject_odor(glom_pattern, strength=REFERENCE_STRENGTH)
+    brain.evolve(duration=100.0)
+    mbon_post = float(np.mean(brain.get_region_activity('MBON')))
+    kc_post   = brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
+    kc_post_active = int(np.sum(get_active_kc_binary(kc_post)))
+    logger.info(f"    Post-training MBON={mbon_post:.4f}, active KCs={kc_post_active}")
+
+    change_pct = 100.0 * abs(mbon_post - mbon_pre) / (abs(mbon_pre) + 1e-8)
+    logger.info(f"    MBON change: {change_pct:.2f}% (target ≥{MIN_CHANGE_PCT}%)")
+
+    passed = change_pct >= MIN_CHANGE_PCT
+
     summary = {
-        'baseline_mbon_activity': mbon_pre_mean,
-        'validation': 'PASS',  # Demonstrated mechanism
-        'note': 'Plasticity mechanism in place, full training not run for speed'
+        'mbon_pre':           mbon_pre,
+        'mbon_post':          mbon_post,
+        'mbon_change_pct':    change_pct,
+        'kc_active_pre':      kc_pre_active,
+        'kc_active_post':     kc_post_active,
+        'mean_weight_change': float(np.mean(weight_changes)),
+        'n_training_trials':  N_TRIALS,
+        'validation':         'PASS' if passed else 'FAIL',
+        'biological_ref':     'Bi & Poo 1998; Aso et al. 2014; Hige et al. 2015',
     }
-    
+
     return {'summary': summary}
 
 def generate_summary(results):

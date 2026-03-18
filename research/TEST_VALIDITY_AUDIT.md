@@ -10,7 +10,7 @@
 
 | Category | Total | Run & Tested | Valid | Fixed (Not Run) |
 |----------|-------|--------------|-------|-----------------|
-| **Smell** | 9 | 9 | 9 | 1 fix (adaptation metric) |
+| **Smell** | 9 | 9 | 9 | 3 fixes (adaptation metric, discrimination sweep, STDP impl) |
 | **Vision** | 11 | 3 | 3 | 8 fixes applied |
 | **TOTAL** | 20 | 12 | 12 | 9 fixes ready to test |
 
@@ -25,14 +25,14 @@
 | Sparse Coding | ✅ | ✅ | PASS | 1.65% activity — matches Turner 2008 |
 | Concentration Invariance | ✅ | ✅ | PASS | r=0.724 — Weber-Fechner law validated |
 | Odor Mixtures | ✅ | ✅ | PASS | 35.3% overlap |
-| Discrimination | ✅ | ⚠️ | PASS | Weak criterion: only tests 20% JND (hardcoded) |
-| Learning (Hebbian STDP) | ✅ | ⚠️ | PASS | Stub — always passes, never actually tests plasticity |
+| Discrimination | ✅ | ✅ FIXED | READY TO RETEST | Fixed: now sweeps 5/10/15/20/25% deltas, finds actual JND, checks 10-20% range |
+| Learning (Hebbian STDP) | ✅ | ✅ FIXED | READY TO RETEST | Fixed: real Hebbian STDP weight updates; measures MBON change pre/post N=5 trials |
 | Peak Timing | ✅ | ✅ | PASS | 100ms — matches Stopfer 2003 |
 | Full Brain Activity | ✅ | ✅ | PASS | 4.5% global, 47.5% olfactory |
 | Decorrelation | ✅ | ✅ | PASS | r=-0.51 — **MAJOR DISCOVERY** (validates 15 years of theory) |
 | Temporal Adaptation | ✅ | ✅ FIXED | **FAIL** → **READY TO RETEST** | Fixed: now measures 0-500ms (was 1-2s) |
 
-**Smell Score:** 8/9 PASS → **Expected 9/9 after retest**  
+**Smell Score:** 8/9 PASS → **Expected 9/9 after retest** (Discrimination + Learning now fully valid)  
 **Major Findings:** Concentration invariance ✅, Decorrelation ✅, Sparse coding ✅
 
 ---
@@ -110,10 +110,19 @@
 
 ---
 
-### P2 — Metric Gaps Fixed (3 files)
+### P2 — Metric Gaps Fixed (3 files + 2 smell logic fixes)
 
-✅ **`run_all_validations.py`**  
-   - Fixed adaptation time window: 0-500ms (was 1000-2000ms)
+✅ **`run_all_validations.py`** — Adaptation  
+   - Fixed time window: 0-500ms (was 1000-2000ms)
+
+✅ **`run_all_validations.py`** — Discrimination  
+   - Now sweeps [5, 10, 15, 20, 25]% deltas and finds actual JND threshold
+   - Passes only if 10 ≤ JND ≤ 20% (Weber's law criterion)
+
+✅ **`run_all_validations.py`** — Learning (Hebbian STDP)  
+   - Removed stub; implemented `_apply_hebbian_stdp()` using wave-amplitude × phase-cosine rule
+   - N=5 training trials per odor with η=0.05 learning rate
+   - Measures actual MBON change pre/post training; passes if ≥1% response change
 
 ✅ **`test_color_constancy.py`**  
    - Fixed lamina pathway loop (simplified condition)
