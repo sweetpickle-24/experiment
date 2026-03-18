@@ -36,21 +36,28 @@ VISUAL_NEURON_TYPES = {
                'lamina'],
     
     # Medulla - main processing layer
+    # NOTE: LC (Lobula Columnar) neurons do NOT belong here.
+    # LC neurons are lobula cells (dendrites/soma in lobula, project to central brain).
+    # Source: Otsuna et al. (2014), VirtualFlyBrain FBbt annotations.
     'MEDULLA': ['Mi1', 'Mi2', 'Mi3', 'Mi4', 'Mi9', 'Mi10', 'Mi11', 'Mi14', 'Mi15',
                 'Tm1', 'Tm2', 'Tm3', 'Tm4', 'Tm5', 'Tm9', 'Tm16', 'Tm20', 'Tm28',
                 'TmY', 'Tm-Y',
                 'Dm1', 'Dm2', 'Dm3', 'Dm4', 'Dm5', 'Dm6', 'Dm7', 'Dm8', 'Dm9',
                 'Dm10', 'Dm11', 'Dm12',
                 'Pm1', 'Pm2', 'Pm3',
-                'DM', 'DM1', 'DM2', 'DM3', 'DM4',
-                'LC', 'LC4', 'LC6', 'LC9', 'LC10', 'LC11', 'LC12', 'LC13', 'LC14',
-                'LCVI', 'LC16', 'LC17', 'LC18', 'LC20', 'LC21', 'LC22', 'LC24', 'LC25',
                 'Sm', 'serpentine',
                 'medulla'],
     
-    # Lobula - motion detection
+    # Lobula - motion detection and feature extraction
+    # T4: dendrites in medulla M1-M5 (ON pathway), axons to lobula plate
+    # T5: dendrites in lobula (OFF pathway), axons to lobula plate
+    # LC (Lobula Columnar): soma/dendrites in lobula, project to optic glomeruli in central brain
+    # LPLC: span lobula and lobula plate
+    # Source: Shinomiya et al. (2022), Otsuna et al. (2014), FlyWire 2024
     'LOBULA': ['T4', 'T5',                   # Elementary motion detectors
-               'LC', 'LPLC',                 # Lobula columnar
+               'LC', 'LPLC',                 # Lobula columnar (visual projection neurons)
+               'LC4', 'LC6', 'LC9', 'LC10', 'LC11', 'LC12', 'LC13', 'LC14',
+               'LCVI', 'LC16', 'LC17', 'LC18', 'LC20', 'LC21', 'LC22', 'LC24', 'LC25',
                'LT', 'Li',                   # Lobula tangential/intrinsic
                'lobula'],
     
