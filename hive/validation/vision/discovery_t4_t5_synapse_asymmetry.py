@@ -220,8 +220,8 @@ def count_synapses_to_targets(
     synapses_per_target = {}
 
     for synapse in connectome.synapses:
-        pre = synapse.pre_neuron_id
-        post = synapse.post_neuron_id
+        pre = synapse.pre_id
+        post = synapse.post_id
 
         if pre in source_set and post in target_set:
             total_synapses += 1
