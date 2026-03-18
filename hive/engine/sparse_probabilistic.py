@@ -418,6 +418,10 @@ class SparseProbabilisticBrain:
         self.var_amplitude = np.ones(self.num_neurons, dtype=np.float32) * 0.01
         self.external_force = np.zeros(self.num_neurons, dtype=np.float32)
         
+        # Clear amplitude history ring buffer
+        self.amplitude_history = []
+        self._last_history_time = 0.0
+        
         # Move to GPU if using MLX
         if self.use_mlx:
             self.mean_phase = mx.array(self.mean_phase)

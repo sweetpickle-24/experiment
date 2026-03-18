@@ -260,8 +260,11 @@ class BarlowLevickFilter:
         inh: Slow inhibitory trace (decays with τ_inh, weighted 5×)
     """
 
-    def __init__(self, n_positions: int, tau_exc_ms: float = 10.0, tau_inh_ms: float = 25.0):
+    def __init__(self, n_positions: int, n_cols: int, n_rows: int, 
+                 tau_exc_ms: float = 10.0, tau_inh_ms: float = 25.0):
         self.n = n_positions
+        self.n_cols = n_cols
+        self.n_rows = n_rows
         self.tau_exc = tau_exc_ms
         self.tau_inh = tau_inh_ms
         self.exc = np.zeros(n_positions)
@@ -273,7 +276,7 @@ class BarlowLevickFilter:
 
     def step(self, luminance: np.ndarray, dt_ms: float) -> np.ndarray:
         """
-        Advance filter by dt_ms.
+        Advance filter by dt_ms with SPATIAL NEIGHBOR COUPLING.
 
         Args:
             luminance: Current luminance at each position (0-1)
@@ -285,13 +288,27 @@ class BarlowLevickFilter:
         # Luminance contrast signal (derivative of luminance for edge detection)
         ON_signal = np.maximum(0, luminance - 0.5)  # Bright half-wave
 
-        # Update excitatory trace (fast)
+        # Update excitatory trace (fast, local signal)
         alpha_exc = dt_ms / self.tau_exc
         self.exc += alpha_exc * (EXCITATORY_GAIN * ON_signal - self.exc)
 
-        # Update inhibitory trace (slow, stronger)
+        # Update inhibitory trace (slow, SPATIALLY POOLED from neighbors)
+        # Key fix: inhibition pools from 4 nearest neighbors (up/down/left/right)
+        # This creates direction selectivity via spatial offset
+        lum_2d = luminance.reshape(self.n_rows, self.n_cols)
+        
+        # Pool from neighbors (trailing edge will inhibit leading edge)
+        inh_input = np.zeros_like(lum_2d)
+        inh_input[:, :-1] += lum_2d[:, 1:]   # Left neighbor contributes to right
+        inh_input[:, 1:] += lum_2d[:, :-1]   # Right neighbor contributes to left
+        inh_input[:-1, :] += lum_2d[1:, :]   # Bottom neighbor contributes to top
+        inh_input[1:, :] += lum_2d[:-1, :]   # Top neighbor contributes to bottom
+        inh_input /= 4.0  # Average over 4 neighbors
+        
+        inh_signal = np.maximum(0, inh_input.flatten() - 0.5)
+        
         alpha_inh = dt_ms / self.tau_inh
-        self.inh += alpha_inh * (INHIBITORY_GAIN * ON_signal - self.inh)
+        self.inh += alpha_inh * (INHIBITORY_GAIN * inh_signal - self.inh)
 
         # T4 output: excitation minus inhibition (half-wave rectified)
         return np.maximum(0, self.exc - self.inh)
@@ -401,8 +418,8 @@ def run_hs_vs_optic_flow_test(
     # Build brain
     brain = SparseProbabilisticBrain(visual_connectome, use_mlx=True)
 
-    # Barlow-Levick filters (one per ommatidium, processes local luminance)
-    bl_filter = BarlowLevickFilter(n_positions=N_OMMATIDIA)
+    # Barlow-Levick filters (one per ommatidium, with spatial neighbor coupling)
+    bl_filter = BarlowLevickFilter(n_positions=N_OMMATIDIA, n_cols=N_COLS, n_rows=N_ROWS)
 
     num_steps = int(stimulus_duration_ms / dt_ms)
 

@@ -395,8 +395,10 @@ def run_color_constancy_test(
         ):
             for cell_type, forcing_val in outputs.items():
                 scaled = forcing_val * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
-                for attr in [f'L{cell_type[-1]}_id'] if cell_type in ['L1','L2','L3'] else []:
-                    neuron_id = getattr(cartridge, attr, None)
+                # Apply lamina L1/L2/L3 forcing
+                if cell_type in ['L1', 'L2', 'L3']:
+                    attr_name = f'{cell_type}_id'
+                    neuron_id = getattr(cartridge, attr_name, None)
                     if neuron_id is not None and neuron_id in brain.id_to_idx:
                         forcing[neuron_id] = forcing.get(neuron_id, 0.0) + scaled
 

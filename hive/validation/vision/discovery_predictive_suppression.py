@@ -194,7 +194,7 @@ def identify_dm_feedback_synapses(connectome: Connectome) -> List[int]:
     # Find Dm→Lamina synapses
     feedback_synapse_indices = []
     for i, synapse in enumerate(connectome.synapses):
-        if synapse.pre_neuron_id in dm_neurons and synapse.post_neuron_id in lamina_neurons:
+        if synapse.pre_id in dm_neurons and synapse.post_id in lamina_neurons:
             feedback_synapse_indices.append(i)
 
     print(f"  Dm neurons found: {len(dm_neurons)}")

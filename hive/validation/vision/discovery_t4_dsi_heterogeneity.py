@@ -172,11 +172,11 @@ def get_t4a_input_synapse_counts(
     synapse_counts = {nid: {'n_exc': 0, 'n_inh': 0} for nid in t4a_neurons}
 
     for synapse in connectome.synapses:
-        if synapse.post_neuron_id in t4a_set:
-            if synapse.pre_neuron_id in exc_neurons:
-                synapse_counts[synapse.post_neuron_id]['n_exc'] += 1
-            elif synapse.pre_neuron_id in inh_neurons:
-                synapse_counts[synapse.post_neuron_id]['n_inh'] += 1
+        if synapse.post_id in t4a_set:
+            if synapse.pre_id in exc_neurons:
+                synapse_counts[synapse.post_id]['n_exc'] += 1
+            elif synapse.pre_id in inh_neurons:
+                synapse_counts[synapse.post_id]['n_inh'] += 1
 
     # Compute inhibitory fraction
     for nid in t4a_neurons:
@@ -247,6 +247,12 @@ def measure_individual_t4a_dsi(
             brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
         else:
             brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
+        # Initialize Barlow-Levick temporal integration per ommatidium
+        bl_exc = np.zeros(N_OMMATIDIA)  # Fast excitatory integration
+        bl_inh = np.zeros(N_OMMATIDIA)  # Slow inhibitory integration
+        TAU_EXC_MS = 10.0   # Fast excitatory time constant
+        TAU_INH_MS = 25.0   # Slow inhibitory time constant
+        
         amps_per_neuron = {nid: [] for nid in t4a_subset}
 
         for step in range(num_steps):
@@ -257,16 +263,20 @@ def measure_individual_t4a_dsi(
 
             ON_signal = np.maximum(0, luminance - 0.5)
 
+            # Temporal integration (Barlow-Levick mechanism with real time constants)
+            alpha_exc = dt_ms / TAU_EXC_MS
+            alpha_inh = dt_ms / TAU_INH_MS
+            bl_exc += alpha_exc * (EXCITATORY_GAIN * ON_signal - bl_exc)
+            bl_inh += alpha_inh * (INHIBITORY_GAIN * ON_signal - bl_inh)
+            t4_output = np.maximum(0, bl_exc - bl_inh)
+
             # Set external forcing
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
                 omm = i % N_OMMATIDIA
-                exc = EXCITATORY_GAIN * ON_signal[omm]
-                inh = INHIBITORY_GAIN * ON_signal[omm]
-                t4_output = max(0, exc - inh)
                 idx = brain.id_to_idx[nid]
-                brain.external_force[idx] = t4_output * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
+                brain.external_force[idx] = t4_output[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
 
             brain.evolve(duration=dt_ms)
 

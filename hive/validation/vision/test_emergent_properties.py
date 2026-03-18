@@ -584,19 +584,15 @@ def test_chromatic_motion_blindness(
 
             for step in range(num_steps):
                 t_ms = step * dt_ms
-                theta = 90.0 if dir_vec[0] > 0 else 270.0
-                luminance = compute_grating(azimuths, elevations, 0.0, TF_HZ, t_ms,
+                # For leftward motion, reverse temporal phase direction
+                tf_sign = 1.0 if dir_vec[0] > 0 else -1.0
+                
+                luminance = compute_grating(azimuths, elevations, 0.0, TF_HZ * tf_sign, t_ms,
                                             contrast=contrasts['r1r6_contrast'])
-                uv_grating = compute_grating(azimuths, elevations, 0.0, TF_HZ, t_ms,
+                uv_grating = compute_grating(azimuths, elevations, 0.0, TF_HZ * tf_sign, t_ms,
                                              contrast=contrasts['r7_contrast'])
-                vis_grating = compute_grating(azimuths, elevations, 0.0, TF_HZ, t_ms,
+                vis_grating = compute_grating(azimuths, elevations, 0.0, TF_HZ * tf_sign, t_ms,
                                               contrast=contrasts['r8_contrast'])
-
-                # But flip direction for null (leftward = rightward stimulus reversed)
-                if dir_vec[0] < 0:
-                    luminance = 1.0 - luminance
-                    uv_grating = 1.0 - uv_grating
-                    vis_grating = 1.0 - vis_grating
 
                 # Luminance input (R1-R6 → lamina L1/L2 → T4)
                 for i, nid in enumerate(all_medulla):

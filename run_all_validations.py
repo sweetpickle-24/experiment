@@ -152,7 +152,11 @@ def validate_temporal_dynamics(brain, door_client, test_odors):
         # Compute metrics
         peak_idx = np.argmax(activities)
         peak_time_ms = timepoints[peak_idx]
-        adaptation_percent = 100 * (activities[4] - activities[5]) / activities[4] if activities[4] > 0 else 0
+        # Fast adaptation: measure from onset (0ms) to 500ms (Nagel & Wilson 2011)
+        if activities[0] > 0:
+            adaptation_percent = 100 * (activities[0] - activities[3]) / activities[0]
+        else:
+            adaptation_percent = 0.0
         
         results[odor_name] = {
             'peak_time_ms': int(peak_time_ms),

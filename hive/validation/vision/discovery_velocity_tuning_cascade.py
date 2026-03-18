@@ -234,20 +234,17 @@ def measure_velocity_tuning(
 
     # Phototransduction with modified time constants
     photo = Phototransduction()
+    photo_states = [PhototransductionState() for _ in range(N_OMMATIDIA)]
+    
     if photo_tau_factor != 1.0:
-        # Scale relevant time constants
+        # Scale relevant time constants to test phototransduction temporal filtering
         photo.k_R_decay *= (1.0 / photo_tau_factor)
         photo.k_R_to_M *= (1.0 / photo_tau_factor)
         photo.k_G_inact *= (1.0 / photo_tau_factor)
         photo.k_PLC_inact *= (1.0 / photo_tau_factor)
         photo.k_Ca_pump *= (1.0 / photo_tau_factor)
-
-    # Simplified voltage model for now (full phototransduction too slow for sweep)
-    # We use photon_rate_to_voltage inline
-    def photon_rate_to_voltage_adapted(photon_rate):
-        if photon_rate < 1:
-            return 0.0
-        return float(np.clip(10.0 * np.log10(max(photon_rate, 10.0) / 10.0) / photo_tau_factor, 0, 40))
+        photo.k_TRP_close *= (1.0 / photo_tau_factor)
+        photo.k_TRPL_close *= (1.0 / photo_tau_factor)
 
     num_steps = int(STIMULUS_DURATION_MS / dt_ms)
     amplitude_per_tf = {}
@@ -260,19 +257,31 @@ def measure_velocity_tuning(
         else:
             brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
         bl.reset()
+        
+        # Reset phototransduction states for this temporal frequency
+        photo_states = [PhototransductionState() for _ in range(N_OMMATIDIA)]
         amps = []
 
         for step in range(num_steps):
             t_ms = step * dt_ms
             luminance = compute_grating(azimuths, elevations, tf_hz, t_ms)
-            t4_output = bl.step(luminance, dt_ms)
+            
+            # Run phototransduction cascade for each ommatidium
+            photo_voltages = np.zeros(N_OMMATIDIA)
+            for i in range(N_OMMATIDIA):
+                photon_rate = luminance[i] * 1e4
+                photo_states[i] = photo.step(photo_states[i], photon_rate, dt_ms / 1000.0)
+                # Voltage is depolarization above rest (-70mV), so positive = depolarized
+                photo_voltages[i] = photo_states[i].V + 70.0  # Convert to mV above rest
+            
+            # Pass phototransduction output to Barlow-Levick filter
+            t4_output = bl.step(photo_voltages / 40.0, dt_ms)  # Normalize to [0, 1] range
 
             # Set external forcing
             for i, nid in enumerate(medulla_neurons):
                 if nid not in brain.id_to_idx:
                     continue
                 omm = i % N_OMMATIDIA
-                v = photon_rate_to_voltage_adapted(luminance[omm] * 1e4)
                 idx = brain.id_to_idx[nid]
                 brain.external_force[idx] = t4_output[omm] * VOLTAGE_TO_FIRING_RATE * FIRING_TO_FORCING
 
