@@ -32,7 +32,7 @@ Biological validation studies:
 
 ## Key Findings Summary
 
-### 1. Biological Validation ✅
+### 1. Biological Validation — Olfaction ✅
 **KC Sparsity: 1.13% ± 0.86%**
 - Matches Turner et al. (2008) 1-3% range exactly
 - 8/20 odors (40%) in canonical range
@@ -50,7 +50,7 @@ Biological validation studies:
 - First computational proof on real connectome
 - Explains 78× memory capacity improvement
 
-### 4. Comprehensive Validation ✅
+### 4. Comprehensive Olfaction Validation ✅
 **8/9 Benchmarks Passed (89%)**
 - Sparse coding: 1.65% ✅
 - Concentration invariance: r=0.724 ✅
@@ -68,6 +68,23 @@ Biological validation studies:
 - Speed: 26s per 100ms simulation
 - Hardware: Consumer laptop (M4 Pro)
 - Scalability: Linear O(N)
+
+### 6. Vision Validation — Multi-Modal Proof ✅ (2026-03-17)
+**4/4 Benchmarks Passed (100%) on 53,000-neuron optic lobe**
+
+| Test | Result | Target | Notes |
+|------|--------|--------|-------|
+| Sparse coding (4 layers) | All in range | Layer-specific | Lamina 18.7%, Medulla 6.9%, Lobula 20.6%, LP 42.1% |
+| Contrast invariance | r = 0.857 | r > 0.70 | 122% of target |
+| Chromatic decorrelation | gap = 0.061 | > 0.05 | Dm8/Tm5 UV/vis opponency |
+| Motion detection (DSI) | 0.975 | ≥ 0.30 | 325% of target |
+
+**Key findings**:
+- T4/T5 motion detection uses Barlow-Levick null-direction suppression (Haag et al. 2017), not Hassenstein-Reichardt
+- GABA shunting provides 5× effective inhibitory weight — essential for complete ND suppression (93.9%)
+- Chromatic decorrelation requires UV vs. Visible pairs; adjacent wavelengths engage same opsin, no opponency
+- **Same wave engine, different connectome topology → different emergent coding strategies**: olfaction random wiring → decorrelation (r=-0.51); vision retinotopic wiring → spatial continuity + opponency
+- Files: `research/vision/findings/`
 
 ---
 
@@ -118,6 +135,16 @@ All results compared against published experimental data:
 **Impact**: 15-year validation arc of theoretical prediction
 **Publication**: Major discovery, added to thesis and patents
 
+### Discovery 4: Multi-Modal Generalization (2026-03-17)
+**Finding**: Same wave physics engine produces biologically correct phenomena in BOTH olfaction (10,906 neurons) AND vision (53,000 neurons) without modality-specific tuning of core dynamics
+**Impact**: Elevates publication claim from "olfactory simulator" to "universal wave-based sensory processing framework"
+**Specifics**:
+- Vision 4/4 (100%) vs olfaction 8/9 (89%)
+- Different connectome topology → different emergent strategies: random (olfaction) → decorrelation; retinotopic (vision) → spatial coding + opponency
+- Scale validated: 5× more neurons, 4× more synapses
+- Temporal memory (Barlow-Levick, 50ms ring buffer) added to framework
+**Publication**: Strengthens Nature Neuroscience submission; multi-modal claim is the paper's unique hook
+
 ---
 
 ## Data Files
@@ -137,11 +164,12 @@ Located in parent directory:
 
 ---
 
-## Status: COMPLETE ✅
+## Status: MULTI-MODAL VALIDATION COMPLETE ✅
 
-**POC Achievement**: 89% validation success (8/9 benchmarks)
-**Publication Ready**: Nature Communications submission prepared
-**Patent Applications**: 3 provisional applications filed
+**Olfaction POC**: 8/9 benchmarks (89%) — Nature Communications ready  
+**Vision POC**: 4/4 benchmarks (100%) — Multi-modal generalization proven  
+**Combined claim**: Wave physics reproduces sensory processing across modalities — Nature Neuroscience tier  
+**Patent Applications**: 3 provisional applications filed (vision adds multi-modal claims)  
 **Commercial Potential**: $50-200M 10-year revenue estimate
 
 ---
@@ -154,14 +182,17 @@ Located in parent directory:
 3. Deposit data on Zenodo
 
 ### Short-term (3-6 months)
-1. Add temporal adaptation mechanism (weak result)
+1. Add temporal adaptation mechanism (olfaction weak result — 0.84%)
 2. Implement full Hebbian learning
 3. Compare to real calcium imaging datasets
+4. Add color constancy test to vision (light-invariant wavelength identity — analogous to concentration invariance)
+5. Test optic flow in lobula plate HS/VS cells against known electrophysiology
 
 ### Long-term (6-12 months)
-1. Extend to other sensory modalities
+1. Extend to auditory modality (tonotopic cortex)
 2. Scale to larger connectomes (mouse)
 3. Neuromorphic hardware implementation
+4. Multi-sensory integration (cross-modal binding)
 
 ---
 

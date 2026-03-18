@@ -90,6 +90,14 @@ class SparseProbabilisticBrain:
         self.sigma_noise = 0.1
         self.time = 0.0
         
+        # Temporal memory: ring buffer of amplitude snapshots
+        # Biological basis: lamina L1/L2 H-current creates ~10-50ms temporal memory
+        # T4/T5 direction selectivity requires access to ~20ms past state (Haag et al. 2017)
+        self.amplitude_history = []   # List of np.ndarray snapshots
+        self.history_max = 10         # Max 10 snapshots
+        self.history_interval_ms = 5.0  # Snapshot every 5ms
+        self._last_history_time = -999.0
+        
         memory_mb = self.num_neurons * 5 * 4 / 1024 / 1024
         print(f"✓ Initialized: {self.num_neurons:,} neurons, {memory_mb:.1f} MB")
         print("="*70)
@@ -110,6 +118,11 @@ class SparseProbabilisticBrain:
         
         # Natural frequencies (default: 10 Hz alpha)
         self.omega0 = np.ones(self.num_neurons, dtype=np.float32) * (2 * np.pi * 10.0 / 1000.0)
+        
+        # Reset temporal memory on field initialization
+        self.amplitude_history = []
+        self._last_history_time = -999.0
+        self.time = 0.0
         
         # Move to GPU if using MLX
         if self.use_mlx:
@@ -189,6 +202,7 @@ class SparseProbabilisticBrain:
     def evolve(self, duration=100.0):
         """Evolve for specified duration."""
         num_steps = int(duration / self.dt)
+        history_interval_steps = max(1, int(self.history_interval_ms / self.dt))
         
         for step in range(num_steps):
             self._step()
@@ -199,10 +213,46 @@ class SparseProbabilisticBrain:
                 mx.eval(self.mean_velocity)
                 mx.eval(self.var_phase)
             
+            # Update temporal memory: snapshot amplitude every history_interval_ms
+            # Biological basis: lamina L1/L2 H-current creates ~5-50ms temporal memory
+            # Required for T4/T5 direction selectivity (Haag et al. 2017, Borst 2024)
+            if step % history_interval_steps == 0:
+                if self.use_mlx:
+                    mx.eval(self.mean_amplitude)
+                    snap = np.array(self.mean_amplitude).copy()
+                else:
+                    snap = self.mean_amplitude.copy()
+                self.amplitude_history.append(snap)
+                if len(self.amplitude_history) > self.history_max:
+                    self.amplitude_history.pop(0)
+            
             if step % 10 == 0:
                 print(f"  Step {step}/{num_steps}, time={self.time:.1f}ms", end='\r')
         
         print(f"  ✓ Evolution complete: {self.time:.1f}ms")
+    
+    def get_amplitude_delayed(self, delay_ms: float) -> np.ndarray:
+        """
+        Return amplitude snapshot from delay_ms ago.
+        
+        Biological basis: T4 receives slow inhibitory inputs (~20ms delay)
+        from trailing-side Mi4/C3/CT1 neurons (Haag et al. 2017).
+        
+        Args:
+            delay_ms: How far back in time (ms)
+        
+        Returns:
+            numpy array of amplitude values, or current amplitude if no history
+        """
+        if not self.amplitude_history:
+            if self.use_mlx:
+                return np.array(self.mean_amplitude)
+            return self.mean_amplitude.copy()
+        
+        # Calculate which history index corresponds to delay_ms
+        steps_back = int(delay_ms / self.history_interval_ms)
+        idx = max(0, len(self.amplitude_history) - 1 - steps_back)
+        return self.amplitude_history[idx]
     
     def _step(self):
         """Single integration step."""
