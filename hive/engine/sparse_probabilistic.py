@@ -226,10 +226,10 @@ class SparseProbabilisticBrain:
                 if len(self.amplitude_history) > self.history_max:
                     self.amplitude_history.pop(0)
             
-            if step % 10 == 0:
-                print(f"  Step {step}/{num_steps}, time={self.time:.1f}ms", end='\r')
+            # if step % 10 == 0:
+            #     print(f"  Step {step}/{num_steps}, time={self.time:.1f}ms", end='\r')
         
-        print(f"  ✓ Evolution complete: {self.time:.1f}ms")
+        # print(f"  ✓ Evolution complete: {self.time:.1f}ms")
     
     def get_amplitude_delayed(self, delay_ms: float) -> np.ndarray:
         """

@@ -161,6 +161,12 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - **Two distinct phenomena discovered**:
   1. **12 Hz transient** — G-protein–Ca²⁺ feedback loop ringing (τ_M=100ms × τ_Ca=50ms). Damps to steady state in ~1-2s. Rate-independent.
   2. **Juusola 50-200 Hz** — PSD of overlapping Poisson quantum bumps. Rate-dependent frequency. Requires stochastic (shot noise) model.
+- **Architecture validation**: Two-stage design is correct:
+  - **Stage 1**: Deterministic biochemical kinetics (10⁶-10⁹ molecules → mean-field valid)
+  - **Stage 2**: Probabilistic wave brain (neuron-to-neuron stochastic spiking)
+  - Phototransduction correctly uses deterministic ODEs for high photon flux (>1000 photons/s)
+  - Quantum regime (<100 photons/s) would require adding Poisson photon absorption layer
+- **Model validity range**: High photon flux (>1000 photons/s) natural daylight conditions — deterministic approximation appropriate
 - **Novel predictions**: (a) 50-200 Hz oscillations vanish at >10⁶ photons/s where bumps overlap; (b) 12 Hz transient suppressed by calmodulin mutations
 - **Bugs fixed in phototransduction.py**: (1) `np.clip(y_new, 0, None)` was clamping V from −70 to 0; (2) leak current missing V_rest = −70 mV anchor
 - **Parameters calibrated**: k_TRP_close 100→2, Ca_influx_per_channel 0.1→15.0 μM/s, Ca reaches ~0.37 μM at bright light
@@ -177,3 +183,14 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - **Novel predictions**: (a) HS/VS gain asymmetry (OFF > ON) by 1.5-2×; (b) T5 temporal bandwidth > T4; (c) APL→T4 inhibition > APL→T5 by 1.5×
 - **Impact**: Validates wave-based brain principle — identical connectomes produce different behaviors via gain/filtering
 - **Files**: T4_T5_SYNAPSE_ASYMMETRY_DISCOVERY.md, discovery_t4_t5_synapse_asymmetry.json, discovery_t4_t5_synapse_asymmetry.py
+
+### Hex Lattice Direction Bias — Isotropy Confirmed (2026-03-18) ✅ CORRECTED NEGATIVE RESULT
+- **Result**: No hex lattice DSI bias — hex-axis DSI = −0.0068 vs between-hex DSI = +0.0071, bias = −0.014 (p=0.242, NOT significant)
+- **Geometry FIXED**: Previous run used col_spacing=9°/row_spacing=2° (wrong, 4-fold symmetric). Corrected to equilateral hex: a=4.5°, row_spacing=a√3/2=3.897° (true 6-fold, 891 ommatidia)
+- **Directions FIXED**: Previous test used 22.5°-spaced directions that missed hex axes 60°/120°/240°/300°. Fixed to 12 directions at 30°-spacing, directly including all hex axes.
+- **Two reasons for no bias**: (1) Regular hex lattice is isotropic — coherence ≈1.0 for all directions at T/a=6.7 (2) T4 has 4-fold preferred directions (0°, 90°, 180°, 270°) — both groups contain equal T4-aligned directions
+- **Bonus finding**: Weak 2-fold (180°-periodic) front-to-back asymmetry observed (150°: DSI=+0.043 vs 60°: DSI=−0.029) — likely real connectome property reflecting optomotor reflex, NOT hex lattice artifact
+- **Fourier bug**: JSON field `sixfold_power_fraction=0.382` is mislabeled — code used k=2 (2-fold) not k=6 (6-fold). True 6-fold fraction ≈13.9% (within noise)
+- **Impact**: Validates square-grid models — hex geometry does not introduce measurable DSI bias
+- **Runtime**: 34.5 min (GPU/MLX), 92,632 neurons, 12 directions × 2 phases = 24 simulations
+- **Files**: HEX_LATTICE_DIRECTION_BIAS_DISCOVERY.md, discovery_hex_lattice_direction_bias.json, discovery_hex_lattice_direction_bias.py
