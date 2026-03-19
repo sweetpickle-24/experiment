@@ -123,7 +123,7 @@ self._last_history_time = 0.0
 
 1. **Run the fixed tests** to verify they produce valid results
 2. **Update TEST_VALIDITY_AUDIT.md** with new status after running tests
-3. **Re-run smell validation suite** to see if temporal adaptation now passes (should be 9/9)
+3. **Re-run smell validation suite** to confirm temporal adaptation fix works (currently 8/9 PASS)
 4. **Document new findings** from the previously-broken vision tests
 
 ---

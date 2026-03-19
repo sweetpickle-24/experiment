@@ -196,7 +196,7 @@ This will show proper 30-70% adaptation because it's implementing desensitizatio
 **Option B: Add Adaptation & Revalidate** (1-2 hours work)
 1. Implement adaptation in `sparse_probabilistic.py`
 2. Re-run `validate_temporal_dynamics.py` with `adaptation_tau=2000`
-3. Update validation results to 9/9 PASS
+3. Update validation results to 8/9 PASS (if adaptation retest passes, update to 9/9)
 
 **Recommendation**: Go with Option A for now. The 8/9 pass rate (89%) with a major discovery (decorrelation) is already publication-ready. Temporal adaptation is a peripheral mechanism, not core to your wave-based network contribution.
 

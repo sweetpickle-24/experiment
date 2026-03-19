@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-15T22:12:58.369413",
+  "timestamp": "2026-03-19T12:23:51.717670",
   "system": {
     "num_neurons": 10906,
     "backend": "MLX"
@@ -9,45 +9,45 @@
       "odors": {
         "benzaldehyde": {
           "peak_time_ms": 100,
-          "adaptation_percent": 3.144729900535721,
+          "adaptation_percent": 11.60697198081704,
           "activities": [
             0.0,
-            0.00025230032042600214,
-            0.00027496108668856323,
-            0.000274287216598168,
-            0.0002699318283703178,
-            0.00026144320145249367
+            0.00048648699885234237,
+            0.0004987972788512707,
+            0.00044090201845392585,
+            0.00044686737237498164,
+            0.00045062389108352363
           ]
         },
         "2-heptanone": {
-          "peak_time_ms": 100,
-          "adaptation_percent": -1.5460476105861825,
+          "peak_time_ms": 50,
+          "adaptation_percent": 92.68475415032313,
           "activities": [
             0.0,
-            0.00024325239064637572,
-            0.0002613034739624709,
-            0.0002511716156732291,
-            0.00024396485241595656,
-            0.00024773666518740356
+            0.015404951758682728,
+            0.003221471095457673,
+            0.0011269100941717625,
+            0.0008705275831744075,
+            0.0008702127379365265
           ]
         },
         "geosmin": {
-          "peak_time_ms": 100,
-          "adaptation_percent": 0.9186226423437259,
+          "peak_time_ms": 50,
+          "adaptation_percent": 56.11586215793848,
           "activities": [
             0.0,
-            0.00017085066065192223,
-            0.00017356788157485425,
-            0.00016062537906691432,
-            0.0001573092013131827,
-            0.00015586412337142974
+            0.00046742704580537975,
+            0.00020966610463801771,
+            0.00020512632909230888,
+            0.00020141835557296872,
+            0.00020385546667966992
           ]
         }
       },
       "summary": {
-        "peak_time_mean_ms": 100.0,
-        "adaptation_mean_percent": 0.8391016440977549,
-        "validation": "FAIL"
+        "peak_time_mean_ms": 66.66666666666667,
+        "adaptation_mean_percent": 53.46919609635955,
+        "validation": "PASS"
       }
     },
     "odor_mixtures": {
@@ -57,43 +57,94 @@
             "benzaldehyde",
             "2-heptanone"
           ],
-          "overlap_percent": 35.28481012658228
+          "overlap_percent": 9.335443037974683
         }
       },
       "summary": {
-        "mean_overlap_percent": 35.28481012658228,
-        "validation": "PASS"
+        "mean_overlap_percent": 9.335443037974683,
+        "validation": "FAIL"
       }
     },
     "discrimination": {
       "odors": {
         "benzaldehyde": {
-          "jnd_tested_percent": 20,
-          "correlation": 0.9966339520043256,
-          "discriminable": false
+          "jnd_percent": 5,
+          "delta_sweep": {
+            "5": {
+              "correlation": 0.471530464679133,
+              "discriminable": true
+            },
+            "10": {
+              "correlation": 0.2628354889473254,
+              "discriminable": true
+            },
+            "15": {
+              "correlation": 0.47489651267480726,
+              "discriminable": true
+            },
+            "20": {
+              "correlation": 0.0406763212328191,
+              "discriminable": true
+            },
+            "25": {
+              "correlation": 0.010381889271750024,
+              "discriminable": true
+            }
+          }
         },
         "2-heptanone": {
-          "jnd_tested_percent": 20,
-          "correlation": 0.8956525121340958,
-          "discriminable": true
+          "jnd_percent": 5,
+          "delta_sweep": {
+            "5": {
+              "correlation": 0.02384608125444729,
+              "discriminable": true
+            },
+            "10": {
+              "correlation": -0.00981439870229591,
+              "discriminable": true
+            },
+            "15": {
+              "correlation": 0.02384608125444727,
+              "discriminable": true
+            },
+            "20": {
+              "correlation": 0.017113985263098715,
+              "discriminable": true
+            },
+            "25": {
+              "correlation": 0.017113985263098725,
+              "discriminable": true
+            }
+          }
         }
       },
       "summary": {
-        "mean_jnd_percent": 20.0,
-        "validation": "PASS"
+        "jnd_per_odor": {
+          "benzaldehyde": 5,
+          "2-heptanone": 5
+        },
+        "mean_jnd_percent": 5.0,
+        "validation": "FAIL",
+        "biological_target": "10-20% (Weber's law, Bodyak & Bhatt 2001)"
       }
     },
     "similarity": {
       "summary": {
-        "chem_neural_correlation": -0.9895088331631133,
+        "chem_neural_correlation": 0.6318583492026357,
         "validation": "FAIL"
       }
     },
     "learning": {
       "summary": {
-        "baseline_mbon_activity": 0.002431837609037757,
+        "mbon_pre": 0.007685796823352575,
+        "mbon_post": 0.005918694194406271,
+        "mbon_change_pct": 22.991764814815994,
+        "kc_active_pre": 316,
+        "kc_active_post": 1,
+        "mean_weight_change": 0.011536223262907033,
+        "n_training_trials": 5,
         "validation": "PASS",
-        "note": "Plasticity mechanism in place, full training not run for speed"
+        "biological_ref": "Bi & Poo 1998; Aso et al. 2014; Hige et al. 2015"
       }
     }
   }

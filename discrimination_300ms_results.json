@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-03-19T09:57:36.342704",
+  "duration_ms": 300.0,
+  "test_type": "discrimination_300ms",
+  "odors": {
+    "benzaldehyde": {
+      "jnd_percent": 5,
+      "ref_active_kcs": 316,
+      "delta_sweep": {
+        "5": {
+          "correlation": 0.46143232069210977,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "10": {
+          "correlation": 0.2291750089905821,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "15": {
+          "correlation": 0.16185404907709552,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "20": {
+          "correlation": 0.05077446521984216,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "25": {
+          "correlation": -0.053573022646062146,
+          "discriminable": true,
+          "active_kcs": 316
+        }
+      }
+    },
+    "2-heptanone": {
+      "jnd_percent": 5,
+      "ref_active_kcs": 316,
+      "delta_sweep": {
+        "5": {
+          "correlation": 0.013747937267424293,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "10": {
+          "correlation": 0.00028374528472703103,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "15": {
+          "correlation": 0.01711398526309866,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "20": {
+          "correlation": 0.010381889271750072,
+          "discriminable": true,
+          "active_kcs": 316
+        },
+        "25": {
+          "correlation": 0.02048003325877308,
+          "discriminable": true,
+          "active_kcs": 316
+        }
+      }
+    }
+  },
+  "summary": {
+    "jnd_per_odor": {
+      "benzaldehyde": 5,
+      "2-heptanone": 5
+    },
+    "mean_jnd_percent": 5.0,
+    "validation": "FAIL",
+    "biological_target": "10-20% (Weber's law)",
+    "elapsed_seconds": 16.933189
+  }
+}

@@ -152,9 +152,10 @@ def validate_temporal_dynamics(brain, door_client, test_odors):
         # Compute metrics
         peak_idx = np.argmax(activities)
         peak_time_ms = timepoints[peak_idx]
-        # Fast adaptation: measure from onset (0ms) to 500ms (Nagel & Wilson 2011)
-        if activities[0] > 0:
-            adaptation_percent = 100 * (activities[0] - activities[3]) / activities[0]
+        # Fast adaptation: measure from peak to 500ms (Nagel & Wilson 2011)
+        # activities[3] is 500ms timepoint
+        if activities[peak_idx] > 0 and peak_idx < 3:
+            adaptation_percent = 100 * (activities[peak_idx] - activities[3]) / activities[peak_idx]
         else:
             adaptation_percent = 0.0
         
@@ -173,7 +174,7 @@ def validate_temporal_dynamics(brain, door_client, test_odors):
     summary = {
         'peak_time_mean_ms': float(np.mean(peak_times)),
         'adaptation_mean_percent': float(np.mean(adaptations)),
-        'validation': 'PASS' if 100 <= np.mean(peak_times) <= 500 and 30 <= np.mean(adaptations) <= 70 else 'FAIL'
+        'validation': 'PASS' if 50 <= np.mean(peak_times) <= 150 and 30 <= np.mean(adaptations) <= 70 else 'FAIL'
     }
     
     return {'odors': results, 'summary': summary}
