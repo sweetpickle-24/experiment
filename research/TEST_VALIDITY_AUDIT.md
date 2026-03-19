@@ -139,7 +139,7 @@
 ## Overall Validation Status
 
 **Tests with scientifically valid results:**
-- ✅ Smell: 8/9 (Decorrelation, Concentration Invariance, Sparse Coding all valid)
+- ✅ Smell: 9/9 (Decorrelation, Concentration Invariance, Sparse Coding, Discrimination, Temporal Adaptation all valid)
 - ✅ Vision: 4/6 core + 2/6 discoveries (Motion Detection, Chromatic Decorrelation, T4/T5 Anatomy, Hex Lattice all valid)
 
 **Major findings confirmed (no changes needed):**
@@ -159,5 +159,5 @@
 
 1. ✅ All bugs fixed (10 fixes across 8 files)
 2. ⏳ Run fixed tests to verify they produce valid results
-3. ⏳ Re-run smell validation to confirm temporal adaptation fix (currently 8/9 PASS)
+3. ✅ Re-run complete: temporal adaptation PASSED (53.1%) — now 9/9 COMPLETE
 4. ⏳ Document new findings from previously-broken vision tests

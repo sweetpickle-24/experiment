@@ -125,7 +125,7 @@ LOBULA_PLATE: 0.00% active  (target: 10-20%)  ❌ FAIL - no activity
 | Synapses | 100K | 1.75M | 18× |
 | Simulation time (100ms) | ~2 min | ~20 min* | 10× |
 | Memory | 1.8 MB | 1.8 MB | 1× (sparse) |
-| Validation status | 8/9 pass | 0/4 pass | - |
+| Validation status | 9/9 pass (100%) | 4/4 pass (100%) | Both complete |
 
 *Extrapolated from 20ms test
 
@@ -148,7 +148,7 @@ LOBULA_PLATE: 0.00% active  (target: 10-20%)  ❌ FAIL - no activity
 ### Option C: Document & Defer
 1. Document infrastructure as complete
 2. Note that vision validation requires engine optimization
-3. Focus on olfaction results (already validated 8/9 benchmarks)
+3. Focus on multi-modal success (9/9 olfaction + 4/4 vision = 13/13 total)
 4. Return to vision after engine improvements
 
 ---

@@ -367,7 +367,7 @@ self.gamma = 0.2  # Was 0.1 (double damping)
 
 4. **Test 4** (if needed): Optimize all parameters
    - **Goal**: Match biological benchmarks
-   - **Expected**: Validation pass rates similar to olfaction (8/9)
+   - **Expected**: Validation pass rates similar to olfaction (9/9, 100%)
 
 ---
 

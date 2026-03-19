@@ -1,0 +1,79 @@
+---
+description: Always add timestamps to markdown documentation files
+alwaysApply: true
+---
+
+# Markdown Documentation Timestamps
+
+**RULE**: Always include timestamps in markdown documentation files to track when information was created or last updated.
+
+## Requirements
+
+### For New Files
+When creating any `.md` file, include at the top:
+```markdown
+# Document Title
+
+**Date**: YYYY-MM-DD  
+**Last Updated**: YYYY-MM-DD
+```
+
+### For Updates
+When updating existing `.md` files, update the timestamp:
+```markdown
+**Last Updated**: YYYY-MM-DD (updated timestamp here)
+```
+
+### Format
+- Use ISO 8601 date format: `YYYY-MM-DD` (e.g., `2026-03-19`)
+- Place near the top, after the title
+- Use bold formatting: `**Date**:` or `**Last Updated**:`
+
+## Examples
+
+### New Document
+```markdown
+# Digital Fly Brain - Validation Results
+
+**Date**: 2026-03-19  
+**Status**: Complete
+
+## Summary
+...
+```
+
+### Updated Document
+```markdown
+# System Architecture
+
+**Date**: 2026-03-15  
+**Last Updated**: 2026-03-19
+
+## Overview
+...
+```
+
+### Status Documents
+```markdown
+# Project Status
+
+**Date**: 2026-03-19  
+**Status**: 9/9 Complete
+
+## Current State
+...
+```
+
+## Why This Matters
+
+- **Version control**: Know when information was written
+- **Relevance**: Quickly identify outdated documents
+- **Audit trail**: Track documentation evolution
+- **Collaboration**: Others know information freshness
+
+## Exception
+
+Skip timestamps only for:
+- `README.md` (root entry point, timestamp not critical)
+- Auto-generated files
+- Files that explicitly track changes via git only

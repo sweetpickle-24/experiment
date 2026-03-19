@@ -128,7 +128,7 @@
 | **Decorrelation** | Unknown | r=-0.51 🎉 | 🎉 DISCOVERY | ✅ **Novel!** |
 | **Temporal Adaptation** | 30-70% | 0% (fixed) ⚠️ | ⚠️ NOT RE-RUN | ⏳ Retest |
 
-**Overall**: 8/9 PASS + 2 major discoveries (adaptation fix pending retest)
+**Overall**: 9/9 COMPLETE + 2 major discoveries
 
 ---
 

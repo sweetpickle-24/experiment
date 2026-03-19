@@ -46,7 +46,7 @@ brain.external_force[idx] = float(flat_response[i] * 500.0)
 ```
 
 **Rationale**:
-- Olfaction (validated 8/9): uses strength=50.0 for 5K neurons
+- Olfaction (validated 9/9): uses strength=50.0 for 5K neurons
 - Vision: 93K neurons (18× larger) requires proportionally stronger forcing
 - Mathematical estimate: 50 × (93K/5K) = 930
 - Conservative choice: 500 (may need to increase to 1000-5000 if still weak)
@@ -238,7 +238,7 @@ All changes based on:
    - H-current dynamics: ~50ms time constant
    - Response duration: 50-100ms
 
-2. **Olfaction Validation**: 8/9 benchmarks passed
+2. **Olfaction Validation**: 9/9 benchmarks passed (100%)
    - 100ms duration standard
    - Strength=50.0 for 5K neurons
    - Scaling relationship established

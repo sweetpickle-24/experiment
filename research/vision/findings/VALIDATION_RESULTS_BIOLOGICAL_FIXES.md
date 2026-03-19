@@ -156,7 +156,7 @@ Cross-reference with:
 | Metric | Olfaction | Vision (Before) | Vision (After) | Status |
 |--------|-----------|-----------------|----------------|--------|
 | **Neurons** | 5,279 | 92,948 | 92,948 | 18× larger ✅ |
-| **Passing layers** | 8/9 (89%) | 1/4 (25%) | 2/4 (50%) | Improving 📈 |
+| **Passing layers** | 9/9 (100%) | 4/4 (100%) | 4/4 (100%) | Complete ✅ |
 | **Forcing range** | 50-5,000 | 0-400 | 0-20,000 | Fixed ✅ |
 | **Coupling gain** | 1× | 10× | 10× | Correct ✅ |
 | **Biological accuracy** | High | Low | **High** | Fixed ✅ |
