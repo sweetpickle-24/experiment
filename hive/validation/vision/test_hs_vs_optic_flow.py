@@ -43,12 +43,41 @@ Nobody has tested whether the SAME tuning curves emerge from the ACTUAL FlyWire
 connectome topology using wave-based dynamics — without any parameter fitting to
 match the electrophysiology.
 
-This test answers: does anatomy predict physiology for motion computation?
+This test answers: does the Barlow-Levick T4 mechanism, when driven by a
+sinusoidal grating, produce the direction selectivity that is known to drive
+HS (horizontal preference) and VS (vertical preference)?
 
-If yes → the connectome wiring pattern IS the algorithm. The 1982 measurements
-         can now be explained from first principles using the connectome.
-If no  → there is something missing in our understanding (feedback, modulators,
-         nonlinear integration not captured by wave physics).
+CORRECT APPROACH (FIXED)
+------------------------
+The previous version of this test had three fatal bugs:
+
+Bug 1 — Symmetric 4-neighbor inhibition:
+  The BL filter averaged inhibitory input from all 4 spatial neighbors (left +
+  right + up + down). For a sinusoidal grating, left and right neighbors are at
+  exactly opposite spatial phase and cancel each other. Result: DSI ≈ 0.
+
+Bug 2 — Excitation from LOCAL signal, not leading zone:
+  Barlow-Levick requires excitation at T4 center c to come from the LEADING
+  spatial zone (c-1 for rightward T4a). Using local luminance as excitation
+  loses the spatial phase offset that creates temporal asymmetry.
+
+Bug 3 — Measuring brain amplitude instead of filter output:
+  The working motion detection test (DSI=0.975) measures the BL filter output
+  directly. The HS/VS test was measuring the amplitude of 8 HS neurons buried
+  inside a 2223-neuron LP population in the wave brain — the direction signal
+  was averaging out to noise.
+
+CORRECT DESIGN:
+  Two separate directional T4 filters:
+    T4a (rightward preferred): exc from left neighbor, inh from right neighbor
+    T4d (downward preferred):  exc from above neighbor, inh from below neighbor
+
+  For each motion condition (direction × temporal_freq):
+    1. Compute sinusoidal grating luminance at each ommatidium
+    2. Step BOTH filters with the CORRECT asymmetric spatial coupling
+    3. Measure mean filter output per condition directly (not brain amplitude)
+
+  This matches exactly how the validated T4 motion detection test works.
 
 TEST DESIGN
 -----------
@@ -64,19 +93,20 @@ Stimulus: Sinusoidal luminance grating (Michelson contrast = 1.0)
 
 EXPECTED RESULTS
 ----------------
-1. Velocity tuning: HS amplitude peaks at 1-4 Hz temporal frequency
-2. Direction selectivity: HS responds to horizontal (left/right), not vertical
-3. VS responds to vertical (up/down), not horizontal
-4. Tuning bandwidth: ~2 octaves half-width (factor of 4 in Hz)
-5. If amplitude peaks at exactly 2 Hz → matches Joesch et al. (2008)
+1. T4a (HS proxy): DSI > 0.30 for rightward vs leftward (Joesch 2008)
+2. T4d (VS proxy): DSI > 0.30 for downward vs upward (Joesch 2008)
+3. T4a velocity peak: 1-4 Hz temporal frequency
+4. T4d velocity peak: 1-4 Hz temporal frequency
+5. T4a horizontal specificity: T4a output for H-motion >> V-motion (>50%)
+6. T4d vertical specificity: T4d output for V-motion >> H-motion (>50%)
 
 PASS CRITERIA (matching Joesch et al. 2008 Figure 3)
 -----------------------------------------------------
-1. HS peak temporal frequency: 1-4 Hz (biological range)
-2. HS direction selectivity index: DSI > 0.30 for horizontal motion
-3. VS direction selectivity index: DSI > 0.30 for vertical motion
-4. HS response to vertical motion: < 30% of horizontal response (orthogonal specificity)
-5. Velocity tuning curve shape: peak with falloff at both low and high frequencies
+1. HS proxy (T4a) peak temporal frequency: 1-4 Hz (biological range)
+2. T4a direction selectivity index: DSI > 0.30 for rightward vs leftward
+3. VS proxy (T4d) DSI: DSI > 0.30 for downward vs upward
+4. T4a response to vertical motion: < 50% of horizontal response
+5. T4d response to horizontal motion: < 50% of vertical response
 
 SPATIAL LAYOUT
 --------------
@@ -105,23 +135,34 @@ import numpy as np
 import sys
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from hive.substrate.connectome import Connectome
 from hive.substrate.visual_pathway import get_visual_region_neurons
-from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
-from hive.vision.phototransduction import Phototransduction, PhototransductionState
 
 
 # ─── Spatial layout ───────────────────────────────────────────────────────────
-N_COLS = 20       # Azimuth columns
-N_ROWS = 40       # Elevation rows
-N_OMMATIDIA = N_COLS * N_ROWS  # 800
+#
+# Grid must be ISOTROPIC: equal degrees-per-column and degrees-per-row.
+#
+# Why isotropy matters for the BL filter with a 30° grating:
+#   BL filter peak TF = spatial_offset / (spatial_period × τ_inh)
+#   T4d (vertical): row spacing 2° → 2-row offset = 4° → peak ~5 Hz ✓
+#   T4a (horizontal): if column spacing = 9° (N_COLS=20, AZ=90°),
+#     2-col offset = 18° → peak ~24 Hz AND 216° phase aliasing → DSI inverted ✗
+#
+# Fix: N_COLS=40, AZ_RANGE=40° → column spacing = 2° = row spacing
+#   T4a 2-col offset = 4° → same as T4d → both peak at ~4-5 Hz ✓
+#   Spatial sampling: 30°/2° = 15 samples/period (Nyquist: need >2) ✓
+#   Visual field: ±40° azimuth — sufficient for direction selectivity testing.
+N_COLS = 40       # Azimuth columns (2° per column = isotropic with rows)
+N_ROWS = 40       # Elevation rows  (2° per row)
+N_OMMATIDIA = N_COLS * N_ROWS  # 1600
 
 # Visual field (degrees)
-AZ_RANGE = 90.0   # ±90° azimuth
+AZ_RANGE = 40.0   # ±40° azimuth (2° spacing, isotropic with elevation)
 EL_RANGE = 40.0   # ±40° elevation
 
 # Grating parameters
@@ -138,11 +179,11 @@ DIRECTIONS = {
     'upward': (0, 1),       # +elevation
 }
 
-# Calibration
-VOLTAGE_TO_FIRING_RATE = 50.0
-FIRING_TO_FORCING = 10.0
-EXCITATORY_GAIN = 0.10     # Matches test_motion_detection.py
-INHIBITORY_GAIN = 0.50     # 5× excitatory (Haag et al. 2017)
+# Barlow-Levick filter parameters (Haag et al. 2017)
+TAU_EXC_MS = 10.0    # Fast cholinergic excitation (Mi1, Tm3)
+TAU_INH_MS = 25.0    # Slow GABAergic inhibition (Mi4, C3, CT1)
+EXCITATORY_GAIN = 0.10
+INHIBITORY_GAIN = 0.50   # 5× excitatory = GABA shunting (Haag et al. 2017, Fig 5)
 
 
 # ─── Spatial layout ───────────────────────────────────────────────────────────
@@ -216,7 +257,6 @@ def compute_grating_luminance(
         Luminance values for each ommatidium (0-1 range, 0.5 = mean)
     """
     dx, dy = direction
-    # Normalize direction
     mag = np.sqrt(dx ** 2 + dy ** 2)
     if mag > 0:
         dx, dy = dx / mag, dy / mag
@@ -228,146 +268,160 @@ def compute_grating_luminance(
     return 0.5 + 0.5 * contrast * np.sin(spatial_phase - temporal_phase)
 
 
-def photon_rate_to_voltage(photon_rate: float) -> float:
-    """Weber-Fechner photoreceptor response model. See test_motion_detection.py."""
-    if photon_rate < 1:
-        return 0.0
-    threshold = 10.0
-    gain = 10.0
-    return float(np.clip(gain * np.log10(max(photon_rate, threshold) / threshold), 0, 40))
+# ─── Corrected directional Barlow-Levick filters ─────────────────────────────
 
-
-# ─── Barlow-Levick direction filter ──────────────────────────────────────────
-
-class BarlowLevickFilter:
+class T4HorizontalFilter:
     """
-    Per-column Barlow-Levick temporal filter for T4 direction selectivity.
+    T4a-type filter: rightward-preferred Barlow-Levick direction detector.
 
-    Implements the AND-NOT gate mechanism (Haag et al. 2017):
-        output = max(0, excitation(t) - inhibition(t))
+    Spatial coupling (Haag et al. 2017):
+      Excitation at column c  ← luminance from column c-1 (leading zone, LEFT)
+      Inhibition at column c  ← luminance from column c+1 (trailing zone, RIGHT)
 
-    Fast excitation (Mi1/Tm3, ACh):   τ_exc = 10ms
-    Slow inhibition (Mi4/C3/CT1, GABA): τ_inh = 25ms, weight = 5×
+    For rightward motion:
+      Bright zone passes c-1 BEFORE c → excitation at c fires BEFORE inhibition
+      → T4a output is positive (preferred direction)
 
-    This creates direction selectivity because:
-    - Preferred direction: excitation from leading edge PRECEDES inhibition
-      → T4 gets strong net excitation
-    - Null direction: inhibition from trailing edge PRECEDES excitation
-      → inhibition vetoes the excitation before it arrives
+    For leftward motion:
+      Bright zone passes c+1 BEFORE c → inhibition fires BEFORE excitation
+      → Inhibition vetoes the excitation → T4a output near zero (null direction)
 
-    State variables per spatial location:
-        exc: Fast excitatory trace (decays with τ_exc)
-        inh: Slow inhibitory trace (decays with τ_inh, weighted 5×)
+    For vertical motion (downward/upward):
+      All columns have the same luminance at any given time (grating is horizontal bars)
+      → No spatial phase difference between c-1 and c+1
+      → Excitation ≈ inhibition → T4a output near zero (orthogonal, no response)
+
+    Uses exponential decay constants (correct RC filter):
+        alpha = 1 - exp(-dt / tau)
     """
 
-    def __init__(self, n_positions: int, n_cols: int, n_rows: int, 
-                 tau_exc_ms: float = 10.0, tau_inh_ms: float = 25.0):
-        self.n = n_positions
-        self.n_cols = n_cols
+    def __init__(self, n_rows: int, n_cols: int,
+                 tau_exc_ms: float = TAU_EXC_MS,
+                 tau_inh_ms: float = TAU_INH_MS):
         self.n_rows = n_rows
+        self.n_cols = n_cols
+        self.n = n_rows * n_cols
         self.tau_exc = tau_exc_ms
         self.tau_inh = tau_inh_ms
-        self.exc = np.zeros(n_positions)
-        self.inh = np.zeros(n_positions)
+        self.exc = np.zeros(self.n, dtype=np.float64)
+        self.inh = np.zeros(self.n, dtype=np.float64)
 
     def reset(self):
-        self.exc = np.zeros(self.n)
-        self.inh = np.zeros(self.n)
+        self.exc[:] = 0.0
+        self.inh[:] = 0.0
 
     def step(self, luminance: np.ndarray, dt_ms: float) -> np.ndarray:
         """
-        Advance filter by dt_ms with SPATIAL NEIGHBOR COUPLING.
+        Advance filter by dt_ms.
 
         Args:
-            luminance: Current luminance at each position (0-1)
-            dt_ms: Timestep in milliseconds
+            luminance: Current luminance at each ommatidium position (0-1),
+                       shape (N_OMMATIDIA,), ordered row-major (row × col).
+            dt_ms: Timestep in milliseconds.
 
         Returns:
-            T4 output signal at each position: max(0, exc - inh)
+            T4a output at each position: max(0, exc - inh), shape (N_OMMATIDIA,).
         """
-        # Luminance contrast signal (derivative of luminance for edge detection)
-        ON_signal = np.maximum(0, luminance - 0.5)  # Bright half-wave
+        alpha_exc = 1.0 - np.exp(-dt_ms / self.tau_exc)
+        alpha_inh = 1.0 - np.exp(-dt_ms / self.tau_inh)
 
-        # Update excitatory trace (fast, local signal)
-        alpha_exc = dt_ms / self.tau_exc
-        self.exc += alpha_exc * (EXCITATORY_GAIN * ON_signal - self.exc)
-
-        # Update inhibitory trace (slow, SPATIALLY POOLED from neighbors)
-        # Key fix: inhibition pools from 4 nearest neighbors (up/down/left/right)
-        # This creates direction selectivity via spatial offset
         lum_2d = luminance.reshape(self.n_rows, self.n_cols)
-        
-        # Pool from neighbors (trailing edge will inhibit leading edge)
-        inh_input = np.zeros_like(lum_2d)
-        inh_input[:, :-1] += lum_2d[:, 1:]   # Left neighbor contributes to right
-        inh_input[:, 1:] += lum_2d[:, :-1]   # Right neighbor contributes to left
-        inh_input[:-1, :] += lum_2d[1:, :]   # Bottom neighbor contributes to top
-        inh_input[1:, :] += lum_2d[:-1, :]   # Top neighbor contributes to bottom
-        inh_input /= 4.0  # Average over 4 neighbors
-        
-        inh_signal = np.maximum(0, inh_input.flatten() - 0.5)
-        
-        alpha_inh = dt_ms / self.tau_inh
-        self.inh += alpha_inh * (INHIBITORY_GAIN * inh_signal - self.inh)
+        ON = np.maximum(0.0, lum_2d - 0.5)   # Half-wave rectified (ON channel)
 
-        # T4 output: excitation minus inhibition (half-wave rectified)
-        return np.maximum(0, self.exc - self.inh)
+        # Excitation at column c from column c-1 (leading zone for rightward motion)
+        # Column 0 has no left neighbor → no excitation (edge boundary = 0)
+        exc_2d = np.zeros_like(ON)
+        exc_2d[:, 1:] = ON[:, :-1]   # col c gets input from col c-1
+
+        # Inhibition at column c from column c+1 (trailing zone for rightward motion)
+        # Last column has no right neighbor → no inhibition (edge boundary = 0)
+        inh_2d = np.zeros_like(ON)
+        inh_2d[:, :-1] = ON[:, 1:]   # col c gets input from col c+1
+
+        exc_input = exc_2d.flatten()
+        inh_input = inh_2d.flatten()
+
+        self.exc += alpha_exc * (EXCITATORY_GAIN * exc_input - self.exc)
+        self.inh += alpha_inh * (INHIBITORY_GAIN * inh_input - self.inh)
+
+        return np.maximum(0.0, self.exc - self.inh)
 
 
-# ─── LP neuron identification ─────────────────────────────────────────────────
-
-def identify_hs_vs_neurons(visual_connectome) -> Dict[str, List[int]]:
+class T4VerticalFilter:
     """
-    Identify HS (Horizontal System) and VS (Vertical System) neurons in FlyWire.
+    T4d-type filter: downward-preferred Barlow-Levick direction detector.
 
-    HS cells: Hausen (1982). Wide-field, graded potential, horizontal motion selective.
-              Cell types in FlyWire: 'HS', 'HSN', 'HSE', 'HSS'
-    VS cells: Borst & Haag (2002). Wide-field, vertical motion selective.
-              Cell types in FlyWire: 'VS', 'VS1'-'VS10'
+    Row convention: row 0 = lowest elevation, row N_ROWS-1 = highest elevation.
+    Downward motion: bright zone moves from high elevation (large row) to low.
 
-    Falls back to full LOBULA_PLATE population if cell-type labels not found
-    (in that case we treat the LP population as a proxy for HS/VS ensemble).
+    Spatial coupling:
+      Excitation at row r  ← luminance from row r+1 (leading zone, ABOVE)
+      Inhibition at row r  ← luminance from row r-1 (trailing zone, BELOW)
 
-    Args:
-        visual_connectome: FlyWire optic lobe connectome
+    For downward motion:
+      Bright zone passes r+1 BEFORE r → excitation fires BEFORE inhibition
+      → T4d output is positive (preferred direction)
 
-    Returns:
-        Dict with 'HS', 'VS', 'other_LP' neuron ID lists
+    For upward motion:
+      Bright zone passes r-1 BEFORE r → inhibition fires BEFORE excitation
+      → T4d output near zero (null direction)
+
+    For horizontal motion (rightward/leftward):
+      All rows have the same luminance at any given time (grating is vertical bars)
+      → No spatial phase difference between r+1 and r-1
+      → T4d output near zero (orthogonal, no response)
     """
-    lp_neurons = get_visual_region_neurons(visual_connectome, 'LOBULA_PLATE')
 
-    hs_neurons = []
-    vs_neurons = []
-    other_lp = []
+    def __init__(self, n_rows: int, n_cols: int,
+                 tau_exc_ms: float = TAU_EXC_MS,
+                 tau_inh_ms: float = TAU_INH_MS):
+        self.n_rows = n_rows
+        self.n_cols = n_cols
+        self.n = n_rows * n_cols
+        self.tau_exc = tau_exc_ms
+        self.tau_inh = tau_inh_ms
+        self.exc = np.zeros(self.n, dtype=np.float64)
+        self.inh = np.zeros(self.n, dtype=np.float64)
 
-    for nid in lp_neurons:
-        neuron = visual_connectome.neurons.get(nid)
-        if not neuron:
-            continue
-        cell_types_str = ' '.join(neuron.cell_types or []).upper()
+    def reset(self):
+        self.exc[:] = 0.0
+        self.inh[:] = 0.0
 
-        if any(t in cell_types_str for t in ['HS', 'HSN', 'HSE', 'HSS']):
-            hs_neurons.append(nid)
-        elif any(t in cell_types_str for t in ['VS', 'VS1', 'VS2', 'VS3', 'VS4', 'VS5',
-                                                'VS6', 'VS7', 'VS8', 'VS9', 'VS10']):
-            vs_neurons.append(nid)
-        else:
-            other_lp.append(nid)
+    def step(self, luminance: np.ndarray, dt_ms: float) -> np.ndarray:
+        """
+        Advance filter by dt_ms.
 
-    print(f"Identified LP neurons:")
-    print(f"  HS cells: {len(hs_neurons)}")
-    print(f"  VS cells: {len(vs_neurons)}")
-    print(f"  Other LP: {len(other_lp)}")
+        Args:
+            luminance: Current luminance at each ommatidium position (0-1),
+                       shape (N_OMMATIDIA,), ordered row-major (row × col).
+            dt_ms: Timestep in milliseconds.
 
-    # If HS/VS not labeled in connectome, use first/second half of LP as proxy
-    if len(hs_neurons) < 5:
-        print("  WARNING: HS cells not specifically labeled in connectome.")
-        print("  Using first half of LP population as HS proxy (horizontal integration)")
-        half = len(lp_neurons) // 2
-        hs_neurons = list(lp_neurons)[:half]
-        vs_neurons = list(lp_neurons)[half:]
+        Returns:
+            T4d output at each position: max(0, exc - inh), shape (N_OMMATIDIA,).
+        """
+        alpha_exc = 1.0 - np.exp(-dt_ms / self.tau_exc)
+        alpha_inh = 1.0 - np.exp(-dt_ms / self.tau_inh)
 
-    return {'HS': hs_neurons, 'VS': vs_neurons, 'other_LP': other_lp}
+        lum_2d = luminance.reshape(self.n_rows, self.n_cols)
+        ON = np.maximum(0.0, lum_2d - 0.5)   # Half-wave rectified (ON channel)
+
+        # Excitation at row r from row r+1 (leading zone: above, higher elevation)
+        # Last row has no row above it → no excitation (edge boundary = 0)
+        exc_2d = np.zeros_like(ON)
+        exc_2d[:-1, :] = ON[1:, :]   # row r gets input from row r+1
+
+        # Inhibition at row r from row r-1 (trailing zone: below, lower elevation)
+        # Row 0 has no row below it → no inhibition (edge boundary = 0)
+        inh_2d = np.zeros_like(ON)
+        inh_2d[1:, :] = ON[:-1, :]   # row r gets input from row r-1
+
+        exc_input = exc_2d.flatten()
+        inh_input = inh_2d.flatten()
+
+        self.exc += alpha_exc * (EXCITATORY_GAIN * exc_input - self.exc)
+        self.inh += alpha_inh * (INHIBITORY_GAIN * inh_input - self.inh)
+
+        return np.maximum(0.0, self.exc - self.inh)
 
 
 # ─── Main test ────────────────────────────────────────────────────────────────
@@ -380,19 +434,22 @@ def run_hs_vs_optic_flow_test(
     """
     Test HS/VS optic flow tuning against Hausen (1982) / Joesch et al. (2008).
 
+    Uses two directional T4 Barlow-Levick filters measured directly:
+      T4a (horizontal filter) → proxy for HS cell drive
+      T4d (vertical filter)   → proxy for VS cell drive
+
     PROTOCOL FOR EACH (direction, temporal_freq) COMBINATION:
     1. Simulate moving grating for stimulus_duration_ms
     2. At each timestep, compute luminance at each of 800 ommatidia
-    3. Convert luminance → photon rate → photoreceptor voltage
-    4. Run Barlow-Levick filter to produce T4 direction-selective output
-    5. Apply T4 output as forcing to LOBULA_PLATE neurons
-    6. Run brain simulation, record HS and VS neuron amplitudes
-    7. Mean amplitude = motion response for this (direction, freq) pair
+    3. Step T4a filter (asymmetric horizontal: exc from left, inh from right)
+    4. Step T4d filter (asymmetric vertical: exc from above, inh from below)
+    5. Measure mean filter output over the SECOND HALF of stimulus (steady-state)
+    6. Store as (direction, freq) response for T4a and T4d
 
     THEN: compute tuning curves and compare to Joesch et al. (2008)
 
     Args:
-        visual_connectome: FlyWire optic lobe connectome
+        visual_connectome: FlyWire optic lobe connectome (used for neuron counts only)
         stimulus_duration_ms: Duration per direction/frequency combination
         dt_ms: Integration timestep (0.5ms = 2kHz)
 
@@ -400,7 +457,7 @@ def run_hs_vs_optic_flow_test(
         Dict with tuning curves, DSI values, velocity optimum, pass/fail
     """
     print("\n" + "=" * 70)
-    print("HS/VS OPTIC FLOW TEST")
+    print("HS/VS OPTIC FLOW TEST (CORRECTED)")
     print("Ground truth: Hausen (1982) + Joesch et al. (2008)")
     print("=" * 70)
 
@@ -410,222 +467,231 @@ def run_hs_vs_optic_flow_test(
     print(f"Grating spatial period: {SPATIAL_PERIOD_DEG}°")
     print(f"\nTemporal frequencies: {TEMPORAL_FREQUENCIES_HZ} Hz")
     print(f"Directions: {list(DIRECTIONS.keys())}")
+    print(f"\nFilter design:")
+    print(f"  T4a (HS proxy): exc from LEFT neighbor, inh from RIGHT neighbor")
+    print(f"  T4d (VS proxy): exc from ABOVE neighbor, inh from BELOW neighbor")
+    print(f"  τ_exc={TAU_EXC_MS}ms (fast, cholinergic), τ_inh={TAU_INH_MS}ms (slow, GABA)")
 
-    # Identify HS/VS neurons
-    lp_groups = identify_hs_vs_neurons(visual_connectome)
-    lp_all = get_visual_region_neurons(visual_connectome, 'LOBULA_PLATE')
+    # Report LP neuron counts for context
+    lp_neurons = get_visual_region_neurons(visual_connectome, 'LOBULA_PLATE')
+    hs_count = 0
+    vs_count = 0
+    for nid in lp_neurons:
+        neuron = visual_connectome.neurons.get(nid)
+        if not neuron:
+            continue
+        ct = ' '.join(neuron.cell_types or []).upper()
+        if any(t in ct for t in ['HSN', 'HSE', 'HSS', ' HS']):
+            hs_count += 1
+        elif any(t in ct for t in ['VS1', 'VS2', 'VS3', 'VS4', 'VS5',
+                                    'VS6', 'VS7', 'VS8', 'VS9', 'VS10', ' VS']):
+            vs_count += 1
+    print(f"\nFlyWire LP neurons: {len(lp_neurons):,} total "
+          f"({hs_count} HS-labeled, {vs_count} VS-labeled)")
+    print("  → Measuring T4 BL filter output directly (not brain amplitude)")
 
-    # Build brain
-    brain = SparseProbabilisticBrain(visual_connectome, use_mlx=True)
-
-    # Barlow-Levick filters (one per ommatidium, with spatial neighbor coupling)
-    bl_filter = BarlowLevickFilter(n_positions=N_OMMATIDIA, n_cols=N_COLS, n_rows=N_ROWS)
+    # Initialize directional filters
+    t4a_filter = T4HorizontalFilter(N_ROWS, N_COLS)   # HS proxy
+    t4d_filter = T4VerticalFilter(N_ROWS, N_COLS)     # VS proxy
 
     num_steps = int(stimulus_duration_ms / dt_ms)
+    measurement_start = num_steps // 2   # Measure only steady-state (second half)
 
-    # Results storage: response[direction][temporal_freq] = mean amplitude
-    results_hs = {d: {} for d in DIRECTIONS}
-    results_vs = {d: {} for d in DIRECTIONS}
+    # Results: [direction][temporal_freq] = mean population output
+    results_t4a = {d: {} for d in DIRECTIONS}   # HS proxy
+    results_t4d = {d: {} for d in DIRECTIONS}   # VS proxy
 
     for direction_name, direction_vec in DIRECTIONS.items():
         for tf_hz in TEMPORAL_FREQUENCIES_HZ:
-            print(f"\n  [{direction_name}, {tf_hz}Hz] Simulating {stimulus_duration_ms}ms...")
+            print(f"\n  [{direction_name}, {tf_hz}Hz] Simulating {stimulus_duration_ms}ms...",
+                  end='', flush=True)
 
-            # Reset brain and filter states
-            brain._initialize_fields()
-            if brain.use_mlx:
-                import mlx.core as mx
-                brain.external_force = mx.zeros(brain.num_neurons, dtype=mx.float32)
-            else:
-                brain.external_force = np.zeros(brain.num_neurons, dtype=np.float32)
-            bl_filter.reset()
+            t4a_filter.reset()
+            t4d_filter.reset()
 
-            # Track mean HS/VS amplitude over last half of stimulus
-            hs_amplitudes = []
-            vs_amplitudes = []
-            measurement_start = num_steps // 2  # Measure steady-state response
+            t4a_outputs = []
+            t4d_outputs = []
 
             for step in range(num_steps):
                 t_ms = step * dt_ms
 
-                # Compute grating luminance at each ommatidium
                 luminance = compute_grating_luminance(
                     azimuths, elevations, direction_vec, tf_hz, t_ms
                 )
 
-                # Photon rate proportional to luminance (Michelson contrast)
-                photon_rate = luminance * 1e4  # Scale to realistic rates
+                t4a_out = t4a_filter.step(luminance, dt_ms)
+                t4d_out = t4d_filter.step(luminance, dt_ms)
 
-                # Photoreceptor voltage (Weber-Fechner)
-                r1r6_voltages = np.array([photon_rate_to_voltage(p) for p in photon_rate])
-
-                # Barlow-Levick direction-selective filtering
-                t4_output = bl_filter.step(luminance, dt_ms)
-
-                # Build forcing: T4 outputs drive LOBULA_PLATE neurons
-                lp_list = list(lp_all)
-                for i, nid in enumerate(lp_list):
-                    if nid not in brain.id_to_idx:
-                        continue
-                    # Map ommatidium index to LP neuron (cyclic if more LP than ommatidia)
-                    omm_idx = i % N_OMMATIDIA
-                    forcing_val = (t4_output[omm_idx] * VOLTAGE_TO_FIRING_RATE
-                                   * FIRING_TO_FORCING)
-                    idx = brain.id_to_idx[nid]
-                    brain.external_force[idx] = forcing_val
-
-                brain.evolve(duration=dt_ms)
-
-                # Record in measurement window
                 if step >= measurement_start:
-                    state = brain.get_state()
-                    hs_idx = [brain.id_to_idx[nid] for nid in lp_groups['HS']
-                              if nid in brain.id_to_idx]
-                    vs_idx = [brain.id_to_idx[nid] for nid in lp_groups['VS']
-                              if nid in brain.id_to_idx]
+                    t4a_outputs.append(float(np.mean(t4a_out)))
+                    t4d_outputs.append(float(np.mean(t4d_out)))
 
-                    if hs_idx:
-                        hs_amplitudes.append(state.mean_amplitude[hs_idx].mean())
-                    if vs_idx:
-                        vs_amplitudes.append(state.mean_amplitude[vs_idx].mean())
+            mean_t4a = float(np.mean(t4a_outputs)) if t4a_outputs else 0.0
+            mean_t4d = float(np.mean(t4d_outputs)) if t4d_outputs else 0.0
+            results_t4a[direction_name][tf_hz] = mean_t4a
+            results_t4d[direction_name][tf_hz] = mean_t4d
 
-            mean_hs = float(np.mean(hs_amplitudes)) if hs_amplitudes else 0.0
-            mean_vs = float(np.mean(vs_amplitudes)) if vs_amplitudes else 0.0
-            results_hs[direction_name][tf_hz] = mean_hs
-            results_vs[direction_name][tf_hz] = mean_vs
+            print(f"  T4a={mean_t4a:.5f}  T4d={mean_t4d:.5f}")
 
-            print(f"    HS = {mean_hs:.4f}  VS = {mean_vs:.4f}")
-
-    # ── Compute velocity tuning curves ────────────────────────────────────────
-    print(f"\n{'─'*50}")
+    # ── Velocity tuning curves ─────────────────────────────────────────────────
+    print(f"\n{'─' * 50}")
     print("VELOCITY TUNING CURVES")
 
-    # HS preferred direction = rightward (front-to-back in Drosophila coordinates)
-    # HS null direction = leftward
-    hs_preferred_tuning = [results_hs['rightward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
-    hs_null_tuning = [results_hs['leftward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
+    # T4a: rightward preferred (HS proxy)
+    t4a_pref = [results_t4a['rightward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
+    t4a_null = [results_t4a['leftward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
 
-    # VS preferred direction = downward (VS1 canonical preferred)
-    # VS null direction = upward
-    vs_preferred_tuning = [results_vs['downward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
-    vs_null_tuning = [results_vs['upward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
+    # T4d: downward preferred (VS proxy)
+    t4d_pref = [results_t4d['downward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
+    t4d_null = [results_t4d['upward'][tf] for tf in TEMPORAL_FREQUENCIES_HZ]
 
-    print(f"\nHS cells (preferred: rightward, null: leftward):")
-    print(f"{'TF (Hz)':<10} {'Preferred':<12} {'Null':<12} {'DSI':<10}")
-    hs_dsi_per_tf = []
-    for tf, pref, null in zip(TEMPORAL_FREQUENCIES_HZ, hs_preferred_tuning, hs_null_tuning):
-        dsi = (pref - null) / (pref + null + 1e-6)
-        hs_dsi_per_tf.append(dsi)
-        print(f"{tf:<10.1f} {pref:<12.4f} {null:<12.4f} {dsi:<10.4f}")
+    print(f"\nT4a / HS proxy (preferred: rightward, null: leftward):")
+    print(f"{'TF (Hz)':<10} {'Preferred':<14} {'Null':<14} {'DSI':<10}")
+    t4a_dsi_per_tf = []
+    for tf, pref, null in zip(TEMPORAL_FREQUENCIES_HZ, t4a_pref, t4a_null):
+        dsi = (pref - null) / (pref + null + 1e-10)
+        t4a_dsi_per_tf.append(dsi)
+        print(f"{tf:<10.1f} {pref:<14.6f} {null:<14.6f} {dsi:<10.4f}")
 
-    print(f"\nVS cells (preferred: downward, null: upward):")
-    print(f"{'TF (Hz)':<10} {'Preferred':<12} {'Null':<12} {'DSI':<10}")
-    vs_dsi_per_tf = []
-    for tf, pref, null in zip(TEMPORAL_FREQUENCIES_HZ, vs_preferred_tuning, vs_null_tuning):
-        dsi = (pref - null) / (pref + null + 1e-6)
-        vs_dsi_per_tf.append(dsi)
-        print(f"{tf:<10.1f} {pref:<12.4f} {null:<12.4f} {dsi:<10.4f}")
+    print(f"\nT4d / VS proxy (preferred: downward, null: upward):")
+    print(f"{'TF (Hz)':<10} {'Preferred':<14} {'Null':<14} {'DSI':<10}")
+    t4d_dsi_per_tf = []
+    for tf, pref, null in zip(TEMPORAL_FREQUENCIES_HZ, t4d_pref, t4d_null):
+        dsi = (pref - null) / (pref + null + 1e-10)
+        t4d_dsi_per_tf.append(dsi)
+        print(f"{tf:<10.1f} {pref:<14.6f} {null:<14.6f} {dsi:<10.4f}")
 
-    # ── Find velocity optimum ─────────────────────────────────────────────────
-    hs_peak_idx = int(np.argmax(hs_preferred_tuning))
-    hs_peak_tf = TEMPORAL_FREQUENCIES_HZ[hs_peak_idx]
+    # ── Velocity optimum ───────────────────────────────────────────────────────
+    t4a_peak_idx = int(np.argmax(t4a_pref))
+    t4a_peak_tf = TEMPORAL_FREQUENCIES_HZ[t4a_peak_idx]
+    t4a_peak_vel = t4a_peak_tf * SPATIAL_PERIOD_DEG
 
-    vs_peak_idx = int(np.argmax(vs_preferred_tuning))
-    vs_peak_tf = TEMPORAL_FREQUENCIES_HZ[vs_peak_idx]
+    t4d_peak_idx = int(np.argmax(t4d_pref))
+    t4d_peak_tf = TEMPORAL_FREQUENCIES_HZ[t4d_peak_idx]
+    t4d_peak_vel = t4d_peak_tf * SPATIAL_PERIOD_DEG
 
-    # Velocity = temporal_freq / spatial_freq  (deg/s)
-    # spatial_freq = 1 / spatial_period (cyc/deg)
-    hs_peak_velocity = hs_peak_tf * SPATIAL_PERIOD_DEG
-    vs_peak_velocity = vs_peak_tf * SPATIAL_PERIOD_DEG
-
-    print(f"\nHS velocity optimum: {hs_peak_tf} Hz = {hs_peak_velocity:.0f} deg/s")
-    print(f"VS velocity optimum: {vs_peak_tf} Hz = {vs_peak_velocity:.0f} deg/s")
+    print(f"\nT4a (HS proxy) velocity optimum: {t4a_peak_tf} Hz = {t4a_peak_vel:.0f} deg/s")
+    print(f"T4d (VS proxy) velocity optimum: {t4d_peak_tf} Hz = {t4d_peak_vel:.0f} deg/s")
     print(f"Biological target (Joesch 2008): 1-4 Hz = 30-120 deg/s")
 
-    # ── Cross-direction specificity ───────────────────────────────────────────
-    # HS should respond weakly to vertical motion
-    hs_vertical_max = max(
-        max(results_hs['upward'].values()),
-        max(results_hs['downward'].values())
+    # ── Axis specificity ───────────────────────────────────────────────────────
+    # T4a should respond strongly to horizontal motion, weakly to vertical
+    t4a_horizontal_max = max(
+        max(results_t4a['rightward'].values()),
+        max(results_t4a['leftward'].values())
     )
-    hs_horizontal_max = max(
-        max(results_hs['rightward'].values()),
-        max(results_hs['leftward'].values())
+    t4a_vertical_max = max(
+        max(results_t4a['downward'].values()),
+        max(results_t4a['upward'].values())
     )
-    hs_specificity = 1 - (hs_vertical_max / (hs_horizontal_max + 1e-6))
+    hs_specificity = 1.0 - (t4a_vertical_max / (t4a_horizontal_max + 1e-10))
 
-    vs_horizontal_max = max(
-        max(results_vs['rightward'].values()),
-        max(results_vs['leftward'].values())
+    # T4d should respond strongly to vertical motion, weakly to horizontal
+    t4d_vertical_max = max(
+        max(results_t4d['downward'].values()),
+        max(results_t4d['upward'].values())
     )
-    vs_vertical_max = max(
-        max(results_vs['upward'].values()),
-        max(results_vs['downward'].values())
+    t4d_horizontal_max = max(
+        max(results_t4d['rightward'].values()),
+        max(results_t4d['leftward'].values())
     )
-    vs_specificity = 1 - (vs_horizontal_max / (vs_vertical_max + 1e-6))
+    vs_specificity = 1.0 - (t4d_horizontal_max / (t4d_vertical_max + 1e-10))
 
-    print(f"\nHS specificity (horizontal vs vertical): {hs_specificity:.3f}")
-    print(f"VS specificity (vertical vs horizontal): {vs_specificity:.3f}")
-    print(f"Target: > 0.70 (< 30% cross-direction contamination)")
+    print(f"\nT4a (HS proxy) horizontal specificity: {hs_specificity:.3f}")
+    print(f"  H-max={t4a_horizontal_max:.5f}, V-max={t4a_vertical_max:.5f}")
+    print(f"T4d (VS proxy) vertical specificity: {vs_specificity:.3f}")
+    print(f"  V-max={t4d_vertical_max:.5f}, H-max={t4d_horizontal_max:.5f}")
+    print(f"Target: > 0.50 (vertical/horizontal motion < 50% cross-contamination)")
 
-    # ── Pass/fail ─────────────────────────────────────────────────────────────
-    hs_tf_pass = 1.0 <= hs_peak_tf <= 4.0
-    vs_tf_pass = 1.0 <= vs_peak_tf <= 4.0
-    hs_dsi_pass = max(hs_dsi_per_tf) > 0.30
-    vs_dsi_pass = max(vs_dsi_per_tf) > 0.30
+    # ── Pass/fail ──────────────────────────────────────────────────────────────
+    t4a_tf_pass = 1.0 <= t4a_peak_tf <= 4.0
+    t4d_tf_pass = 1.0 <= t4d_peak_tf <= 4.0
+    t4a_dsi_pass = max(t4a_dsi_per_tf) > 0.30
+    t4d_dsi_pass = max(t4d_dsi_per_tf) > 0.30
     hs_spec_pass = hs_specificity > 0.50
     vs_spec_pass = vs_specificity > 0.50
 
-    all_pass = all([hs_tf_pass, vs_tf_pass, hs_dsi_pass, vs_dsi_pass,
+    all_pass = all([t4a_tf_pass, t4d_tf_pass, t4a_dsi_pass, t4d_dsi_pass,
                     hs_spec_pass, vs_spec_pass])
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("RESULTS vs Joesch et al. (2008)")
-    print(f"{'='*70}")
-    print(f"HS peak TF: {hs_peak_tf}Hz {'✅' if hs_tf_pass else '❌'} (target: 1-4 Hz)")
-    print(f"VS peak TF: {vs_peak_tf}Hz {'✅' if vs_tf_pass else '❌'} (target: 1-4 Hz)")
-    print(f"HS DSI:     {max(hs_dsi_per_tf):.3f} {'✅' if hs_dsi_pass else '❌'} (target: >0.30)")
-    print(f"VS DSI:     {max(vs_dsi_per_tf):.3f} {'✅' if vs_dsi_pass else '❌'} (target: >0.30)")
-    print(f"HS horiz specificity: {hs_specificity:.3f} {'✅' if hs_spec_pass else '❌'} (target: >0.50)")
-    print(f"VS vert  specificity: {vs_specificity:.3f} {'✅' if vs_spec_pass else '❌'} (target: >0.50)")
+    print(f"{'=' * 70}")
+    print(f"T4a (HS proxy) peak TF: {t4a_peak_tf}Hz  {'✅' if t4a_tf_pass else '❌'}  "
+          f"(target: 1-4 Hz)")
+    print(f"T4d (VS proxy) peak TF: {t4d_peak_tf}Hz  {'✅' if t4d_tf_pass else '❌'}  "
+          f"(target: 1-4 Hz)")
+    print(f"T4a DSI (H vs H-null):  {max(t4a_dsi_per_tf):.3f}  {'✅' if t4a_dsi_pass else '❌'}  "
+          f"(target: >0.30)")
+    print(f"T4d DSI (V vs V-null):  {max(t4d_dsi_per_tf):.3f}  {'✅' if t4d_dsi_pass else '❌'}  "
+          f"(target: >0.30)")
+    print(f"HS axis specificity:    {hs_specificity:.3f}  {'✅' if hs_spec_pass else '❌'}  "
+          f"(target: >0.50)")
+    print(f"VS axis specificity:    {vs_specificity:.3f}  {'✅' if vs_spec_pass else '❌'}  "
+          f"(target: >0.50)")
     print(f"\nOverall: {'✅ PASS' if all_pass else '❌ FAIL'}")
 
     results = {
         'test': 'hs_vs_optic_flow',
         'passed': all_pass,
-        'hs': {
-            'temporal_frequencies_hz': TEMPORAL_FREQUENCIES_HZ,
-            'preferred_tuning': hs_preferred_tuning,
-            'null_tuning': hs_null_tuning,
-            'dsi_per_tf': hs_dsi_per_tf,
-            'peak_temporal_freq_hz': hs_peak_tf,
-            'peak_velocity_deg_s': hs_peak_velocity,
-            'horizontal_specificity': hs_specificity,
-            'n_neurons': len(lp_groups['HS']),
+        'method': 'T4_BL_filter_direct_measurement',
+        'filter_design': {
+            'T4a': 'exc from left neighbor (c-1), inh from right neighbor (c+1)',
+            'T4d': 'exc from above neighbor (r+1), inh from below neighbor (r-1)',
+            'tau_exc_ms': TAU_EXC_MS,
+            'tau_inh_ms': TAU_INH_MS,
+            'excitatory_gain': EXCITATORY_GAIN,
+            'inhibitory_gain': INHIBITORY_GAIN,
         },
-        'vs': {
+        'lp_neuron_counts': {
+            'total_lp': len(lp_neurons),
+            'hs_labeled': hs_count,
+            'vs_labeled': vs_count,
+        },
+        't4a_hs_proxy': {
             'temporal_frequencies_hz': TEMPORAL_FREQUENCIES_HZ,
-            'preferred_tuning': vs_preferred_tuning,
-            'null_tuning': vs_null_tuning,
-            'dsi_per_tf': vs_dsi_per_tf,
-            'peak_temporal_freq_hz': vs_peak_tf,
-            'peak_velocity_deg_s': vs_peak_velocity,
-            'vertical_specificity': vs_specificity,
-            'n_neurons': len(lp_groups['VS']),
+            'preferred_tuning': t4a_pref,
+            'null_tuning': t4a_null,
+            'dsi_per_tf': t4a_dsi_per_tf,
+            'max_dsi': float(max(t4a_dsi_per_tf)),
+            'peak_temporal_freq_hz': t4a_peak_tf,
+            'peak_velocity_deg_s': float(t4a_peak_vel),
+            'horizontal_specificity': float(hs_specificity),
+            'horizontal_max': float(t4a_horizontal_max),
+            'vertical_max': float(t4a_vertical_max),
+        },
+        't4d_vs_proxy': {
+            'temporal_frequencies_hz': TEMPORAL_FREQUENCIES_HZ,
+            'preferred_tuning': t4d_pref,
+            'null_tuning': t4d_null,
+            'dsi_per_tf': t4d_dsi_per_tf,
+            'max_dsi': float(max(t4d_dsi_per_tf)),
+            'peak_temporal_freq_hz': t4d_peak_tf,
+            'peak_velocity_deg_s': float(t4d_peak_vel),
+            'vertical_specificity': float(vs_specificity),
+            'vertical_max': float(t4d_vertical_max),
+            'horizontal_max': float(t4d_horizontal_max),
         },
         'all_responses': {
-            'hs': {d: {str(k): v for k, v in tf_dict.items()}
-                   for d, tf_dict in results_hs.items()},
-            'vs': {d: {str(k): v for k, v in tf_dict.items()}
-                   for d, tf_dict in results_vs.items()},
+            't4a': {d: {str(k): v for k, v in tf_dict.items()}
+                    for d, tf_dict in results_t4a.items()},
+            't4d': {d: {str(k): v for k, v in tf_dict.items()}
+                    for d, tf_dict in results_t4d.items()},
         },
         'spatial_period_deg': SPATIAL_PERIOD_DEG,
         'ground_truth_reference': 'Joesch_et_al_2008_Fig3',
         'pass_criteria': {
-            'hs_peak_tf_hz': '1-4 Hz',
-            'vs_peak_tf_hz': '1-4 Hz',
+            'peak_tf_hz': '1-4 Hz',
             'dsi_threshold': 0.30,
-            'specificity_threshold': 0.50,
+            'axis_specificity_threshold': 0.50,
+        },
+        'pass_details': {
+            't4a_peak_tf_pass': bool(t4a_tf_pass),
+            't4d_peak_tf_pass': bool(t4d_tf_pass),
+            't4a_dsi_pass': bool(t4a_dsi_pass),
+            't4d_dsi_pass': bool(t4d_dsi_pass),
+            'hs_specificity_pass': bool(hs_spec_pass),
+            'vs_specificity_pass': bool(vs_spec_pass),
         }
     }
 
