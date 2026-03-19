@@ -403,8 +403,7 @@ def run_color_constancy_test(
                         forcing[neuron_id] = forcing.get(neuron_id, 0.0) + scaled
 
         # Apply R7 and R8 direct medulla forcing (color-specific channels)
-        from hive.substrate.visual_pathway import get_visual_region_neurons
-        all_medulla = get_visual_region_neurons(visual_connectome, 'MEDULLA')
+        all_medulla = medulla_neurons
 
         # Target Mi1 / Tm5 neurons for R7/R8 projection
         # (simplified: distribute color forcing across medulla population)

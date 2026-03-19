@@ -1,0 +1,64 @@
+{
+  "test": "color_constancy",
+  "passed": true,
+  "mean_correlation": 0.9197256346811736,
+  "min_correlation": 0.8897148989005244,
+  "target_correlation": 0.7,
+  "correlation_matrix": [
+    [
+      1.0,
+      0.94981214817223,
+      0.929542938637153,
+      0.9099905521265024,
+      0.8897148989005244
+    ],
+    [
+      0.94981214817223,
+      1.0,
+      0.9734508471157833,
+      0.9220161808992456,
+      0.9082343189576569
+    ],
+    [
+      0.9295429386371529,
+      0.9734508471157833,
+      1.0,
+      0.916254766045393,
+      0.895876415061548
+    ],
+    [
+      0.9099905521265024,
+      0.9220161808992456,
+      0.9162547660453931,
+      1.0,
+      0.9023632808956983
+    ],
+    [
+      0.8897148989005244,
+      0.9082343189576568,
+      0.8958764150615479,
+      0.9023632808956983,
+      1.0
+    ]
+  ],
+  "illuminant_names": [
+    "noon_sun",
+    "morning_sun",
+    "canopy_shade",
+    "overcast_sky",
+    "uv_led"
+  ],
+  "r7_r8_ratio_cv": 0.006573754999276054,
+  "adapted_ratios": {
+    "noon_sun": 0.9993267222511135,
+    "morning_sun": 1.0046671802892313,
+    "canopy_shade": 0.9898384353946413,
+    "overcast_sky": 1.0021579722659164,
+    "uv_led": 1.0096548277538262
+  },
+  "n_illuminants": 5,
+  "adaptation_duration_ms": 300.0,
+  "mechanism": "calcium_dependent_photoreceptor_adaptation",
+  "analogy": "concentration_invariance_olfaction",
+  "reference_benchmark": "Turner_2008_r_0.70"
+}
