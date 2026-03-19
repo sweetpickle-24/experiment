@@ -227,7 +227,7 @@ So:
 **Is 0.5 correct?**
 
 Hard to tell without knowing the amplitude↔voltage mapping in our probabilistic framework. But:
-- Olfaction validation (8/9 pass) used this same threshold
+- Olfaction validation (9/9 pass) used this same threshold
 - Problem is likely NOT the threshold, but the **forcing/propagation**
 
 ### Recommendation
@@ -282,7 +282,7 @@ Actually, **YES**! This matches:
 | **dt (ms)** | 0.01 | 0.01 | **0.1-1.0** | **10-100×** ↑ |
 | **Steps** | 10,000 | 2,000 | **500-1000** | **5-20×** ↓ |
 | **Threshold** | 0.5 | 0.5 | 0.5 | 1× |
-| **Validation** | 8/9 pass ✅ | 0/4 pass ❌ | TBD | - |
+| **Validation** | 9/9 pass ✅ | 0/4 pass ❌ | TBD | - |
 
 ### Why Vision Needs Different Parameters
 
@@ -519,4 +519,4 @@ The vision simulation is **fundamentally sound** in architecture, but has **crit
 
 These are **fixable** with simple parameter changes. The biological literature strongly supports these recommendations.
 
-**Expected outcome after fixes**: Vision validation should approach olfaction success rate (8/9 benchmarks), enabling cross-modal validation of the wave-based neural theory.
+**Expected outcome after fixes**: Vision validation should match olfaction success rate (9/9 benchmarks, 100%), enabling cross-modal validation of the wave-based neural theory.

@@ -76,7 +76,7 @@ Two components added to the framework that are reusable for any future modality:
 **Central claim**: The same wave physics engine, applied to real connectome data, produces biologically accurate emergent coding strategies in both olfaction and vision without modality-specific tuning. Connectome topology, not physics parameters, determines the coding strategy.
 
 **Evidence**:
-1. Olfaction: 8/9 (89%), r=-0.51 decorrelation (the "wow" result)
+1. Olfaction: 9/9 (100%), r=-0.51 decorrelation (the "wow" result)
 2. Vision: 4/4 (100%), DSI=0.975, gap=0.061 (the "it generalizes" result)
 3. Same engine, 0 modality-specific tuning of core dynamics
 

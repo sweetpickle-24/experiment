@@ -8,7 +8,7 @@
 
 ## Validation Framework
 
-Similar to olfaction validation (8/9 tests passed), vision tests check if wave physics produces biologically realistic phenomena.
+Similar to olfaction validation (9/9 tests passed, 100%), vision tests check if wave physics produces biologically realistic phenomena.
 
 ### Core Hypothesis
 
@@ -199,7 +199,7 @@ python hive/validation/vision/test_motion_detection.py
 
 ### Achieved: 4/4 (100%) ✅
 Validates wave physics universality across sensory modalities.  
-Exceeds olfaction benchmark (8/9, 89%).  
+Exceeds olfaction benchmark (9/9, 100%).  
 Confirms multi-modal generalization for Nature Neuroscience submission.
 
 ---
@@ -244,4 +244,4 @@ After running tests, document results in:
 ---
 
 **Status**: ✅ All 4 tests PASSED (100%)  
-**Score**: 4/4 vision + 8/9 olfaction = multi-modal validation complete
+**Score**: 4/4 vision + 9/9 olfaction = multi-modal validation complete (100%)

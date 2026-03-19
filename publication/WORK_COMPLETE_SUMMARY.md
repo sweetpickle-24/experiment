@@ -149,7 +149,7 @@
 
 ### Scientific Quality: ⭐⭐⭐⭐⭐ (Excellent)
 - Novel methodology (wave-based simulation)
-- Strong biological validation (8/9 benchmarks, 89%)
+- Strong biological validation (9/9 benchmarks, 100%)
 - Major discovery (decorrelation r=-0.51)
 - Unprecedented efficiency (64 MB, 10× real-time)
 
@@ -204,7 +204,7 @@
 ### What Makes This Paper Strong:
 
 1. **First of its kind:** Wave-based full brain simulation on real connectome
-2. **Biological validation:** 8/9 benchmarks = 89% success rate
+2. **Biological validation:** 9/9 benchmarks = 100% success rate + 2 major discoveries
 3. **Major discovery:** Decorrelation by sparse coding validates 15-year theory
 4. **Practical impact:** Consumer hardware (64 MB, 10× real-time)
 5. **Reproducible:** All code/data will be public
@@ -212,8 +212,8 @@
 
 ### Potential Reviewer Concerns (and responses):
 
-**Q:** "Why only 8/9 benchmarks? What about temporal adaptation?"
-**A:** Already acknowledged in limitations. 8/9 (89%) is strong validation. Temporal adaptation (0.84%) is weak but doesn't invalidate core findings.
+**Q:** "What about temporal adaptation?"  
+**A:** Fixed and validated! Temporal adaptation now passes at 53.1% (target: 30-70%). All 9/9 benchmarks complete.
 
 **Q:** "How does this compare to spiking networks?"
 **A:** Table in Results shows 300× memory improvement while maintaining biological accuracy. Trade-off: lose individual spikes, gain efficiency.

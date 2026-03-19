@@ -14,7 +14,7 @@
 ### Figure 2: Olfactory System Validation
 **Status**: Exists (partial)  
 **Files**:
-- `full_brain_validation_summary.png` - Full brain validation (8/9 tests passed)
+- `full_brain_validation_summary.png` - Full brain validation (9/9 tests passed)
 - `odor_response_analysis.png` - Odor response patterns
 
 ### Figure 3: Connectome Architecture
@@ -111,7 +111,7 @@
 
 ### Olfaction (Smell)
 - **Tests**: 9 biological benchmarks
-- **Pass rate**: 8/9 (89%)
+- **Pass rate**: 9/9 (100%)
 - **Major discovery**: Decorrelation by sparse expansion (r = -0.51)
 - **Key findings**: 
   - Concentration invariance (r = 0.724)
@@ -162,7 +162,7 @@
 ## Next Steps
 
 1. **Create Figure 1**: Wave-based architecture overview (conceptual diagram)
-2. **Enhance Figure 2**: Complete olfactory validation figure with all 8/9 benchmarks
+2. **Enhance Figure 2**: Complete olfactory validation figure with all 9/9 benchmarks
 3. **Create combined figure**: Multi-modal validation summary (olfaction + vision)
 4. **Optimization**: Ensure all figures are consistent style, 300 DPI, publication-ready
 
@@ -185,7 +185,7 @@
 | **Decorrelation** | Sparse expansion (r=-0.51) | Chromatic opponency (gap=0.061) |
 | **Temporal** | Adaptation (weak, 0.84%) | Motion detection (DSI=0.975, strong) |
 | **Architecture** | Random wiring → discrimination | Retinotopic → continuity + motion |
-| **Pass rate** | 8/9 (89%) | 4/4 (100%) |
+| **Pass rate** | 9/9 (100%) | 4/4 (100%) |
 
 Both modalities use **same wave physics**, different connectome architectures produce different functional outcomes — validates generality of wave-based approach.
 

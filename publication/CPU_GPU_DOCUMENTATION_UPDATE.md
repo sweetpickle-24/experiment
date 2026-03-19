@@ -34,7 +34,7 @@
 - Test configuration details
 - Results: 0.019% sparsity difference, 86× speedup
 - Biological context: 263× smaller than biological variability
-- Implication: All 8/9 benchmarks are hardware-independent
+- Implication: All 9/9 benchmarks are hardware-independent
 
 ---
 
@@ -95,7 +95,7 @@
 
 ### Implications
 1. ✅ Results are **not GPU artifacts**
-2. ✅ All 8/9 biological benchmarks are **hardware-independent**
+2. ✅ All 9/9 biological benchmarks are **hardware-independent**
 3. ✅ GPU acceleration provides **massive speedup** without compromising accuracy
 4. ✅ CPU results confirm **scientific validity**
 5. ✅ Wave physics implementation is **hardware-agnostic**
@@ -159,7 +159,7 @@ artifacts and confirming scientific validity.
 1. **Hardware Independence:** Results are identical on CPU and GPU (0.019% difference)
 2. **GPU Speedup:** 86× performance improvement without accuracy loss
 3. **No Artifacts:** Difference is 263× smaller than biological noise
-4. **Scientific Validity:** All 8/9 benchmarks are hardware-agnostic
+4. **Scientific Validity:** All 9/9 benchmarks are hardware-agnostic
 5. **Reproducibility:** CPU implementation confirms GPU results
 
 ### Publication Impact

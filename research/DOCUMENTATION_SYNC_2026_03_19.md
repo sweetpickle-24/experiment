@@ -54,7 +54,7 @@
 - Line 16-29: Updated comprehensive validation suite entry
 - Line 20: Changed "20% JND PASS" → "5% JND NOVEL DISCOVERY"
 - Added new section (lines 157-175): Full discrimination discovery documentation
-- Score updated: "8/9 validations + 2 major discoveries"
+- Score updated: "9/9 validations + 2 major discoveries"
 
 ---
 

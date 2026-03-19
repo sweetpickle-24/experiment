@@ -243,7 +243,7 @@
 
 ## Comparison to Existing Validations
 
-### Our 8/9 Validations + This Discovery
+### Our 9/9 Validations + This Discovery
 
 | Test | Result | Source | Status |
 |------|--------|--------|--------|

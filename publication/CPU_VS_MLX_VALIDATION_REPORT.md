@@ -152,7 +152,7 @@ This demonstrates scientific rigor and addresses potential reviewer concerns bef
 - ✅ Results emerge from **biology (connectome) + physics (waves)**
 - ✅ MLX is just a **performance optimization**, not a scientific dependency
 
-**The 8/9 biological validations (89% success rate) are legitimate scientific findings.**
+**The 9/9 biological validations (100% success rate) are legitimate scientific findings.**
 
 ---
 

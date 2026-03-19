@@ -40,7 +40,7 @@
 │   │   └── CONCENTRATION_INVARIANCE_FINAL.md
 │   │
 │   └── validation/                        # Validation studies
-│       ├── FINAL_VALIDATION_COMPLETE.md   # 8/9 benchmarks
+│       ├── FINAL_VALIDATION_COMPLETE.md   # 9/9 benchmarks
 │       ├── VALIDATION_RESULTS_SUMMARY.md
 │       ├── VALIDATION_SUITE_STATUS.md
 │       ├── FINAL_VALIDATION_STATUS.md

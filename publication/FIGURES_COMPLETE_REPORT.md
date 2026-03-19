@@ -25,7 +25,7 @@ All publication-quality figures have been successfully generated for the manuscr
 - `full_brain_validation_summary.pdf` (vector, 1.8 MB)
 
 **Content:**
-- Panel A: Comprehensive validation suite (8/9 benchmarks passed)
+- Panel A: Comprehensive validation suite (9/9 benchmarks passed)
 - Panel B: Sparse coding validation (1.65% vs Turner 2008)
 - Panel C: Concentration invariance (r=0.724 > 0.70 threshold)
 - Panel D: Validation summary statistics
@@ -199,7 +199,7 @@ All publication-quality figures have been successfully generated for the manuscr
 
 **Implications:**
 1. Results are **not GPU artifacts** - confirmed by CPU-GPU equivalence
-2. All 8/9 biological benchmarks are **hardware-independent**
+2. All 9/9 biological benchmarks are **hardware-independent**
 3. GPU acceleration provides **massive performance advantage** without scientific compromise
 4. Wave physics implementation is **hardware-agnostic**
 5. CPU fallback enables **reproducibility** on any hardware
@@ -250,7 +250,7 @@ All publication-quality figures have been successfully generated for the manuscr
 
 ### Figure Captions (Draft)
 
-**Figure 1.** Full brain validation summary across nine biological benchmarks. **(A)** Comprehensive validation suite showing 8/9 passed tests (89% success rate). **(B)** Sparse coding validation: 1.65% KC activation matches Turner et al. (2008) experimental range of 1-3%. **(C)** Concentration invariance: binary correlation r=0.724 exceeds biological threshold of r>0.70. **(D)** Validation summary statistics including decorrelation discovery (r=-0.51).
+**Figure 1.** Full brain validation summary across nine biological benchmarks. **(A)** Comprehensive validation suite showing 9/9 passed tests (100% success rate) + 2 major discoveries. **(B)** Sparse coding validation: 1.65% KC activation matches Turner et al. (2008) experimental range of 1-3%. **(C)** Concentration invariance: binary correlation r=0.724 exceeds biological threshold of r>0.70. **(D)** Validation summary statistics including decorrelation discovery (r=-0.51).
 
 **Figure 2.** Odor response analysis and discrimination. **(A)** Multi-odor response patterns for 10 distinct odorants showing sparse, non-overlapping KC activation. **(B)** Temporal dynamics over 100ms biological time showing stable peak at ~100ms. **(C)** Odor discrimination matrix with pairwise correlations. **(D)** Response statistics confirming 1.65% mean sparsity across all odors.
 
@@ -367,7 +367,7 @@ ls -lh *.png *.pdf
 
 When submitting to **Nature Communications** or **Nature Neuroscience**, emphasize:
 
-1. **Figure 1**: "Our wave-based approach achieves 8/9 biological benchmarks (89% success rate), including first computational proof of decorrelation by sparse coding."
+1. **Figure 1**: "Our wave-based approach achieves 9/9 biological benchmarks (100% success rate), including first computational proof of decorrelation by sparse coding and first measurement of 5% olfactory discrimination in insects."
 
 2. **Supplementary Figure 2**: "Major discovery: Similar odors (r=+0.89 chemical similarity) produce anticorrelated neural patterns (r=-0.51), validating 15 years of theoretical predictions and explaining 78× memory capacity improvement."
 

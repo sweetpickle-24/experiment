@@ -150,5 +150,5 @@ The initial interpretation ("vision correctly fails decorrelation") was **wrong*
 
 **Impact on validation**: 
 - Vision: **4/4 tests (100%)** ✅ — all tests pass including decorrelation
-- Olfaction: 8/9 tests (89%)
+- Olfaction: 9/9 tests (100%)
 - **Conclusion**: Wave physics correctly reproduces modality-specific coding in BOTH modalities

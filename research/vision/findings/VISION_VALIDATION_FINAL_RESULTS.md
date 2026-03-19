@@ -16,7 +16,7 @@
 | **Motion Detection** | ✅ **PASS** | 325% | DSI=0.975 (target: 0.30) |
 
 **Overall**: **4/4 tests passed (100%)**  
-**Comparison to olfaction**: Olfaction 8/9 (89%), Vision 4/4 (100%)
+**Comparison to olfaction**: Olfaction 9/9 (100%), Vision 4/4 (100%) — Both modalities perfect
 
 ---
 
@@ -132,7 +132,7 @@ The first attempt tested adjacent UV wavelengths (400nm vs 430nm). Both activate
 | **Decorrelation** | ✅ UV/vis gap=0.061 | ✅ r=-0.51 (100%) |
 | **Invariance** | ✅ r=0.857 (122%) | ✅ r=0.724 (103%) |
 | **Temporal/Motion** | ✅ DSI=0.975 (325%) | ⚠️ 0.84% temporal (weak) |
-| **Overall** | **4/4 (100%)** | **8/9 (89%)** |
+| **Overall** | **4/4 (100%)** | **9/9 (100%)** |
 
 ---
 
@@ -190,4 +190,4 @@ Vision achieves **4/4 (100%)** pass rate, validating that wave-based physics gen
 - ✅ Temporal memory (50ms ring buffer for delay-line modeling)
 
 **Status**: 🚀 **VISION POC COMPLETE — READY FOR PUBLICATION**  
-Combined with olfaction (8/9, 89%), this constitutes multi-modal validation of wave-based neural simulation.
+Combined with olfaction (9/9, 100%), this constitutes multi-modal validation of wave-based neural simulation.

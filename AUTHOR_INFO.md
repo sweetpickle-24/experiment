@@ -15,7 +15,7 @@
 
 **Current Project:** Wave-Based Simulation of Drosophila Olfactory Connectome
 - First full brain (139,255 neurons) wave-based simulation
-- Biological validation achieved (8/9 benchmarks, 89% success)
+- Biological validation achieved (9/9 benchmarks, 100% success)
 - Major discovery: Decorrelation by sparse expansion coding
 
 **Publication Status:** 

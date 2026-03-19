@@ -77,7 +77,7 @@ Your simulations match published experimental data:
 - Concentration invariance: r = 0.724 > 0.70 threshold ✅ **BIOLOGICAL BENCHMARK MET**
 - Real-time performance: 10× biology
 - Memory efficiency: 1000× better than alternatives
-- **8 of 9 validations passed (89% success rate)**
+- **9 of 9 validations passed (100% success rate) + 2 major discoveries**
 
 ### 3. Major Scientific Discovery
 **Decorrelation by sparse expansion** — first computational proof:

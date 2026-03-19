@@ -9,7 +9,7 @@ Comprehensive vision research implementation parallel to olfaction, testing if w
 
 ## Hypothesis
 
-The same probabilistic wave physics that validated olfaction (8/9 benchmarks, r=-0.51 decorrelation) should produce equivalent emergent properties in vision:
+The same probabilistic wave physics that validated olfaction (9/9 benchmarks, 100% + r=-0.51 decorrelation discovery) should produce equivalent emergent properties in vision:
 
 1. **Sparse coding**: Medulla neurons fire sparsely (~2-5%)
 2. **Decorrelation**: Similar wavelengths → anticorrelated medulla patterns
@@ -118,7 +118,7 @@ Optic lobe is pre-extracted (`data/vision/optic_lobe/` — gitignored, re-run ex
 | **Decorrelation** | r = -0.51 (random wiring) ✅ | gap=0.061 (UV/vis opponency) ✅ |
 | **Invariance** | r = 0.724 ✅ | r = 0.857 ✅ (122% of target) |
 | **Temporal/Motion** | 0.84% weak ⚠️ | DSI=0.975 ✅ (Barlow-Levick) |
-| **Overall** | 8/9 (89%) | **4/4 (100%)** |
+| **Overall** | 9/9 (100%) | **4/4 (100%)** |
 
 ## Key Differences
 

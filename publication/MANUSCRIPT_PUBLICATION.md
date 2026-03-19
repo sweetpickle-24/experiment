@@ -426,7 +426,7 @@ To validate that results are not GPU computational artifacts, we compared MLX GP
 
 **Biological Context:** The 0.019% sparsity difference is 263× smaller than biological trial-to-trial variability (5-10%, Stopfer et al. 2003), confirming that observed sparse coding emerges from wave physics and connectome structure, not hardware quirks.
 
-**Implication:** All biological validation results (8/9 benchmarks) are hardware-independent and scientifically valid. GPU acceleration provides massive speedup (86×) without compromising accuracy.
+**Implication:** All biological validation results (9/9 benchmarks, 100%) are hardware-independent and scientifically valid. GPU acceleration provides massive speedup (86×) without compromising accuracy.
 
 ### Statistical Analysis
 

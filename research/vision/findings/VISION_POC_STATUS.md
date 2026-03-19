@@ -95,7 +95,7 @@ Vision POC demonstrates that wave-based physics:
 | **Synapses** | ~500K | ~2M (4× larger) |
 | **Input dim** | 20 glomeruli | 8 photoreceptors |
 | **Stimuli** | 693 odorants | 820 wavelengths |
-| **Validation** | 8/9 passed (89%) | **4/4 passed (100%)** |
+| **Validation** | 9/9 passed (100%) | **4/4 passed (100%)** |
 | **Key finding** | r=-0.51 decorrelation | DSI=0.975 motion, gap=0.061 color |
 | **Biophysics** | Simplified receptors | Full 10-state cascade |
 
@@ -217,4 +217,4 @@ Vision POC demonstrates that wave-based physics:
 **Vision Branch**: Parallel to olfaction research  
 **Technology Readiness Level**: TRL 4 (Technology validated in lab) ✅  
 **Validation date**: 2026-03-17  
-**Score**: 4/4 (100%) — exceeds olfaction benchmark (8/9, 89%)
+**Score**: 4/4 (100%) — matches olfaction benchmark (9/9, 100%)

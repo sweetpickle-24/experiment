@@ -30,7 +30,7 @@ Based on our simulations, a **digital smell** has three representations:
 |-------|----------------|-------------|----------|------------------------|-----------|
 | **Vision** | 2D pixel array | Retinotopic feature map | **7-42%** distributed | Color opponency (Dm8/Tm5) | ✅ 4/4 (100%) |
 | **Sound** | 1D waveform | A1 frequency bands | ~10-20% | Tonotopic separation | — |
-| **Smell** | Chemical features | KC sparse pattern | **1-20%** | **Sparse expansion** | ✅ 8/9 (89%) |
+| **Smell** | Chemical features | KC sparse pattern | **1-20%** | **Sparse expansion** | ✅ 9/9 (100%) |
 
 **Why Smell is Sparsest:**
 1. **No Natural Coordinates**: Unlike vision (retinotopic) or sound (tonotopic), odor chemistry has no inherent spatial organization
@@ -127,7 +127,7 @@ This is not random noise — it's structured decorrelation:
 
 ## 5.5 Multi-Modal Validation: Vision as Proof of Universality
 
-Following olfactory validation (8/9 benchmarks), we validated the same `SparseProbabilisticBrain` engine on the *Drosophila* optic lobe (53,000 neurons, 5× larger than the olfactory circuit). Vision passed 4/4 benchmarks (100%).
+Following olfactory validation (9/9 benchmarks, 100%), we validated the same `SparseProbabilisticBrain` engine on the *Drosophila* optic lobe (53,000 neurons, 5× larger than the olfactory circuit). Vision passed 4/4 benchmarks (100%).
 
 ### What Vision Validation Proves
 
@@ -180,7 +180,7 @@ Vision results are corroborating, not independently groundbreaking:
 5. **Output**: Digital smell database with full PN→KC→MBON patterns
    - First complete "smell fingerprint" dataset from realistic simulation
 
-6. **Full Brain Achievement**: 139,255 neurons with 8/9 biological benchmarks passed
+6. **Full Brain Achievement**: 139,255 neurons with 9/9 biological benchmarks passed (100%)
    - First wave-based full brain simulation with biological validation
 
 7. **Multi-Modal Generalization** (2026-03-17): Vision validated at 4/4 (100%) on 53,000 neurons
