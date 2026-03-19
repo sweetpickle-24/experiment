@@ -1,5 +1,8 @@
 # Probabilistic Wave Fields + DOoR Integration
 
+**Date**: 2026-03-16  
+**Last Updated**: 2026-03-19  
+
 **Complete Implementation of Mean-Field Neural Dynamics with Real Odorant Database**
 
 ## Overview

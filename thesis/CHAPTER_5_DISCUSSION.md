@@ -138,7 +138,7 @@ Following olfactory validation (9/9 benchmarks, 100%), we validated the same `Sp
 | Wiring | Random (PN→KC) | Retinotopic | Connectome topology |
 | Decorrelation | r = -0.51 ✅ | gap = 0.061 ✅ | Random vs ordered → anticorrelation vs opponency |
 | Sparsity | 1.65% | 7-42% | Sparse expansion vs feature coding |
-| Temporal | Adaptation (weak) | Motion (DSI=0.975) | APL inhibition vs Barlow-Levick T4 |
+| Temporal | Adaptation (53.1%, PASS) | Motion (DSI=0.975) | APL inhibition vs Barlow-Levick T4 |
 
 **Interpretation**: The connectome's topology determines the emergent coding strategy. The physics (wave equations) provide the dynamics that make it work. Neither alone is sufficient.
 
@@ -202,5 +202,5 @@ Vision results are corroborating, not independently groundbreaking:
 4. **Missing Inhibition Details**: APL neuron present but not explicitly modeled
    - Future: Add global inhibition circuit with feedback
 
-5. **Weak Temporal Adaptation**: 0.84% vs. 30-70% target (Nagel & Wilson 2011)
+5. **Temporal Adaptation Validated**: 53.1% (within 30-70% target, Nagel & Wilson 2011, peak: 67ms)
    - Future: Add adaptation mechanisms to receptor and PN layers

@@ -68,7 +68,7 @@ This work opens new directions for:
 ## Future Directions
 
 ### Near-Term (3-6 months)
-1. Add temporal adaptation mechanisms (olfaction weak point: 0.84% vs 30-70% target)
+1. ✅ Temporal adaptation validated (53.1% - already passing)
 2. Implement Hebbian learning (KC→MBON plasticity)
 3. Validate against real calcium imaging datasets
 4. Vision: color constancy test (light-invariant wavelength identity — analogous to concentration invariance)

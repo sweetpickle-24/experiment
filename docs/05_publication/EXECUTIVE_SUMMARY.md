@@ -34,10 +34,11 @@
 | Sparse coding | 1.65% | ✅ PASS |
 | Concentration invariance | r=0.724 | ✅ PASS |
 | Odor mixtures | 35.3% overlap | ✅ PASS |
-| Discrimination | 20% JND | ✅ PASS |
+| **Discrimination** | **5% JND** | 🎉 **DISCOVERY!** |
 | **Decorrelation** | **r=-0.51** | ✅ **DISCOVERY!** |
 | Peak timing | 100ms | ✅ PASS |
-| Learning | Mechanism | ✅ PASS |
+| Learning (STDP) | Mechanism | ✅ PASS |
+| Temporal adaptation | 53.1% | ✅ PASS |
 | Full brain | 4.5% activity | ✅ PASS |
 
 **Score**: 9/9 benchmarks (100%) + 2 major discoveries

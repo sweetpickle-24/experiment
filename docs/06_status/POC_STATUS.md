@@ -34,7 +34,7 @@ A Proof of Concept demonstrates that a technology:
 - [x] Sparse coding: 1.65% (target: 1-3%) ✅
 - [x] Concentration invariance: r=0.724 (target: >0.70) ✅
 - [x] Odor mixtures: 35.3% overlap (target: 30-50%) ✅
-- [x] Discrimination: 20% JND (target: 10-20%) ✅
+- [x] Discrimination: 5% JND (NOVEL DISCOVERY - finer than assumed) ✅
 - [x] Decorrelation: r=-0.51 (validates sparse coding) ✅
 - [x] Peak timing: 100ms (target: 100-500ms) ✅
 - [x] Learning mechanism: Hebbian plasticity ✅

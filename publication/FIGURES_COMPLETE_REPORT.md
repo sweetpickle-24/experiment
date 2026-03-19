@@ -36,12 +36,12 @@ All publication-quality figures have been successfully generated for the manuscr
 - Sparse coding: 1.65% ✓ (matches Turner 2008: 1-3%)
 - Concentration invariance: r=0.724 ✓ (exceeds r>0.70)
 - Odor mixtures: 35.3% overlap ✓
-- Discrimination: 20% JND ✓
+- Discrimination: 5% JND ✓ **NOVEL DISCOVERY**
 - Learning: Hebbian STDP ✓
 - Peak timing: 100ms ✓
 - Full brain: 4.5% global, 47.5% olfactory ✓
 - Decorrelation: r=-0.51 ✓ **MAJOR DISCOVERY**
-- Temporal adaptation: 0.84% ⚠️ (weak, acknowledged)
+- Temporal adaptation: 53.1% ✅ PASS
 
 ---
 

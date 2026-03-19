@@ -1,0 +1,149 @@
+---
+description: Maintain OUTDATED_FILES.md and UPDATED_FILES_LOG.md for all documentation changes
+alwaysApply: true
+---
+
+# Documentation Change Tracking
+
+**RULE**: Always update the tracking files when creating, updating, or deleting any markdown files or figures.
+
+## Two Tracking Files
+
+### 1. `OUTDATED_FILES.md`
+**Purpose**: List files that need updates  
+**Location**: `/OUTDATED_FILES.md` (root)
+
+**When to update**:
+- When you discover a file has outdated information
+- When a major change requires updating multiple files
+- When validation results change
+
+**Format**:
+```markdown
+## Files Needing Updates
+
+### Category: [Category Name]
+- [ ] path/to/file.md - Brief description of what needs updating
+- [ ] path/to/other.md - What's outdated
+```
+
+### 2. `UPDATED_FILES_LOG.md`
+**Purpose**: Log all completed updates, creations, deletions  
+**Location**: `/UPDATED_FILES_LOG.md` (root)
+
+**When to update**:
+- After updating ANY markdown file
+- After creating a NEW markdown file
+- After deleting a markdown file
+- After moving files (restructuring)
+
+**Format**:
+```markdown
+## Updates on YYYY-MM-DD
+
+### [Update Category/Reason]
+**Reason**: Brief explanation
+**Files Updated**: Count
+
+- [x] `path/to/file.md` - What was changed
+- [x] `path/to/other.md` - What was updated
+```
+
+---
+
+## Workflow
+
+### When You Update a File:
+
+1. **Make the change** to the file
+2. **Add entry** to `UPDATED_FILES_LOG.md`:
+   ```markdown
+   - [x] `path/to/file.md` - Updated [what changed]
+   ```
+3. **Remove from** `OUTDATED_FILES.md` if it was listed:
+   - Change `- [ ]` to `- [x]`
+   - Or remove the entry entirely
+
+### When You Discover Outdated Info:
+
+1. **Add to** `OUTDATED_FILES.md`:
+   ```markdown
+   - [ ] path/to/file.md - Still shows [old info], needs [new info]
+   ```
+2. **Later, when fixed**:
+   - Update the file
+   - Move entry to `UPDATED_FILES_LOG.md`
+   - Check the box or remove from `OUTDATED_FILES.md`
+
+### When You Create a New File:
+
+1. **Create the file** with proper timestamp
+2. **Add to** `UPDATED_FILES_LOG.md`:
+   ```markdown
+   - [x] `path/to/new-file.md` - Created [purpose]
+   ```
+
+### When You Delete a File:
+
+1. **Delete the file**
+2. **Add to** `UPDATED_FILES_LOG.md`:
+   ```markdown
+   - [x] `path/to/deleted-file.md` - Deleted (moved to archive/deprecated)
+   ```
+
+---
+
+## Examples
+
+### Example: Major Validation Update
+
+**OUTDATED_FILES.md** (before):
+```markdown
+## Files Needing Updates
+
+### Category: Validation Status
+- [ ] README.md - Still shows 8/9, needs 9/9
+- [ ] thesis/CHAPTER_4_RESULTS.md - Shows 8/9
+- [ ] research/POC_STATUS.md - Temporal adaptation 0.84%
+```
+
+**After updating all files, UPDATED_FILES_LOG.md**:
+```markdown
+## Updates on 2026-03-19
+
+### Validation Score Update 8/9 → 9/9
+**Reason**: Temporal adaptation validated at 53.1%
+**Files Updated**: 3
+
+- [x] `README.md` - Updated to 9/9 complete
+- [x] `thesis/CHAPTER_4_RESULTS.md` - Validation table 9/9
+- [x] `research/POC_STATUS.md` - Temporal adaptation 53.1%
+```
+
+**OUTDATED_FILES.md** (after):
+```markdown
+## Status: ✅ ALL CLEAR
+
+No outdated files detected.
+```
+
+---
+
+## Benefits
+
+1. **Never lose track** of what needs updating
+2. **Complete audit trail** of all changes
+3. **Easy to verify** nothing was missed
+4. **Team awareness** of documentation state
+5. **Historical record** of major updates
+
+---
+
+## Critical Points
+
+- ✅ **Update tracking files in SAME session** as the actual change
+- ✅ **Be specific** about what was changed
+- ✅ **Use checkboxes** `- [ ]` for pending, `- [x]` for done
+- ✅ **Group updates** by category/reason when batch updating
+- ✅ **Add timestamps** to log entries
+- ❌ **Don't skip** tracking files - they're critical for maintaining consistency

@@ -67,7 +67,7 @@ All major documentation now shows correct 9/9 COMPLETE status:
 - Claim: "Strong validation work"
 
 **After (9/9 + 2 discoveries):**
-- Target: **Nature Neuroscience** 🎯
+- Target: **Nature Neuroscience / Nature** 🎯
 - Claim: "Perfect validation + major discoveries"
 
 **Why This Matters:**

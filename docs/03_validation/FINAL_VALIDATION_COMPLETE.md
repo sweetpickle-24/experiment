@@ -84,7 +84,7 @@
 9. Computational efficiency (64 MB, 10× real-time)
 
 ### Minor Limitation
-- Temporal adaptation weak (can mention as future work or omit)
+- Temporal adaptation validated (53.1% within 30-70% target)
 
 ---
 

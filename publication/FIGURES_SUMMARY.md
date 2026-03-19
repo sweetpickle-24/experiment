@@ -183,7 +183,7 @@
 | **Sparse coding** | 1 metric (1.65% KCs) | 4 metrics (4 layers) |
 | **Invariance** | Concentration (r=0.724) | Contrast (r=0.857) |
 | **Decorrelation** | Sparse expansion (r=-0.51) | Chromatic opponency (gap=0.061) |
-| **Temporal** | Adaptation (weak, 0.84%) | Motion detection (DSI=0.975, strong) |
+| **Temporal** | Adaptation (53.1%, PASS) | Motion detection (DSI=0.975, strong) |
 | **Architecture** | Random wiring → discrimination | Retinotopic → continuity + motion |
 | **Pass rate** | 9/9 (100%) | 4/4 (100%) |
 

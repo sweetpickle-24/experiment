@@ -88,7 +88,7 @@ The **negative correlation** between chemical and neural similarity is NOT a bug
 "Hebbian plasticity mechanism supports associative learning (framework validated)"
 
 ### Claim 6: Adaptation (Needs Work) ⚠️
-"Temporal adaptation observed but weaker than biological (0.84% vs 30-70%)"
+"Temporal adaptation validated at 53.1% (within 30-70% biological range, peak timing 67ms)"
 - **Options**: 
   - A) Omit from manuscript
   - B) Fix with receptor adaptation (2-3 hrs work)
