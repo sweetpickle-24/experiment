@@ -206,7 +206,7 @@ From previous work:
 ### Publication Situation:
 - **✅ Ready:** Manuscript + supplementary materials
 - **✅ Journal:** Nature Communications appropriate
-- **✅ Impact:** High (10× real-time, 1000× memory)
+- **✅ Impact:** High (0.54× real-time (olfactory pathway, 1.87× slower than RT), 1000× memory)
 - **⚠️ Timing:** File patents FIRST, then publish
 
 ---
@@ -334,7 +334,7 @@ Print this and check off as you complete:
 - First real-time full-brain wave simulation
 - 1000× memory reduction
 - Biologically validated sparse coding
-- 10× real-time performance
+- 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance
 
 **Commercial Value:**
 - $50-200M licensing potential

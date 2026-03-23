@@ -44,7 +44,7 @@
 
 ### Computational Breakthrough ✅
 - **Memory: 64 MB** for 139K neurons (1000× better than spiking networks)
-- **Speed: 10× real-time** on consumer laptop (Apple M4 Pro)
+- **Speed: 0.54× real-time (olfactory pathway, 1.87× slower than RT)** on consumer laptop (Apple M4 Pro)
 - **Scalability: Linear** with neuron count
 
 ### Novel Contributions ✅

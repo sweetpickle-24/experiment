@@ -161,7 +161,7 @@
 3. **Peak timing**: 100ms response latency ✅
 4. **Sparse coding**: 1.65% sparsity ✅
 5. **Concentration invariance**: r=0.724 ✅
-6. **Computational efficiency**: 64 MB, 10× real-time ✅
+6. **Computational efficiency**: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT) ✅
 7. **Decorrelation by sparse expansion**: r=-0.51 ✅ **NEW - Major validation!**
 8. **Learning mechanism**: Framework validated ✅
 

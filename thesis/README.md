@@ -40,7 +40,7 @@ All individual chapter files have been extracted for easier editing and review. 
 ## Thesis Summary
 
 ### Abstract
-First wave-based probabilistic simulation of complete Drosophila olfactory pathway (10,906 neurons, 446,388 synapses). Achieves biological validation with 1.13% KC sparsity matching published data (Turner et al. 2008). Demonstrates unprecedented computational efficiency (64 MB memory, 10× real-time performance).
+First wave-based probabilistic simulation of complete Drosophila olfactory pathway (10,906 neurons, 446,388 synapses). Achieves biological validation with 1.13% KC sparsity matching published data (Turner et al. 2008). Demonstrates unprecedented computational efficiency (64 MB memory, 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance).
 
 ### Key Contributions
 1. **Novel Method**: Wave-based probabilistic oscillator framework

@@ -426,7 +426,7 @@ For each reference, note:
 **Patent 3 (Real-Time System):**
 1. Consumer hardware deployment (vs. 14K GPU supercomputers)
 2. Explicit memory management (periodic graph clearing)
-3. 10× real-time performance
+3. 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance
 4. Mobile deployment capability
 5. Hybrid CPU/GPU architecture
 

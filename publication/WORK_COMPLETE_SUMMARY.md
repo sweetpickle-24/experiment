@@ -151,7 +151,7 @@
 - Novel methodology (wave-based simulation)
 - Strong biological validation (9/9 benchmarks, 100%)
 - Major discovery (decorrelation r=-0.51)
-- Unprecedented efficiency (64 MB, 10× real-time)
+- Unprecedented efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 
 ### Writing Quality: ⭐⭐⭐⭐⭐ (Excellent)
 - Clear and concise
@@ -206,7 +206,7 @@
 1. **First of its kind:** Wave-based full brain simulation on real connectome
 2. **Biological validation:** 9/9 benchmarks = 100% success rate + 2 major discoveries
 3. **Major discovery:** Decorrelation by sparse coding validates 15-year theory
-4. **Practical impact:** Consumer hardware (64 MB, 10× real-time)
+4. **Practical impact:** Consumer hardware (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 5. **Reproducible:** All code/data will be public
 6. **Complete:** Not just pilot study—full 20-odor validation
 

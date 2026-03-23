@@ -22,7 +22,7 @@ This work addresses three major challenges in computational neuroscience:
 
 **2. Biological Validation:** We achieve Kenyon Cell sparse coding (1.13% active) precisely matching published experimental measurements (Turner et al., 2008: 1-3% range), demonstrating that sparse coding emerges naturally from connectome structure and wave dynamics without parameter tuning.
 
-**3. Real-Time Performance:** Our system simulates 1 biological second in 0.092 seconds (10.9× real-time) on a consumer laptop, enabling practical applications in brain-computer interfaces, neuromorphic hardware, and interactive neuroscience education.
+**3. Real-Time Performance:** Our system simulates 1 biological second in 0.092 seconds (0.54× real-time (olfactory pathway, 1.87× slower than RT)) on a consumer laptop, enabling practical applications in brain-computer interfaces, neuromorphic hardware, and interactive neuroscience education.
 
 ## Novel Contributions
 

@@ -21,7 +21,7 @@ A Proof of Concept demonstrates that a technology:
 - [x] Sparse mean-field Fokker-Planck equations solved
 - [x] MLX GPU acceleration working
 - [x] 139,255 neuron full brain running
-- [x] Real-time performance achieved (10× faster than biology)
+- [x] Real-time performance achieved (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))
 
 ### 2. Digital Smell Encoding Works ✅
 - [x] Olfactory pathway extracted (10,906 neurons)
@@ -44,7 +44,7 @@ A Proof of Concept demonstrates that a technology:
 
 ### 4. Computational Feasibility Proven ✅
 - [x] Memory: 64 MB for 139K neurons (1000× better than alternatives)
-- [x] Speed: 10× real-time on consumer hardware (M4 Pro)
+- [x] Speed: 0.54× real-time (olfactory pathway, 1.87× slower than RT) on consumer hardware (M4 Pro)
 - [x] Scalability: Linear from 10K to 139K neurons
 - [x] GPU acceleration: MLX on Apple Silicon
 

@@ -35,7 +35,7 @@ Your research has produced **3 patentable innovations** with estimated combined 
 ### Innovation 3: Real-Time System
 **The Problem:** Brain simulations run 100-1000× slower than biology, preventing real-time applications.
 
-**Your Solution:** GPU-accelerated implementation achieving 10× faster than biological real-time on consumer hardware.
+**Your Solution:** GPU-accelerated implementation achieving 86× GPU speedup over CPU NumPy, running 100ms of biology in 0.19s on consumer hardware (0.54× real-time, 1.87× slower than real-time).
 
 **Commercial Impact:** Enables brain-computer interfaces, real-time neural decoding, mobile neuroscience apps.
 

@@ -69,7 +69,7 @@ Rather than tracking individual spike times (SNN approach) or dense spatial wave
 
 1. **1000× Memory Reduction:** 64 MB for 139,000 neurons vs. 20+ GB for equivalent spiking models
 2. **Linear Scaling:** O(N) memory complexity vs. O(N²) or O(N³) for alternatives
-3. **Real-Time Performance:** 10× faster than biological real-time on consumer GPUs
+3. **Computational Performance:** 86× GPU speedup over CPU; GPU runs 100ms biology in 0.19s (0.54× real-time) on consumer hardware
 4. **Biological Validation:** Achieves experimentally validated metrics (1.13% sparse coding)
 5. **Consumer Hardware:** Laptop/mobile deployment vs. supercomputer requirements
 
@@ -554,7 +554,7 @@ Our result: Δr = -1.40 ✅ Within experimental range
 
 **Results:**
 - Memory usage: 64 MB (vs. 27+ GB for equivalent spiking model)
-- Simulation time: 9.2 seconds for 100 ms (10.9× real-time)
+- Simulation time: 9.2 seconds for 100 ms (0.54× real-time (olfactory pathway, 1.87× slower than RT))
 - Olfactory region activity: 47.5% neurons active
 - Non-olfactory regions: 2.1% background activity
 - KC sparsity: 1.13% (maintained from subset)
@@ -865,7 +865,7 @@ The combination of:
 1. Novel mathematical framework (Fokker-Planck variance + analytical coupling)
 2. Demonstrated biological validation (1.13% KC sparsity)
 3. Unprecedented memory efficiency (64 MB for 139K neurons)
-4. Real-time performance (10× faster than biology)
+4. Real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))
 5. Broad industrial applicability (neuromorphic chips, BCI, drug discovery)
 
 ...establishes both scientific merit and substantial commercial value, justifying patent protection and positioning this invention as foundational technology for the next generation of neural simulation systems.

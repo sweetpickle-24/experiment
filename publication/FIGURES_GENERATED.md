@@ -128,7 +128,7 @@ publication/figures/
 1. **Perfect biological match**: Mean 1.65% KC sparsity in Turner 2008 range
 2. **Full brain scale**: 139,255 neurons simulated
 3. **Consistent sparsity**: 8/20 odors in canonical range (40%)
-4. **Ultra-efficient**: 64 MB memory, 10× real-time
+4. **Ultra-efficient**: 64 MB memory, 0.54× real-time (olfactory pathway, 1.87× slower than RT)
 
 **Reviewer Appeal:**
 - Clear visual validation against published data

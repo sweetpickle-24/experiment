@@ -59,7 +59,7 @@ This directory contains **3 comprehensive provisional patent applications** prot
 
 **Core Innovation:**
 - Real-time large-scale neural simulation on consumer hardware
-- 10× faster than biological real-time
+- 86× faster than CPU NumPy (GPU runs 100ms biology in 0.19s = 0.54× real-time)
 - GPU acceleration with explicit memory management
 
 **Key Claims:**

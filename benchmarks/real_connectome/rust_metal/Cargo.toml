@@ -1,0 +1,13 @@
+[package]
+name = "real_connectome_benchmark"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+metal  = "0.29"
+serde_json = { version = "1", features = ["std"] }
+
+[profile.release]
+opt-level = 3
+lto       = true
+codegen-units = 1

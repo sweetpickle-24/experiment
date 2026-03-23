@@ -1,0 +1,13 @@
+{
+  "backend": "python_mlx_gpu",
+  "n_neurons": 10906,
+  "n_synapses": 446388,
+  "n_steps": 1000,
+  "wall_time_s": 0.17057658397243358,
+  "bio_time_ms": 100.0,
+  "rt_factor": 0.5862469377166137,
+  "ms_per_step": 0.17057658397243358,
+  "kc_sparsity_pct": 19.719643871945443,
+  "active_kc": 1041,
+  "total_kc": 5279
+}

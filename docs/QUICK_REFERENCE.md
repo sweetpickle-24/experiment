@@ -60,7 +60,7 @@
 - **Synapses**: 5.3 million
 - **Validation**: 9/9 smell + 4/4 vision = **13/13 (100%)**
 - **Discoveries**: 2 major
-- **Speed**: 57× real-time (M4 Pro GPU)
+- **Speed**: 86× faster than CPU (M4 Pro GPU)
 - **Memory**: 64 MB
 - **Hardware independence**: Validated ✅
 

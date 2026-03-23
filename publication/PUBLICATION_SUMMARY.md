@@ -91,7 +91,7 @@
 
 **Computational:**
 - Memory: 64 MB for 139,255 neurons (0.46 bytes/neuron)
-- Speed: 26s per 100ms simulation (10× real-time)
+- Speed: 26s per 100ms simulation (0.54× real-time (olfactory pathway, 1.87× slower than RT))
 - Hardware: Consumer laptop (Apple M4 Pro)
 - Scalability: Linear scaling
 
@@ -128,7 +128,7 @@
 **Full 139K-neuron brain** - not just olfactory pathway, entire connectome
 
 ### 4. Computational Breakthrough
-**64 MB memory, 10× real-time** - enables whole-brain simulation on laptops
+**64 MB memory, 0.54× real-time (olfactory pathway, 1.87× slower than RT)** - enables whole-brain simulation on laptops
 
 ### 5. Large Dataset
 **20 odors tested** - most comprehensive simulated olfactory dataset
@@ -264,7 +264,7 @@
 
 ### In Abstract:
 - "Precisely matches experimental data (Turner et al., 2008)"
-- "Unprecedented computational efficiency (64 MB, 10× real-time)"
+- "Unprecedented computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))"
 - "Emergent sparse coding without explicit inhibition tuning"
 
 ### In Title:

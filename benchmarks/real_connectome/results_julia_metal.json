@@ -1,0 +1,1 @@
+{"bio_time_ms":100.0,"n_synapses":446388,"active_kc":1212,"backend":"julia_metal_gpu","kc_sparsity_pct":22.958893729873083,"wall_time_s":3.31415575,"n_neurons":10906,"rt_factor":0.030173597001287585,"ms_per_step":3.31415575,"total_kc":5279,"n_steps":1000}

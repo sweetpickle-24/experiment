@@ -1,0 +1,33 @@
+{
+  "avg_kc_sparsity_pct": "14.0330",
+  "correlations": {
+    "danger_mold vs clean_air": "-0.0576",
+    "danger_mold vs social_female": "-0.0728",
+    "fruit_ferment vs clean_air": "0.1078",
+    "fruit_ferment vs danger_mold": "-0.0158",
+    "fruit_ferment vs fruit_ripe": "0.2702",
+    "fruit_ferment vs social_female": "-0.0652",
+    "fruit_ripe vs clean_air": "0.2519",
+    "fruit_ripe vs danger_mold": "-0.0359",
+    "fruit_ripe vs social_female": "0.0739",
+    "social_female vs clean_air": "0.0951"
+  },
+  "device": "Apple M4 Pro",
+  "fruit_vs_danger_r": "-0.0158",
+  "fruit_vs_fruit_r": "0.2702",
+  "kc_fan_in": 7,
+  "kc_mean_amp": {
+    "clean_air": "0.424598",
+    "danger_mold": "0.435086",
+    "fruit_ferment": "0.604906",
+    "fruit_ripe": "0.481472",
+    "social_female": "0.507033"
+  },
+  "language": "rust_metal_gpu",
+  "n_kc": 5279,
+  "n_pn": 2198,
+  "per_odor_s": "0.0170",
+  "realtime_ratio": "0.0566",
+  "sim_ms": 300.0,
+  "total_wall_time_s": "0.0849"
+}

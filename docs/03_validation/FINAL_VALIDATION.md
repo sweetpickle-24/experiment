@@ -135,10 +135,14 @@ Chemical similarity (r=+0.89)
 - Sparsity difference: 0.019% — **263× smaller than biological noise (5%)**
 - **Conclusion**: All 9/9 results are hardware-independent
 
-**Performance**:
-- GPU (MLX): 1.74s for 100ms simulation (**57× real-time**)
-- CPU: 149.8s for 100ms simulation (**1.5× real-time**)
-- Speedup: **86× faster on GPU**
+**Performance** (olfactory pathway, 10,906 neurons):
+- GPU (MLX) validation run: 1.74s wall for 100ms bio → **0.058× RT** (17.2× slower than real-time)
+- GPU (MLX) clean benchmark: 0.187s wall for 100ms bio → **0.54× RT** (1.87× slower than real-time)
+- CPU (NumPy): 149.8s wall for 100ms bio → **0.00067× RT** (1,498× slower than real-time)
+- **GPU speedup over CPU: 86×**
+- Full brain (139K neurons) GPU: ~26s wall for 100ms bio → **0.0038× RT** (260× slower than real-time)
+
+> **Note:** "57× real-time" and "10× real-time" claims in earlier docs were errors. The 86× figure is GPU-to-CPU speedup, not a real-time factor. The system runs slower than real-time on all hardware.
 
 ---
 

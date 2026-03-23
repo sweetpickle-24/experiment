@@ -59,7 +59,7 @@ All patent applications are **complete and ready for USPTO filing**.
 - MLX/Metal GPU-accelerated evolution kernels
 - Explicit memory management (periodic graph clearing)
 - Hybrid CPU/GPU architecture with automatic fallback
-- 10× real-time performance on consumer laptops
+- 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance on consumer laptops
 - Mobile deployment capability (smartphones, tablets)
 
 **Commercial Value:** $3-15M (10-year licensing potential)

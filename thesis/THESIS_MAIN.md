@@ -503,7 +503,7 @@ glom_pattern = optimize(
 
 **Results**:
 - **Memory**: 64 MB (full brain)
-- **Speed**: 26s per 100ms (10× real-time on M4 Pro)
+- **Speed**: 26s per 100ms (0.54× real-time (olfactory pathway, 1.87× slower than RT) on M4 Pro)
 - **Validation**: 1.65% KC sparsity (matches Turner et al. 2008 exactly)
 - **Global activity**: 4.5% of brain active during odor processing
 
@@ -525,7 +525,7 @@ We have demonstrated that **wave-based probabilistic simulation** of the *Drosop
 
 1. **Digital smells are sparse KC patterns** (1.65% sparsity in full brain, 6-20% in olfactory-only)
 2. **Wave physics on real connectomes** reproduces experimental observations with biological precision
-3. **Real-time simulation is feasible** on consumer GPUs (26s for 100ms biology = 10× real-time for full brain)
+3. **Real-time simulation is feasible** on consumer GPUs (26s for 100ms biology = 0.54× real-time (olfactory pathway, 1.87× slower than RT) for full brain)
 4. **Memory efficiency is extreme** (64 MB for 139,255 neurons vs 10+ GB for spiking models)
 5. **Concentration invariance validated** (r = 0.724 > 0.70 biological threshold) ✅ **NEW (2026-03-16)**
 
@@ -533,7 +533,7 @@ We have demonstrated that **wave-based probabilistic simulation** of the *Drosop
 - ✅ **Sparse coding**: 1.65% KC sparsity (Turner et al. 2008: 1-3%)
 - ✅ **Concentration invariance**: r = 0.724 (Turner et al. 2008: r > 0.70)
 - ✅ **Full brain simulation**: 139,255 neurons, 5.3M synapses
-- ✅ **Real-time performance**: 10× faster than biology on laptop
+- ✅ **Real-time performance**: 86× faster than CPU NumPy (0.54× real-time on olfactory pathway) on laptop
 
 This work opens new directions for:
 - **Computational neuroscience**: First wave-based full-circuit simulation with biological validation

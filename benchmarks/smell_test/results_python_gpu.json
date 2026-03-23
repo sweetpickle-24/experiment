@@ -1,0 +1,33 @@
+{
+  "language": "python_mlx_gpu",
+  "device": "Device(gpu, 0)",
+  "n_pn": 2198,
+  "n_kc": 5279,
+  "kc_fan_in": 7,
+  "sim_ms": 300.0,
+  "total_wall_time_s": 1.3722,
+  "per_odor_s": 0.2744,
+  "realtime_ratio": 0.9148,
+  "avg_kc_sparsity_pct": 14.302,
+  "fruit_vs_danger_r": -0.0037,
+  "fruit_vs_fruit_r": 0.2652,
+  "kc_mean_amp": {
+    "fruit_ferment": 0.613077,
+    "fruit_ripe": 0.483664,
+    "danger_mold": 0.433696,
+    "social_female": 0.499721,
+    "clean_air": 0.426038
+  },
+  "correlations": {
+    "fruit_ferment vs fruit_ripe": 0.2652,
+    "fruit_ferment vs danger_mold": -0.0037,
+    "fruit_ferment vs social_female": -0.0763,
+    "fruit_ferment vs clean_air": 0.1234,
+    "fruit_ripe vs danger_mold": -0.0469,
+    "fruit_ripe vs social_female": 0.0652,
+    "fruit_ripe vs clean_air": 0.2242,
+    "danger_mold vs social_female": -0.0834,
+    "danger_mold vs clean_air": -0.02,
+    "social_female vs clean_air": 0.0729
+  }
+}

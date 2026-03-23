@@ -141,7 +141,7 @@ tail -f all_validations_live.log
 1. ✅ **Sparse Coding**: 1.65% KC sparsity (target: 1-3%)
 2. ✅ **Concentration Invariance**: r = 0.724 (target: > 0.70)
 3. ✅ **Full Brain Simulation**: 139K neurons, 4.5% global activity
-4. ✅ **Computational Efficiency**: 64 MB, 10× real-time
+4. ✅ **Computational Efficiency**: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)
 
 ---
 

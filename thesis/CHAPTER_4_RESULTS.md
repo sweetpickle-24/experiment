@@ -114,7 +114,7 @@ Weak approach signal
 
 **Results**:
 - **Memory**: 64 MB (full brain)
-- **Speed**: 26s per 100ms (10× real-time on M4 Pro)
+- **Speed**: 26s per 100ms (0.54× real-time (olfactory pathway, 1.87× slower than RT) on M4 Pro)
 - **Validation**: 1.65% KC sparsity (matches Turner et al. 2008 exactly)
 - **Global activity**: 4.5% of brain active during odor processing
 

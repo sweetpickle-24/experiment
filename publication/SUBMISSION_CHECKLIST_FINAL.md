@@ -272,7 +272,7 @@ Also update:
 - [x] Novel contribution: First wave-based full brain simulation
 - [x] Biological validation: 9/9 benchmarks passed (100%) + 2 major discoveries
 - [x] Major discovery: Decorrelation by sparse coding (r=-0.51)
-- [x] Practical impact: 64 MB, 10× real-time on laptop
+- [x] Practical impact: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT) on laptop
 - [x] Reproducibility: Code and data will be public
 
 ### Significance ✅

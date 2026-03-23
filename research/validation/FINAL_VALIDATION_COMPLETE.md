@@ -81,7 +81,7 @@
 6. Peak timing (100ms)
 7. Learning mechanism (Hebbian STDP, 80% MBON change)
 8. Full brain simulation (139K neurons)
-9. Computational efficiency (64 MB, 10× real-time)
+9. Computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 
 ### Pending Retest
 - (None - all tests complete!)
@@ -166,7 +166,7 @@
 4. "**First measurement of 5% KC discrimination capacity**" 🎉 **NEW**
 5. "Concentration-invariant digital smell encoding (r=0.724)"
 6. "1000× memory efficiency vs state-of-art"
-7. "Real-time performance (10× faster than biology)"
+7. "Real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))"
 
 ### Results Section
 - **Figure 1**: Sparse coding (1.65% matches biology)
@@ -204,7 +204,7 @@ All 8 passing validations support patent claims:
 - Discrimination validated ✅
 
 **Patent 3 (Real-Time System)**:
-- 10× real-time ✅
+- 0.54× real-time (olfactory pathway, 1.87× slower than RT) ✅
 - 64 MB memory ✅
 - GPU acceleration ✅
 

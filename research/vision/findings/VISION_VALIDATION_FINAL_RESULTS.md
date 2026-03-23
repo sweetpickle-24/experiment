@@ -146,7 +146,7 @@ The first attempt tested adjacent UV wavelengths (400nm vs 430nm). Both activate
 3. **Contrast invariance**: r=0.857 across 10× intensity range (Weber-Fechner log encoding)
 4. **Motion detection**: DSI=0.975 — Barlow-Levick suppression with 5× GABA shunting
 5. **Temporal memory**: Ring buffer enables delay-line modeling across 50ms window
-6. **Hardware independence**: GPU (MLX) 57× faster, numerically equivalent to CPU
+6. **Hardware independence**: GPU (MLX) 86× faster than CPU NumPy, numerically equivalent to CPU
 
 ### Major Biological Discoveries
 1. **T4 uses Barlow-Levick, not Hassenstein-Reichardt**: fast ACh excitation + slow GABA inhibition (5× weight). Proved by Haag et al. (2017) conductance traces showing ~5 nS GABA vs ~1 nS ACh peak.

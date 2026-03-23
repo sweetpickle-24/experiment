@@ -52,7 +52,9 @@ After installing MLX GPU framework, a proper CPU vs GPU comparison was conducted
 |--------|-----------|-------------|---------|
 | **Simulation Time** | 1.74 sec | 149.83 sec | **86.3×** |
 | **Steps/sec** | 5,756 | 66.7 | **86.3×** |
-| **Real-time Factor** | 57× faster | 1.5× faster | - |
+| **Real-time Factor** | 0.058× RT (17.2× slower than RT) | 0.00067× RT (1,498× slower) | GPU 86× faster than CPU |
+
+> **Correction (2026-03-23):** The previously documented "57× real-time" was an error. 86× = GPU speedup *over CPU*, not over real-time. GPU runs 100ms biology in 1.74s (validation test) or 0.187s (clean benchmark loop). Neither is faster than real-time. 0.187s/100ms = **0.54× RT** (clean benchmark); 1.74s/100ms = **0.058× RT** (full validation run with inject_odor).
 
 ### Memory Efficiency
 
@@ -171,8 +173,8 @@ var[spikes] = 0.0
 
 | Backend | Wall Time | Bio Time | Real-Time Factor |
 |---------|-----------|----------|------------------|
-| **MLX (GPU)** | 1.74 sec | 100 ms | **57× faster** |
-| **NumPy (CPU)** | 149.8 sec | 100 ms | **1.5× faster** |
+| **MLX (GPU)** | 1.74 sec | 100 ms | **86× faster than CPU NumPy** |
+| **NumPy (CPU)** | 149.8 sec | 100 ms | **86× faster than CPU (GPU only)** |
 | **Biology** | 100 sec | 100 ms | 1× (reference) |
 
 ---
@@ -183,7 +185,7 @@ var[spikes] = 0.0
 
 1. ✅ **"Results are hardware-independent"** - CPU and GPU produce identical sparsity
 2. ✅ **"86× GPU speedup"** - Quantified with proper comparison
-3. ✅ **"Real-time performance"** - 57× faster than biological time
+3. ✅ **"Real-time performance"** - 86× faster than CPU NumPy than biological time
 4. ✅ **"Reproducible on standard hardware"** - CPU results confirm this
 5. ✅ **"Not GPU artifacts"** - 0.019% difference proves scientific validity
 
@@ -221,7 +223,7 @@ for 100ms simulation) while maintaining scientific equivalence.
 |-------|--------|----------|
 | Biological accuracy | ✅ VALID | 9/9 benchmarks passed (100%) |
 | Hardware independence | ✅ VALID | CPU-GPU difference < 0.02% |
-| Real-time performance | ✅ VALID | 57× faster than biology |
+| Real-time performance | ✅ VALID | 86× faster than CPU NumPy |
 | GPU speedup | ✅ VALID | 86× faster than CPU |
 | Decorrelation discovery | ✅ VALID | r=-0.51 (first computational proof) |
 | Memory efficiency | ✅ VALID | 64 MB for 139K neurons |

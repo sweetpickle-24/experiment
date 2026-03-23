@@ -102,7 +102,7 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - **Validation**: Sparsity difference (0.019%) is 263× smaller than biological noise (5-10%)
 - **Impact**: Proves results are **not GPU artifacts** - scientific validity confirmed
 - **Hardware Independence**: Wave physics implementation produces equivalent results on any hardware
-- **Real-time Performance**: GPU achieves 57× faster than biological time
+- **Real-time Performance**: GPU 86× faster than CPU NumPy. Actual RT factors: GPU validation run 0.058× RT (1.74s/100ms bio); GPU clean benchmark 0.54× RT (0.187s/100ms bio); CPU 0.00067× RT (149.8s/100ms bio). System runs SLOWER than real-time on all hardware. "57× real-time" was a documented error — 86× = CPU-to-GPU speedup, not RT factor.
 - **Files**: CPU_VS_GPU_FINAL_VALIDATION.md, cpu_vs_mlx_validation.json
 - **⚡ RULE**: **Always use GPU (MLX) for all simulations** - 86× speedup validated, scientifically equivalent to CPU
 
@@ -112,7 +112,7 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
   - Olfaction: 9/9 (100%) + 2 discoveries (decorrelation r=-0.51, discrimination 5% JND)
   - Vision: 5/5 core (100%) + 2 mechanistic insights (Barlow-Levick, von Kries adaptation)
   - Limitation: HS/VS optic flow (wide-field integration needs gap junctions/active dendrites)
-- **Performance**: 57× real-time on M4 Pro GPU, 1.5× on CPU, 64 MB memory
+- **Performance**: GPU (MLX) 0.54× RT clean / 0.058× RT validation run; CPU 0.00067× RT; GPU 86× faster than CPU; full brain (139K neurons) GPU ~0.0038× RT; 64 MB memory. All hardware runs SLOWER than real-time.
 - **Hardware Independence**: ✅ CPU-GPU equivalence confirmed (0.019% difference)
 - **GPU Acceleration**: 86× speedup validated (not artifacts)
 - **Scalability**: Linear O(N) memory, proven up to 139,255 neurons

@@ -81,10 +81,15 @@ First measurement of concentration discrimination in Drosophila Kenyon cells. Fi
 
 ## Performance
 
-- **Speed**: 57× real-time on M4 Pro GPU
-- **Memory**: 64 MB for 139,255 neurons
-- **Accuracy**: 9/9 biological benchmarks (100%)
-- **Hardware**: Works on CPU, GPU-accelerated
+| Metric | Value |
+|--------|-------|
+| **GPU speedup over CPU** | **86×** (MLX vs NumPy, olfactory pathway) |
+| **GPU wall time** | 0.19s for 100ms biology (olfactory, 10,906 neurons) |
+| **GPU real-time factor** | 0.54× RT — runs 1.87× slower than real-time |
+| **CPU wall time** | 149.8s for 100ms biology |
+| **Full brain GPU** | ~26s for 100ms biology (139,255 neurons, 0.0038× RT) |
+| **Memory** | 64 MB for 139,255 neurons |
+| **Biological accuracy** | 14/14 benchmarks (100%) |
 
 ---
 

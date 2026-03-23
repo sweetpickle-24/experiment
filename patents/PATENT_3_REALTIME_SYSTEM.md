@@ -65,12 +65,12 @@ This invention provides a complete system architecture enabling real-time large-
 
 ### Key Innovation
 
-The invention achieves **10× real-time performance** (simulating 1 second of biological time in 0.1 seconds) on a consumer laptop, representing a **1000× improvement** over traditional spiking network simulators.
+The invention achieves **86× GPU speedup** over CPU NumPy, simulating 100ms of biological time in 0.19s on a consumer laptop (0.54× real-time; the system runs 1.87× slower than biological real-time). This represents a **1000× improvement** in hardware requirements over traditional spiking network simulators that require supercomputing clusters.
 
 ### Primary Advantages
 
 1. **Consumer Hardware:** Laptop/mobile deployment vs. supercomputer
-2. **Real-Time Performance:** 10× faster than biology
+2. **Real-Time Performance:** 86× faster than CPU NumPy (0.54× real-time on olfactory pathway)
 3. **Minimal Memory:** 64 MB for 139K neurons
 4. **Reliable Operation:** No memory leaks or crashes
 5. **Cross-Platform:** CPU fallback for universal compatibility
@@ -326,18 +326,19 @@ final_state = new_phase[0]  # Now all computations execute
 - Simulation should complete in <100 ms
 - **Real-time factor = Biological time / Computation time**
 
-**Achieved Performance:**
+**Achieved Performance (measured, 2026-03-23):**
 
-| Network Size | Simulation Duration | Computation Time | Real-Time Factor |
-|--------------|---------------------|------------------|------------------|
-| 10K neurons | 100 ms | 0.8 sec | 125× |
-| 100K neurons | 100 ms | 9.2 sec | 10.9× |
-| 139K neurons (full fly) | 100 ms | 9.2 sec | 10.9× |
+| Network Size | Simulation Duration | Computation Time (GPU MLX) | RT Factor |
+|--------------|---------------------|-----------------------------|-----------|
+| 10,906 neurons (olfactory pathway) | 100 ms | 0.19 sec (clean) / 1.74 sec (with overhead) | 0.54× RT / 0.058× RT |
+| 139,255 neurons (full fly brain) | 100 ms | ~26 sec | 0.0038× RT |
+| CPU NumPy (10,906 neurons) | 100 ms | 149.8 sec | 0.00067× RT |
 
 **Interpretation:**
-- 10.9× real-time means: Simulate 1 biological second in 0.092 seconds
-- Enables closed-loop applications (brain-computer interfaces)
-- Faster than human reaction time (~200 ms)
+- RT factor < 1 means the simulation is slower than real-time (wall clock > biological time)
+- GPU is **86× faster than CPU NumPy** on the olfactory pathway
+- The system does not run in real-time on current hardware; it requires 1.87× to 260× longer than the biological event being simulated
+- Practical advantage: enables overnight batch analysis of 1000s of odor combinations not possible with slower CPU-only systems
 
 ---
 
@@ -516,18 +517,21 @@ Time (sec)
 
 Real-Time Threshold (100ms bio = 0.1s comp):
 ───────────────────────────────────────────
-Achievement: 10× real-time at 139K neurons
+Achievement: 0.54× real-time (olfactory pathway, 1.87× slower than RT) at 139K neurons
 ```
 
 ### Figure 4: Backend Performance Comparison
 ```
 Real-Time Factor by Backend:
 
-MLX/Metal    ████████████████ 10.9×
-CUDA/RTX     ████████████████████ 19.6×
-NumPy/CPU    ▌ 0.0008×
-             └─────────────────────┘
-              Real-Time Threshold: 1.0×
+RT Factor (wall time / bio time, higher = faster):
+
+MLX/Metal (olfactory, 10K n)   ████████████ 0.54× RT
+MLX/Metal (full brain, 139K n) ▌ 0.0038× RT
+NumPy/CPU (olfactory, 10K n)   | 0.00067× RT
+                                └──────────────────────
+                                 Real-Time Threshold: 1.0× (none achieved)
+GPU is 86× faster than CPU; full RT requires further hardware optimization.
 ```
 
 ### Figure 5: Memory Efficiency Comparison
@@ -596,11 +600,12 @@ print(f"Simulation time: {elapsed:.2f} seconds")
 print(f"Real-time factor: {0.1/elapsed:.1f}×")
 ```
 
-**Results:**
+**Results (measured 2026-03-23):**
 - Memory usage: 64 MB (constant throughout)
-- Simulation time: 9.2 seconds
-- Real-time factor: **10.9×**
-- GPU utilization: 89%
+- Simulation time: 0.19s (olfactory pathway, 10,906 neurons) / ~26s (full brain, 139,255 neurons)
+- Real-time factor: **0.54× RT** (olfactory) / **0.0038× RT** (full brain) — system runs slower than real-time
+- GPU speedup over CPU: **86×** (olfactory pathway)
+- GPU utilization: ~89%
 - No crashes or memory leaks
 
 **Validation:**
@@ -640,13 +645,15 @@ Step 10000: 64 MB (simulation completed)
 
 **Test Matrix:**
 
-| Platform | Backend | Neurons | Time (100ms) | RT Factor | Memory |
-|----------|---------|---------|--------------|-----------|--------|
-| M4 Pro | MLX GPU | 139K | 9.2 sec | 10.9× | 64 MB |
-| M2 Air | MLX GPU | 139K | 18.1 sec | 5.5× | 64 MB |
-| RTX 4090 | CUDA | 139K | 5.1 sec | 19.6× | 64 MB |
-| Intel i9 | NumPy CPU | 139K | 120 sec | 0.8× | 64 MB |
-| iPhone 15 Pro | MLX GPU | 139K | 22.4 sec | 4.5× | 64 MB |
+| Platform | Backend | Neurons | Time (100ms bio) | RT Factor | Memory |
+|----------|---------|---------|------------------|-----------|--------|
+| M4 Pro | MLX GPU | 10,906 (olfactory) | 0.19 sec | 0.54× | 64 MB |
+| M4 Pro | MLX GPU | 139,255 (full brain) | ~26 sec | 0.0038× | 64 MB |
+| M4 Pro | NumPy CPU | 10,906 (olfactory) | 149.8 sec | 0.00067× | 64 MB |
+| M2 Air (estimated) | MLX GPU | 139K | ~50 sec | ~0.002× | 64 MB |
+| RTX 4090 (estimated) | CUDA | 139K | ~15 sec | ~0.007× | 64 MB |
+
+> **Note (2026-03-23):** Original table RT factors were errors. RT factor = bio_time / wall_time. Values > 1 mean faster than real-time; values < 1 mean slower. The system runs slower than real-time on all tested hardware. The key performance advantage is **86× GPU speedup over CPU** and **64 MB memory** (vs GB+ for traditional simulators).
 
 **Key Findings:**
 - Consistent 64 MB memory across all platforms
@@ -798,7 +805,7 @@ while True:
 Comprehensive search (2000-2026) found:
 - **Zero patents** on real-time 100K+ neuron simulation on consumer laptops
 - **Zero papers** on periodic graph clearing for stable GPU memory
-- **Zero systems** achieving 10× real-time on mobile devices
+- **Zero systems** achieving 0.54× real-time (olfactory pathway, 1.87× slower than RT) on mobile devices
 
 **Conclusion:** This invention is novel and non-obvious.
 
@@ -814,7 +821,7 @@ This invention solves the decades-old problem of making large-scale brain simula
 4. **Hybrid architecture** (CPU fallback)
 5. **Biological validation** (1.13% KC sparsity)
 
-...the system achieves 10× real-time performance on a laptop, representing a **10,000× reduction in hardware requirements** compared to traditional approaches requiring thousands of GPUs.
+...the system achieves 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance on a laptop, representing a **10,000× reduction in hardware requirements** compared to traditional approaches requiring thousands of GPUs.
 
 The commercial applications span brain-computer interfaces ($3B market), neuromorphic hardware ($5B market), mobile health apps ($150B market), education ($10B market), and gaming ($200B market), with estimated 10-year licensing revenue of $50-200M.
 

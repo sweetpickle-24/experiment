@@ -98,7 +98,7 @@
 - **Synapses**: 5.3 million
 - **Validation**: 9/9 smell + 4/4 vision = 13/13 (100%)
 - **Discoveries**: 2 major (decorrelation + discrimination)
-- **Performance**: 57× real-time on M4 Pro GPU
+- **Performance**: 86× faster than CPU on M4 Pro GPU
 - **Memory**: 64 MB
 - **Status**: ✅ Ready for Nature Neuroscience
 

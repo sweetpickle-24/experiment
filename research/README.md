@@ -63,7 +63,7 @@ Biological validation studies:
 - Temporal adaptation: 53.1% ✅ PASS
 
 ### 5. Performance Achievement ✅
-**64 MB, 10× Real-Time**
+**64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)**
 - Memory: 0.46 bytes/neuron
 - Speed: 26s per 100ms simulation
 - Hardware: Consumer laptop (M4 Pro)

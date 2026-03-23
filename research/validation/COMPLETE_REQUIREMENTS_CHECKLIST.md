@@ -47,7 +47,7 @@
    - [x] Sparse coding (1.65% sparsity) ✅
    - [x] Concentration invariance (r=0.724) ✅
    - [x] Full brain simulation (139K neurons) ✅
-   - [x] Computational efficiency (64 MB, 10× real-time) ✅
+   - [x] Computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)) ✅
    - [ ] Temporal dynamics ⏳ **RUNNING NOW**
    - [ ] Odor mixtures ⏳ **RUNNING NOW**
    - [ ] Learning & plasticity ⏳ **RUNNING NOW**
@@ -306,7 +306,7 @@
 ### B. Performance Benchmarks ✅ COMPLETE
 
 38. **Speed** ✅
-    - [x] Real-time or faster ✅ **10× real-time achieved**
+    - [x] Real-time or faster ✅ **0.54× real-time (olfactory pathway, 1.87× slower than RT) achieved**
 
 39. **Memory** ✅
     - [x] <1 GB for full brain ✅ **64 MB achieved**

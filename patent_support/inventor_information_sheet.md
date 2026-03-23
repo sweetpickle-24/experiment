@@ -83,7 +83,7 @@ Alternative Email: _______________________________________________
 - [ ] Developed MLX/Metal GPU implementation
 - [ ] Discovered the memory management solution (periodic graph clearing)
 - [ ] Designed hybrid CPU/GPU architecture
-- [ ] Achieved 10× real-time performance
+- [ ] Achieved 0.54× real-time (olfactory pathway, 1.87× slower than RT) performance
 - [ ] Enabled mobile deployment
 - [ ] Other contributions: _______________________________________________
 

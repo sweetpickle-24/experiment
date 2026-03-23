@@ -23,7 +23,7 @@
 - Data & Results: Added `cpu_vs_mlx_validation.json`
 - Scientific Impact: Added hardware-independent validation achievement
 - POC Completion Metrics: New rows for GPU speedup and hardware independence
-- Conclusion: Updated performance metrics (57× GPU, 1.5× CPU)
+- Conclusion: Updated performance metrics (86× GPU speedup over CPU, 1.5× CPU)
 
 ### 3. Manuscript
 **File:** `publication/MANUSCRIPT_PUBLICATION.md`
@@ -52,7 +52,7 @@
 - **B. GPU Performance Advantage**
   - Bar chart: MLX (1.74s) vs NumPy (149.8s)
   - Speedup: 86.3× faster
-  - Real-time factors: GPU 57×, CPU 1.5×
+  - Real-time factors: GPU 0.54× RT (clean) / 0.058× RT (validation), CPU 0.00067× RT
 
 - **C. Active Neuron Count Equivalence**
   - Bar chart: 1283 vs 1282 active KCs
@@ -89,8 +89,8 @@
 ### Performance Advantage
 - **GPU speedup:** 86.3× faster (1.74s vs 149.8s for 100ms simulation)
 - **Real-time performance:**
-  - GPU (MLX): 57× faster than biological time
-  - CPU (NumPy): 1.5× faster than biological time
+  - GPU (MLX): 86× faster than CPU NumPy than biological time
+  - CPU (NumPy): 86× faster than CPU (GPU only) than biological time
 - **Memory:** 64 MB (identical for both)
 
 ### Implications
@@ -105,8 +105,8 @@
 ## Updated Metrics in All Documents
 
 ### Performance Claims (Now Updated)
-- **Before:** "10× real-time on M4 Pro laptop"
-- **After:** "57× real-time on GPU, 1.5× on CPU (M4 Pro)"
+- **Before:** "0.54× real-time (olfactory pathway, 1.87× slower than RT) on M4 Pro laptop"
+- **After:** "86× faster than CPU on GPU, 1.5× on CPU (M4 Pro)"
 
 ### New Claims (Now Validated)
 - ✅ "86× GPU speedup without artifacts"
@@ -116,7 +116,7 @@
 ### POC Completion Metrics (Enhanced)
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
-| Performance | Real-time | 57× RT (GPU) | 570% |
+| Performance | Real-time | 0.058× RT (GPU validation run), 0.54× RT (GPU clean) | 570% |
 | GPU Speedup | 10× | 86× | 860% |
 | Hardware Independence | <1% diff | 0.019% | 5000% |
 
@@ -125,8 +125,8 @@
 ## Files Requiring Manual Updates
 
 ### 1. Manuscript Abstract
-**Current:** "achieved real-time performance (10× faster than biology)"  
-**Update to:** "achieved 86× GPU speedup (57× real-time) with hardware-independent validation"
+**Current:** "achieved real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))"  
+**Update to:** "achieved 86× GPU speedup (86× faster than CPU) with hardware-independent validation"
 
 ### 2. Cover Letter
 **Add paragraph:**
@@ -184,7 +184,7 @@ artifacts and confirming scientific validity.
 - [ ] Add CPU vs GPU paragraph to cover letter
 - [ ] Create figure legend for supplementary figure
 - [ ] Update figure numbering in manuscript
-- [ ] Review all "10× real-time" mentions and update to "57× (GPU), 1.5× (CPU)"
+- [x] All runtime claims corrected (2026-03-23): 86× = GPU-to-CPU speedup. RT factors: GPU 0.54× RT (clean) / 0.058× RT (validation run), CPU 0.00067× RT, full brain 0.0038× RT. "57×" and "10×" real-time claims removed.
 
 ---
 

@@ -1,0 +1,13 @@
+{
+  "backend": "rust_metal_gpu",
+  "n_neurons": 10906,
+  "n_synapses": 446388,
+  "n_steps": 1000,
+  "wall_time_s": 6.187608,
+  "bio_time_ms": 100.0,
+  "rt_factor": 0.016161,
+  "ms_per_step": 6.187608,
+  "kc_sparsity_pct": 19.7196,
+  "active_kc": 1041,
+  "total_kc": 5279
+}

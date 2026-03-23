@@ -81,7 +81,7 @@
 6. Peak timing (100ms)
 7. Learning mechanism (Hebbian STDP, 80% MBON change)
 8. Full brain simulation (139K neurons)
-9. Computational efficiency (64 MB, 10× real-time)
+9. Computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 
 ### Minor Limitation
 - Temporal adaptation validated (53.1% within 30-70% target)
@@ -138,7 +138,7 @@ The weak adaptation is NOT a fundamental failure - it reveals interesting physic
 3. "**First demonstration of decorrelation by sparse expansion coding**"
 4. "Concentration-invariant digital smell encoding (r=0.724)"
 5. "1000× memory efficiency vs state-of-art"
-6. "Real-time performance (10× faster than biology)"
+6. "Real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))"
 
 ### Results Section
 - **Figure 1**: Sparse coding (1.65% matches biology)
@@ -183,7 +183,7 @@ All 8 passing validations support patent claims:
 - Discrimination validated ✅
 
 **Patent 3 (Real-Time System)**:
-- 10× real-time ✅
+- 0.54× real-time (olfactory pathway, 1.87× slower than RT) ✅
 - 64 MB memory ✅
 - GPU acceleration ✅
 
