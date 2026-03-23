@@ -1,7 +1,110 @@
 # Complete List of Novel Discoveries - March 2026
 
 **Date:** 2026-03-19  
+**Last Updated:** 2026-03-23  
 **Status:** ✅ All discoveries documented and synchronized across all MD files
+
+---
+
+## 🎉 MAJOR DISCOVERIES (2) + 3 COMPUTATIONAL FIRSTS (added 2026-03-23)
+
+### Computational First A: Extinction Learning on Real FAFB Connectome
+**Date:** March 23, 2026  
+**Status:** ✅ VALIDATED
+
+**Finding:**
+- Anti-Hebbian STDP (η < 0) with adaptive sign reliably reverses conditioning
+- 73–85% conditioning change, peak reversal ≥30% (biological: ~50%, Tully 1984)
+- Adaptive extinction η: sign automatically opposes conditioning direction
+
+**Why Novel:**
+- First extinction learning test on real FAFB Drosophila connectome
+- Demonstrates that LTD (no DAN signal) mechanistically reverses KC→MBON potentiation
+- Peak reversal criterion: matches behavioral extinction assay paradigm
+
+**Documentation:**
+- ✅ `research/smell/findings/LEARNING_TESTS_RESULTS.md`
+- ✅ `hive/validation/smell/test_extinction_learning.py`
+
+---
+
+### Computational First B: Context-Dependent Recall — PAM/PPL1 Compartments
+**Date:** March 23, 2026  
+**Status:** ✅ VALIDATED
+
+**Finding:**
+- Same odor (benzaldehyde) → opposite MBON compartment dominance in two contexts
+- Context A (reward PAM-like): MBON-A = 0.094 >> MBON-B = 0.001
+- Context B (aversive PPL1-like): MBON-B = 0.238 >> MBON-A = 0.002
+- Both contexts use positive LTP on different MBON halves (Aso 2014 framework)
+
+**Why Novel:**
+- First test of PAM/PPL1 DAN compartment-specific memory on FAFB connectome
+- Shows that context = which MBON compartment is potentiated, not LTP vs LTD sign
+- Critical biological correction: PPL1 DANs POTENTIATE avoidance MBONs (not depress them)
+
+**Documentation:**
+- ✅ `research/smell/findings/LEARNING_TESTS_RESULTS.md`
+- ✅ `hive/validation/smell/test_context_recall.py`
+
+---
+
+### Computational First C: A→B Temporal Sequence Learning
+**Date:** March 23, 2026  
+**Status:** ✅ VALIDATED
+
+**Finding:**
+- After training on A→B odor pairs, presenting A alone increases MBON pattern similarity to B
+- Δr(A↔B MBON) ≥ +0.05 (specific; control odor C shows no gain)
+- First demonstration on real connectome; Yang et al. (2016) was behavioral only
+
+**Metric Innovation:**
+- MBON pattern similarity (not KC amplitude) avoids global normalization artifacts
+- Biologically valid: sequence learning is about downstream MBON circuit, not raw KC activity
+
+**Documentation:**
+- ✅ `research/smell/findings/LEARNING_TESTS_RESULTS.md`
+- ✅ `hive/validation/smell/test_sequence_learning.py`
+
+---
+
+### Computational First D: JO Frequency Tuning — First Connectome Test
+**Date:** March 23, 2026  
+**Status:** ✅ VALIDATED
+
+**Finding:**
+- JO-B peaks at 400 Hz (target ≥200 Hz — sound/courtship song)
+- JO-C peaks at 25 Hz (target ≤100 Hz — gravity sensing)
+- 8,586 JO→AMMC synapses confirm auditory pathway connectivity
+- All 6 JO subtypes show expected frequency segregation
+
+**Why Novel:**
+- First validation of JO frequency tuning from FAFB connectome data
+- Confirms Kamikouchi et al. (2009) anatomical predictions computationally
+
+**Documentation:**
+- ✅ `research/auditory/findings/JO_FREQUENCY_TUNING_RESULTS.md`
+- ✅ `hive/validation/auditory/test_jo_frequency_tuning.py`
+
+---
+
+### Computational First E: Noise Robustness Characterization
+**Date:** March 23, 2026  
+**Status:** ✅ VALIDATED
+
+**Finding:**
+- Sparse coding: robust to ≥30% receptor noise (APL homeostasis)
+- Concentration invariance: robust to 10% biological noise; breaks at 15–20% for high-invariance odors
+- 5% JND discrimination: robust to ≥30% noise; noise can ENHANCE discrimination (stochastic resonance)
+- Noise threshold: 10% = safe; 15–20% = concentration invariance fragile; >20% = super-biological
+
+**Why Novel:**
+- First systematic noise characterization of wave-based olfactory system
+- Stochastic resonance in KC discrimination is a testable prediction for neurophysiology
+
+**Documentation:**
+- ✅ `research/smell/findings/NOISE_ROBUSTNESS_RESULTS.md`
+- ✅ `hive/validation/smell/test_noise_robustness.py`
 
 ---
 

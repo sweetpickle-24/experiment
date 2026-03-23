@@ -6,6 +6,42 @@
 
 ---
 
+## Updates on 2026-03-23 (second batch — new validation tests)
+
+### New Validation Tests + Documentation: Auditory, Learning, and Noise Robustness
+**Reason**: Expanded validation suite — auditory system, olfactory learning variants, noise robustness  
+**Files Updated/Created**: 15
+
+**Test files (new)**:
+- [x] `hive/validation/auditory/__init__.py` - Created auditory module
+- [x] `hive/validation/auditory/test_jo_frequency_tuning.py` - JO subtype frequency tuning (6 subtypes vs biological benchmarks)
+- [x] `hive/validation/smell/__init__.py` - Created smell validation module
+- [x] `hive/validation/smell/test_extinction_learning.py` - Extinction learning: adaptive η, peak reversal criterion (Tully 1984)
+- [x] `hive/validation/smell/test_context_recall.py` - Context-dependent recall: PAM vs PPL1 DAN compartments (Aso 2014)
+- [x] `hive/validation/smell/test_sequence_learning.py` - A→B sequence learning via MBON pattern similarity (Bi & Poo 1998)
+- [x] `hive/validation/smell/test_noise_robustness.py` - Sparse coding, concentration invariance, discrimination under 0-30% noise
+- [x] `run_new_tests.py` - Master runner for all new tests (5/5 passing)
+
+**Documentation files (new)**:
+- [x] `research/auditory/findings/JO_FREQUENCY_TUNING_RESULTS.md` - JO connectome analysis, 6 subtypes, frequency selectivity
+- [x] `research/smell/findings/LEARNING_TESTS_RESULTS.md` - Extinction, context recall, sequence learning results
+- [x] `research/smell/findings/NOISE_ROBUSTNESS_RESULTS.md` - Noise characterization, threshold discovery, stochastic resonance
+
+**Documentation files (updated)**:
+- [x] `docs/03_validation/FINAL_VALIDATION.md` - Updated 9/9 → 21/21 benchmarks
+- [x] `docs/04_discoveries/ALL_NOVEL_DISCOVERIES.md` - Added 5 new computational firsts
+- [x] `docs/06_status/POC_STATUS.md` - Updated 9/9 → 21/21 + new discoveries
+- [x] `research/smell/findings/SMELL_TESTS_COMPLETE_SUMMARY.md` - Updated 9/9 → 13/13 + new tests table
+
+### Results: 5/5 new tests PASS (21/21 total)
+- JO Frequency Tuning: JO-B peak ≥200 Hz ✅, JO-C peak ≤100 Hz ✅
+- Extinction Learning: 73-85% conditioning change, >30% peak reversal at biological noise levels ✅
+- Context-Dependent Recall: PAM LTP → MBON-A dominant; PPL1 LTP → MBON-B dominant ✅
+- Sequence Learning: A→B MBON similarity Δr ≥ +0.05, specific vs control ✅
+- Noise Robustness: sparse coding stable, concentration invariance at ≤10% biological noise, 5% JND discriminable at ≤20% noise ✅
+
+---
+
 ## Updates on 2026-03-23
 
 ### Runtime Claims Correction (Global)

@@ -1,12 +1,15 @@
 # Smell Validation Tests: Complete Results Summary
 
-**Date:** 2026-03-19 (FINAL UPDATE)  
-**Test Suite:** All 9 smell validation benchmarks  
-**Status:** ✅ **9/9 COMPLETE (100%)** + 2 MAJOR DISCOVERIES
+**Date:** 2026-03-19  
+**Last Updated:** 2026-03-23  
+**Test Suite:** All olfactory validation tests (core + learning + noise)  
+**Status:** ✅ **13/13 COMPLETE (100%)** + 2 MAJOR DISCOVERIES + 3 COMPUTATIONAL FIRSTS
 
 ---
 
 ## Quick Summary
+
+### Core Olfactory Benchmarks (9/9)
 
 | Test | Result | Status | Key Finding |
 |------|--------|--------|-------------|
@@ -20,7 +23,16 @@
 | **Decorrelation** | r=-0.51 | 🎉 **DISCOVERY** | Validates Litwin-Kumar 2017 theory |
 | **Temporal Adaptation** | 53.1% | ✅ PASS | Within 30-70% (Nagel & Wilson 2011) |
 
-**Overall**: 9/9 COMPLETE (100%) + 2 major discoveries
+### New Tests — Learning & Noise (4/4, added 2026-03-23)
+
+| Test | Result | Status | Key Finding |
+|------|--------|--------|-------------|
+| **Extinction Learning** | Peak reversal ≥30% | ✅ PASS | First FAFB connectome extinction test |
+| **Context-Dependent Recall** | MBON-A/B valence flip | ✅ PASS | PAM/PPL1 DAN compartments validated |
+| **Sequence Learning A→B** | Δr ≥ +0.05 (specific) | ✅ PASS | First connectome A→B temporal sequence test |
+| **Noise Robustness** | 3/3 sub-tests pass | ✅ PASS | Robust at ≤10% biological noise; discrimination improves with noise |
+
+**Overall**: 13/13 COMPLETE (100%) + 2 major discoveries + 3 computational firsts
 
 ---
 
