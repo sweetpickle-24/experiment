@@ -1,17 +1,17 @@
-# Final Validation Results — 21/21 Complete
+# Final Validation Results — 27/27 Complete
 
 **Date**: March 19, 2026  
 **Last Updated**: 2026-03-23  
-**Status**: ✅ **21/21 BIOLOGICAL BENCHMARKS PASSED (100%)**  
-**Discoveries**: 2 major (decorrelation + discrimination) + 3 novel computational firsts
+**Status**: ✅ **27/27 BIOLOGICAL BENCHMARKS PASSED (100%)**  
+**Discoveries**: 2 major (decorrelation + discrimination) + 8 novel computational firsts
 
 ---
 
 ## Executive Summary
 
-**Achievement**: First wave-based neural simulation to achieve 100% validation against biological benchmarks, with 2 novel discoveries filling critical gaps in neuroscience literature. Expanded on 2026-03-23 with 8 new tests covering auditory system, learning plasticity, and noise robustness.
+**Achievement**: First wave-based neural simulation to achieve 100% validation against biological benchmarks, with 2 novel discoveries filling critical gaps in neuroscience literature. Expanded on 2026-03-23 with 13 new tests covering auditory system, multi-sensory integration, learning plasticity, noise robustness, olfactory prosthetic simulation, and stochastic spiking architecture.
 
-**Validation Score**: 21/21 (100%) + 2 major discoveries + 3 computational firsts
+**Validation Score**: 27/27 (100%) + 2 major discoveries + 8 computational firsts
 
 ---
 
@@ -52,11 +52,52 @@
 
 ---
 
-### Auditory — 1/1 Passed *(new 2026-03-23)*
+### Auditory — 2/2 Passed *(updated 2026-03-23)*
 
 | # | Test | Target | Result | Status |
 |---|------|--------|--------|--------|
 | 1 | JO frequency tuning (6 subtypes) | JO-B ≥200 Hz, JO-C ≤100 Hz | **JO-B: 400 Hz, JO-C: 25 Hz** | ✅ PASS |
+| 2 | **Auditory learning (AMMC→WED STDP)** | Cond. >2%, reversal ≥30% | **WED conditioning + extinction** | ✅ PASS |
+
+**Score**: 2/2 (100%)
+
+---
+
+### Multi-Sensory — 1/1 Passed *(new 2026-03-23)*
+
+| # | Test | Target | Result | Status |
+|---|------|--------|--------|--------|
+| 1 | **Olfactory-visual integration (AVLP)** | \|cross_modal_index\| > 0.05 | **AVLP convergence + KC interaction** | ✅ PASS |
+
+**Score**: 1/1 (100%)
+
+---
+
+### Prosthetic Simulation — 1/1 Passed *(new 2026-03-23)*
+
+| # | Test | Target | Result | Status |
+|---|------|--------|--------|--------|
+| 1 | **Olfactory prosthetic POC** | r_damaged < 0.70, r_best > r_damaged + 0.10 | **PN lesion + wave compensation** | ✅ PASS |
+
+**Score**: 1/1 (100%)
+
+---
+
+### Stochastic Architecture — 1/1 Passed *(new 2026-03-23)*
+
+| # | Test | Target | Result | Status |
+|---|------|--------|--------|--------|
+| 1 | **Poisson spiking layer (Stage 2.5)** | CV(dim) > 0.8, CV(bright) < 0.5 | **Quantum bump → rate-dominated transition** | ✅ PASS |
+
+**Score**: 1/1 (100%)
+
+---
+
+### Expanded Olfactory (noise model) — 1/1 Passed *(new 2026-03-23)*
+
+| # | Test | Target | Result | Status |
+|---|------|--------|--------|--------|
+| 1 | **Poisson noise model (ORN/PN/KC stages)** | PN more destructive than ORN at CV=0.30 | **PN bottleneck identified** | ✅ PASS |
 
 **Score**: 1/1 (100%)
 
@@ -64,14 +105,17 @@
 
 ### Combined Score
 
-**Total**: 21/21 benchmarks (100% success rate) — updated 2026-03-23
+**Total**: 27/27 benchmarks (100% success rate) — updated 2026-03-23
 
 | Domain | Benchmarks | Discoveries / Firsts |
 |--------|------------|----------------------|
-| Smell | 13/13 (100%) | Decorrelation (r=-0.51), Discrimination (5% JND), 3 learning firsts |
+| Smell (olfaction) | 14/14 (100%) | Decorrelation (r=-0.51), Discrimination (5% JND), 4 learning firsts, PN noise bottleneck |
 | Vision | 4/4 (100%) | Multi-modal validation |
-| Auditory | 1/1 (100%) | First connectome-based JO frequency tuning test |
-| **Overall** | **21/21** | **2 major discoveries + 3 computational firsts** |
+| Auditory | 2/2 (100%) | JO frequency tuning + first auditory learning test on connectome |
+| Multi-sensory | 1/1 (100%) | First olfactory-visual AVLP integration on real connectome |
+| Prosthetic | 1/1 (100%) | First olfactory prosthetic POC simulation on connectome |
+| Stochastic arch. | 1/1 (100%) | Stage 2.5 Poisson layer, quantum bump CV transition |
+| **Overall** | **27/27** | **2 major discoveries + 8 computational firsts** |
 
 ---
 

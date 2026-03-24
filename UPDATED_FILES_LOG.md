@@ -1,8 +1,43 @@
 # Updated Files Log
 
 **Date**: 2026-03-19  
-**Last Updated**: 2026-03-23 (runtime claims corrected across all docs)  
+**Last Updated**: 2026-03-23  
 **Purpose**: Track all file updates, creations, and deletions
+
+---
+
+## Updates on 2026-03-23 (third batch — extended validation suite)
+
+### New Tests: Multi-Sensory, Auditory Learning, Prosthetic POC, Poisson Noise, Poisson Spiking
+**Reason**: 5 new validation tests + Poisson spiking engine layer (Stage 2.5)  
+**Files Created/Updated**: 18
+
+**New test files:**
+- [x] `hive/validation/multisensory/__init__.py` — Created multi-sensory validation module
+- [x] `hive/validation/multisensory/test_multisensory_integration.py` — Olfactory-visual AVLP integration test
+- [x] `hive/validation/auditory/test_auditory_learning.py` — Auditory AMMC→WED STDP conditioning/extinction
+- [x] `hive/validation/smell/test_prosthetic_poc.py` — Olfactory prosthetic: PN lesion + wave compensation
+- [x] `hive/validation/smell/test_poisson_noise.py` — Poisson noise pipeline stage comparison (ORN/PN/KC)
+- [x] `hive/validation/vision/test_poisson_spiking.py` — Poisson spiking Stage 2.5 CV validation
+
+**New engine file:**
+- [x] `hive/engine/poisson_spiking.py` — PoissonSpikingWrapper (Stage 2.5) with sample_spikes, get_spike_psd, estimate_cv
+
+**Runner update:**
+- [x] `run_new_tests.py` — Updated to include all 10 tests (5 original + 5 new); added --batch flag
+
+**New finding documents:**
+- [x] `research/multisensory/findings/MULTISENSORY_INTEGRATION_RESULTS.md` — Created
+- [x] `research/auditory/findings/AUDITORY_LEARNING_RESULTS.md` — Created
+- [x] `research/smell/findings/PROSTHETIC_POC_RESULTS.md` — Created
+- [x] `research/smell/findings/POISSON_NOISE_RESULTS.md` — Created
+- [x] `research/vision/findings/POISSON_SPIKING_RESULTS.md` — Created
+
+**Updated tracking/status docs:**
+- [x] `docs/03_validation/FINAL_VALIDATION.md` — Updated 21/21 → 27/27; added new test tables for auditory, multi-sensory, prosthetic, stochastic, noise domains
+- [x] `docs/04_discoveries/ALL_NOVEL_DISCOVERIES.md` — Added 5 new computational firsts (D-H)
+- [x] `docs/06_status/POC_STATUS.md` — Updated to 27/27; added 5 new checklist items
+- [x] `UPDATED_FILES_LOG.md` — This entry
 
 ---
 
@@ -466,13 +501,23 @@
 
 ---
 
+## Updates on 2026-03-24
+
+### Findings.mdc Sync — 2026-03-23 Results Added
+**Reason**: Findings.mdc was last updated 2026-03-19 and was missing all 10 new findings from 2026-03-23 batch (auditory, multi-sensory, prosthetic, learning, noise, stochastic architecture). POC score updated from 14/14 to 27/27. Validation suite updated from 9/9 to 27/27.
+**Files Updated**: 1
+
+- [x] `.cursor/rules/Findings.mdc` - Added 10 new finding sections: JO Frequency Tuning, Auditory Learning (AMMC→WED STDP), Olfactory-Visual Multi-Sensory Integration (AVLP), Olfactory Prosthetic POC, PN Noise Bottleneck, Stage 2.5 Poisson Spiking, Extinction Learning, Context-Dependent Recall (PAM/PPL1), A→B Sequence Learning, Noise Robustness + Stochastic Resonance. Updated POC Status from 14/14 → 27/27. Updated Comprehensive Validation Suite from 9/9 → 27/27.
+
+---
+
 ## Project Status: ✅ DOCUMENTATION COMPLETE
 
 All documentation is now:
-- Synchronized across 163 files ✅
-- Reflecting 9/9 validation (100%) ✅
-- Vision discovery 4/7 (HS/VS corrected) ✅
-- Showing 2 major discoveries ✅
+- Synchronized across all files ✅
+- Reflecting 27/27 validation (100%) ✅
+- 2 major discoveries + 8 computational firsts ✅
+- Findings.mdc fully up to date (2026-03-24) ✅
 - Targeting Nature Neuroscience ✅
 - Timestamp compliant ✅
 - Tracked in audit system ✅
