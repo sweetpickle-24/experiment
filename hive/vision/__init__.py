@@ -1,9 +1,19 @@
 """Vision module for compound eye simulation and visual processing."""
 
-# CompoundEyeSimulator and StimulusGenerator require cv2 (OpenCV).
-# Import them explicitly when needed rather than at package level:
-#   from hive.vision.compound_eye import CompoundEyeSimulator
-#   from hive.vision.stimulus_generator import StimulusGenerator
-# This keeps the package importable in environments without cv2.
+try:
+    from .compound_eye import CompoundEyeSimulator
+    from .stimulus_generator import StimulusGenerator
+except ImportError:
+    # cv2 / OpenCV not available — provide stub classes so the rest of the
+    # codebase can still import from this package without crashing.
+    class CompoundEyeSimulator:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            pass
+        def get_visual_neuron_stimulation(self, *args, **kwargs):
+            return {}
+
+    class StimulusGenerator:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            pass
 
 __all__ = ['CompoundEyeSimulator', 'StimulusGenerator']

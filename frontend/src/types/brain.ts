@@ -86,4 +86,50 @@ export interface WaveSnapshot {
   visual: VisualInfo;
   anomalies: AnomalyEvent[];
   response_summary: StimulusResponseSummary;
+  // Loading / error states sent before brain is ready
+  status?: string;
+  message?: string;
+}
+
+// ── Smell Synthesis types ──────────────────────────────────────────────
+
+export interface SmellEntry {
+  name: string;
+  family: string;
+  glom_pattern: number[];
+  kc_pattern?: number[];
+  kc_sparsity: number;
+  kc_active: number;
+  has_kc?: boolean;
+}
+
+export interface OdorMatch {
+  name: string;
+  family: string;
+  similarity: number;
+  glom_pattern?: number[];
+}
+
+export interface SynthesisProgress {
+  job_id: string;
+  status: 'queued' | 'running' | 'done' | 'error';
+  step: number;
+  loss: number;
+  gradient_norm: number;
+  converged: boolean;
+  top_matches: OdorMatch[];
+  history_loss: number[];
+}
+
+export interface SynthesisResult extends SynthesisProgress {
+  glom_pattern: number[];
+  error?: string;
+}
+
+export interface OdorCompareResult {
+  odor_a: string;
+  odor_b: string;
+  glom_similarity: number;
+  kc_similarity: number | null;
+  decorrelation: number | null;
 }

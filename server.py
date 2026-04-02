@@ -6,10 +6,13 @@ Provides REST API and WebSocket endpoints for real-time visualization.
 import asyncio
 import json
 import threading
+import uuid
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Set
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from typing import Any, List, Set
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import numpy as np
 
 from hive.main import FlyBrainSystem
@@ -30,6 +33,45 @@ active_websockets: Set[WebSocket] = set()
 is_running = False
 brain_loading = True
 brain_load_error = None
+
+# ── Smell synthesis globals ────────────────────────────────────────────
+_smell_db        = None          # SmellDatabase (lazy-loaded)
+_olfactory_brain = None          # SparseProbabilisticBrain (olfactory pathway, fast_mode)
+_smell_optimizer = None          # SmellOptimizer (lazy-loaded, requires _olfactory_brain)
+_olf_brain_lock  = threading.Lock()
+
+# Active synthesis jobs: job_id → SynthesisJob
+@dataclass
+class SynthesisJob:
+    job_id:     str
+    status:     str  = "queued"    # queued | running | done | error
+    step:       int  = 0
+    loss:       float = 0.0
+    gradient_norm: float = 0.0
+    top_matches: list  = field(default_factory=list)
+    converged:  bool   = False
+    glom_pattern: list = field(default_factory=list)
+    history_loss: list = field(default_factory=list)
+    error:      str    = ""
+
+synthesis_jobs: dict[str, SynthesisJob] = {}
+
+# ── Pydantic models ────────────────────────────────────────────────────
+
+class SynthesizeRequest(BaseModel):
+    target_odor:     str | None = None
+    target_kc_pattern: list[float] | None = None
+    mode:            str   = "fast"      # "fast" | "accurate"
+    num_steps:       int   = 150
+    region:          str   = "KC"
+
+class CompareRequest(BaseModel):
+    odor_a: str
+    odor_b: str
+
+class EncodeRequest(BaseModel):
+    odor_name:    str
+    concentration: float = 1.0
 
 
 def load_brain_system():
@@ -415,6 +457,363 @@ async def get_vision_stats():
         stats['current_stimulus'] = brain_system.current_stimulus
     
     return stats
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  SMELL SYNTHESIS — helpers
+# ═══════════════════════════════════════════════════════════════════════
+
+def _get_smell_db():
+    """Lazy-load SmellDatabase (singleton)."""
+    global _smell_db
+    if _smell_db is None:
+        from hive.data.smell_database import SmellDatabase
+        _smell_db = SmellDatabase()
+        kc_path = Path("data/digital_smell_database_full.json")
+        if kc_path.exists():
+            _smell_db.load_kc_fingerprints(kc_path)
+    return _smell_db
+
+
+def _get_olfactory_brain():
+    """Lazy-load olfactory-pathway SparseProbabilisticBrain (fast_mode)."""
+    global _olfactory_brain
+    if _olfactory_brain is None:
+        with _olf_brain_lock:
+            if _olfactory_brain is None:
+                from hive.substrate.connectome import Connectome
+                from hive.substrate.olfactory_subgraph import extract_olfactory_pathway
+                from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
+
+                full = Connectome(data_dir="Fly Brain Female")
+                full.load()
+                conn = extract_olfactory_pathway(full)
+                _olfactory_brain = SparseProbabilisticBrain(
+                    conn, use_mlx=True, fast_mode=True
+                )
+                _olfactory_brain.reset(deterministic=True)
+                _olfactory_brain.evolve(20.0)   # warm up JIT
+    return _olfactory_brain
+
+
+def _encode_odor_to_kc(glom: np.ndarray, brain, concentration: float = 1.0) -> np.ndarray:
+    """Run one forward simulation pass and return KC pattern (normalized)."""
+    strength = 50.0 * np.log10(1 + 10 * concentration)
+    brain.reset(deterministic=True)
+    brain.inject_odor(glom, strength=float(strength))
+    brain.evolve(100.0)
+    return brain.get_region_activity("KC", normalize_kc=True, target_sparsity=0.06)
+
+
+def _get_smell_optimizer():
+    """
+    Lazy-load SmellOptimizer backed by DifferentiableSmellMapper.
+
+    Builds the PN→KC weight matrix from the olfactory brain once; subsequent
+    calls return the cached instance.  Thread-safe via _olf_brain_lock.
+    """
+    global _smell_optimizer
+    if _smell_optimizer is None:
+        with _olf_brain_lock:
+            if _smell_optimizer is None:
+                from hive.inverse.smell_optimizer import SmellOptimizer
+                brain = _get_olfactory_brain()
+                db    = _get_smell_db()
+                _smell_optimizer = SmellOptimizer(brain, smell_db=db,
+                                                  learning_rate=0.05)
+    return _smell_optimizer
+
+
+def _run_synthesis_job(job: SynthesisJob, target_kc: np.ndarray,
+                        num_steps: int, mode: str) -> None:
+    """
+    Background thread: smell synthesis via SmellOptimizer.
+
+    Fast mode    — nearest-neighbour in SmellDatabase KC space (O(N), ~1 ms).
+    Accurate mode — Adam through DifferentiableSmellMapper (true autodiff).
+    """
+    try:
+        job.status = "running"
+
+        optimizer = _get_smell_optimizer()
+
+        # Map server "accurate" alias → optimizer "gradient" mode
+        opt_mode = "fast" if mode == "fast" else "gradient"
+
+        glom, info = optimizer.encode_smell(
+            target_kc,
+            mode=opt_mode,
+            num_steps=num_steps,
+            verbose=False,
+        )
+
+        job.glom_pattern  = glom.tolist()
+        job.loss          = float(info["loss"])
+        job.step          = int(info["steps"]) if info["steps"] else num_steps
+        job.converged     = bool(info["converged"])
+        job.top_matches   = info.get("top_matches", [])
+        job.history_loss  = info.get("history_loss", [job.loss])
+        job.gradient_norm = float(info.get("history_grad", [0.0])[-1])
+        job.status        = "done"
+
+    except Exception as exc:
+        job.error  = str(exc)
+        job.status = "error"
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  SMELL SYNTHESIS — REST endpoints
+# ═══════════════════════════════════════════════════════════════════════
+
+@app.get("/api/smell/odorants")
+async def get_odorant_list():
+    """Lightweight list of all available odorants (name + family)."""
+    try:
+        db = _get_smell_db()
+        return {
+            "odorants": [
+                {"name": e.name, "family": e.family, "has_kc": e.kc_pattern is not None}
+                for e in db.entries.values()
+            ],
+            "total": len(db.entries),
+            "with_kc": sum(1 for e in db.entries.values() if e.kc_pattern is not None),
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/smell/database")
+async def get_smell_database(include_kc: bool = False):
+    """Full odorant entries. Set include_kc=true to include raw KC vectors."""
+    try:
+        db = _get_smell_db()
+        return {
+            "entries": db.get_all_entries(include_kc=include_kc),
+            "stats":   db.stats(),
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/smell/encode")
+async def encode_odor(req: EncodeRequest):
+    """
+    Run a forward-pass simulation for one odorant and return its KC pattern.
+    Fast (~400ms on GPU). Result is also cached in SmellDatabase.
+    """
+    try:
+        db    = _get_smell_db()
+        entry = db.find_by_name(req.odor_name)
+        if entry is None:
+            raise HTTPException(status_code=404,
+                                detail=f"Odorant '{req.odor_name}' not found")
+
+        # Return cached if available
+        if entry.kc_pattern is not None:
+            return {
+                "odor_name":   req.odor_name,
+                "family":      entry.family,
+                "glom_pattern": entry.glom_pattern,
+                "kc_pattern":  entry.kc_pattern,
+                "kc_active":   entry.kc_active,
+                "kc_sparsity": entry.kc_sparsity,
+                "cached":      True,
+            }
+
+        brain  = _get_olfactory_brain()
+        glom   = np.array(entry.glom_pattern, dtype=np.float32)
+        with _olf_brain_lock:
+            kc = _encode_odor_to_kc(glom, brain, req.concentration)
+
+        entry.kc_pattern  = kc.tolist()
+        entry.kc_active   = int(np.sum(kc > 0.01))
+        entry.kc_sparsity = float(entry.kc_active / len(kc))
+
+        return {
+            "odor_name":    req.odor_name,
+            "family":       entry.family,
+            "glom_pattern": entry.glom_pattern,
+            "kc_pattern":   entry.kc_pattern,
+            "kc_active":    entry.kc_active,
+            "kc_sparsity":  entry.kc_sparsity,
+            "cached":       False,
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/smell/compare")
+async def compare_odors(req: CompareRequest):
+    """
+    Compare two odorants: glomerular cosine similarity + KC decorrelation.
+    """
+    try:
+        db = _get_smell_db()
+        ea = db.find_by_name(req.odor_a)
+        eb = db.find_by_name(req.odor_b)
+
+        missing = [n for n, e in [(req.odor_a, ea), (req.odor_b, eb)] if e is None]
+        if missing:
+            raise HTTPException(status_code=404,
+                                detail=f"Odorants not found: {missing}")
+
+        glom_a = np.array(ea.glom_pattern, dtype=np.float32)
+        glom_b = np.array(eb.glom_pattern, dtype=np.float32)
+
+        def cosine(a, b):
+            na, nb = np.linalg.norm(a), np.linalg.norm(b)
+            if na < 1e-9 or nb < 1e-9:
+                return 0.0
+            return float(np.dot(a, b) / (na * nb))
+
+        glom_sim = cosine(glom_a, glom_b)
+
+        kc_sim: float | None = None
+        if ea.kc_pattern is not None and eb.kc_pattern is not None:
+            kc_a   = np.array(ea.kc_pattern, dtype=np.float32)
+            kc_b   = np.array(eb.kc_pattern, dtype=np.float32)
+            kc_sim = cosine(kc_a, kc_b)
+
+        return {
+            "odor_a":           req.odor_a,
+            "odor_b":           req.odor_b,
+            "glom_similarity":  glom_sim,
+            "kc_similarity":    kc_sim,
+            "decorrelation":    None if kc_sim is None else (glom_sim - kc_sim),
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/smell/synthesize")
+async def start_synthesis(req: SynthesizeRequest):
+    """
+    Start an async smell synthesis job.
+
+    Supply either target_odor (name lookup) or target_kc_pattern (raw vector).
+    Returns job_id; stream progress via WS /ws/synthesis/{job_id}.
+    """
+    try:
+        db = _get_smell_db()
+
+        # Resolve target KC pattern
+        target_kc: np.ndarray | None = None
+
+        if req.target_odor:
+            entry = db.find_by_name(req.target_odor)
+            if entry is None:
+                raise HTTPException(status_code=404,
+                                    detail=f"Odorant '{req.target_odor}' not found")
+            if entry.kc_pattern is None:
+                brain = _get_olfactory_brain()
+                glom  = np.array(entry.glom_pattern, dtype=np.float32)
+                with _olf_brain_lock:
+                    kc = _encode_odor_to_kc(glom, brain)
+                entry.kc_pattern  = kc.tolist()
+                entry.kc_active   = int(np.sum(kc > 0.01))
+                entry.kc_sparsity = float(entry.kc_active / len(kc))
+            target_kc = np.array(entry.kc_pattern, dtype=np.float32)
+
+        elif req.target_kc_pattern:
+            target_kc = np.array(req.target_kc_pattern, dtype=np.float32)
+
+        else:
+            raise HTTPException(status_code=422,
+                                detail="Provide target_odor or target_kc_pattern")
+
+        job_id = str(uuid.uuid4())
+        job    = SynthesisJob(job_id=job_id)
+        synthesis_jobs[job_id] = job
+
+        # Run in background thread (synthesis can take 10-30s in accurate mode)
+        thread = threading.Thread(
+            target=_run_synthesis_job,
+            args=(job, target_kc, req.num_steps, req.mode),
+            daemon=True,
+        )
+        thread.start()
+
+        return {"job_id": job_id, "status": "queued"}
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/smell/synthesize/{job_id}")
+async def get_synthesis_result(job_id: str):
+    """Poll synthesis job status and result."""
+    job = synthesis_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
+
+    return {
+        "job_id":       job.job_id,
+        "status":       job.status,
+        "step":         job.step,
+        "loss":         job.loss,
+        "gradient_norm": job.gradient_norm,
+        "converged":    job.converged,
+        "top_matches":  job.top_matches,
+        "glom_pattern": job.glom_pattern,
+        "history_loss": job.history_loss,
+        "error":        job.error,
+    }
+
+
+# ── WebSocket: live synthesis progress ────────────────────────────────
+
+@app.websocket("/ws/synthesis/{job_id}")
+async def synthesis_ws(websocket: WebSocket, job_id: str):
+    """
+    Stream per-step synthesis progress for job_id.
+    Sends JSON every 300ms until job is done or client disconnects.
+    """
+    await websocket.accept()
+
+    try:
+        # Wait up to 60s for the job to appear
+        waited = 0.0
+        while job_id not in synthesis_jobs and waited < 60:
+            await asyncio.sleep(0.3)
+            waited += 0.3
+
+        if job_id not in synthesis_jobs:
+            await websocket.send_text(json.dumps({"error": "Job not found"}))
+            return
+
+        job = synthesis_jobs[job_id]
+
+        while True:
+            payload = {
+                "job_id":         job.job_id,
+                "status":         job.status,
+                "step":           job.step,
+                "loss":           job.loss,
+                "gradient_norm":  job.gradient_norm,
+                "converged":      job.converged,
+                "top_matches":    job.top_matches,
+                "history_loss":   job.history_loss[-50:],   # last 50 points
+            }
+            await websocket.send_text(json.dumps(payload))
+
+            if job.status in ("done", "error"):
+                break
+
+            await asyncio.sleep(0.3)
+
+    except WebSocketDisconnect:
+        pass
+    except Exception as exc:
+        try:
+            await websocket.send_text(json.dumps({"error": str(exc)}))
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

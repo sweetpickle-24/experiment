@@ -1,8 +1,38 @@
 # Updated Files Log
 
 **Date**: 2026-03-19  
-**Last Updated**: 2026-03-23  
+**Last Updated**: 2026-03-24  
 **Purpose**: Track all file updates, creations, and deletions
+
+---
+
+## Updates on 2026-03-24 — Smell Synthesis + DoOR Expansion
+
+### Track 3 (Smell Synthesis) + Track 6 (Chemical Space Expansion)
+**Reason**: Implement inverse-problem smell synthesis API + expand DoOR from 47 synthetic to 372 real odorants  
+**Files Created/Updated**: 10
+
+**New backend files:**
+- [x] `scripts/download_door_data.py` — Created: downloads real DoOR 2.0 data from ropensci/DoOR.data GitHub (372 odorants × 40 receptors); expanded synthetic fallback with 12 chemical families
+- [x] `scripts/batch_encode_odors.py` — Created: batch-encodes all DoOR odorants to KC fingerprints via SparseProbabilisticBrain fast_mode; saves `data/digital_smell_database_full.json`
+- [x] `hive/data/smell_database.py` — Created: SmellDatabase class (cosine-similarity KC search, glom search, encode_odor, get_all_entries, load_kc_fingerprints)
+- [x] `hive/data/__init__.py` — Updated: exports SmellDatabase, SmellEntry, OdorMatch
+
+**Updated backend:**
+- [x] `server.py` — Added: 6 REST endpoints (/api/smell/odorants, /api/smell/database, /api/smell/encode, /api/smell/compare, /api/smell/synthesize POST+GET) + /ws/synthesis/{job_id} WebSocket + SynthesisJob dataclass + lazy-load helpers
+
+**New frontend files:**
+- [x] `frontend/src/api/smell.ts` — Created: typed API client for all smell endpoints + WebSocket subscription helper + FAMILY_COLORS/LABELS constants
+- [x] `frontend/src/components/panels/SmellSynthesisPanel.tsx` — Created: full synthesis panel (searchable odor dropdown, mode toggle, live convergence chart, top-5 match cards with glom barcodes)
+
+**Updated frontend:**
+- [x] `frontend/src/types/brain.ts` — Added: SmellEntry, OdorMatch, SynthesisProgress, SynthesisResult, OdorCompareResult types; added optional status/message to WaveSnapshot
+- [x] `frontend/src/components/Dashboard.tsx` — Added: SmellSynthesisPanel import + full-width row at bottom
+- [x] `frontend/src/hooks/useWebSocket.ts` — Fixed: NodeJS.Timeout → ReturnType<typeof setTimeout> (pre-existing TS error)
+
+**Data generated:**
+- [x] `data/door_consensus_matrix.npy` — Regenerated: 372 real odorants × 40 receptors (DoOR 2.0, ropensci/DoOR.data)
+- [x] `data/digital_smell_database_full.json` — Created: 372 KC fingerprints (~9.6 MB), mean sparsity 4.85%
 
 ---
 
@@ -503,11 +533,53 @@
 
 ## Updates on 2026-03-24
 
+### Real-Time Performance Optimisation
+**Reason**: Olfactory pathway was 1.87× slower than real-time (0.54× RT). Implemented 6 optimisations to reach 2.688× RT (faster than real-time) using fast_mode.
+**Files Updated**: 4
+
+- [x] `hive/engine/sparse_probabilistic.py` - Added mx.compile JIT kernel, precomputed constants, fast_mode param (dt=0.5ms), deque ring buffer, vectorised inject_odor, reduced eval frequency, benchmark() method
+- [x] `benchmark_realtime.py` - Created: benchmark script testing 3 configurations, measures RT factor
+- [x] `.cursor/rules/Findings.mdc` - Added "Real-Time Performance Achieved (2026-03-24)" finding with full benchmark table
+- [x] `docs/06_status/POC_STATUS.md` - Updated speed metric from 0.54× RT → 2.688× RT (fast_mode)
+
+---
+
 ### Findings.mdc Sync — 2026-03-23 Results Added
 **Reason**: Findings.mdc was last updated 2026-03-19 and was missing all 10 new findings from 2026-03-23 batch (auditory, multi-sensory, prosthetic, learning, noise, stochastic architecture). POC score updated from 14/14 to 27/27. Validation suite updated from 9/9 to 27/27.
 **Files Updated**: 1
 
 - [x] `.cursor/rules/Findings.mdc` - Added 10 new finding sections: JO Frequency Tuning, Auditory Learning (AMMC→WED STDP), Olfactory-Visual Multi-Sensory Integration (AVLP), Olfactory Prosthetic POC, PN Noise Bottleneck, Stage 2.5 Poisson Spiking, Extinction Learning, Context-Dependent Recall (PAM/PPL1), A→B Sequence Learning, Noise Robustness + Stochastic Resonance. Updated POC Status from 14/14 → 27/27. Updated Comprehensive Validation Suite from 9/9 → 27/27.
+
+---
+
+---
+
+## Updates on 2026-03-24
+
+### dt Sweep — Performance vs Accuracy Characterisation
+**Reason**: Empirically tested dt = 0.1, 0.5, 1.0, 2.0, 5.0, 10.0 ms to find the fastest numerically stable timestep. Confirmed dt=0.5ms as the sweet spot (3.35× RT, Δr=0.037). Documented hard ceiling (dt=2ms = numerical degradation, dt=10ms = simulation collapse). Updated all documentation to reflect confirmed 3.35× RT (vs earlier reported 2.688× from a single cold benchmark).
+**Files Updated**: 3
+
+- [x] `.cursor/rules/Findings.mdc` - Added "dt Sweep — Performance vs Accuracy Trade-off (2026-03-24)" finding with full table, hard ceiling analysis, and sweet spot confirmation
+- [x] `docs/06_status/POC_STATUS.md` - Updated RT metric from 2.688× → 3.35× (confirmed warm benchmark); added dt sweep range and ceiling data
+- [x] `UPDATED_FILES_LOG.md` - This entry
+
+---
+
+## Updates on 2026-03-24
+
+### Smell Synthesis — Fixed Broken Autodiff Chain (Gradient Mode)
+**Reason**: `SmellOptimizer._simulate_odor()` converted MLX→NumPy inside the loss function,
+killing the gradient chain. Replaced with `DifferentiableSmellMapper`, a pure-MLX
+linear surrogate for the PN→KC transformation. Gradient now flows end-to-end via `mx.grad()`.
+**Files Updated**: 3
+
+- [x] `hive/inverse/smell_optimizer.py` - Full rewrite: `DifferentiableSmellMapper` (PN→KC weight matrix extracted from connectome, pure MLX forward pass), `SmellOptimizer` with `encode_smell(mode='fast'|'gradient')`, manual Adam optimizer in unconstrained logit space, `SimplifiedInverseOptimizer` backward-compat stub
+- [x] `server.py` - Added `_smell_optimizer` global, `_get_smell_optimizer()` lazy loader, replaced broken `_run_synthesis_job` accurate mode (had NumPy conversion in loss_fn) with single call to `SmellOptimizer.encode_smell()`
+- [x] `test_smell_synthesis.py` - Created round-trip validation script: loads SmellDatabase + olfactory brain, tests fast mode (cosine NN) and gradient mode (Adam through DifferentiableSmellMapper) for preset cross-family odorants
+
+**Verified**: Gradient flows (grad_norm=0.045, nonzero=True). Fast mode: glom_sim=1.0 (exact).
+Gradient mode: glom_sim=0.656 (surrogate ≠ ODE dynamics, expected; finds chemically similar patterns).
 
 ---
 
@@ -518,6 +590,7 @@ All documentation is now:
 - Reflecting 27/27 validation (100%) ✅
 - 2 major discoveries + 8 computational firsts ✅
 - Findings.mdc fully up to date (2026-03-24) ✅
+- dt sweep characterised: sweet spot 0.5ms, ceiling 2.0ms ✅
 - Targeting Nature Neuroscience ✅
 - Timestamp compliant ✅
 - Tracked in audit system ✅

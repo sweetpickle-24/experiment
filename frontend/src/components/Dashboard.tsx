@@ -13,6 +13,7 @@ import { ControlPanel } from './panels/ControlPanel';
 import { VisualInputPanel } from './panels/VisualInputPanel';
 import { AnomalyMonitorPanel } from './panels/AnomalyMonitorPanel';
 import { ResponseTrackerPanel } from './panels/ResponseTrackerPanel';
+import { SmellSynthesisPanel } from './panels/SmellSynthesisPanel';
 
 export function Dashboard() {
   useWebSocket();
@@ -108,6 +109,11 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <FrequencyBandsPanel />
         <PhaseCoherenceMap />
+      </div>
+
+      {/* Smell Synthesis — full width */}
+      <div className="mt-6">
+        <SmellSynthesisPanel />
       </div>
     </div>
   );
