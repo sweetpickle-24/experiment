@@ -1,0 +1,343 @@
+============================================================
+CONCENTRATION INVARIANCE TEST
+Wave-Based Olfactory Simulation
+============================================================
+
+Seed: 42
+Test Configuration:
+  Odors: ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
+  Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0] (100-fold range)
+  Simulation duration: 100.0 ms per trial
+  Total trials: 15 = 3 odors × 5 concentrations
+
+Loading connectome...
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+  Loaded 139255 total neurons
+Extracting olfactory pathway...
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+  Extracted 10906 olfactory neurons
+  Synapses: 446388
+
+Initializing brain simulator...
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+  Memory usage: 0.2 MB
+  Backend: NumPy (CPU)
+
+Loading DOoR database...
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+  Loaded 372 odorants
+
+scikit-learn is not importable, so the glomerular projection is UNCENTERED SVD, not PCA. The two are not equivalent: without mean-centering one component is spent on the mean response and the axes are not the principal axes of variation. Any number produced under this path was produced by uncentered SVD (94.8% of squared magnitude retained). Install scikit-learn to use PCA.
+
+============================================================
+Testing odor: benzaldehyde
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 2.70s
+    Active KCs: 37/5279 (0.70%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.1266
+
+  Concentration: 0.5× baseline...
+    Simulation time: 2.73s
+    Active KCs: 50/5279 (0.95%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0336
+
+  Concentration: 1.0× baseline...
+    Simulation time: 2.76s
+    Active KCs: 289/5279 (5.47%)
+    Mean amplitude: 0.0083
+    Max amplitude: 0.8753
+
+  Concentration: 5.0× baseline...
+    Simulation time: 2.73s
+    Active KCs: 41/5279 (0.78%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0486
+
+  Concentration: 10.0× baseline...
+    Simulation time: 2.78s
+    Active KCs: 193/5279 (3.66%)
+    Mean amplitude: 0.0064
+    Max amplitude: 0.5900
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.3200
+      Jaccard similarity: 0.1918
+    0.1x_vs_1.0x:
+      Binary correlation: 0.1095
+      Jaccard similarity: 0.0415
+    0.1x_vs_5.0x:
+      Binary correlation: 0.3030
+      Jaccard similarity: 0.1818
+    0.1x_vs_10.0x:
+      Binary correlation: 0.0320
+      Jaccard similarity: 0.0177
+    0.5x_vs_1.0x:
+      Binary correlation: 0.1312
+      Jaccard similarity: 0.0561
+    0.5x_vs_5.0x:
+      Binary correlation: 0.1473
+      Jaccard similarity: 0.0833
+    0.5x_vs_10.0x:
+      Binary correlation: 0.1164
+      Jaccard similarity: 0.0565
+    1.0x_vs_5.0x:
+      Binary correlation: 0.0925
+      Jaccard similarity: 0.0377
+    1.0x_vs_10.0x:
+      Binary correlation: 0.0374
+      Jaccard similarity: 0.0410
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0747
+      Jaccard similarity: 0.0354
+
+============================================================
+Testing odor: 2-heptanone
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 2.74s
+    Active KCs: 29/5279 (0.55%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0605
+
+  Concentration: 0.5× baseline...
+    Simulation time: 2.75s
+    Active KCs: 138/5279 (2.61%)
+    Mean amplitude: 0.0007
+    Max amplitude: 0.0585
+
+  Concentration: 1.0× baseline...
+    Simulation time: 2.76s
+    Active KCs: 241/5279 (4.57%)
+    Mean amplitude: 0.0025
+    Max amplitude: 0.8677
+
+  Concentration: 5.0× baseline...
+    Simulation time: 2.77s
+    Active KCs: 207/5279 (3.92%)
+    Mean amplitude: 0.0018
+    Max amplitude: 1.2259
+
+  Concentration: 10.0× baseline...
+    Simulation time: 2.77s
+    Active KCs: 229/5279 (4.34%)
+    Mean amplitude: 0.0024
+    Max amplitude: 1.2466
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.0039
+      Jaccard similarity: 0.0060
+    0.1x_vs_1.0x:
+      Binary correlation: 0.0574
+      Jaccard similarity: 0.0227
+    0.1x_vs_5.0x:
+      Binary correlation: 0.1038
+      Jaccard similarity: 0.0396
+    0.1x_vs_10.0x:
+      Binary correlation: 0.0848
+      Jaccard similarity: 0.0320
+    0.5x_vs_1.0x:
+      Binary correlation: 0.0381
+      Jaccard similarity: 0.0355
+    0.5x_vs_5.0x:
+      Binary correlation: 0.0342
+      Jaccard similarity: 0.0329
+    0.5x_vs_10.0x:
+      Binary correlation: 0.3672
+      Jaccard similarity: 0.2315
+    1.0x_vs_5.0x:
+      Binary correlation: 0.0166
+      Jaccard similarity: 0.0299
+    1.0x_vs_10.0x:
+      Binary correlation: 0.0158
+      Jaccard similarity: 0.0307
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0001
+      Jaccard similarity: 0.0211
+
+============================================================
+Testing odor: isopentyl_acetate
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 2.79s
+    Active KCs: 20/5279 (0.38%)
+    Mean amplitude: 0.0002
+    Max amplitude: 0.0561
+
+  Concentration: 0.5× baseline...
+    Simulation time: 2.75s
+    Active KCs: 58/5279 (1.10%)
+    Mean amplitude: 0.0004
+    Max amplitude: 0.0397
+
+  Concentration: 1.0× baseline...
+    Simulation time: 2.80s
+    Active KCs: 194/5279 (3.67%)
+    Mean amplitude: 0.0010
+    Max amplitude: 0.4091
+
+  Concentration: 5.0× baseline...
+    Simulation time: 2.80s
+    Active KCs: 199/5279 (3.77%)
+    Mean amplitude: 0.0022
+    Max amplitude: 1.4737
+
+  Concentration: 10.0× baseline...
+    Simulation time: 2.75s
+    Active KCs: 74/5279 (1.40%)
+    Mean amplitude: 0.0004
+    Max amplitude: 0.0452
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.1710
+      Jaccard similarity: 0.0833
+    0.1x_vs_1.0x:
+      Binary correlation: 0.0043
+      Jaccard similarity: 0.0047
+    0.1x_vs_5.0x:
+      Binary correlation: 0.0849
+      Jaccard similarity: 0.0282
+    0.1x_vs_10.0x:
+      Binary correlation: 0.2812
+      Jaccard similarity: 0.1325
+    0.5x_vs_1.0x:
+      Binary correlation: 0.0084
+      Jaccard similarity: 0.0120
+    0.5x_vs_5.0x:
+      Binary correlation: 0.0555
+      Jaccard similarity: 0.0321
+    0.5x_vs_10.0x:
+      Binary correlation: 0.1575
+      Jaccard similarity: 0.0909
+    1.0x_vs_5.0x:
+      Binary correlation: -0.0175
+      Jaccard similarity: 0.0103
+    1.0x_vs_10.0x:
+      Binary correlation: 0.2422
+      Jaccard similarity: 0.1308
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0187
+      Jaccard similarity: 0.0187
+
+============================================================
+CONCENTRATION INVARIANCE ANALYSIS
+============================================================
+
+Odor: benzaldehyde
+  0.1x_vs_0.5x: binary=0.320, jaccard=0.192
+  0.1x_vs_1.0x: binary=0.110, jaccard=0.042
+  0.1x_vs_5.0x: binary=0.303, jaccard=0.182
+  0.1x_vs_10.0x: binary=0.032, jaccard=0.018
+  0.5x_vs_1.0x: binary=0.131, jaccard=0.056
+  0.5x_vs_5.0x: binary=0.147, jaccard=0.083
+  0.5x_vs_10.0x: binary=0.116, jaccard=0.057
+  1.0x_vs_5.0x: binary=0.093, jaccard=0.038
+  1.0x_vs_10.0x: binary=0.037, jaccard=0.041
+  5.0x_vs_10.0x: binary=0.075, jaccard=0.035
+
+Odor: 2-heptanone
+  0.1x_vs_0.5x: binary=0.004, jaccard=0.006
+  0.1x_vs_1.0x: binary=0.057, jaccard=0.023
+  0.1x_vs_5.0x: binary=0.104, jaccard=0.040
+  0.1x_vs_10.0x: binary=0.085, jaccard=0.032
+  0.5x_vs_1.0x: binary=0.038, jaccard=0.036
+  0.5x_vs_5.0x: binary=0.034, jaccard=0.033
+  0.5x_vs_10.0x: binary=0.367, jaccard=0.232
+  1.0x_vs_5.0x: binary=0.017, jaccard=0.030
+  1.0x_vs_10.0x: binary=0.016, jaccard=0.031
+  5.0x_vs_10.0x: binary=0.000, jaccard=0.021
+
+Odor: isopentyl_acetate
+  0.1x_vs_0.5x: binary=0.171, jaccard=0.083
+  0.1x_vs_1.0x: binary=0.004, jaccard=0.005
+  0.1x_vs_5.0x: binary=0.085, jaccard=0.028
+  0.1x_vs_10.0x: binary=0.281, jaccard=0.133
+  0.5x_vs_1.0x: binary=0.008, jaccard=0.012
+  0.5x_vs_5.0x: binary=0.055, jaccard=0.032
+  0.5x_vs_10.0x: binary=0.157, jaccard=0.091
+  1.0x_vs_5.0x: binary=-0.018, jaccard=0.010
+  1.0x_vs_10.0x: binary=0.242, jaccard=0.131
+  5.0x_vs_10.0x: binary=0.019, jaccard=0.019
+
+============================================================
+SUMMARY STATISTICS
+============================================================
+
+Binary Correlation (thresholded KC patterns):
+  Mean: 0.1031
+  Std:  0.1030
+  Min:  -0.0175
+  Max:  0.3672
+
+Jaccard Similarity (active KC overlap):
+  Mean: 0.0590
+  Std:  0.0574
+  Min:  0.0047
+  Max:  0.2315
+
+BIOLOGICAL VALIDATION:
+  ❌ WEAK concentration invariance (mean correlation=0.103)
+     High variability suggests concentration-dependent KC recruitment.
+     May need parameter tuning or circuit refinement.
+
+
+============================================================
+Results saved to: /Users/vladyslav/Documents/GitHub/experiment/results/final/concentration_invariance_cpu_seed42.json
+============================================================
+
+CITATION-READY SUMMARY:
+------------------------------------------------------------
+We tested concentration invariance across 3 odors at 5 concentration
+levels (0.1× to 10×, 100-fold range). KC pattern correlation was
+0.103 ± 0.103
+(mean ± SD, n=15 trials), with Jaccard similarity
+0.059 ± 0.057.
+Results show concentration-dependent KC recruitment, suggesting
+potential parameter tuning needed for full biological fidelity.
+------------------------------------------------------------
+
+✅ Concentration invariance test complete!
+
