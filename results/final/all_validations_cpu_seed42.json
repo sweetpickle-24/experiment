@@ -1,0 +1,178 @@
+{
+  "timestamp": "2026-09-03T16:03:05.249427",
+  "system": {
+    "num_neurons": 10906,
+    "backend": "NumPy"
+  },
+  "validations": {
+    "temporal_dynamics": {
+      "odors": {
+        "benzaldehyde": {
+          "peak_time_ms": 500,
+          "adaptation_percent": 0.0,
+          "activities": [
+            0.0,
+            0.0004857497988268733,
+            0.00048596481792628765,
+            0.0004916909383609891,
+            0.0004724476602859795,
+            0.000483650277601555
+          ]
+        },
+        "2-heptanone": {
+          "peak_time_ms": 50,
+          "adaptation_percent": 17.76552797772081,
+          "activities": [
+            0.0,
+            0.00041383286588825285,
+            0.00033678230829536915,
+            0.00034031327231787145,
+            0.00032716276473365724,
+            0.00033626070944592357
+          ]
+        },
+        "isopentyl_acetate": {
+          "peak_time_ms": 2000,
+          "adaptation_percent": 0.0,
+          "activities": [
+            0.0,
+            0.0008747977553866804,
+            0.0009616543538868427,
+            0.002882972825318575,
+            0.00503318989649415,
+            0.0062711541540920734
+          ]
+        }
+      },
+      "summary": {
+        "peak_time_mean_ms": 850.0,
+        "adaptation_mean_percent": 5.92184265924027,
+        "validation": "FAIL"
+      }
+    },
+    "odor_mixtures": {
+      "mixtures": {
+        "binary_mixture": {
+          "odors": [
+            "benzaldehyde",
+            "2-heptanone"
+          ],
+          "overlap_percent": 11.234177215189874
+        }
+      },
+      "summary": {
+        "mean_overlap_percent": 11.234177215189874,
+        "validation": "FAIL"
+      }
+    },
+    "discrimination": {
+      "odors": {
+        "benzaldehyde": {
+          "jnd_percent": 5,
+          "delta_sweep": {
+            "5": {
+              "correlation": 0.2796657289256971,
+              "discriminable": true
+            },
+            "10": {
+              "correlation": 0.4479681287094127,
+              "discriminable": true
+            },
+            "15": {
+              "correlation": 0.4210397447440184,
+              "discriminable": true
+            },
+            "20": {
+              "correlation": 0.599440288514756,
+              "discriminable": true
+            },
+            "25": {
+              "correlation": 0.20224662502518737,
+              "discriminable": true
+            }
+          }
+        },
+        "2-heptanone": {
+          "jnd_percent": 5,
+          "delta_sweep": {
+            "5": {
+              "correlation": 0.4782625606704814,
+              "discriminable": true
+            },
+            "10": {
+              "correlation": 0.5287532806055953,
+              "discriminable": true
+            },
+            "15": {
+              "correlation": 0.013747937267424432,
+              "discriminable": true
+            },
+            "20": {
+              "correlation": 0.33352249685648605,
+              "discriminable": true
+            },
+            "25": {
+              "correlation": 0.380647168795926,
+              "discriminable": true
+            }
+          }
+        }
+      },
+      "summary": {
+        "jnd_per_odor": {
+          "benzaldehyde": 5,
+          "2-heptanone": 5
+        },
+        "mean_jnd_percent": 5.0,
+        "validation": "FAIL",
+        "biological_target": "10-20% (Weber's law, Bodyak & Bhatt 2001)"
+      }
+    },
+    "similarity": {
+      "summary": {
+        "chem_neural_correlation": 0.6229184171657143,
+        "validation": "FAIL"
+      }
+    },
+    "learning": {
+      "summary": {
+        "mbon_pre": 0.015514619648456573,
+        "mbon_post": 0.011055766604840755,
+        "mbon_change_pct": 28.739667943407166,
+        "kc_active_pre": 316,
+        "kc_active_post": 108,
+        "mean_weight_change": 0.014460737630724908,
+        "n_training_trials": 5,
+        "validation": "PASS",
+        "biological_ref": "Bi & Poo 1998; Aso et al. 2014; Hige et al. 2015"
+      }
+    }
+  },
+  "score": {
+    "passed": 1,
+    "total": 5
+  },
+  "config": {
+    "timestamp": "2026-09-03T20:07:23.537393+00:00",
+    "git_commit": "f703a1ea0489af54eb42520f3fbdadd7c3aa3de3-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "uncentered_svd",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "projection_explained_variance": 0.9476379156112671,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "run_all_validations",
+    "n_benchmarks": 5,
+    "elapsed_minutes": 4.304794733333334
+  }
+}

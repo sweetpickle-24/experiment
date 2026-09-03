@@ -1,0 +1,142 @@
+2026-09-03 16:03:05,249 - ======================================================================
+2026-09-03 16:03:05,249 - COMPREHENSIVE BIOLOGICAL VALIDATION SUITE
+2026-09-03 16:03:05,249 - ======================================================================
+2026-09-03 16:03:05,249 - Starting all 5 validations...
+2026-09-03 16:03:05,249 - Backend: NumPy (CPU)
+2026-09-03 16:03:05,249 - CPU runtime is roughly 150 s per 100 ms simulated; expect hours.
+2026-09-03 16:03:05,249 - 
+Initializing olfactory system...
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+2026-09-03 16:03:11,015 - Computing receptor->glomerular projection: 40 -> 20 dimensions
+2026-09-03 16:03:11,018 - scikit-learn is not importable, so the glomerular projection is UNCENTERED SVD, not PCA. The two are not equivalent: without mean-centering one component is spent on the mean response and the axes are not the principal axes of variation. Any number produced under this path was produced by uncentered SVD (94.8% of squared magnitude retained). Install scikit-learn to use PCA.
+2026-09-03 16:03:11,629 - ✅ System ready: 10906 neurons, backend=NumPy
+2026-09-03 16:03:11,667 - Configuration: {
+  "timestamp": "2026-09-03T20:03:11.629235+00:00",
+  "git_commit": "f703a1ea0489af54eb42520f3fbdadd7c3aa3de3-dirty",
+  "seed": 42,
+  "duration_ms": 100.0,
+  "python": "3.14.3",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "backend": "NumPy",
+  "dt_ms": 0.1,
+  "projection_method": "uncentered_svd",
+  "reproducible": true,
+  "fast_mode": false,
+  "gamma": 0.1,
+  "sigma_noise": 0.1,
+  "num_neurons": 10906,
+  "projection_explained_variance": 0.9476379156112671,
+  "door_matrix_synthetic": false,
+  "door_n_odorants": 372,
+  "suite": "run_all_validations",
+  "n_benchmarks": 5
+}
+2026-09-03 16:03:11,667 - Test odors: ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
+2026-09-03 16:03:11,667 - 
+======================================================================
+2026-09-03 16:03:11,667 - VALIDATION 1/5: TEMPORAL DYNAMICS
+2026-09-03 16:03:11,667 - ======================================================================
+2026-09-03 16:03:11,667 -   Testing benzaldehyde...
+2026-09-03 16:04:08,893 -     Peak: 500ms, Adaptation: 0.0%
+2026-09-03 16:04:08,893 -   Testing 2-heptanone...
+2026-09-03 16:05:06,330 -     Peak: 50ms, Adaptation: 17.8%
+2026-09-03 16:05:06,330 -   Testing isopentyl_acetate...
+2026-09-03 16:06:04,412 -     Peak: 2000ms, Adaptation: 0.0%
+2026-09-03 16:06:04,412 - ✅ Temporal dynamics complete
+2026-09-03 16:06:04,412 - 
+======================================================================
+2026-09-03 16:06:04,412 - VALIDATION 2/5: ODOR MIXTURES
+2026-09-03 16:06:04,413 - ======================================================================
+2026-09-03 16:06:16,777 -   Binary mixture overlap: 11.2%
+2026-09-03 16:06:16,777 - ✅ Odor mixtures complete
+2026-09-03 16:06:16,777 - 
+======================================================================
+2026-09-03 16:06:16,777 - VALIDATION 3/5: DISCRIMINATION THRESHOLDS
+2026-09-03 16:06:16,777 - ======================================================================
+2026-09-03 16:06:22,973 -   benzaldehyde +5%: r=0.280, discriminable=True
+2026-09-03 16:06:26,093 -   benzaldehyde +10%: r=0.448, discriminable=True
+2026-09-03 16:06:29,192 -   benzaldehyde +15%: r=0.421, discriminable=True
+2026-09-03 16:06:32,278 -   benzaldehyde +20%: r=0.599, discriminable=True
+2026-09-03 16:06:35,363 -   benzaldehyde +25%: r=0.202, discriminable=True
+2026-09-03 16:06:35,363 -   benzaldehyde: JND = 5%
+2026-09-03 16:06:41,549 -   2-heptanone +5%: r=0.478, discriminable=True
+2026-09-03 16:06:44,641 -   2-heptanone +10%: r=0.529, discriminable=True
+2026-09-03 16:06:47,747 -   2-heptanone +15%: r=0.014, discriminable=True
+2026-09-03 16:06:50,859 -   2-heptanone +20%: r=0.334, discriminable=True
+2026-09-03 16:06:53,959 -   2-heptanone +25%: r=0.381, discriminable=True
+2026-09-03 16:06:53,959 -   2-heptanone: JND = 5%
+2026-09-03 16:06:53,959 - ✅ Discrimination thresholds complete
+2026-09-03 16:06:53,959 - 
+======================================================================
+2026-09-03 16:06:53,959 - VALIDATION 4/5: ODOR SIMILARITY STRUCTURE
+2026-09-03 16:06:53,959 - ======================================================================
+2026-09-03 16:07:03,240 -   Chem-neural correlation: r=0.623
+2026-09-03 16:07:03,240 - ✅ Odor similarity complete
+2026-09-03 16:07:03,240 - 
+======================================================================
+2026-09-03 16:07:03,240 - VALIDATION 5/5: LEARNING & PLASTICITY
+2026-09-03 16:07:03,240 - ======================================================================
+2026-09-03 16:07:03,240 -   Testing plasticity with benzaldehyde (5 training trials)...
+2026-09-03 16:07:06,344 -     Pre-training  MBON=0.0155, active KCs=316
+2026-09-03 16:07:09,162 -     Trial 1/5: mean |Δw|=0.018217
+2026-09-03 16:07:11,983 -     Trial 2/5: mean |Δw|=0.013466
+2026-09-03 16:07:14,797 -     Trial 3/5: mean |Δw|=0.012745
+2026-09-03 16:07:17,630 -     Trial 4/5: mean |Δw|=0.013549
+2026-09-03 16:07:20,439 -     Trial 5/5: mean |Δw|=0.014327
+2026-09-03 16:07:23,536 -     Post-training MBON=0.0111, active KCs=108
+2026-09-03 16:07:23,537 -     MBON change: 28.74% (target ≥1.0%)
+2026-09-03 16:07:23,537 - ✅ Learning & plasticity complete
+2026-09-03 16:07:23,537 - 
+======================================================================
+2026-09-03 16:07:23,537 - ALL VALIDATIONS COMPLETE
+2026-09-03 16:07:23,537 - ======================================================================
+2026-09-03 16:07:23,537 - Total time: 4.3 minutes
+2026-09-03 16:07:23,537 - 
+======================================================================
+2026-09-03 16:07:23,537 - BIOLOGICAL VALIDATION SUMMARY
+2026-09-03 16:07:23,537 - ======================================================================
+2026-09-03 16:07:23,537 - ❌ temporal_dynamics: FAIL
+2026-09-03 16:07:23,537 - ❌ odor_mixtures: FAIL
+2026-09-03 16:07:23,537 - ❌ discrimination: FAIL
+2026-09-03 16:07:23,537 - ❌ similarity: FAIL
+2026-09-03 16:07:23,537 - ✅ learning: PASS
+2026-09-03 16:07:23,537 - 
+Overall: 1/5 validations passed
+2026-09-03 16:07:23,559 - 
+Results saved to /Users/vladyslav/Documents/GitHub/experiment/results/final/all_validations_cpu_seed42.json
