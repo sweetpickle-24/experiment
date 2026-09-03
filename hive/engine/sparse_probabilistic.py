@@ -101,7 +101,14 @@ class SparseProbabilisticBrain:
     DEFAULT_AMPLITUDE_MIN = 0.0
     DEFAULT_AMPLITUDE_MAX = 1.0e4
 
-    def __init__(self, connectome, config=None, use_mlx=True, fast_mode=False):
+    #: How glomerular channels are mapped onto projection neurons. 'position'
+    #: clusters PNs by connectome coordinates; 'index' is the pre-2026-09-03
+    #: assignment by position in the neuron list. See
+    #: _build_pn_channel_assignment.
+    GLOMERULAR_MAPPINGS = ('position', 'index')
+
+    def __init__(self, connectome, config=None, use_mlx=True, fast_mode=False,
+                 glomerular_mapping='position'):
         """
         Initialise sparse probabilistic brain.
 
@@ -129,6 +136,14 @@ class SparseProbabilisticBrain:
         self.config = dict(config or {})
         self.use_mlx = use_mlx and MLX_AVAILABLE
         self.fast_mode = fast_mode
+
+        if glomerular_mapping not in self.GLOMERULAR_MAPPINGS:
+            raise ValueError(
+                f"Unknown glomerular_mapping {glomerular_mapping!r}; "
+                f"expected one of {self.GLOMERULAR_MAPPINGS}."
+            )
+        self.glomerular_mapping = glomerular_mapping
+        self._pn_channel_source = None
 
         unknown = set(self.config) - self._RECOGNISED_CONFIG_KEYS
         if unknown:
@@ -772,27 +787,70 @@ class SparseProbabilisticBrain:
         Assign each projection neuron to one glomerular channel.
 
         Returns (channel_of_neuron, pn_mask) over all neurons, so the per-step
-        force is a gather from a length-n_channels row followed by a mask:
-        both stay on the GPU inside the compiled kernel.
+        force is a gather from a length-n_channels row followed by a mask: both
+        stay on the GPU inside the compiled kernel. Non-PN neurons get channel 0
+        and mask 0, which is cheaper than a branch and keeps the compiled graph
+        shape-static.
 
-        Non-PN neurons get channel 0 and mask 0, which is cheaper than a branch
-        and keeps the compiled graph shape-static.
+        Two assignments are available, selected by self.glomerular_mapping:
+
+        'position'  (default) Cluster PNs by their connectome coordinates with
+                    GlomerularMapper, so one channel drives one spatially
+                    coherent group of projection neurons. A glomerulus is a
+                    spatially localised unit in the antennal lobe, and the PNs
+                    of a glomerulus are the ones sharing an ORN type, so
+                    position is the available proxy for glomerular identity.
+
+        'index'     The pre-2026-09-03 behaviour: channel = floor(local_rank /
+                    pns_per_ch), where local_rank is the neuron's position in
+                    self.neuron_ids. That order is connectome iteration order
+                    and carries no anatomical meaning, so channel k drove an
+                    arbitrary block of 109 PNs that were not a glomerulus and
+                    were not near each other. Kept only for comparison.
         """
         pn_indices = self._pn_indices()
         n_pns = len(pn_indices)
-        pns_per_ch = max(1, n_pns // n_channels)
-
-        # Channel index = floor(local_rank / pns_per_ch), clipped so the last
-        # channel absorbs the remainder. local_rank is the neuron's position in
-        # self.neuron_ids, which is connectome iteration order and carries no
-        # glomerular meaning; see _use_glomerular_mapping for the alternative.
-        local_rank = np.arange(n_pns, dtype=np.int64)
-        pn_channel = np.clip(local_rank // pns_per_ch, 0, n_channels - 1)
 
         channel_of_neuron = np.zeros(self.num_neurons, dtype=np.int64)
         pn_mask = np.zeros(self.num_neurons, dtype=np.float32)
-        channel_of_neuron[pn_indices] = pn_channel
         pn_mask[pn_indices] = 1.0
+
+        if self.glomerular_mapping == 'position':
+            from ..interface.olfactory import GlomerularMapper
+
+            pn_ids = [self.neuron_ids[i] for i in pn_indices]
+            mapper = GlomerularMapper(pn_ids, self.connectome,
+                                      num_channels=n_channels)
+            clusters = mapper.glomerular_clusters
+
+            if clusters:
+                assigned = np.zeros(self.num_neurons, dtype=bool)
+                for ch, cluster in enumerate(clusters[:n_channels]):
+                    for nid in cluster:
+                        i = self.id_to_idx.get(nid)
+                        if i is not None:
+                            channel_of_neuron[i] = ch
+                            assigned[i] = True
+                # k-means only clusters PNs whose position is present in the
+                # connectome. Any PN it could not place would otherwise stay on
+                # channel 0 and be driven by the wrong channel, so drop it from
+                # the drive instead and say so.
+                unplaced = int(pn_mask.sum() - assigned[pn_indices].sum())
+                if unplaced:
+                    pn_mask[pn_indices] = assigned[pn_indices].astype(np.float32)
+                    print(f"  {unplaced} PN(s) had no connectome position and are "
+                          f"excluded from the odour drive")
+                self._pn_channel_source = 'position'
+                return channel_of_neuron, pn_mask
+
+            print("  GlomerularMapper produced no clusters; "
+                  "falling back to index-order assignment")
+
+        pns_per_ch = max(1, n_pns // n_channels)
+        local_rank = np.arange(n_pns, dtype=np.int64)
+        channel_of_neuron[pn_indices] = np.clip(
+            local_rank // pns_per_ch, 0, n_channels - 1)
+        self._pn_channel_source = 'index'
         return channel_of_neuron, pn_mask
 
     def inject_odor(self, glom_pattern, strength: float = 50.0,

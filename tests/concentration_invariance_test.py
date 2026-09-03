@@ -261,7 +261,8 @@ def analyze_concentration_invariance(all_results):
 
 def main(use_mlx=False, seed=DEFAULT_SEED,
          output_name='concentration_invariance_results.json',
-         allow_mlx_result=False, projection='sklearn_pca'):
+         allow_mlx_result=False, projection='sklearn_pca',
+         glomerular_mapping='position'):
     """
     Main concentration invariance test.
 
@@ -280,6 +281,8 @@ def main(use_mlx=False, seed=DEFAULT_SEED,
                            non-reproducible run by accident.
         projection       : receptor->glomerular projection ('sklearn_pca' or
                            'uncentered_svd'), recorded in the output.
+        glomerular_mapping : channel->PN assignment ('position' or 'index'),
+                           recorded in the output.
     """
     print("="*60)
     print("CONCENTRATION INVARIANCE TEST")
@@ -327,6 +330,7 @@ def main(use_mlx=False, seed=DEFAULT_SEED,
         connectome=connectome,
         config=config,
         use_mlx=use_mlx,
+        glomerular_mapping=glomerular_mapping,
     )
     memory_mb = (brain.num_neurons * 5 * 4) / (1024 * 1024)  # 5 fields × 4 bytes
     print(f"  Memory usage: {memory_mb:.1f} MB")
@@ -439,6 +443,9 @@ if __name__ == '__main__':
     parser.add_argument('--projection', default='sklearn_pca',
                         choices=['sklearn_pca', 'uncentered_svd'],
                         help='receptor->glomerular projection to use')
+    parser.add_argument('--glomerular-mapping', default='position',
+                        choices=['position', 'index'],
+                        help='channel->PN assignment to use')
     args = parser.parse_args()
 
     results, summary = main(
@@ -447,4 +454,5 @@ if __name__ == '__main__':
         output_name=args.output,
         allow_mlx_result=args.allow_mlx_result,
         projection=args.projection,
+        glomerular_mapping=args.glomerular_mapping,
     )

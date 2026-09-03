@@ -53,7 +53,8 @@ def get_active_kc_binary(kc_activity, threshold_percentile=90):
 
 def run_all_validations(use_mlx=False, seed=SEED,
                         output_name='all_validations_results.json',
-                        allow_mlx_result=False, projection='sklearn_pca'):
+                        allow_mlx_result=False, projection='sklearn_pca',
+                        glomerular_mapping='position'):
     """
     Run all 5 validation experiments.
 
@@ -65,6 +66,8 @@ def run_all_validations(use_mlx=False, seed=SEED,
         allow_mlx_result : permit writing a result from the MLX backend.
         projection       : receptor->glomerular projection ('sklearn_pca' or
                            'uncentered_svd'), recorded in the output.
+        glomerular_mapping : channel->PN assignment ('position' or 'index'),
+                           recorded in the output.
     """
     logger.info("="*70)
     logger.info("COMPREHENSIVE BIOLOGICAL VALIDATION SUITE")
@@ -85,7 +88,8 @@ def run_all_validations(use_mlx=False, seed=SEED,
     # unseeded and consecutive runs of identical code gave different results.
     logger.info("\nInitializing olfactory system...")
     brain, door_client, connectome = init_olfactory_brain(
-        use_mlx=use_mlx, seed=seed, projection=projection)
+        use_mlx=use_mlx, seed=seed, projection=projection,
+        glomerular_mapping=glomerular_mapping)
     logger.info(f"✅ System ready: {brain.num_neurons} neurons, backend={'MLX' if brain.use_mlx else 'NumPy'}")
     if not allow_mlx_result:
         assert_reproducible_backend(brain)
@@ -581,6 +585,9 @@ if __name__ == '__main__':
     parser.add_argument('--projection', default='sklearn_pca',
                         choices=['sklearn_pca', 'uncentered_svd'],
                         help='receptor->glomerular projection to use')
+    parser.add_argument('--glomerular-mapping', default='position',
+                        choices=['position', 'index'],
+                        help='channel->PN assignment to use')
     args = parser.parse_args()
 
     run_all_validations(
@@ -589,4 +596,5 @@ if __name__ == '__main__':
         output_name=args.output,
         allow_mlx_result=args.allow_mlx_result,
         projection=args.projection,
+        glomerular_mapping=args.glomerular_mapping,
     )

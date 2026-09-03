@@ -135,6 +135,7 @@ def suite_metrics(payload: dict) -> dict:
 
     out['score'] = payload.get('score')
     out['projection_method'] = payload.get('config', {}).get('projection_method')
+    out['glomerular_mapping'] = payload.get('config', {}).get('glomerular_mapping')
     out['backend'] = payload.get('config', {}).get('backend')
     out['dt_ms'] = payload.get('config', {}).get('dt_ms')
     return out
@@ -168,7 +169,8 @@ def invariance_metrics(payload: dict) -> dict:
 # ── Stimulus-path diagnostics ────────────────────────────────────────────────
 
 def diagnostics(projection='sklearn_pca', odor=DIAG_ODOR, strength=50.0,
-                duration_ms=100.0, use_mlx=True, seed=SEED) -> dict:
+                duration_ms=100.0, use_mlx=True, seed=SEED,
+                glomerular_mapping='position') -> dict:
     """
     Probe the drive itself, independently of any benchmark.
 
@@ -177,7 +179,8 @@ def diagnostics(projection='sklearn_pca', odor=DIAG_ODOR, strength=50.0,
     boundary, peak |v|) are far larger than any backend difference.
     """
     brain, door, connectome = init_olfactory_brain(
-        use_mlx=use_mlx, seed=seed, projection=projection
+        use_mlx=use_mlx, seed=seed, projection=projection,
+        glomerular_mapping=glomerular_mapping,
     )
     from hive.substrate.olfactory_subgraph import classify_olfactory_neuron
 
@@ -245,6 +248,7 @@ def diagnostics(projection='sklearn_pca', odor=DIAG_ODOR, strength=50.0,
         'strength_arg': strength,
         'duration_ms': duration_ms,
         'projection_method': door.projection_method,
+        'glomerular_mapping': brain._pn_channel_source,
         'backend': 'MLX' if brain.use_mlx else 'NumPy',
         'dt_ms': float(brain.dt),
         'amplitude_ceiling': ceiling,
@@ -308,13 +312,15 @@ def append_entry(label: str, entry: dict) -> Path:
 
 def build_entry(label, projection, run_suite=True, run_invariance=True,
                 run_diagnostics=True, use_mlx_diag=True, seed=SEED,
-                note=None) -> dict:
-    entry = {'note': note, 'projection_requested': projection, 'seed': seed}
+                note=None, glomerular_mapping='position') -> dict:
+    entry = {'note': note, 'projection_requested': projection, 'seed': seed,
+             'glomerular_mapping_requested': glomerular_mapping}
 
     if run_diagnostics:
         print(f"\n=== [{label}] stimulus-path diagnostics ===")
         entry['diagnostics'] = diagnostics(projection=projection,
-                                           use_mlx=use_mlx_diag, seed=seed)
+                                           use_mlx=use_mlx_diag, seed=seed,
+                                           glomerular_mapping=glomerular_mapping)
         print(json.dumps(entry['diagnostics'], indent=2))
 
     if run_invariance:
@@ -322,7 +328,8 @@ def build_entry(label, projection, run_suite=True, run_invariance=True,
         import concentration_invariance_test as ci
         ci.main(use_mlx=False, seed=seed,
                 output_name=f'concentration_invariance_{label}.json',
-                projection=projection)
+                projection=projection,
+                glomerular_mapping=glomerular_mapping)
         with open(results_path(f'concentration_invariance_{label}.json')) as f:
             entry['concentration_invariance'] = invariance_metrics(json.load(f))
 
@@ -331,7 +338,8 @@ def build_entry(label, projection, run_suite=True, run_invariance=True,
         import run_all_validations as rav
         rav.run_all_validations(use_mlx=False, seed=seed,
                                 output_name=f'all_validations_{label}.json',
-                                projection=projection)
+                                projection=projection,
+                                glomerular_mapping=glomerular_mapping)
         with open(results_path(f'all_validations_{label}.json')) as f:
             entry['suite'] = suite_metrics(json.load(f))
 
@@ -357,6 +365,8 @@ def main():
     ap.add_argument('--label', required=True, help='entry label, e.g. F0_after')
     ap.add_argument('--projection', default='sklearn_pca',
                     choices=['sklearn_pca', 'uncentered_svd'])
+    ap.add_argument('--glomerular-mapping', default='position',
+                    choices=['position', 'index'])
     ap.add_argument('--seed', type=int, default=SEED)
     ap.add_argument('--note', default=None, help='what this entry is measuring')
     ap.add_argument('--diagnostics-only', action='store_true')
@@ -378,6 +388,7 @@ def main():
             run_invariance=not args.diagnostics_only,
             run_diagnostics=not args.no_diagnostics,
             seed=args.seed, note=args.note,
+            glomerular_mapping=args.glomerular_mapping,
         )
 
     path = append_entry(args.label, entry)

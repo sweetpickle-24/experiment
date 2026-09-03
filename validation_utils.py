@@ -159,6 +159,11 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
             "num_neurons": getattr(brain, "num_neurons", None),
             "reproducible": deterministic_accumulation,
             "deterministic_accumulation": deterministic_accumulation,
+            "amplitude_min": getattr(brain, "amplitude_min", None),
+            "amplitude_max": getattr(brain, "amplitude_max", None),
+            "glomerular_mapping": getattr(brain, "_pn_channel_source", None),
+            "time_varying_odor_drive": bool(
+                getattr(brain, "has_time_varying_drive", False)),
         })
         if backend == "MLX":
             meta["cross_backend_agreement"] = CROSS_BACKEND_AGREEMENT_NOTE
@@ -202,7 +207,7 @@ DEFAULT_BRAIN_CONFIG = {
 
 
 def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
-                         projection='sklearn_pca'):
+                         projection='sklearn_pca', glomerular_mapping='position'):
     """
     Initialise the olfactory system for validation experiments.
 
@@ -218,6 +223,9 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
         projection: receptor->glomerular projection. 'sklearn_pca' (default) is
                     the documented path; 'uncentered_svd' reproduces the
                     pre-2026-09-03 fallback for comparison.
+        glomerular_mapping: how channels map onto PNs. 'position' (default)
+                    clusters PNs by connectome coordinates; 'index' reproduces
+                    the pre-2026-09-03 assignment by neuron-list order.
 
     Returns:
         tuple: (brain, door_client, connectome)
@@ -235,6 +243,7 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
         config=config,
         use_mlx=use_mlx,
         fast_mode=fast_mode,
+        glomerular_mapping=glomerular_mapping,
     )
 
     door_client = DoorClient(projection=projection)
