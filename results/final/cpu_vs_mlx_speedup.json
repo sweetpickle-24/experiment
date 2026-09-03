@@ -1,0 +1,92 @@
+{
+  "supersedes": "results/superseded/cpu_vs_mlx_validation.json",
+  "supersede_reason": "That file recorded 1,283 active KCs against a few hundred in current runs, a null pattern_correlation, an empty kc_pattern, and validation_passed: true against a 0.95 correlation threshold it never evaluated. Its 86.34x is discarded.",
+  "mlx": {
+    "backend": "MLX",
+    "num_neurons": 10906,
+    "num_synapses": 446388,
+    "dt_ms": 0.1,
+    "duration_ms": 100.0,
+    "steps": 1000,
+    "mode": "compiled_mlx",
+    "warmup_runs": 1,
+    "repeats": 5,
+    "wall_s_per_run": [
+      0.477165,
+      0.477597,
+      0.477186,
+      0.478398,
+      0.477514
+    ],
+    "wall_s_median": 0.4775135829986539,
+    "wall_s_mean": 0.4775720415986143,
+    "wall_s_std": 0.0004475367136503896,
+    "wall_s_min": 0.47716516599757597,
+    "wall_s_max": 0.47839841699169483,
+    "rt_factor_median": 0.20941812664684328
+  },
+  "cpu": {
+    "backend": "NumPy",
+    "num_neurons": 10906,
+    "num_synapses": 446388,
+    "dt_ms": 0.1,
+    "duration_ms": 100.0,
+    "steps": 1000,
+    "mode": "numpy",
+    "warmup_runs": 1,
+    "repeats": 5,
+    "wall_s_per_run": [
+      4.818076,
+      4.834903,
+      4.812378,
+      4.829151,
+      4.826483
+    ],
+    "wall_s_median": 4.826483249999001,
+    "wall_s_mean": 4.82419825019897,
+    "wall_s_std": 0.008019496755074625,
+    "wall_s_min": 4.812377750000451,
+    "wall_s_max": 4.8349034999992,
+    "rt_factor_median": 0.02071901938124839
+  },
+  "configuration_matched": true,
+  "configuration_mismatches": {},
+  "speedup_cpu_over_mlx": {
+    "median": 10.107530805071583,
+    "worst_case": 10.059351325328477,
+    "best_case": 10.132557538837112,
+    "definition": "cpu wall_s / mlx wall_s, both median of per-repeat times"
+  },
+  "output_agreement": {
+    "active_kc_mlx": 212,
+    "active_kc_cpu": 212,
+    "active_kc_jaccard": 0.9813084112149533,
+    "kc_pattern_pearson_r": 0.9951793410988066,
+    "kc_pattern_max_abs_diff": 0.020566489547491074,
+    "bitwise_identical": false,
+    "note": "Each backend is bit-for-bit reproducible against itself at a fixed seed. They are not bit-identical to each other because mx.sum and np.sum use different reduction trees; agreement is therefore reported as active-set overlap and pattern correlation."
+  },
+  "config": {
+    "timestamp": "2026-09-03T21:18:43.936877+00:00",
+    "git_commit": "9ee4a558fad73d255225281326b7188163ac6e9f-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "MLX",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "cross_backend_agreement": "Each backend is individually reproducible bit-for-bit at a fixed seed, but CPU and MLX are not bit-identical to each other: mx.sum and np.sum use different reduction trees. See results/final/mlx_determinism.json for the measured divergence and active-KC overlap.",
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "cpu_vs_mlx_speedup"
+  }
+}

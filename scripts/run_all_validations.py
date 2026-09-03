@@ -72,11 +72,12 @@ def run_all_validations(use_mlx=False, seed=SEED,
     logger.info("Starting all 5 validations...")
     logger.info("Backend: %s", "MLX (GPU)" if use_mlx else "NumPy (CPU)")
     if not use_mlx:
-        # Measured 2026-09-03: ~18 s wall per 100 ms simulated on this machine,
-        # so a full suite is minutes, not hours. The previous "150 s per 100 ms"
-        # note came from results/final/cpu_vs_mlx_validation.json, which is
-        # superseded and whose timings were never reproducible.
-        logger.info("CPU runtime is roughly 18 s per 100 ms simulated.")
+        # Measured 2026-09-03: 4.83 s wall per 100 ms simulated on CPU, 0.478 s
+        # on MLX, so a full suite is minutes, not hours. The previous "150 s per
+        # 100 ms" note came from results/final/cpu_vs_mlx_validation.json, which
+        # is superseded; see results/final/cpu_vs_mlx_speedup.json.
+        logger.info("CPU runtime is roughly 4.8 s per 100 ms simulated "
+                    "(results/final/cpu_vs_mlx_speedup.json).")
 
     start_time = datetime.now()
     
