@@ -38,8 +38,10 @@ for _ in range(5):
 print("\n1. Oscillator step (without coupling):")
 t0 = time.time()
 for _ in range(10):
-    # Just the oscillator dynamics
-    brain.oscillator.external_force.fill(0.0)
+    # Just the oscillator dynamics.
+    # MLX arrays are immutable and have no .fill(); reset_forces() reassigns
+    # zeros on the MLX path and uses .fill() on the NumPy path.
+    brain.oscillator.reset_forces()
     
     # Compute acceleration
     total_force = brain.oscillator.external_force
