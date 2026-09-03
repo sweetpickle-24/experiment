@@ -153,7 +153,11 @@ class DoorClient:
         self.odorant_names = []
         self.receptor_names = DOOR_RECEPTORS
         self.pca_projection = None
+        # Set by _compute_pca_projection on first use: 'sklearn_pca' or
+        # 'uncentered_svd'. Recorded in result files; the two are not
+        # equivalent.
         self.projection_method = None
+        self.projection_explained_variance = None
         self.is_synthetic = False
         self.allow_synthetic = allow_synthetic
         
@@ -353,43 +357,80 @@ class DoorClient:
     
     def _compute_pca_projection(self, n_components=20):
         """
-        Compute PCA projection matrix: 40 receptors → 20 glomerular channels.
-        
+        Compute the receptor → glomerular-channel projection matrix.
+
         In biology:
         - ~40 olfactory receptor types
         - ~50 glomeruli (we use 20 channels for computational efficiency)
         - Receptors → glomeruli mapping has some convergence
+
+        TWO DIFFERENT PROJECTIONS CAN RUN HERE, and which one you get depends on
+        whether scikit-learn is importable:
+
+        'sklearn_pca'    PCA.fit subtracts the column mean before decomposing,
+                         so the components are the principal axes of variation
+                         about the mean response.
+        'uncentered_svd' Fallback. SVD of the raw response matrix with no
+                         mean-centering. On a non-negative matrix the leading
+                         right singular vector points along the mean response,
+                         so one of the n_components is spent representing the
+                         average odor and the remainder are not the principal
+                         axes of variation.
+
+        These give different 20-dim patterns, hence different KC activity and
+        different downstream correlations. The method that ran is recorded on
+        self.projection_method and is written into result files through
+        validation_utils.run_metadata, because it was previously invisible: the
+        fallback announced itself as a "random projection" (it is not random)
+        and nothing recorded which path had executed.
+
+        Behaviour is deliberately unchanged here. This only makes the choice
+        visible.
         """
-        print(f"Computing PCA projection: {len(self.receptor_names)} → {n_components} dimensions...")
-        
+        logger.info(
+            "Computing receptor->glomerular projection: %d -> %d dimensions",
+            len(self.receptor_names), n_components,
+        )
+
         try:
             from sklearn.decomposition import PCA
-            
-            # Fit PCA on all odorant responses
+
+            # Fit PCA on all odorant responses (mean-centred by PCA.fit)
             pca = PCA(n_components=n_components)
             pca.fit(self.response_matrix)
-            
-            # Store projection matrix
-            self.pca_projection = pca.components_.T  # shape: (40, 20)
-            
-            explained_var = np.sum(pca.explained_variance_ratio_)
-            print(f"✓ PCA projection computed (sklearn), {explained_var*100:.1f}% variance explained")
-        
+
+            self.pca_projection = pca.components_.T  # shape: (n_receptors, n_components)
+            self.projection_method = 'sklearn_pca'
+            self.projection_explained_variance = float(np.sum(pca.explained_variance_ratio_))
+
+            logger.info(
+                "Projection: sklearn PCA (mean-centred), %.1f%% variance explained",
+                self.projection_explained_variance * 100,
+            )
+
         except ImportError:
-            # Fallback: simple random projection (works without sklearn)
-            print("  sklearn not available, using random projection...")
-            
-            # Use SVD on response matrix
+            # Fallback: SVD of the uncentred response matrix. Despite the name
+            # this codebase used for years, this is not a random projection.
             from numpy.linalg import svd
             U, S, Vt = svd(self.response_matrix, full_matrices=False)
-            
-            # Use top n_components right singular vectors as projection
-            self.pca_projection = Vt[:n_components].T  # shape: (40, 20)
-            
-            # Estimate variance explained
-            total_var = np.sum(S**2)
-            explained_var = np.sum(S[:n_components]**2) / total_var
-            print(f"✓ PCA projection computed (SVD), {explained_var*100:.1f}% variance explained")
+
+            self.pca_projection = Vt[:n_components].T  # shape: (n_receptors, n_components)
+            self.projection_method = 'uncentered_svd'
+
+            total_var = float(np.sum(S ** 2))
+            self.projection_explained_variance = (
+                float(np.sum(S[:n_components] ** 2) / total_var) if total_var > 0 else 0.0
+            )
+
+            logger.warning(
+                "scikit-learn is not importable, so the glomerular projection is "
+                "UNCENTERED SVD, not PCA. The two are not equivalent: without "
+                "mean-centering one component is spent on the mean response and "
+                "the axes are not the principal axes of variation. Any number "
+                "produced under this path was produced by uncentered SVD "
+                "(%.1f%% of squared magnitude retained). Install scikit-learn to "
+                "use PCA.", self.projection_explained_variance * 100,
+            )
     
     def get_glomerular_pattern(self, odorant_name: str) -> np.ndarray:
         """
