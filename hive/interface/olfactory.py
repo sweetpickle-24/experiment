@@ -12,8 +12,12 @@ Biological accuracy notes:
 """
 
 import numpy as np
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
+
+#: Packaged configuration holding the plume, forcing and receptor constants.
+CONFIG_PATH = Path(__file__).resolve().parents[1] / 'config.yaml'
 
 
 # ----------------------------
@@ -381,6 +385,180 @@ class OdorPlume:
         if 0 <= step_idx < self.num_steps:
             return self.concentration_trace[step_idx]
         return np.zeros(NUM_GLOM_CHANNELS)
+
+
+def load_olfactory_config(dt_ms: float) -> dict:
+    """
+    Load the packaged olfactory configuration, sampled at *dt_ms*.
+
+    The plume, forcing and receptor constants are taken from hive/config.yaml
+    exactly as written. Only ``oscillator.dt`` is overridden, and it has to be:
+    the file stores ``dt: 0.0005`` annotated "(0.5ms)", i.e. the value is in
+    SECONDS while every consumer in this module treats dt as MILLISECONDS.
+    OdorPlume computes ``num_steps = int(duration_ms / dt)``, so reading 0.0005
+    as milliseconds would build 200,000 samples for a 100 ms plume through a
+    Python-level Ornstein-Uhlenbeck loop, and OlfactoryStimulus would index it
+    with ``int((t - onset) / 0.0005)``.
+
+    Rather than reinterpret the file's units, the plume is sampled on the
+    integrator's own timestep, which is the only value that keeps plume sample k
+    aligned with integration step k.
+
+    Args:
+        dt_ms: integration timestep in milliseconds.
+
+    Returns:
+        Config dict with ``oscillator.dt`` set to dt_ms.
+    """
+    import yaml
+
+    with open(CONFIG_PATH) as f:
+        config = yaml.safe_load(f)
+
+    config.setdefault('oscillator', {})
+    config['oscillator'] = dict(config['oscillator'])
+    config['oscillator']['dt'] = float(dt_ms)
+    return config
+
+
+class OdorStimulusDriver:
+    """
+    Time-varying glomerular forcing for one odour presentation.
+
+    This is the receptor front-end of this module — plume, carrier and
+    adaptation — packaged so the wave engine can drive its projection neurons
+    with it step by step.
+
+    Why it exists
+    -------------
+    Until 2026-09-03 every reported olfactory result was produced by
+    ``SparseProbabilisticBrain.inject_odor``, which wrote a single CONSTANT
+    force vector once and then integrated with it unchanged for the whole run.
+    The plume, the sinusoidal carrier and ``update_adaptation`` all existed in
+    this module and none of them were on that path. Consequences measured on
+    the reported path:
+
+      * every driven PN reached the engine's amplitude ceiling within 50 ms and
+        the system sat at a fixed point thereafter, so the "temporal dynamics"
+        benchmark measured a constant (benzaldehyde flat at ~0.000486 across
+        all samples, 0% adaptation);
+      * receptor adaptation, whose whole purpose is the quantity that benchmark
+        scores, was never invoked.
+
+    The forcing produced here is the one this module always documented:
+
+        force_c(t) = activation_c(t) x adaptation_c(t) x amplitude_scale
+                                     x sin(omega_c t + phi_c)
+
+    with ``activation`` coming from the turbulent plume, ``adaptation`` from the
+    200 ms receptor recursion, and ``amplitude_scale`` from config.yaml. No
+    constant in that expression is introduced here.
+
+    Concentration
+    -------------
+    Callers historically passed ``strength=50.0`` to ``inject_odor``, which
+    multiplied the glomerular pattern directly. The front-end has no such knob:
+    concentration belongs to the plume, and ``amplitude_scale`` is the force
+    constant. ``strength`` is therefore mapped to concentration as
+    ``strength / REFERENCE_STRENGTH``, so the historical default 50.0 means
+    concentration 1.0 and a caller's relative sweep is preserved.
+
+    Feeding ``strength`` in as concentration unscaled would be degenerate:
+    ``set_activation`` clips ``pattern * concentration`` to 1.0, so a
+    concentration of 50 drives every non-zero channel to exactly 1.0 and erases
+    the odour's identity before the simulation starts.
+
+    Reproducibility
+    ---------------
+    The plume is turbulent, so it is drawn from a dedicated seeded stream in
+    fixed-length chunks (``PLUME_CHUNK_MS``), chunk k seeded ``seed + k``. The
+    global NumPy RNG is saved and restored around generation, so the plume is
+    identical no matter how many other draws the surrounding run has made and
+    no matter how ``evolve`` calls are split up. Every presentation therefore
+    sees the same plume realisation, which makes odour-to-odour comparisons
+    controlled rather than confounded by turbulence.
+    """
+
+    #: The ``strength`` value that historically meant "concentration 1.0".
+    REFERENCE_STRENGTH = 50.0
+
+    #: Plume generation granularity, in ms. Chunking keeps the trace a stable
+    #: function of absolute time for any run length.
+    PLUME_CHUNK_MS = 500.0
+
+    #: Base seed for the plume stream.
+    PLUME_SEED = 20260903
+
+    def __init__(self, glom_pattern, dt_ms: float, strength: float = REFERENCE_STRENGTH,
+                 config: Optional[dict] = None, odor_name: str = 'stimulus',
+                 seed: Optional[int] = None):
+        self.dt = float(dt_ms)
+        self.strength = float(strength)
+        self.concentration = self.strength / self.REFERENCE_STRENGTH
+        self.config = config if config is not None else load_olfactory_config(self.dt)
+        self.amplitude_scale = float(self.config['olfactory']['forcing']['amplitude_scale'])
+        self.seed = self.PLUME_SEED if seed is None else int(seed)
+
+        pattern = np.asarray(glom_pattern, dtype=np.float64).reshape(-1)
+        if pattern.size != NUM_GLOM_CHANNELS:
+            raise ValueError(
+                f"glom_pattern has {pattern.size} channels, expected {NUM_GLOM_CHANNELS}."
+            )
+        self.odor = Odor(name=odor_name, glom_pattern=pattern,
+                         family='unknown', description='driver stimulus')
+
+        self.receptors = OdorReceptorArray(self.config)
+        self._steps_per_chunk = max(1, int(round(self.PLUME_CHUNK_MS / self.dt)))
+        self._chunks: Dict[int, np.ndarray] = {}
+
+    # ── Plume ────────────────────────────────────────────────────────────
+
+    def _chunk(self, index: int) -> np.ndarray:
+        """Concentration trace for chunk *index*, generated once and cached."""
+        if index not in self._chunks:
+            saved = np.random.get_state()
+            try:
+                np.random.seed(self.seed + index)
+                plume = OdorPlume(self.odor, self.PLUME_CHUNK_MS,
+                                  self.concentration, self.config)
+                trace = plume.concentration_trace
+            finally:
+                np.random.set_state(saved)
+
+            # Guard the alignment the whole design rests on: plume sample k must
+            # correspond to integration step k.
+            if trace.shape[0] < self._steps_per_chunk:
+                pad = np.zeros((self._steps_per_chunk - trace.shape[0],
+                                trace.shape[1]), dtype=trace.dtype)
+                trace = np.concatenate([trace, pad], axis=0)
+            self._chunks[index] = trace[:self._steps_per_chunk]
+        return self._chunks[index]
+
+    def concentration_at_step(self, step: int) -> np.ndarray:
+        """Glomerular concentration vector at absolute integration *step*."""
+        chunk, offset = divmod(int(step), self._steps_per_chunk)
+        return self._chunk(chunk)[offset]
+
+    # ── Forcing ──────────────────────────────────────────────────────────
+
+    def channel_forces(self, step0: int, num_steps: int) -> np.ndarray:
+        """
+        Channel forcing for steps [step0, step0 + num_steps).
+
+        Returns an array of shape (num_steps, NUM_GLOM_CHANNELS).
+
+        Adaptation is a recursion, so this must be called in order and exactly
+        once per step; the driver's adaptation state advances as a side effect,
+        which is what carries adaptation across successive ``evolve`` calls.
+        """
+        out = np.zeros((num_steps, NUM_GLOM_CHANNELS), dtype=np.float32)
+        for i in range(num_steps):
+            step = step0 + i
+            self.receptors.set_activation(self.concentration_at_step(step))
+            self.receptors.update_adaptation(self.dt, odor_on=True)
+            out[i] = self.receptors.compute_forces(step * self.dt,
+                                                   self.amplitude_scale)
+        return out
 
 
 class GlomerularMapper:

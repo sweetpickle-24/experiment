@@ -188,6 +188,31 @@ def diagnostics(projection='sklearn_pca', odor=DIAG_ODOR, strength=50.0,
     force = np.array(brain.external_force)
     driven = force != 0
 
+    # With a time-varying stimulus, external_force holds only the t=0 preview
+    # row, which is one instant of a sinusoid and says nothing about the drive's
+    # magnitude. Report the peak over the actual presentation window instead,
+    # and the decay envelope, which is what receptor adaptation produces.
+    drive_window = None
+    stim = getattr(brain, '_odor_stimulus', None)
+    if stim is not None:
+        n_steps = int(duration_ms / brain.dt)
+        w = stim.channel_forces(0, n_steps)   # separate driver query; no state shared
+        per_10ms = max(1, int(10.0 / brain.dt))
+        envelope = [float(np.abs(w[i:i + per_10ms]).max())
+                    for i in range(0, len(w), per_10ms)]
+        drive_window = {
+            'window_peak_abs_force': float(np.abs(w).max()),
+            'window_mean_abs_force': float(np.abs(w).mean()),
+            'sign_changes_per_channel_median': float(
+                np.median((np.diff(np.sign(w), axis=0) != 0).sum(axis=0))),
+            'peak_abs_force_per_10ms': envelope,
+            'adaptation_final': [float(x) for x in stim.receptors.adaptation[:4]],
+            'concentration': float(stim.concentration),
+            'amplitude_scale': float(stim.amplitude_scale),
+        }
+
+    brain.reset(deterministic=True)
+    brain.inject_odor(pattern, strength=strength)
     brain.evolve(duration=duration_ms)
 
     amp = np.array(brain.mean_amplitude)
@@ -225,9 +250,13 @@ def diagnostics(projection='sklearn_pca', odor=DIAG_ODOR, strength=50.0,
         'amplitude_ceiling': ceiling,
         'drive': {
             'n_driven_neurons': int(driven.sum()),
-            'force_peak': float(force.max()) if driven.any() else 0.0,
-            'force_min_nonzero': float(force[driven].min()) if driven.any() else 0.0,
+            # t=0 snapshot; meaningful only for the old constant drive.
+            'force_at_t0_peak': float(force.max()) if driven.any() else 0.0,
+            'force_peak': (drive_window['window_peak_abs_force']
+                           if drive_window else
+                           (float(force.max()) if driven.any() else 0.0)),
             'time_varying': bool(getattr(brain, 'has_time_varying_drive', False)),
+            'window': drive_window,
         },
         'driven_at_amplitude_ceiling': int(at_ceiling[driven].sum()) if driven.any() else 0,
         'regions': regions,

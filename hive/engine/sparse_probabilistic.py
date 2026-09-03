@@ -34,6 +34,8 @@ from dataclasses import dataclass
 from typing import Dict, Tuple, Optional
 import time
 
+from ..interface.olfactory import NUM_GLOM_CHANNELS
+
 try:
     import mlx.core as mx
     MLX_AVAILABLE = True
@@ -157,6 +159,23 @@ class SparseProbabilisticBrain:
         self.history_interval_ms = 5.0
         self.amplitude_history: deque = deque(maxlen=self.history_max)
         self._last_history_time = -999.0
+
+        # ── Odour stimulus state ─────────────────────────────────────────
+        # The drive is a time-varying stimulus re-evaluated every step (see
+        # inject_odor). The channel->neuron assignment is built up front so the
+        # compiled kernel can close over static tensors of the right shape.
+        self._odor_stimulus = None
+        self._stim_step = 0
+        self._pn_idx_cache = None
+        self._stim_n_channels = NUM_GLOM_CHANNELS
+        self._stim_channel_of_neuron, self._stim_pn_mask = \
+            self._build_pn_channel_assignment(NUM_GLOM_CHANNELS)
+        self._stim_chan_mx = None
+        self._stim_mask_mx = None
+        self._sync_stimulus_maps()
+        self._zero_stim_row = (mx.zeros(NUM_GLOM_CHANNELS, dtype=mx.float32)
+                               if self.use_mlx
+                               else np.zeros(NUM_GLOM_CHANNELS, dtype=np.float32))
 
         # ── Build compiled step (JIT) if MLX available ───────────────────
         self._compiled_step = None
@@ -441,8 +460,11 @@ class SparseProbabilisticBrain:
         amp_drive_dt_scale = self._amp_drive_dt_scale
         var_correction     = self._var_correction_scalar
 
+        stim_chan    = self._stim_chan_mx
+        stim_mask    = self._stim_mask_mx
+
         @mx.compile
-        def _step(phase, velocity, amplitude, var_phase, ext_force):
+        def _step(phase, velocity, amplitude, var_phase, ext_force, stim_row):
             # ── Coupling force (sparse scatter-add) ─────────────────────
             phase_pre  = phase[pre_idx]
             phase_post = phase[post_idx]
@@ -457,8 +479,13 @@ class SparseProbabilisticBrain:
             forces = segment_sum(syn_forces, seg_order, seg_take, seg_mask,
                                  seg_btake, seg_bmask, seg_nblocks, seg_block)
 
+            # ── Odour drive: gather this step's channel force per neuron ─
+            # stim_row is length n_channels; the gather and mask keep the
+            # per-step drive on the GPU, so nothing is uploaded per step.
+            stim = stim_row[stim_chan] * stim_mask
+
             # ── Damped harmonic oscillator ───────────────────────────────
-            accel    = -two_gamma * velocity - omega0_sq * phase + forces + ext_force
+            accel    = -two_gamma * velocity - omega0_sq * phase + forces + ext_force + stim
             velocity = velocity + accel * dt
             phase    = phase + velocity * dt
             phase    = mx.arctan2(mx.sin(phase), mx.cos(phase))
@@ -488,6 +515,13 @@ class SparseProbabilisticBrain:
         Uses the compiled MLX kernel when available, falling back to the
         interpreted step for CPU or when compilation failed.
 
+        When an odour stimulus is attached (see inject_odor), the whole window's
+        channel forcing is computed once here rather than per step: the plume,
+        carrier and adaptation are 20-channel NumPy recursions, so evaluating
+        them 1,000 times inside the integration loop would add a host round trip
+        per step. The result is a (num_steps, n_channels) array, and each step
+        gathers its own row on the device.
+
         Eval strategy:
         - Compiled mode : flush every 500 steps (GPU pipeline stays full)
         - Interpreted   : flush every 100 steps (avoids graph blowup)
@@ -501,7 +535,21 @@ class SparseProbabilisticBrain:
         # Fewer forced evals in compiled mode; graph is bounded by history snapshots
         eval_every = 500 if use_compiled else 100
 
+        # ── Odour forcing for this window ────────────────────────────────
+        stim_window = None
+        if self._odor_stimulus is not None:
+            stim_window = self._odor_stimulus.channel_forces(self._stim_step,
+                                                             num_steps)
+            self._stim_step += num_steps
+            if self.use_mlx:
+                stim_window = mx.array(stim_window)
+
         for step in range(num_steps):
+            if stim_window is None:
+                stim_row = self._zero_stim_row
+            else:
+                stim_row = stim_window[step]
+
             if use_compiled:
                 (self.mean_phase,
                  self.mean_velocity,
@@ -509,10 +557,10 @@ class SparseProbabilisticBrain:
                  self.var_phase) = self._compiled_step(
                     self.mean_phase, self.mean_velocity,
                     self.mean_amplitude, self.var_phase,
-                    self.external_force
+                    self.external_force, stim_row
                 )
             else:
-                self._step()
+                self._step(stim_row)
 
             self.time += self.dt
 
@@ -538,22 +586,28 @@ class SparseProbabilisticBrain:
     #  Fallback (non-compiled) step
     # ────────────────────────────────────────────────────────────────────
 
-    def _step(self):
+    def _step(self, stim_row=None):
         """Single integration step (interpreted fallback)."""
+        if stim_row is None:
+            stim_row = self._zero_stim_row
         if self.use_mlx:
-            self._step_mlx()
+            self._step_mlx(stim_row)
         else:
-            self._step_numpy()
+            self._step_numpy(stim_row)
         self.time += self.dt
 
-    def _step_mlx(self):
+    def _step_mlx(self, stim_row=None):
         """MLX interpreted step (used when compilation not yet triggered)."""
+        if stim_row is None:
+            stim_row = self._zero_stim_row
         coupling_force = self._compute_coupling_mlx()
+        stim = stim_row[self._stim_chan_mx] * self._stim_mask_mx
 
         accel = (-self._two_gamma * self.mean_velocity
                  - self._omega0_sq * self.mean_phase
                  + coupling_force
-                 + self.external_force)
+                 + self.external_force
+                 + stim)
 
         self.mean_velocity  = self.mean_velocity  + accel * self.dt
         self.mean_phase     = self.mean_phase     + self.mean_velocity * self.dt
@@ -566,14 +620,19 @@ class SparseProbabilisticBrain:
         self.mean_amplitude = self.mean_amplitude * self._amp_decay + amp_drive
         self.mean_amplitude = mx.clip(self.mean_amplitude, 0.001, 10.0)
 
-    def _step_numpy(self):
+    def _step_numpy(self, stim_row=None):
         """NumPy CPU step."""
+        if stim_row is None:
+            stim_row = self._zero_stim_row
         coupling_force = self._compute_coupling_numpy()
+        stim = np.asarray(stim_row, dtype=np.float32)[
+            self._stim_channel_of_neuron] * self._stim_pn_mask
 
         accel = (-self._two_gamma * self.mean_velocity
                  - self._omega0_sq_np * self.mean_phase
                  + coupling_force
-                 + self.external_force)
+                 + self.external_force
+                 + stim)
 
         self.mean_velocity  += accel * self.dt
         self.mean_phase     += self.mean_velocity * self.dt
@@ -641,20 +700,13 @@ class SparseProbabilisticBrain:
     #  Odor injection
     # ────────────────────────────────────────────────────────────────────
 
-    def inject_odor(self, glom_pattern, strength: float = 50.0):
-        """
-        Inject odor as external force to PN neurons.
+    def _pn_indices(self) -> np.ndarray:
+        """Engine-array indices of the projection neurons, cached."""
+        if getattr(self, '_pn_idx_cache', None) is not None:
+            return self._pn_idx_cache
 
-        Fully vectorised: builds the force array with numpy indexing
-        (no Python loop over individual neurons) then assigns once.
-
-        Args:
-            glom_pattern : 20-dim glomerular activation pattern.
-            strength     : Injection strength multiplier.
-        """
         from ..substrate.olfactory_subgraph import classify_olfactory_neuron
 
-        # Collect PN indices (one-time classification; fast set lookup)
         pn_id_set = set()
         if hasattr(self.connectome, 'neurons'):
             for nid, neuron in self.connectome.neurons.items():
@@ -663,31 +715,133 @@ class SparseProbabilisticBrain:
 
         pn_indices = np.array(
             [i for i, nid in enumerate(self.neuron_ids) if nid in pn_id_set],
-            dtype=np.int32
+            dtype=np.int64
         )
-
         if len(pn_indices) == 0:
             # Fallback: first 20 % of neurons
-            pn_indices = np.arange(int(self.num_neurons * 0.2), dtype=np.int32)
+            pn_indices = np.arange(int(self.num_neurons * 0.2), dtype=np.int64)
 
-        n_pns      = len(pn_indices)
-        n_channels = len(glom_pattern)
+        self._pn_idx_cache = pn_indices
+        return pn_indices
+
+    def _build_pn_channel_assignment(self, n_channels: int):
+        """
+        Assign each projection neuron to one glomerular channel.
+
+        Returns (channel_of_neuron, pn_mask) over all neurons, so the per-step
+        force is a gather from a length-n_channels row followed by a mask:
+        both stay on the GPU inside the compiled kernel.
+
+        Non-PN neurons get channel 0 and mask 0, which is cheaper than a branch
+        and keeps the compiled graph shape-static.
+        """
+        pn_indices = self._pn_indices()
+        n_pns = len(pn_indices)
         pns_per_ch = max(1, n_pns // n_channels)
 
-        # ── Vectorised channel assignment ─────────────────────────────
-        # Each PN gets the channel index = floor(local_rank / pns_per_ch),
-        # clipped so the last channel absorbs any remainder.
-        local_rank       = np.arange(n_pns, dtype=np.int32)
-        channel_idx      = np.clip(local_rank // pns_per_ch, 0, n_channels - 1)
-        channel_strength = np.array(glom_pattern, dtype=np.float32)[channel_idx]
+        # Channel index = floor(local_rank / pns_per_ch), clipped so the last
+        # channel absorbs the remainder. local_rank is the neuron's position in
+        # self.neuron_ids, which is connectome iteration order and carries no
+        # glomerular meaning; see _use_glomerular_mapping for the alternative.
+        local_rank = np.arange(n_pns, dtype=np.int64)
+        pn_channel = np.clip(local_rank // pns_per_ch, 0, n_channels - 1)
 
-        force_np = np.zeros(self.num_neurons, dtype=np.float32)
-        force_np[pn_indices] = channel_strength * strength
+        channel_of_neuron = np.zeros(self.num_neurons, dtype=np.int64)
+        pn_mask = np.zeros(self.num_neurons, dtype=np.float32)
+        channel_of_neuron[pn_indices] = pn_channel
+        pn_mask[pn_indices] = 1.0
+        return channel_of_neuron, pn_mask
 
+    def inject_odor(self, glom_pattern, strength: float = 50.0,
+                    time_varying: bool = True):
+        """
+        Present an odour to the projection neurons.
+
+        As of 2026-09-03 this attaches a time-varying stimulus driven by the
+        receptor front-end in hive/interface/olfactory.py — turbulent plume,
+        per-channel sinusoidal carrier, and the 200 ms receptor adaptation
+        recursion — and ``evolve`` re-evaluates the force at every integration
+        step.
+
+        Previously it wrote one CONSTANT force vector and the integrator ran
+        with it unchanged for the whole simulation. That bypassed the plume, the
+        carrier and adaptation entirely. Every driven PN then reached the
+        amplitude ceiling within 50 ms and the system sat at a fixed point, so a
+        benchmark measuring onset, peak time and adaptation was reading a
+        constant. See OdorStimulusDriver for the forcing expression and for how
+        ``strength`` maps onto concentration.
+
+        Args:
+            glom_pattern : 20-dim glomerular activation pattern.
+            strength     : concentration knob. 50.0 (the historical default)
+                           means concentration 1.0.
+            time_varying : if False, fall back to the old constant-force
+                           behaviour. Retained to reproduce pre-2026-09-03
+                           numbers, not for reporting.
+        """
+        from ..interface.olfactory import OdorStimulusDriver
+
+        pattern = np.asarray(glom_pattern, dtype=np.float32).reshape(-1)
+        n_channels = pattern.size
+
+        if self._stim_channel_of_neuron is None or \
+                self._stim_n_channels != n_channels:
+            self._stim_channel_of_neuron, self._stim_pn_mask = \
+                self._build_pn_channel_assignment(n_channels)
+            self._stim_n_channels = n_channels
+            self._sync_stimulus_maps()
+
+        # The DC term is cleared: the drive now lives in the stimulus. Callers
+        # that set external_force directly (the vision tests) are unaffected,
+        # because the two are summed rather than overwritten.
+        self.reset_forces()
+
+        if not time_varying:
+            force_np = np.zeros(self.num_neurons, dtype=np.float32)
+            pn = self._pn_indices()
+            force_np[pn] = pattern[self._stim_channel_of_neuron[pn]] * strength
+            self.external_force = mx.array(force_np) if self.use_mlx else force_np
+            self._odor_stimulus = None
+            return
+
+        self._odor_stimulus = OdorStimulusDriver(
+            pattern, dt_ms=self.dt, strength=strength,
+        )
+        self._stim_step = 0
+        # Make the t=0 force visible on external_force-style inspection without
+        # advancing the driver's adaptation state.
+        self._apply_stimulus_row(
+            self._odor_stimulus.channel_forces(0, 1)[0], preview=True
+        )
+
+    def reset_forces(self):
+        """Zero the static external force term."""
+        zeros = np.zeros(self.num_neurons, dtype=np.float32)
+        self.external_force = mx.array(zeros) if self.use_mlx else zeros
+
+    @property
+    def has_time_varying_drive(self) -> bool:
+        """True when an odour stimulus is attached and being re-evaluated."""
+        return self._odor_stimulus is not None
+
+    def _sync_stimulus_maps(self):
+        """Push the channel assignment to the active backend."""
         if self.use_mlx:
-            self.external_force = mx.array(force_np)
-        else:
-            self.external_force = force_np
+            self._stim_chan_mx = mx.array(self._stim_channel_of_neuron)
+            self._stim_mask_mx = mx.array(self._stim_pn_mask)
+
+    def _apply_stimulus_row(self, row, preview: bool = False):
+        """
+        Materialise one channel-force row onto the per-neuron drive.
+
+        Only used for preview/diagnostics and the interpreted path; the
+        compiled kernel gathers the row itself so nothing is uploaded per step.
+        """
+        row = np.asarray(row, dtype=np.float32)
+        drive = row[self._stim_channel_of_neuron] * self._stim_pn_mask
+        if preview:
+            self.external_force = mx.array(drive) if self.use_mlx else drive
+        return drive
 
     # ────────────────────────────────────────────────────────────────────
     #  Reset
@@ -713,6 +867,12 @@ class SparseProbabilisticBrain:
         self.var_phase      = np.ones(self.num_neurons, dtype=np.float32) * 0.1
         self.var_amplitude  = np.ones(self.num_neurons, dtype=np.float32) * 0.01
         self.external_force = np.zeros(self.num_neurons, dtype=np.float32)
+
+        # Detach any odour stimulus. Leaving it attached would keep driving the
+        # PNs after a reset that is meant to clear all input, and its adaptation
+        # state would carry over into what the caller believes is a fresh trial.
+        self._odor_stimulus = None
+        self._stim_step = 0
 
         self.amplitude_history    = deque(maxlen=self.history_max)
         self._last_history_time   = 0.0
