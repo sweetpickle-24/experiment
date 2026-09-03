@@ -156,9 +156,16 @@ class CouplingEngineGPU:
         if neuron_indices is None:
             self.weights *= multiplier
         else:
-            # Modulate only synapses involving specific neurons
+            # Modulate only synapses involving specific neurons.
+            # MLX has no boolean-mask assignment ("boolean indices are not yet
+            # supported"), so select with where() rather than indexing.
             mask = np.isin(to_cpu(self.post_indices), neuron_indices)
-            self.weights[to_gpu(mask)] *= multiplier
+            if MLX_AVAILABLE and isinstance(self.weights, mx.array):
+                self.weights = mx.where(
+                    mx.array(mask), self.weights * multiplier, self.weights
+                )
+            else:
+                self.weights[mask] *= multiplier
     
     def get_all_weights_as_array(self) -> np.ndarray:
         """Get all weights as CPU array."""

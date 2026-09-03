@@ -49,8 +49,9 @@ for i in range(10):
 print(f"✓ Ran 10 integration steps")
 
 state = osc.get_state()
-print(f"  Phase range: [{state['phase'].min():.3f}, {state['phase'].max():.3f}]")
-print(f"  Amplitude mean: {state['amplitude'].mean():.3f}")
+# OscillatorState is a dataclass, not a dict: attribute access, not subscript.
+print(f"  Phase range: [{state.phase.min():.3f}, {state.phase.max():.3f}]")
+print(f"  Amplitude mean: {state.amplitude.mean():.3f}")
 print(f"  Energy: {osc.get_energy():.1f}")
 
 # Test coupling
@@ -92,8 +93,8 @@ coupling = CouplingEngineGPU(connectome, config)
 print("✓ Built coupling matrices")
 
 # Compute forces
-phase = state['phase']
-amplitude = state['amplitude']
+phase = state.phase
+amplitude = state.amplitude
 forces = coupling.compute_coupling_forces(phase, amplitude)
 print(f"✓ Computed coupling forces")
 print(f"  Force range: [{forces.min():.3f}, {forces.max():.3f}]")
