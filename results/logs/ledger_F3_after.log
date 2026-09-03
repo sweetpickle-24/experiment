@@ -1,0 +1,570 @@
+2026-09-03 17:21:59,216 - ======================================================================
+2026-09-03 17:21:59,216 - COMPREHENSIVE BIOLOGICAL VALIDATION SUITE
+2026-09-03 17:21:59,216 - ======================================================================
+2026-09-03 17:21:59,216 - Starting all 5 validations...
+2026-09-03 17:21:59,216 - Backend: NumPy (CPU)
+2026-09-03 17:21:59,216 - CPU runtime is roughly 4.8 s per 100 ms simulated (results/final/cpu_vs_mlx_speedup.json).
+2026-09-03 17:21:59,216 - 
+Initializing olfactory system...
+2026-09-03 17:22:04,587 - Computing receptor->glomerular projection: 40 -> 20 dimensions (sklearn_pca)
+2026-09-03 17:22:04,588 - Projection: sklearn PCA (mean-centred), 94.0% variance explained
+2026-09-03 17:22:05,207 - ✅ System ready: 10906 neurons, backend=NumPy
+2026-09-03 17:22:05,237 - Configuration: {
+  "timestamp": "2026-09-03T21:22:05.207149+00:00",
+  "git_commit": "b9637dc0a3d4faa7a4a91886994cd565ad83e2ca-dirty",
+  "seed": 42,
+  "duration_ms": 100.0,
+  "python": "3.14.3",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "backend": "NumPy",
+  "dt_ms": 0.1,
+  "projection_method": "sklearn_pca",
+  "reproducible": true,
+  "fast_mode": false,
+  "gamma": 0.1,
+  "sigma_noise": 0.1,
+  "num_neurons": 10906,
+  "deterministic_accumulation": true,
+  "projection_explained_variance": 0.940047562122345,
+  "door_matrix_synthetic": false,
+  "door_n_odorants": 372,
+  "suite": "run_all_validations",
+  "n_benchmarks": 5
+}
+2026-09-03 17:22:05,237 - Test odors: ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
+2026-09-03 17:22:05,237 - 
+======================================================================
+2026-09-03 17:22:05,237 - VALIDATION 1/5: TEMPORAL DYNAMICS
+2026-09-03 17:22:05,237 - ======================================================================
+2026-09-03 17:22:05,237 -   Testing benzaldehyde...
+2026-09-03 17:23:43,236 -     Peak: 500ms, Adaptation: 0.0%
+2026-09-03 17:23:43,237 -   Testing 2-heptanone...
+2026-09-03 17:25:20,877 -     Peak: 50ms, Adaptation: 55.9%
+2026-09-03 17:25:20,878 -   Testing isopentyl_acetate...
+2026-09-03 17:26:58,386 -     Peak: 100ms, Adaptation: 9.4%
+2026-09-03 17:26:58,386 - ✅ Temporal dynamics complete
+2026-09-03 17:26:58,386 - 
+======================================================================
+2026-09-03 17:26:58,386 - VALIDATION 2/5: ODOR MIXTURES
+2026-09-03 17:26:58,386 - ======================================================================
+2026-09-03 17:27:18,885 -   Binary mixture overlap: 24.8%
+2026-09-03 17:27:18,885 - ✅ Odor mixtures complete
+2026-09-03 17:27:18,885 - 
+======================================================================
+2026-09-03 17:27:18,885 - VALIDATION 3/5: DISCRIMINATION THRESHOLDS
+2026-09-03 17:27:18,885 - ======================================================================
+2026-09-03 17:27:29,137 -   benzaldehyde +5%: r=0.290, discriminable=True
+2026-09-03 17:27:34,281 -   benzaldehyde +10%: r=0.263, discriminable=True
+2026-09-03 17:27:39,390 -   benzaldehyde +15%: r=0.175, discriminable=True
+2026-09-03 17:27:44,498 -   benzaldehyde +20%: r=0.337, discriminable=True
+2026-09-03 17:27:49,620 -   benzaldehyde +25%: r=0.233, discriminable=True
+2026-09-03 17:27:49,620 -   benzaldehyde: JND = 5%
+2026-09-03 17:27:59,880 -   2-heptanone +5%: r=0.206, discriminable=True
+2026-09-03 17:28:05,016 -   2-heptanone +10%: r=0.185, discriminable=True
+2026-09-03 17:28:10,159 -   2-heptanone +15%: r=0.095, discriminable=True
+2026-09-03 17:28:15,313 -   2-heptanone +20%: r=-0.010, discriminable=True
+2026-09-03 17:28:20,408 -   2-heptanone +25%: r=0.101, discriminable=True
+2026-09-03 17:28:20,408 -   2-heptanone: JND = 5%
+2026-09-03 17:28:20,408 - ✅ Discrimination thresholds complete
+2026-09-03 17:28:20,408 - 
+======================================================================
+2026-09-03 17:28:20,408 - VALIDATION 4/5: ODOR SIMILARITY STRUCTURE
+2026-09-03 17:28:20,408 - ======================================================================
+2026-09-03 17:28:35,802 -   Chem-neural correlation: r=0.969
+2026-09-03 17:28:35,802 - ✅ Odor similarity complete
+2026-09-03 17:28:35,802 - 
+======================================================================
+2026-09-03 17:28:35,802 - VALIDATION 5/5: LEARNING & PLASTICITY
+2026-09-03 17:28:35,802 - ======================================================================
+2026-09-03 17:28:35,802 -   Testing plasticity with benzaldehyde (5 training trials)...
+2026-09-03 17:28:40,932 -     Pre-training  MBON=0.0160, active KCs=316
+2026-09-03 17:28:45,777 -     Trial 1/5: mean |Δw|=0.018546
+2026-09-03 17:28:50,622 -     Trial 2/5: mean |Δw|=0.014334
+2026-09-03 17:28:55,514 -     Trial 3/5: mean |Δw|=0.013654
+2026-09-03 17:29:00,320 -     Trial 4/5: mean |Δw|=0.015148
+2026-09-03 17:29:05,137 -     Trial 5/5: mean |Δw|=0.016598
+2026-09-03 17:29:10,255 -     Post-training MBON=0.0169, active KCs=31
+2026-09-03 17:29:10,256 -     MBON change: 5.75% (target ≥1.0%)
+2026-09-03 17:29:10,256 - ✅ Learning & plasticity complete
+2026-09-03 17:29:10,256 - 
+======================================================================
+2026-09-03 17:29:10,256 - ALL VALIDATIONS COMPLETE
+2026-09-03 17:29:10,256 - ======================================================================
+2026-09-03 17:29:10,256 - Total time: 7.2 minutes
+2026-09-03 17:29:10,256 - 
+======================================================================
+2026-09-03 17:29:10,256 - BIOLOGICAL VALIDATION SUMMARY
+2026-09-03 17:29:10,256 - ======================================================================
+2026-09-03 17:29:10,256 - ❌ temporal_dynamics: FAIL
+2026-09-03 17:29:10,256 - ❌ odor_mixtures: FAIL
+2026-09-03 17:29:10,256 - ❌ discrimination: FAIL
+2026-09-03 17:29:10,256 - ❌ similarity: FAIL
+2026-09-03 17:29:10,256 - ✅ learning: PASS
+2026-09-03 17:29:10,256 - 
+Overall: 1/5 validations passed
+2026-09-03 17:29:10,281 - 
+Results saved to /Users/vladyslav/Documents/GitHub/experiment/results/final/all_validations_F3_after.json
+
+=== [F3_after] stimulus-path diagnostics ===
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+{
+  "odor": "benzaldehyde",
+  "strength_arg": 50.0,
+  "duration_ms": 100.0,
+  "projection_method": "sklearn_pca",
+  "backend": "MLX",
+  "dt_ms": 0.1,
+  "amplitude_ceiling": 10.0,
+  "drive": {
+    "n_driven_neurons": 981,
+    "force_peak": 36.13521957397461,
+    "force_min_nonzero": 4.3088202476501465,
+    "time_varying": false
+  },
+  "driven_at_amplitude_ceiling": 981,
+  "regions": {
+    "PN": {
+      "n": 2198,
+      "n_at_amplitude_ceiling": 981,
+      "amplitude_max": 10.0,
+      "amplitude_mean": 4.49717378616333
+    },
+    "KC": {
+      "n": 5279,
+      "n_at_amplitude_ceiling": 0,
+      "amplitude_max": 0.19991202652454376,
+      "amplitude_mean": 0.013580767437815666
+    }
+  },
+  "peak_abs_velocity": 180.8512725830078,
+  "phase_advance_per_step_rad": 18.085127258300783,
+  "kc_raw_max": 0.19991202652454376,
+  "kc_raw_mean": 0.013580767437815666,
+  "kc_norm_mean": 0.001244216226041317,
+  "kc_active_above_0p01": 212
+}
+
+=== [F3_after] concentration invariance (CPU, seed 42) ===
+============================================================
+CONCENTRATION INVARIANCE TEST
+Wave-Based Olfactory Simulation
+============================================================
+
+Seed: 42
+Test Configuration:
+  Odors: ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
+  Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0] (100-fold range)
+  Simulation duration: 100.0 ms per trial
+  Total trials: 15 = 3 odors × 5 concentrations
+
+Loading connectome...
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+  Loaded 139255 total neurons
+Extracting olfactory pathway...
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+  Extracted 10906 olfactory neurons
+  Synapses: 446388
+
+Initializing brain simulator...
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+  Memory usage: 0.2 MB
+  Backend: NumPy (CPU)
+
+Loading DOoR database...
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+  Loaded 372 odorants
+
+
+============================================================
+Testing odor: benzaldehyde
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 4.77s
+    Active KCs: 47/5279 (0.89%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0602
+
+  Concentration: 0.5× baseline...
+    Simulation time: 4.80s
+    Active KCs: 258/5279 (4.89%)
+    Mean amplitude: 0.0028
+    Max amplitude: 0.3669
+
+  Concentration: 1.0× baseline...
+    Simulation time: 4.79s
+    Active KCs: 282/5279 (5.34%)
+    Mean amplitude: 0.0084
+    Max amplitude: 0.4283
+
+  Concentration: 5.0× baseline...
+    Simulation time: 4.80s
+    Active KCs: 84/5279 (1.59%)
+    Mean amplitude: 0.0005
+    Max amplitude: 0.0908
+
+  Concentration: 10.0× baseline...
+    Simulation time: 4.83s
+    Active KCs: 246/5279 (4.66%)
+    Mean amplitude: 0.0038
+    Max amplitude: 2.8406
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.0440
+      Jaccard similarity: 0.0235
+    0.1x_vs_1.0x:
+      Binary correlation: 0.1389
+      Jaccard similarity: 0.0579
+    0.1x_vs_5.0x:
+      Binary correlation: 0.4714
+      Jaccard similarity: 0.2970
+    0.1x_vs_10.0x:
+      Binary correlation: 0.1034
+      Jaccard similarity: 0.0464
+    0.5x_vs_1.0x:
+      Binary correlation: -0.0031
+      Jaccard similarity: 0.0247
+    0.5x_vs_5.0x:
+      Binary correlation: 0.0133
+      Jaccard similarity: 0.0179
+    0.5x_vs_10.0x:
+      Binary correlation: 0.0541
+      Jaccard similarity: 0.0522
+    1.0x_vs_5.0x:
+      Binary correlation: 0.1650
+      Jaccard similarity: 0.0861
+    1.0x_vs_10.0x:
+      Binary correlation: 0.0274
+      Jaccard similarity: 0.0394
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0724
+      Jaccard similarity: 0.0443
+
+============================================================
+Testing odor: 2-heptanone
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 4.82s
+    Active KCs: 38/5279 (0.72%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0826
+
+  Concentration: 0.5× baseline...
+    Simulation time: 4.81s
+    Active KCs: 45/5279 (0.85%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0818
+
+  Concentration: 1.0× baseline...
+    Simulation time: 4.83s
+    Active KCs: 235/5279 (4.45%)
+    Mean amplitude: 0.0031
+    Max amplitude: 1.2662
+
+  Concentration: 5.0× baseline...
+    Simulation time: 4.84s
+    Active KCs: 277/5279 (5.25%)
+    Mean amplitude: 0.0056
+    Max amplitude: 1.1548
+
+  Concentration: 10.0× baseline...
+    Simulation time: 4.82s
+    Active KCs: 34/5279 (0.64%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0343
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.3090
+      Jaccard similarity: 0.1857
+    0.1x_vs_1.0x:
+      Binary correlation: 0.2858
+      Jaccard similarity: 0.1143
+    0.1x_vs_5.0x:
+      Binary correlation: 0.0202
+      Jaccard similarity: 0.0129
+    0.1x_vs_10.0x:
+      Binary correlation: 0.2733
+      Jaccard similarity: 0.1613
+    0.5x_vs_1.0x:
+      Binary correlation: 0.0399
+      Jaccard similarity: 0.0219
+    0.5x_vs_5.0x:
+      Binary correlation: 0.2554
+      Jaccard similarity: 0.1027
+    0.5x_vs_10.0x:
+      Binary correlation: 0.3016
+      Jaccard similarity: 0.1791
+    1.0x_vs_5.0x:
+      Binary correlation: -0.0302
+      Jaccard similarity: 0.0099
+    1.0x_vs_10.0x:
+      Binary correlation: 0.1089
+      Jaccard similarity: 0.0426
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0129
+      Jaccard similarity: 0.0097
+
+============================================================
+Testing odor: isopentyl_acetate
+Concentrations: [0.1, 0.5, 1.0, 5.0, 10.0]
+============================================================
+
+  Concentration: 0.1× baseline...
+    Simulation time: 4.83s
+    Active KCs: 32/5279 (0.61%)
+    Mean amplitude: 0.0003
+    Max amplitude: 0.0329
+
+  Concentration: 0.5× baseline...
+    Simulation time: 4.84s
+    Active KCs: 167/5279 (3.16%)
+    Mean amplitude: 0.0009
+    Max amplitude: 0.0987
+
+  Concentration: 1.0× baseline...
+    Simulation time: 4.87s
+    Active KCs: 281/5279 (5.32%)
+    Mean amplitude: 0.0085
+    Max amplitude: 1.0821
+
+  Concentration: 5.0× baseline...
+    Simulation time: 4.87s
+    Active KCs: 251/5279 (4.75%)
+    Mean amplitude: 0.0041
+    Max amplitude: 0.6555
+
+  Concentration: 10.0× baseline...
+    Simulation time: 4.85s
+    Active KCs: 272/5279 (5.15%)
+    Mean amplitude: 0.0116
+    Max amplitude: 1.1159
+
+  Computing pattern correlations...
+    0.1x_vs_0.5x:
+      Binary correlation: 0.0974
+      Jaccard similarity: 0.0419
+    0.1x_vs_1.0x:
+      Binary correlation: 0.0793
+      Jaccard similarity: 0.0296
+    0.1x_vs_5.0x:
+      Binary correlation: 0.0858
+      Jaccard similarity: 0.0328
+    0.1x_vs_10.0x:
+      Binary correlation: 0.1032
+      Jaccard similarity: 0.0375
+    0.5x_vs_1.0x:
+      Binary correlation: -0.0139
+      Jaccard similarity: 0.0136
+    0.5x_vs_5.0x:
+      Binary correlation: -0.0099
+      Jaccard similarity: 0.0146
+    0.5x_vs_10.0x:
+      Binary correlation: 0.4817
+      Jaccard similarity: 0.3223
+    1.0x_vs_5.0x:
+      Binary correlation: 0.0501
+      Jaccard similarity: 0.0514
+    1.0x_vs_10.0x:
+      Binary correlation: 0.0096
+      Jaccard similarity: 0.0317
+    5.0x_vs_10.0x:
+      Binary correlation: 0.0083
+      Jaccard similarity: 0.0295
+
+============================================================
+CONCENTRATION INVARIANCE ANALYSIS
+============================================================
+
+Odor: benzaldehyde
+  0.1x_vs_0.5x: binary=0.044, jaccard=0.023
+  0.1x_vs_1.0x: binary=0.139, jaccard=0.058
+  0.1x_vs_5.0x: binary=0.471, jaccard=0.297
+  0.1x_vs_10.0x: binary=0.103, jaccard=0.046
+  0.5x_vs_1.0x: binary=-0.003, jaccard=0.025
+  0.5x_vs_5.0x: binary=0.013, jaccard=0.018
+  0.5x_vs_10.0x: binary=0.054, jaccard=0.052
+  1.0x_vs_5.0x: binary=0.165, jaccard=0.086
+  1.0x_vs_10.0x: binary=0.027, jaccard=0.039
+  5.0x_vs_10.0x: binary=0.072, jaccard=0.044
+
+Odor: 2-heptanone
+  0.1x_vs_0.5x: binary=0.309, jaccard=0.186
+  0.1x_vs_1.0x: binary=0.286, jaccard=0.114
+  0.1x_vs_5.0x: binary=0.020, jaccard=0.013
+  0.1x_vs_10.0x: binary=0.273, jaccard=0.161
+  0.5x_vs_1.0x: binary=0.040, jaccard=0.022
+  0.5x_vs_5.0x: binary=0.255, jaccard=0.103
+  0.5x_vs_10.0x: binary=0.302, jaccard=0.179
+  1.0x_vs_5.0x: binary=-0.030, jaccard=0.010
+  1.0x_vs_10.0x: binary=0.109, jaccard=0.043
+  5.0x_vs_10.0x: binary=0.013, jaccard=0.010
+
+Odor: isopentyl_acetate
+  0.1x_vs_0.5x: binary=0.097, jaccard=0.042
+  0.1x_vs_1.0x: binary=0.079, jaccard=0.030
+  0.1x_vs_5.0x: binary=0.086, jaccard=0.033
+  0.1x_vs_10.0x: binary=0.103, jaccard=0.038
+  0.5x_vs_1.0x: binary=-0.014, jaccard=0.014
+  0.5x_vs_5.0x: binary=-0.010, jaccard=0.015
+  0.5x_vs_10.0x: binary=0.482, jaccard=0.322
+  1.0x_vs_5.0x: binary=0.050, jaccard=0.051
+  1.0x_vs_10.0x: binary=0.010, jaccard=0.032
+  5.0x_vs_10.0x: binary=0.008, jaccard=0.030
+
+============================================================
+SUMMARY STATISTICS
+============================================================
+
+Binary Correlation (thresholded KC patterns):
+  Mean: 0.1185
+  Std:  0.1367
+  Min:  -0.0302
+  Max:  0.4817
+
+Jaccard Similarity (active KC overlap):
+  Mean: 0.0711
+  Std:  0.0795
+  Min:  0.0097
+  Max:  0.3223
+
+BIOLOGICAL VALIDATION:
+  ❌ WEAK concentration invariance (mean correlation=0.119)
+     High variability suggests concentration-dependent KC recruitment.
+     May need parameter tuning or circuit refinement.
+
+
+============================================================
+Results saved to: /Users/vladyslav/Documents/GitHub/experiment/results/final/concentration_invariance_F3_after.json
+============================================================
+
+CITATION-READY SUMMARY:
+------------------------------------------------------------
+We tested concentration invariance across 3 odors at 5 concentration
+levels (0.1× to 10×, 100-fold range). KC pattern correlation was
+0.119 ± 0.137
+(mean ± SD, n=15 trials), with Jaccard similarity
+0.071 ± 0.080.
+Results show concentration-dependent KC recruitment, suggesting
+potential parameter tuning needed for full biological fidelity.
+------------------------------------------------------------
+
+✅ Concentration invariance test complete!
+
+
+=== [F3_after] five-benchmark suite (CPU, seed 42) ===
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+
+Ledger entry 'F3_after' written to /Users/vladyslav/Documents/GitHub/experiment/results/final/fix_ledger.json
