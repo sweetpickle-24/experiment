@@ -1,60 +1,3 @@
-2026-09-03 18:16:00,879 - INFO - ======================================================================
-2026-09-03 18:16:00,880 - INFO - LEARNING & PLASTICITY VALIDATION
-2026-09-03 18:16:00,880 - INFO - ======================================================================
-2026-09-03 18:16:00,880 - INFO - Building olfactory brain (CPU, seed 42)...
-2026-09-03 18:16:06,774 - INFO - Computing receptor->glomerular projection: 40 -> 20 dimensions (sklearn_pca)
-2026-09-03 18:16:07,646 - INFO - Projection: sklearn PCA (mean-centred), 94.0% variance explained
-2026-09-03 18:16:08,260 - INFO - Extracted 10906 neurons, 446388 synapses
-2026-09-03 18:16:08,260 - INFO - Backend: NumPy (CPU)
-2026-09-03 18:16:08,260 - INFO - 
-======================================================================
-2026-09-03 18:16:08,260 - INFO - Testing learning with: benzaldehyde
-2026-09-03 18:16:08,260 - INFO - ======================================================================
-2026-09-03 18:16:08,260 - INFO - Conditioning experiment: benzaldehyde + reward × 20 trials
-2026-09-03 18:16:13,434 - INFO -   Pre-conditioning MBON: mean=0.0333, max=0.2403
-2026-09-03 18:16:13,521 - INFO -   Initial KC->MBON weights: 49599 synapses, mean=0.0042
-2026-09-03 18:16:18,742 - INFO -   Trial 1/20: MBON=0.0333, updated 49599 synapses
-2026-09-03 18:16:44,585 - INFO -   Trial 6/20: MBON=0.0354, updated 49599 synapses
-2026-09-03 18:17:10,403 - INFO -   Trial 11/20: MBON=0.0332, updated 49599 synapses
-2026-09-03 18:17:36,220 - INFO -   Trial 16/20: MBON=0.0357, updated 49599 synapses
-2026-09-03 18:18:02,027 - INFO -   Post-conditioning MBON: mean=0.0356, max=0.3243
-2026-09-03 18:18:02,116 - INFO -   Final KC→MBON weights: mean=0.0043 (1.02× initial)
-2026-09-03 18:18:02,116 - INFO -   MBON response change: 1.07× initial
-2026-09-03 18:18:02,116 - INFO - 
-======================================================================
-2026-09-03 18:18:02,116 - INFO - Testing learning with: 2-heptanone
-2026-09-03 18:18:02,116 - INFO - ======================================================================
-2026-09-03 18:18:02,116 - INFO - Conditioning experiment: 2-heptanone + reward × 20 trials
-2026-09-03 18:18:07,278 - INFO -   Pre-conditioning MBON: mean=0.0370, max=0.2397
-2026-09-03 18:18:07,365 - INFO -   Initial KC->MBON weights: 49599 synapses, mean=0.0043
-2026-09-03 18:18:12,542 - INFO -   Trial 1/20: MBON=0.0370, updated 49599 synapses
-2026-09-03 18:18:38,411 - INFO -   Trial 6/20: MBON=0.0346, updated 49599 synapses
-2026-09-03 18:19:04,268 - INFO -   Trial 11/20: MBON=0.0344, updated 49599 synapses
-2026-09-03 18:19:30,151 - INFO -   Trial 16/20: MBON=0.0347, updated 49599 synapses
-2026-09-03 18:19:56,015 - INFO -   Post-conditioning MBON: mean=0.0336, max=0.2160
-2026-09-03 18:19:56,103 - INFO -   Final KC→MBON weights: mean=0.0044 (1.04× initial)
-2026-09-03 18:19:56,103 - INFO -   MBON response change: 0.91× initial
-2026-09-03 18:19:56,103 - INFO - 
-======================================================================
-2026-09-03 18:19:56,103 - INFO - SUMMARY - LEARNING & PLASTICITY
-2026-09-03 18:19:56,103 - INFO - ======================================================================
-2026-09-03 18:19:56,103 - INFO - 
-📊 Weight Change (KC→MBON):
-2026-09-03 18:19:56,103 - INFO -    Mean: 1.03×
-2026-09-03 18:19:56,103 - INFO -    Range: [1.02, 1.04]×
-2026-09-03 18:19:56,103 - INFO -    Target: [2.0, 3.0]×
-2026-09-03 18:19:56,103 - INFO -    Status: ❌ FAIL
-2026-09-03 18:19:56,103 - INFO - 
-📊 MBON Response Change:
-2026-09-03 18:19:56,103 - INFO -    Mean: 0.99×
-2026-09-03 18:19:56,103 - INFO -    Range: [0.91, 1.07]×
-2026-09-03 18:19:56,103 - INFO -    Status: ❌ FAIL
-2026-09-03 18:19:56,103 - INFO - 
-✅ Results saved to learning_plasticity_results.json
-2026-09-03 18:19:56,103 - INFO - 
-======================================================================
-2026-09-03 18:19:56,103 - INFO - LEARNING & PLASTICITY VALIDATION COMPLETE
-2026-09-03 18:19:56,103 - INFO - ======================================================================
 2026-09-03 18:25:12,630 - INFO - ======================================================================
 2026-09-03 18:25:12,630 - INFO - LEARNING & PLASTICITY VALIDATION
 2026-09-03 18:25:12,630 - INFO - ======================================================================
@@ -112,3 +55,41 @@
 ======================================================================
 2026-09-03 18:29:08,417 - INFO - LEARNING & PLASTICITY VALIDATION COMPLETE
 2026-09-03 18:29:08,417 - INFO - ======================================================================
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors

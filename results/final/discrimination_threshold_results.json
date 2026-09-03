@@ -1,0 +1,273 @@
+{
+  "experiment": "discrimination_threshold",
+  "description": "Validation of concentration discrimination (Weber's law)",
+  "biological_benchmarks": {
+    "jnd_percent": [
+      10,
+      20
+    ],
+    "weber_fraction": 0.15
+  },
+  "brain_parameters": {
+    "num_neurons": 10906,
+    "dt_ms": 0.1,
+    "backend": "NumPy"
+  },
+  "test_parameters": {
+    "base_concentration": 1.0,
+    "correlation_threshold": 0.9
+  },
+  "discrimination_tests": [
+    {
+      "odor": "benzaldehyde",
+      "base_concentration": 1.0,
+      "correlation_threshold": 0.9,
+      "jnd_percent": 5.0,
+      "jnd_data": [
+        {
+          "concentration_increment_percent": 5.0,
+          "test_concentration": 1.05,
+          "correlation": 0.6532970564455449,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 10.0,
+          "test_concentration": 1.1,
+          "correlation": 0.5085569926315495,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 15.0,
+          "test_concentration": 1.15,
+          "correlation": 0.6364668164671734,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 20.0,
+          "test_concentration": 1.2,
+          "correlation": 0.5556816645709902,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 25.0,
+          "test_concentration": 1.25,
+          "correlation": 0.5657798085580131,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 30.0,
+          "test_concentration": 1.3,
+          "correlation": 0.6061723845061048,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 40.0,
+          "test_concentration": 1.4,
+          "correlation": 0.653297056445545,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 50.0,
+          "test_concentration": 1.5,
+          "correlation": 0.5960742405190819,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 75.0,
+          "test_concentration": 1.75,
+          "correlation": 0.5321193286012699,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 100.0,
+          "test_concentration": 2.0,
+          "correlation": 0.6297347204758251,
+          "discriminable": true
+        }
+      ]
+    },
+    {
+      "odor": "2-heptanone",
+      "base_concentration": 1.0,
+      "correlation_threshold": 0.9,
+      "jnd_percent": 5.0,
+      "jnd_data": [
+        {
+          "concentration_increment_percent": 5.0,
+          "test_concentration": 1.05,
+          "correlation": 0.6297347204758246,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 10.0,
+          "test_concentration": 1.1,
+          "correlation": 0.08443494517658529,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 15.0,
+          "test_concentration": 1.15,
+          "correlation": 0.32342435286946214,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 20.0,
+          "test_concentration": 1.2,
+          "correlation": 0.11809542513332809,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 25.0,
+          "test_concentration": 1.25,
+          "correlation": 0.040676321232818974,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 30.0,
+          "test_concentration": 1.3,
+          "correlation": 0.3335224968564852,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 40.0,
+          "test_concentration": 1.4,
+          "correlation": 0.13492566511169962,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 50.0,
+          "test_concentration": 1.5,
+          "correlation": 0.07770284918523669,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 75.0,
+          "test_concentration": 1.75,
+          "correlation": 0.49509280064885236,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 100.0,
+          "test_concentration": 2.0,
+          "correlation": 0.044042369228493354,
+          "discriminable": true
+        }
+      ]
+    },
+    {
+      "odor": "isopentyl_acetate",
+      "base_concentration": 1.0,
+      "correlation_threshold": 0.9,
+      "jnd_percent": 5.0,
+      "jnd_data": [
+        {
+          "concentration_increment_percent": 5.0,
+          "test_concentration": 1.05,
+          "correlation": 0.14502380909872253,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 10.0,
+          "test_concentration": 1.1,
+          "correlation": 0.4479681287094123,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 15.0,
+          "test_concentration": 1.15,
+          "correlation": 0.27966572892569586,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 20.0,
+          "test_concentration": 1.2,
+          "correlation": 0.5657798085580129,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 25.0,
+          "test_concentration": 1.25,
+          "correlation": 0.4614323206921096,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 30.0,
+          "test_concentration": 1.3,
+          "correlation": 0.36718297681322865,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 40.0,
+          "test_concentration": 1.4,
+          "correlation": 0.5826100485363842,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 50.0,
+          "test_concentration": 1.5,
+          "correlation": 0.6230026244844763,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 75.0,
+          "test_concentration": 1.75,
+          "correlation": 0.4580662726964352,
+          "discriminable": true
+        },
+        {
+          "concentration_increment_percent": 100.0,
+          "test_concentration": 2.0,
+          "correlation": 0.3873792647872745,
+          "discriminable": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "jnd_percent": {
+      "mean": 5.0,
+      "std": 0.0,
+      "range": [
+        5.0,
+        5.0
+      ]
+    },
+    "weber_fraction": 0.05,
+    "biological_validation": {
+      "jnd_in_range": "FAIL"
+    }
+  },
+  "odor_resolution": [
+    {
+      "requested": "geosmin",
+      "used": "isopentyl_acetate",
+      "reason": "substituted"
+    }
+  ],
+  "config": {
+    "timestamp": "2026-09-03T22:23:54.242683+00:00",
+    "git_commit": "c0038226c041c63beea11e7d377550b9b86371a8-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "discrimination_threshold"
+  }
+}

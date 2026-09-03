@@ -1,0 +1,282 @@
+{
+  "experiment": "odor_similarity",
+  "description": "Validation of chemical vs neural similarity structure",
+  "biological_benchmarks": {
+    "chem_neural_correlation": [
+      0.3,
+      0.5
+    ],
+    "representational_geometry": "preserved"
+  },
+  "brain_parameters": {
+    "num_neurons": 10906,
+    "dt_ms": 0.1,
+    "backend": "NumPy"
+  },
+  "test_odors": [
+    "benzaldehyde",
+    "2-heptanone",
+    "isopentyl_acetate",
+    "ethyl_acetate",
+    "1-hexanol"
+  ],
+  "odor_responses": {
+    "benzaldehyde": {
+      "glomerular_pattern": [
+        0.0,
+        0.45710185170173645,
+        0.08617640286684036,
+        0.15757979452610016,
+        0.0,
+        0.0,
+        0.34325137734413147,
+        0.0,
+        0.0,
+        0.0,
+        0.13235943019390106,
+        0.15823255479335785,
+        0.0,
+        0.0,
+        0.24332846701145172,
+        0.7227044105529785,
+        0.0,
+        0.0,
+        0.13004489243030548,
+        0.0
+      ],
+      "num_active_kcs": 316
+    },
+    "2-heptanone": {
+      "glomerular_pattern": [
+        0.0,
+        0.7170568704605103,
+        0.0027774889022111893,
+        0.2711547315120697,
+        0.0,
+        0.00895074475556612,
+        0.46888554096221924,
+        0.09494442492723465,
+        0.0,
+        0.05533692613244057,
+        0.0,
+        0.08344394713640213,
+        0.09248800575733185,
+        0.0,
+        0.0,
+        0.19032029807567596,
+        0.0,
+        0.21160738170146942,
+        0.28943052887916565,
+        0.0
+      ],
+      "num_active_kcs": 316
+    },
+    "isopentyl_acetate": {
+      "glomerular_pattern": [
+        0.0,
+        0.6294342279434204,
+        0.09611362218856812,
+        0.3804726302623749,
+        0.0,
+        0.014908380806446075,
+        0.4428548514842987,
+        0.23619109392166138,
+        0.0,
+        0.0,
+        0.24030724167823792,
+        0.1116272360086441,
+        0.20752470195293427,
+        0.0,
+        0.028163380920886993,
+        0.1435604840517044,
+        0.0,
+        0.06134699657559395,
+        0.20470570027828217,
+        0.13168513774871826
+      ],
+      "num_active_kcs": 316
+    },
+    "ethyl_acetate": {
+      "glomerular_pattern": [
+        0.0,
+        0.3944198191165924,
+        0.0,
+        0.26333922147750854,
+        0.0,
+        0.4012168347835541,
+        0.3724580705165863,
+        0.6495140790939331,
+        0.0,
+        0.0,
+        0.0,
+        0.17732968926429749,
+        0.0,
+        0.10866796970367432,
+        0.04266733303666115,
+        0.022893739864230156,
+        0.05159255862236023,
+        0.05860770121216774,
+        0.04267585650086403,
+        0.0
+      ],
+      "num_active_kcs": 316
+    },
+    "1-hexanol": {
+      "glomerular_pattern": [
+        0.0,
+        0.7757372856140137,
+        0.006141406483948231,
+        0.2645171880722046,
+        0.0,
+        0.0,
+        0.43305355310440063,
+        0.001927633536979556,
+        0.0,
+        0.022828126326203346,
+        0.0,
+        0.30638131499290466,
+        0.0,
+        0.0,
+        0.0,
+        0.17116959393024445,
+        0.0,
+        0.08738665282726288,
+        0.09674375504255295,
+        0.0
+      ],
+      "num_active_kcs": 316
+    }
+  },
+  "pairwise_comparisons": [
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "2-heptanone",
+      "chemical_similarity": 0.5989367569363567,
+      "neural_similarity": -0.016546494693644356
+    },
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "isopentyl_acetate",
+      "chemical_similarity": 0.5339326844327849,
+      "neural_similarity": 0.33688854485215936
+    },
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "ethyl_acetate",
+      "chemical_similarity": 0.1400864167576548,
+      "neural_similarity": 0.4883607046575038
+    },
+    {
+      "odor1": "benzaldehyde",
+      "odor2": "1-hexanol",
+      "chemical_similarity": 0.6358802923714523,
+      "neural_similarity": 0.23254105698625463
+    },
+    {
+      "odor1": "2-heptanone",
+      "odor2": "isopentyl_acetate",
+      "chemical_similarity": 0.8738906469524791,
+      "neural_similarity": 0.17868428905546566
+    },
+    {
+      "odor1": "2-heptanone",
+      "odor2": "ethyl_acetate",
+      "chemical_similarity": 0.4668359367655873,
+      "neural_similarity": 0.020480033258773137
+    },
+    {
+      "odor1": "2-heptanone",
+      "odor2": "1-hexanol",
+      "chemical_similarity": 0.9183826438381851,
+      "neural_similarity": 0.15848800108141983
+    },
+    {
+      "odor1": "isopentyl_acetate",
+      "odor2": "ethyl_acetate",
+      "chemical_similarity": 0.5364568628617179,
+      "neural_similarity": 0.36381692881755434
+    },
+    {
+      "odor1": "isopentyl_acetate",
+      "odor2": "1-hexanol",
+      "chemical_similarity": 0.8296023699866433,
+      "neural_similarity": 0.3469866888391823
+    },
+    {
+      "odor1": "ethyl_acetate",
+      "odor2": "1-hexanol",
+      "chemical_similarity": 0.4562204539416986,
+      "neural_similarity": 0.24263920097327799
+    }
+  ],
+  "summary": {
+    "chem_neural_correlation": -0.3577572436782892,
+    "chemical_similarity": {
+      "mean": 0.5990225064844561,
+      "std": 0.22106744756656138,
+      "range": [
+        0.1400864167576548,
+        0.9183826438381851
+      ]
+    },
+    "neural_similarity": {
+      "mean": 0.23523389538279468,
+      "std": 0.14902737969466012,
+      "range": [
+        -0.016546494693644356,
+        0.4883607046575038
+      ]
+    },
+    "biological_validation": {
+      "chem_neural_correlation": "FAIL"
+    }
+  },
+  "odor_resolution": [
+    {
+      "requested": "geosmin",
+      "used": "isopentyl_acetate",
+      "reason": "substituted"
+    },
+    {
+      "requested": "ethyl acetate",
+      "used": "ethyl_acetate",
+      "reason": "name normalised"
+    },
+    {
+      "requested": "isoamyl acetate",
+      "used": null,
+      "reason": "duplicate of isopentyl_acetate"
+    },
+    {
+      "requested": "E2-hexenal",
+      "used": null,
+      "reason": "absent from DoOR matrix, no substitute"
+    }
+  ],
+  "config": {
+    "timestamp": "2026-09-03T22:24:27.967786+00:00",
+    "git_commit": "c0038226c041c63beea11e7d377550b9b86371a8-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "odor_similarity"
+  }
+}

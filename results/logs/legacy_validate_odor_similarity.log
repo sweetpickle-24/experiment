@@ -1,66 +1,3 @@
-2026-09-03 18:14:43,525 - INFO - ======================================================================
-2026-09-03 18:14:43,525 - INFO - ODOR SIMILARITY STRUCTURE VALIDATION
-2026-09-03 18:14:43,525 - INFO - ======================================================================
-2026-09-03 18:14:43,525 - INFO - Building olfactory brain (CPU, seed 42)...
-2026-09-03 18:14:49,375 - INFO - Computing receptor->glomerular projection: 40 -> 20 dimensions (sklearn_pca)
-2026-09-03 18:14:50,250 - INFO - Projection: sklearn PCA (mean-centred), 94.0% variance explained
-2026-09-03 18:14:50,858 - INFO - Extracted 10906 neurons, 446388 synapses
-2026-09-03 18:14:50,858 - INFO - Backend: NumPy (CPU)
-2026-09-03 18:14:50,858 - WARNING - odour 'geosmin' -> 'isopentyl_acetate' (substituted)
-2026-09-03 18:14:50,858 - WARNING - odour 'ethyl acetate' -> 'ethyl_acetate' (name normalised)
-2026-09-03 18:14:50,858 - WARNING - odour 'isoamyl acetate' -> None (duplicate of isopentyl_acetate)
-2026-09-03 18:14:50,858 - WARNING - odour 'E2-hexenal' -> None (absent from DoOR matrix, no substitute)
-2026-09-03 18:14:50,858 - INFO - 
-======================================================================
-2026-09-03 18:14:50,858 - INFO - MEASURING ODOR RESPONSES
-2026-09-03 18:14:50,858 - INFO - ======================================================================
-2026-09-03 18:14:50,858 - INFO - Testing: benzaldehyde
-2026-09-03 18:14:56,012 - INFO -   Active KCs: 316.0
-2026-09-03 18:14:56,012 - INFO - Testing: 2-heptanone
-2026-09-03 18:15:01,145 - INFO -   Active KCs: 316.0
-2026-09-03 18:15:01,145 - INFO - Testing: isopentyl_acetate
-2026-09-03 18:15:06,260 - INFO -   Active KCs: 316.0
-2026-09-03 18:15:06,260 - INFO - Testing: ethyl_acetate
-2026-09-03 18:15:11,400 - INFO -   Active KCs: 316.0
-2026-09-03 18:15:11,400 - INFO - Testing: 1-hexanol
-2026-09-03 18:15:16,538 - INFO -   Active KCs: 316.0
-2026-09-03 18:15:16,538 - INFO - 
-======================================================================
-2026-09-03 18:15:16,538 - INFO - COMPUTING PAIRWISE SIMILARITIES
-2026-09-03 18:15:16,538 - INFO - ======================================================================
-2026-09-03 18:15:16,539 - INFO - benzaldehyde vs 2-heptanone: chem=0.599, neural=-0.017
-2026-09-03 18:15:16,539 - INFO - benzaldehyde vs isopentyl_acetate: chem=0.534, neural=0.337
-2026-09-03 18:15:16,539 - INFO - benzaldehyde vs ethyl_acetate: chem=0.140, neural=0.488
-2026-09-03 18:15:16,539 - INFO - benzaldehyde vs 1-hexanol: chem=0.636, neural=0.233
-2026-09-03 18:15:16,540 - INFO - 2-heptanone vs isopentyl_acetate: chem=0.874, neural=0.179
-2026-09-03 18:15:16,540 - INFO - 2-heptanone vs ethyl_acetate: chem=0.467, neural=0.020
-2026-09-03 18:15:16,540 - INFO - 2-heptanone vs 1-hexanol: chem=0.918, neural=0.158
-2026-09-03 18:15:16,540 - INFO - isopentyl_acetate vs ethyl_acetate: chem=0.536, neural=0.364
-2026-09-03 18:15:16,540 - INFO - isopentyl_acetate vs 1-hexanol: chem=0.830, neural=0.347
-2026-09-03 18:15:16,541 - INFO - ethyl_acetate vs 1-hexanol: chem=0.456, neural=0.243
-2026-09-03 18:15:16,541 - INFO - 
-======================================================================
-2026-09-03 18:15:16,541 - INFO - SUMMARY - ODOR SIMILARITY STRUCTURE
-2026-09-03 18:15:16,541 - INFO - ======================================================================
-2026-09-03 18:15:16,541 - INFO - 
-📊 Chemical vs Neural Similarity:
-2026-09-03 18:15:16,541 - INFO -    Correlation: r = -0.358
-2026-09-03 18:15:16,541 - INFO -    Target: r ≈ [0.3, 0.5]
-2026-09-03 18:15:16,541 - INFO -    Status: ❌ FAIL
-2026-09-03 18:15:16,541 - INFO - 
-📊 Chemical Similarity Distribution:
-2026-09-03 18:15:16,541 - INFO -    Mean: 0.599
-2026-09-03 18:15:16,541 - INFO -    Range: [0.140, 0.918]
-2026-09-03 18:15:16,541 - INFO - 
-📊 Neural Similarity Distribution:
-2026-09-03 18:15:16,541 - INFO -    Mean: 0.235
-2026-09-03 18:15:16,541 - INFO -    Range: [-0.017, 0.488]
-2026-09-03 18:15:16,541 - INFO - 
-✅ Results saved to odor_similarity_results.json
-2026-09-03 18:15:16,542 - INFO - 
-======================================================================
-2026-09-03 18:15:16,542 - INFO - ODOR SIMILARITY STRUCTURE VALIDATION COMPLETE
-2026-09-03 18:15:16,542 - INFO - ======================================================================
 2026-09-03 18:23:54,837 - INFO - ======================================================================
 2026-09-03 18:23:54,837 - INFO - ODOR SIMILARITY STRUCTURE VALIDATION
 2026-09-03 18:23:54,837 - INFO - ======================================================================
@@ -124,3 +61,41 @@
 ======================================================================
 2026-09-03 18:24:28,018 - INFO - ODOR SIMILARITY STRUCTURE VALIDATION COMPLETE
 2026-09-03 18:24:28,018 - INFO - ======================================================================
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, interpreted)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors

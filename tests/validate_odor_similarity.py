@@ -23,7 +23,10 @@ from itertools import combinations
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from validation_utils import results_path, log_path
+from validation_utils import results_path, log_path, write_results
+from legacy_validation_support import (
+    build_brain, inject, kc_mbon_weight_stats, resolve_odor_list,
+)
 
 from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
 from hive.substrate.connectome import Connectome
@@ -41,6 +44,9 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+#: Same seed as scripts/run_all_validations.py so the two are comparable.
+SEED = 42
+
 def get_active_kc_binary(kc_activity, threshold_percentile=90):
     """Convert KC activity to binary."""
     if len(kc_activity) == 0 or np.max(kc_activity) == 0:
@@ -57,7 +63,7 @@ def measure_odor_response(brain, odor_name, door_client):
         return None
     
     base_strength = 50.0
-    brain.inject_external_input('ORN', glom_pattern, strength=base_strength)
+    inject(brain, glom_pattern, strength=base_strength)
     brain.evolve(duration=100.0)
     
     kc_activity = brain.get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)
@@ -104,44 +110,34 @@ def main():
     logger.info("ODOR SIMILARITY STRUCTURE VALIDATION")
     logger.info("="*70)
     
-    # Load connectome
-    logger.info("Loading full brain connectome...")
-    full_connectome = Connectome(data_dir="Fly Brain Female")
-    full_connectome.load()
-    logger.info(f"  Loaded {len(full_connectome.neurons)} total neurons")
-    
-    # Extract olfactory pathway
-    logger.info("Extracting olfactory pathway...")
-    connectome = extract_olfactory_pathway(full_connectome)
+    # Build the engine exactly as scripts/run_all_validations.py does, so this
+    # script's numbers are comparable with the suite's. The original code here
+    # called SparseProbabilisticBrain(num_neurons=..., dt=0.01, use_mlx=True)
+    # followed by brain.load_connectome_simple(synapses); the constructor takes
+    # a connectome and has no num_neurons or dt keyword, and
+    # load_connectome_simple has never existed, so this raised TypeError and
+    # the script had never run. CPU because it writes reported numbers.
+    logger.info("Building olfactory brain (CPU, seed %d)...", SEED)
+    brain, door_client, connectome = build_brain(use_mlx=False, seed=SEED)
     neurons = connectome.neurons
     synapses = connectome.synapses
     logger.info(f"Extracted {len(neurons)} neurons, {len(synapses)} synapses")
-    
-    # Create brain
-    logger.info("Creating sparse probabilistic brain...")
-    brain = SparseProbabilisticBrain(
-        num_neurons=len(neurons),
-        dt=0.01,
-        use_mlx=True
-    )
-    
-    brain.load_connectome_simple(synapses)
     logger.info(f"Backend: {'MLX (GPU)' if brain.use_mlx else 'NumPy (CPU)'}")
     
-    # Initialize DOoR client
-    logger.info("Initializing DOoR database...")
-    door_client = DoorClient()
-    
-    # Test odors (diverse set)
-    test_odors = [
+    # 'geosmin' and 'E2-hexenal' are not keys in the DoOR matrix; the rest need
+    # spacing/synonym normalisation ('ethyl acetate' -> 'ethyl_acetate',
+    # 'isoamyl acetate' -> 'isopentyl_acetate'). resolve_odor_list reports every
+    # substitution and drop so the result file records the odours actually
+    # measured rather than the ones this source names. See ODOR_AUDIT.md.
+    test_odors, odor_report = resolve_odor_list(door_client, [
         'benzaldehyde',
         '2-heptanone',
         'geosmin',
         'ethyl acetate',
         'isoamyl acetate',
         '1-hexanol',
-        'E2-hexenal'
-    ]
+        'E2-hexenal',
+    ], logger)
     
     results = {
         'experiment': 'odor_similarity',
@@ -268,9 +264,16 @@ def main():
         }
     
     # Save results
-    output_file = 'odor_similarity_results.json'
-    with open(output_file, 'w') as f:
-        json.dump(results, f, indent=2)
+    # Written through write_results so the file lands under results/final/ and
+    # carries its configuration block (seed, commit, backend, dt, projection,
+    # glomerular mapping). It previously json.dump'd to a bare filename in the
+    # working directory with no provenance at all.
+    results['odor_resolution'] = odor_report
+    output_file = write_results(
+        'odor_similarity_results.json', results,
+        brain=brain, door_client=door_client, seed=SEED,
+        test='odor_similarity', duration_ms=100.0,
+    )
     logger.info(f"\n✅ Results saved to {output_file}")
     
     logger.info("\n" + "="*70)

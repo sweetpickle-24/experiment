@@ -465,9 +465,31 @@ class DoorClient:
         
         Returns:
             20-dim glomerular pattern
+
+        Raises:
+            OdorantNotFoundError: if the name cannot be resolved.
         """
         receptor_response = self.get_odorant_response(odorant_name)
         return self.map_to_glomerular_pattern(receptor_response)
+
+    def project_to_pca_basis(self, odorant_name: str) -> np.ndarray:
+        """
+        Project an odorant's receptor response onto the glomerular basis.
+
+        Identical to get_glomerular_pattern; this is the name four tests in
+        tests/ were written against, and it describes the operation more
+        literally (project the receptor response onto the basis computed by
+        _compute_pca_projection). It was never defined, so
+        tests/validate_odor_similarity.py, validate_odor_mixtures.py,
+        validate_discrimination_threshold.py and validate_learning_plasticity.py
+        could not run.
+
+        Note that the missing method was not their only breakage: they also
+        constructed SparseProbabilisticBrain with num_neurons/dt keywords it
+        does not accept, so they raised TypeError before reaching this call.
+        See the module docstrings of those tests.
+        """
+        return self.get_glomerular_pattern(odorant_name)
     
     def find_similar_odorants(self, glom_pattern: np.ndarray, top_k=5) -> List[tuple]:
         """

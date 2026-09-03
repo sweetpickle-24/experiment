@@ -1,0 +1,56 @@
+{
+  "purpose": "Whether the four revived standalone tests agree with the suite. They had never run before 2026-09-03: each constructed SparseProbabilisticBrain with num_neurons/dt keywords it does not accept and so raised TypeError, and each also called door_client.project_to_pca_basis, brain.load_connectome_simple and brain.inject_external_input, none of which existed.",
+  "suite_file": "all_validations_F6_after.json",
+  "comparisons": [
+    {
+      "phenomenon": "discrimination (JND)",
+      "threshold": "10-20% (Weber, Borst & Heisenberg 1982)",
+      "suite_value": 5.0,
+      "suite_verdict": "FAIL",
+      "standalone_value": 5.0,
+      "standalone_verdict": "FAIL",
+      "same_criterion": true,
+      "difference": "Suite sweeps 5/10/15/20/25% on two odours; the standalone sweeps up to 100% on three. Both report the smallest discriminable step.",
+      "verdicts_agree": true
+    },
+    {
+      "phenomenon": "similarity (chem-neural r)",
+      "threshold": "0.3-0.5 (Bhandawat et al. 2007)",
+      "suite_value": -0.12039056083342792,
+      "suite_verdict": "FAIL",
+      "standalone_value": -0.3577572436782892,
+      "standalone_verdict": "FAIL",
+      "same_criterion": true,
+      "difference": "Suite correlates 3 pairwise similarities from 3 odours; the standalone uses 5 resolvable odours, so 10 pairs. With only 3 points the suite value is a correlation over 3 observations and is not stable.",
+      "verdicts_agree": true
+    },
+    {
+      "phenomenon": "mixtures (component overlap)",
+      "threshold": "30-50% (Stettler & Axel 2009)",
+      "suite_value": 30.063291139240512,
+      "suite_verdict": "PASS",
+      "standalone_value": 32.137834036568215,
+      "standalone_verdict": "PASS",
+      "same_criterion": true,
+      "difference": "Suite tests one binary mixture; the standalone tests all binary pairs plus the ternary mixture (4 mixtures).",
+      "verdicts_agree": true
+    },
+    {
+      "phenomenon": "learning",
+      "threshold": "suite: MBON change >= 1%; standalone: KC->MBON weight 2-3x (Hige et al. 2015)",
+      "suite_value": 99.98670883137349,
+      "suite_verdict": "PASS",
+      "standalone_value": 1.0304924531183324,
+      "standalone_verdict": "FAIL",
+      "same_criterion": false,
+      "difference": "These do NOT measure the same thing. The suite asks whether the MBON response changed at all (>= 1%) after 5 phase-based STDP trials and passes. The standalone asks whether KC->MBON weights grew 2-3x after 20 amplitude-product Hebbian trials and fails at 1.03x. The suite criterion is satisfied by any measurable change; the standalone criterion is the quantitative biological one.",
+      "verdicts_agree": false
+    }
+  ],
+  "summary": {
+    "phenomena_compared": 4,
+    "verdicts_agreeing": 3,
+    "shared_criterion_count": 3,
+    "conclusion": "All three benchmarks that use the same criterion as the suite reach the same verdict, on different odour sets and different protocols. The learning pair disagrees because the two use different criteria, and the standalone applies the stricter, quantitative one: KC->MBON weights grow 1.03x against a 2-3x biological target."
+  }
+}

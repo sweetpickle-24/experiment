@@ -1,0 +1,148 @@
+{
+  "experiment": "learning_plasticity",
+  "description": "Validation of Hebbian plasticity and associative learning",
+  "biological_benchmarks": {
+    "weight_increase_factor": [
+      2.0,
+      3.0
+    ],
+    "num_trials": -10,
+    "response_enhancement": true
+  },
+  "brain_parameters": {
+    "num_neurons": 10906,
+    "dt_ms": 0.1,
+    "backend": "NumPy"
+  },
+  "conditioning_experiments": [
+    {
+      "odor": "benzaldehyde",
+      "num_trials": 20,
+      "learning_rate": 0.01,
+      "pre_conditioning": {
+        "mbon_mean": 0.03326987847685814,
+        "mbon_max": 0.24026626348495483
+      },
+      "post_conditioning": {
+        "mbon_mean": 0.03564048931002617,
+        "mbon_max": 0.324308842420578
+      },
+      "mbon_response_change_factor": 1.071253967303096,
+      "initial_weight_mean": 0.004156628394069502,
+      "final_weight_mean": 0.004258681997295383,
+      "weight_change_factor": 1.0245520151311787,
+      "num_kc_mbon_synapses": 49599,
+      "training_curve": [
+        0.03326987847685814,
+        0.035455141216516495,
+        0.039366237819194794,
+        0.037590641528367996,
+        0.0393751859664917,
+        0.03535148873925209,
+        0.03251698240637779,
+        0.03449210152029991,
+        0.03620864078402519,
+        0.035180509090423584,
+        0.03316621854901314,
+        0.03634950518608093,
+        0.033834394067525864,
+        0.034982409328222275,
+        0.032525837421417236,
+        0.03568485751748085,
+        0.03563273698091507,
+        0.03417133167386055,
+        0.03529826179146767,
+        0.03643267974257469
+      ]
+    },
+    {
+      "odor": "2-heptanone",
+      "num_trials": 20,
+      "learning_rate": 0.01,
+      "pre_conditioning": {
+        "mbon_mean": 0.03696705773472786,
+        "mbon_max": 0.23965618014335632
+      },
+      "post_conditioning": {
+        "mbon_mean": 0.03362689167261124,
+        "mbon_max": 0.215955451130867
+      },
+      "mbon_response_change_factor": 0.9096447954801992,
+      "initial_weight_mean": 0.004258681997295383,
+      "final_weight_mean": 0.00441383809475574,
+      "weight_change_factor": 1.0364328911054863,
+      "num_kc_mbon_synapses": 49599,
+      "training_curve": [
+        0.03696705773472786,
+        0.03578999266028404,
+        0.03434481844305992,
+        0.03480764478445053,
+        0.03504291549324989,
+        0.034642674028873444,
+        0.03516971692442894,
+        0.03461489453911781,
+        0.03548980876803398,
+        0.035509511828422546,
+        0.03443000093102455,
+        0.03599560633301735,
+        0.03726649656891823,
+        0.03520059585571289,
+        0.03565795719623566,
+        0.03467101231217384,
+        0.03316987678408623,
+        0.03313532471656799,
+        0.03400847315788269,
+        0.0335121788084507
+      ]
+    }
+  ],
+  "summary": {
+    "weight_change_factor": {
+      "mean": 1.0304924531183324,
+      "std": 0.005940437987153824,
+      "range": [
+        1.0245520151311787,
+        1.0364328911054863
+      ]
+    },
+    "response_change_factor": {
+      "mean": 0.9904493813916476,
+      "std": 0.08080458591144846,
+      "range": [
+        0.9096447954801992,
+        1.071253967303096
+      ]
+    },
+    "biological_validation": {
+      "weight_increase": "FAIL",
+      "response_enhancement": "FAIL"
+    }
+  },
+  "odor_resolution": [],
+  "config": {
+    "timestamp": "2026-09-03T22:29:08.366512+00:00",
+    "git_commit": "c0038226c041c63beea11e7d377550b9b86371a8-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "learning_plasticity"
+  }
+}
