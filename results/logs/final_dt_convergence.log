@@ -1,0 +1,385 @@
+
+==============================================================================
+constant_drive
+==============================================================================
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.05 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.05ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.02 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.02ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.01 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.01ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+ dt (ms)   steps   peak |v|  rad/step  alias   amp max  ceil  act KC  r vs finest  jaccard
+     0.1    1000    207.778    20.778    YES  189.3199     0     312       0.3081   0.0601
+    0.05    2000    199.110     9.956    YES  186.5875     0     229       0.4046   0.1111
+    0.02    5000    181.327     3.627    YES  180.6652     0      46       0.9911   0.8125
+    0.01   10000    181.046     1.810     no  180.6644     0      41       1.0000   1.0000
+
+==============================================================================
+front_end_drive
+==============================================================================
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.05 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.05ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.02 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.02ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.01 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.01ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+ dt (ms)   steps   peak |v|  rad/step  alias   amp max  ceil  act KC  r vs finest  jaccard
+     0.1    1000     20.560     2.056     no   13.6709     0      62       0.4416   0.1172
+    0.05    2000      5.956     0.298     no    4.4148     0      46       0.5609   0.1759
+    0.02    5000     24.548     0.491     no   18.1359     0     159       0.3946   0.1538
+    0.01   10000     26.867     0.269     no   20.8123     0      81       1.0000   1.0000
+
+==============================================================================
+phase advance per step at production dt=0.1 ms: 2.056 rad (limit 3.142) -> ok
+KC pattern r, dt=0.1 vs dt=0.01, constant drive: 0.3081 -> DOES NOT CONVERGE
+amplitude guard binds anywhere in the sweep: False
+Loading connectome from cache (/Users/vladyslav/Documents/GitHub/experiment/Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+
+======================================================================
+SPARSE PROBABILISTIC BRAIN (Memory Efficient)
+======================================================================
+✓ MLX GPU acceleration enabled
+Neurons: 10,906
+Synapses: 446,388
+Building coupling structure...
+  Olfaction network: baseline coupling
+✓ Coupling: 446,388 synapses
+✓ Deterministic segment layout: 14,556 blocks of 64, max 230 blocks/neuron (3.6+9.6 MB)
+Physics: dt=0.1 ms, gamma=0.1, sigma_noise=0.1
+  20 glomerular PN clusters built from 2198 PNs
+✓ mx.compile step kernel ready
+✓ Initialised: 10,906 neurons, 0.2 MB (dt=0.1ms, compiled)
+======================================================================
+Loading DOoR data from data/door_consensus_matrix.npy...
+✓ Loaded 372 odorants × 40 receptors
+
+Written to /Users/vladyslav/Documents/GitHub/experiment/results/final/dt_convergence.json

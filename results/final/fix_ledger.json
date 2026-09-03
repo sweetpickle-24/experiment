@@ -1873,6 +1873,289 @@
       "label": "F6_after",
       "recorded_at": "2026-09-03T22:08:49.912062+00:00",
       "git_commit": "8e75b827a7676fe59bbaa121536a6c878c3cbffa-dirty"
+    },
+    {
+      "note": "Final state, all fixes applied. Authoritative numbers for the report; also confirms the whole pipeline reproduces at the final commit.",
+      "projection_requested": "sklearn_pca",
+      "seed": 42,
+      "glomerular_mapping_requested": "position",
+      "diagnostics": {
+        "odor": "benzaldehyde",
+        "strength_arg": 50.0,
+        "duration_ms": 100.0,
+        "projection_method": "sklearn_pca",
+        "glomerular_mapping": "position",
+        "backend": "MLX",
+        "dt_ms": 0.1,
+        "amplitude_ceiling": 10000.0,
+        "drive": {
+          "n_driven_neurons": 863,
+          "force_at_t0_peak": 0.13632316887378693,
+          "force_peak": 6.058347702026367,
+          "time_varying": true,
+          "window": {
+            "window_peak_abs_force": 6.058347702026367,
+            "window_mean_abs_force": 0.17890682816505432,
+            "sign_changes_per_channel_median": 0.0,
+            "peak_abs_force_per_10ms": [
+              0.4089808464050293,
+              1.3840672969818115,
+              2.425894260406494,
+              1.1193525791168213,
+              2.715939521789551,
+              2.2357254028320312,
+              2.8399157524108887,
+              1.9193288087844849,
+              6.058347702026367,
+              5.8575005531311035
+            ],
+            "adaptation_final": [
+              0.6849819761491898,
+              0.6849819761491898,
+              0.6849819761491898,
+              0.6849819761491898
+            ],
+            "concentration": 1.0,
+            "amplitude_scale": 10.0
+          }
+        },
+        "driven_at_amplitude_ceiling": 0,
+        "regions": {
+          "PN": {
+            "n": 2198,
+            "n_at_amplitude_ceiling": 0,
+            "amplitude_max": 13.67088508605957,
+            "amplitude_mean": 1.7698081731796265
+          },
+          "KC": {
+            "n": 5279,
+            "n_at_amplitude_ceiling": 0,
+            "amplitude_max": 0.08778978884220123,
+            "amplitude_mean": 0.018314097076654434
+          }
+        },
+        "peak_abs_velocity": 12.936494827270508,
+        "phase_advance_per_step_rad": 1.2936494827270508,
+        "kc_raw_max": 0.08778978884220123,
+        "kc_raw_mean": 0.018314097076654434,
+        "kc_norm_mean": 0.0003868569328915328,
+        "kc_active_above_0p01": 62
+      },
+      "concentration_invariance": {
+        "binary_correlation": {
+          "mean": 0.27185784879476727,
+          "std": 0.12320474662783569,
+          "min": 0.08120162821830035,
+          "max": 0.5243787243127259
+        },
+        "jaccard_similarity": {
+          "mean": 0.16195835206011874,
+          "std": 0.08797837540031656,
+          "min": 0.0374331550802139,
+          "max": 0.35377358490566035
+        },
+        "verdict": "weak",
+        "thresholds": {
+          "binary_correlation_mean": "strong > 0.7, moderate > 0.5, else weak",
+          "jaccard_similarity_mean": "strong > 0.6, moderate > 0.4"
+        },
+        "per_odor_active_counts": {
+          "benzaldehyde": {
+            "0.1": {
+              "active_count": 35,
+              "sparsity": 0.006630043568857738,
+              "mean_amplitude": 0.0002733810106292367,
+              "max_amplitude": 0.0489405132830143
+            },
+            "0.5": {
+              "active_count": 65,
+              "sparsity": 0.012312938056450085,
+              "mean_amplitude": 0.0004013878642581403,
+              "max_amplitude": 0.05241795629262924
+            },
+            "1.0": {
+              "active_count": 99,
+              "sparsity": 0.018753551809054744,
+              "mean_amplitude": 0.0005131043144501746,
+              "max_amplitude": 0.06869349628686905
+            },
+            "5.0": {
+              "active_count": 67,
+              "sparsity": 0.012691797688956242,
+              "mean_amplitude": 0.0004082816303707659,
+              "max_amplitude": 0.07873120903968811
+            },
+            "10.0": {
+              "active_count": 159,
+              "sparsity": 0.03011934078423944,
+              "mean_amplitude": 0.0007218114333227277,
+              "max_amplitude": 0.09676429629325867
+            }
+          },
+          "2-heptanone": {
+            "0.1": {
+              "active_count": 36,
+              "sparsity": 0.006819473385110817,
+              "mean_amplitude": 0.0002989342319779098,
+              "max_amplitude": 0.05346141755580902
+            },
+            "0.5": {
+              "active_count": 117,
+              "sparsity": 0.022163288501610152,
+              "mean_amplitude": 0.0007710029603913426,
+              "max_amplitude": 0.14350354671478271
+            },
+            "1.0": {
+              "active_count": 76,
+              "sparsity": 0.014396666035233947,
+              "mean_amplitude": 0.0005352114676497877,
+              "max_amplitude": 0.12565584480762482
+            },
+            "5.0": {
+              "active_count": 101,
+              "sparsity": 0.0191324114415609,
+              "mean_amplitude": 0.0006021885783411562,
+              "max_amplitude": 0.13492020964622498
+            },
+            "10.0": {
+              "active_count": 141,
+              "sparsity": 0.02670960409168403,
+              "mean_amplitude": 0.0007481615757569671,
+              "max_amplitude": 0.10189424455165863
+            }
+          },
+          "isopentyl_acetate": {
+            "0.1": {
+              "active_count": 35,
+              "sparsity": 0.006630043568857738,
+              "mean_amplitude": 0.0002990119101013988,
+              "max_amplitude": 0.0996842235326767
+            },
+            "0.5": {
+              "active_count": 111,
+              "sparsity": 0.021026709604091684,
+              "mean_amplitude": 0.0005293149151839316,
+              "max_amplitude": 0.09504005312919617
+            },
+            "1.0": {
+              "active_count": 96,
+              "sparsity": 0.01818526236029551,
+              "mean_amplitude": 0.0005598798743449152,
+              "max_amplitude": 0.1429760605096817
+            },
+            "5.0": {
+              "active_count": 150,
+              "sparsity": 0.028414472437961736,
+              "mean_amplitude": 0.001062519266270101,
+              "max_amplitude": 0.23348404467105865
+            },
+            "10.0": {
+              "active_count": 176,
+              "sparsity": 0.03333964766054177,
+              "mean_amplitude": 0.0009595512528903782,
+              "max_amplitude": 0.19164934754371643
+            }
+          }
+        },
+        "projection_method": "sklearn_pca",
+        "backend": "NumPy"
+      },
+      "suite": {
+        "temporal_dynamics": {
+          "peak_time_mean_ms": 200.0,
+          "adaptation_mean_percent": 34.21346087476598,
+          "thresholds": {
+            "peak_time_mean_ms": "50 <= x <= 150",
+            "adaptation_mean_percent": "30 <= x <= 70"
+          },
+          "verdict": "FAIL",
+          "per_odor": {
+            "benzaldehyde": {
+              "peak_time_ms": 50,
+              "adaptation_percent": 65.5870938256427,
+              "activities": [
+                0.0,
+                0.0006175782764330506,
+                0.0003851740329992026,
+                0.0002125266328221187,
+                0.0005756164318881929,
+                0.0002183615433750674
+              ]
+            },
+            "2-heptanone": {
+              "peak_time_ms": 500,
+              "adaptation_percent": 0.0,
+              "activities": [
+                0.0,
+                0.0006283411057665944,
+                0.00045635050628334284,
+                0.000755977351218462,
+                0.000659304263535887,
+                0.0004959055804647505
+              ]
+            },
+            "isopentyl_acetate": {
+              "peak_time_ms": 50,
+              "adaptation_percent": 37.053288798655224,
+              "activities": [
+                0.0,
+                0.0008105607703328133,
+                0.0005950060440227389,
+                0.0005102213472127914,
+                0.000740842311643064,
+                0.0004438134201336652
+              ]
+            }
+          }
+        },
+        "odor_mixtures": {
+          "mean_overlap_percent": 30.063291139240512,
+          "thresholds": {
+            "mean_overlap_percent": "30 <= x <= 50"
+          },
+          "verdict": "PASS"
+        },
+        "discrimination": {
+          "jnd_per_odor": {
+            "benzaldehyde": 5,
+            "2-heptanone": 5
+          },
+          "mean_jnd_percent": 5.0,
+          "thresholds": {
+            "jnd_percent_per_odor": "10 <= x <= 20 (all odours)"
+          },
+          "verdict": "FAIL"
+        },
+        "similarity": {
+          "chem_neural_correlation": -0.12039056083342792,
+          "thresholds": {
+            "chem_neural_correlation": "0.3 <= x <= 0.5"
+          },
+          "verdict": "FAIL"
+        },
+        "learning": {
+          "mbon_pre": 0.03326987847685814,
+          "mbon_post": 4.411956979311071e-06,
+          "mbon_change_pct": 99.98670883137349,
+          "kc_active_pre": 316,
+          "kc_active_post": 315,
+          "thresholds": {
+            "mbon_change_pct": "x >= 1.0"
+          },
+          "verdict": "PASS"
+        },
+        "score": {
+          "passed": 2,
+          "total": 5
+        },
+        "projection_method": "sklearn_pca",
+        "glomerular_mapping": "position",
+        "backend": "NumPy",
+        "dt_ms": 0.1
+      },
+      "label": "F8_final",
+      "recorded_at": "2026-09-03T22:42:23.550293+00:00",
+      "git_commit": "63c52bce09fccf62502559f49cd7206a9856aef4-dirty"
     }
   ]
 }

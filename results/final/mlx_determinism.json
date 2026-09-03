@@ -12,7 +12,7 @@
     "all_runs_bitwise_identical": true,
     "worst_state_max_abs_diff_between_runs": 0.0,
     "distinct_active_kc_counts": [
-      212
+      62
     ],
     "pairwise_vs_run0": [
       {
@@ -41,8 +41,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -71,8 +71,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -101,8 +101,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -131,8 +131,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       }
     ]
@@ -141,7 +141,7 @@
     "all_runs_bitwise_identical": true,
     "worst_state_max_abs_diff_between_runs": 0.0,
     "distinct_active_kc_counts": [
-      212
+      62
     ],
     "pairwise_vs_run0": [
       {
@@ -170,8 +170,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -200,8 +200,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -230,8 +230,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       },
       {
@@ -260,8 +260,8 @@
           "max_abs_diff": 0.0
         },
         "active_kc_counts": [
-          212,
-          212
+          62,
+          62
         ]
       }
     ]
@@ -269,15 +269,15 @@
   "cross_backend": {
     "mean_phase": {
       "bitwise_identical": false,
-      "max_abs_diff": 5.511615037918091
+      "max_abs_diff": 6.201342344284058
     },
     "mean_velocity": {
       "bitwise_identical": false,
-      "max_abs_diff": 2.928823709487915
+      "max_abs_diff": 3.0846249014139175
     },
     "mean_amplitude": {
       "bitwise_identical": false,
-      "max_abs_diff": 1.470142126083374
+      "max_abs_diff": 0.5322225093841553
     },
     "var_phase": {
       "bitwise_identical": true,
@@ -285,23 +285,23 @@
     },
     "kc_normalized": {
       "bitwise_identical": false,
-      "max_abs_diff": 0.020566489547491074
+      "max_abs_diff": 0.002041306346654892
     },
     "kc_active": {
-      "bitwise_identical": false,
-      "max_abs_diff": 1.0
+      "bitwise_identical": true,
+      "max_abs_diff": 0.0
     },
     "active_kc_counts": [
-      212,
-      212
+      62,
+      62
     ],
-    "active_kc_jaccard": 0.9813084112149533
+    "active_kc_jaccard": 1.0
   },
   "cross_backend_note": "mx.sum and np.sum use different reduction trees, so the two backends differ in the last bits of every step even though both are internally reproducible. The KC readout thresholds by rank, which amplifies that difference over the run; the Jaccard overlap of the active sets is the honest measure of agreement.",
   "verdict": "PASS",
   "config": {
-    "timestamp": "2026-09-03T21:06:11.275302+00:00",
-    "git_commit": "94c548887de1d335560b2da0b704c5e6b592a156-dirty",
+    "timestamp": "2026-09-03T22:31:51.688595+00:00",
+    "git_commit": "63c52bce09fccf62502559f49cd7206a9856aef4-dirty",
     "seed": 42,
     "duration_ms": 100.0,
     "python": "3.14.3",
@@ -310,12 +310,17 @@
     "backend": "MLX",
     "dt_ms": 0.1,
     "projection_method": "sklearn_pca",
-    "reproducible": false,
+    "reproducible": true,
     "fast_mode": false,
     "gamma": 0.1,
     "sigma_noise": 0.1,
     "num_neurons": 10906,
-    "nonreproducible_reason": "Synaptic coupling is accumulated with a scatter-add over 446,388 synapses (forces.at[post_indices].add(...) in hive/engine/sparse_probabilistic.py). Floating-point addition is not associative and Metal does not guarantee reduction order, so same-seed processes diverge at around 1 part in 1e5. KC activity is then thresholded by rank (int(n_kc * target_sparsity), i.e. index 316 of 5,279 at the 0.06 default), and the threshold is a sampled array value, so a reordering near that rank shifts the baseline subtracted from every KC and changes which neurons are counted active. Re-run on use_mlx=False to obtain a reproducible number.",
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": false,
+    "cross_backend_agreement": "Each backend is individually reproducible bit-for-bit at a fixed seed, but CPU and MLX are not bit-identical to each other: mx.sum and np.sum use different reduction trees. See results/final/mlx_determinism.json for the measured divergence and active-KC overlap.",
     "projection_explained_variance": 0.940047562122345,
     "door_matrix_synthetic": false,
     "door_n_odorants": 372,

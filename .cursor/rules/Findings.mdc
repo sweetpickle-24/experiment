@@ -4,9 +4,67 @@ alwaysApply: true
 
 save all findingsabout the waves,the brain and how all the stuff works into the MD files. the findings can be played around to build new theories and test them
 
+> ⚠️ **READ THIS FIRST (2026-09-03).** Many entries below are contradicted by
+> measurement. See `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` and
+> `OUTDATED_FILES.md`. In particular: the 86× CPU/GPU speedup is discarded and
+> the verified figure is **10.00×**; the suite scores **2/5**, not 27/27; and
+> concentration invariance measures **r = 0.2719**, not 0.724. Every smell
+> result dated before 2026-09-03 was produced with the uncentered-SVD
+> projection (documented as PCA) and a constant-DC stimulus that bypassed the
+> plume, the carrier and receptor adaptation. Do not quote a number from this
+> file without checking it against a current result file.
+
 ## Key Findings Recorded:
 
-### Concentration Invariance (2026-03-16) ✅ BIOLOGICAL VALIDATION ACHIEVED
+### Deterministic MLX + Repaired Stimulus Path (2026-09-03) ✅ SUPERSEDES SEVERAL ENTRIES BELOW
+
+**Goal A — MLX determinism and an honest speedup**
+- **Determinism achieved**: MLX same-seed runs are now bit-for-bit identical across all four state fields and the KC readout, 5/5 trials. Previously 11 of 15 trials differed, worst case 303 vs 203 active KCs.
+- **Mechanism**: `forces.at[post_idx].add(...)` lowers to *unordered atomic scatter-add* on Metal. Float addition is non-associative, so same-seed processes diverged ~1e-8 per step, and the rank-based KC threshold amplified that into different active sets. **Sorting the indices does NOT fix it** (measured: still 7.45e-9 drift after a stable sort) — the atomics remain unordered.
+- **Fix**: static two-stage segment reduction. Synapses sorted by postsynaptic index once at construction, padded into 64-wide blocks so no block straddles two neurons, then two fixed-shape axis reductions (which have a deterministic reduction tree). Cost 0.251 ms/call vs 0.248 ms for the scatter it replaces — determinism is free here.
+- **Verified speedup**: **10.00× median (range 9.96–10.03×)**, matched configuration (10,906 neurons, 446,388 synapses, dt=0.1 ms, 1,000 steps, 5 timed repeats after warm-up). MLX 486.7 ms vs CPU 4867.3 ms. Neither backend is faster than real time (RT 0.205× and 0.0205×).
+- **Cross-backend**: bit-equality is impossible (`mx.sum` and `np.sum` use different reduction trees) but both select the **same 62 active KCs**, Jaccard 1.0000, KC pattern r = 0.9999.
+- **Discarded**: the old 86.34× recorded 1,283 active KCs, a null `pattern_correlation`, an empty `kc_pattern`, and `validation_passed: true` against a threshold it never evaluated.
+- **Files**: `results/final/mlx_determinism.json`, `results/final/cpu_vs_mlx_speedup.json`, `results/superseded/cpu_vs_mlx_validation.json`
+
+**Goal B — the stimulus path was the defect, not the units bug**
+- **Premise correction**: the units bug in `OdorReceptorArray.compute_forces` (omega in Hz × t in ms, 1000× too fast) is real and fixed, but it is **not on the path that produced any reported result**. Proof: after fixing it the suite's entire `validations` block is bit-identical and only `simulation_time_sec` differs anywhere. A defect fixed with no change in score is still a correct outcome.
+- **Actual cause of the flat traces**: `inject_odor` wrote one *constant* force vector and the integrator ran with it unchanged. All 981 driven PNs hit the `clip(amplitude, 0.001, 10.0)` ceiling within 50 ms and the system sat at a fixed point. `update_adaptation` (τ=200 ms) — the very quantity the temporal benchmark scores — was never called.
+- **Second premise correction**: the rank-threshold *tie* hypothesis is wrong. All 981 ceiling-pinned neurons were PNs; the top-316 cutoff ranks the 5,279 KCs, of which **0** were at the ceiling. Saturation destroyed concentration information one stage upstream instead, by making PN amplitude identical at every concentration so concentration reached the KCs through phase alone.
+- **Theory this suggests**: in a phase-coupled mean-field network, a clip boundary on the amplitude field is not a harmless guard — it converts an amplitude code into a phase-only code. Worth testing whether other saturating nonlinearities in the pipeline have the same effect.
+
+**Aliasing discovery**
+- Under the old constant drive, peak |v| = 190.6 rad/ms at dt = 0.1 ms → **19.06 rad of phase advance per step**, about 2.9 whole cycles discarded by the `atan2(sin, cos)` wrap every step. Forward Euler was not integrating; it was aliasing. Wiring the front-end in brought this to **2.06 rad**, under the π limit.
+- **Negative result, important**: being under the aliasing limit is *necessary but not sufficient*. With the stimulus held fixed, KC pattern r between dt=0.1 and dt=0.01 is **0.3081** and active-set Jaccard 0.0743 — **the solution does not converge under dt refinement.** KC identities at production dt are not the solution of the underlying equations.
+- **Files**: `results/final/dt_convergence.json`
+
+**Effect of each fix (seed 42, CPU, dt=0.1 ms)** — `results/final/fix_ledger.json`
+
+| fix | score | invariance binary r | PNs at ceiling | rad/step |
+|---|---|---|---|---|
+| baseline (uncentered SVD, DC drive) | 1/5 | 0.1031 | 981/2198 | 18.09 |
+| F0 real PCA | 1/5 | 0.1157 | 981/2198 | 18.09 |
+| F1 deterministic accumulation | 1/5 | 0.1185 | 981/2198 | 18.09 |
+| F3 carrier units | 1/5 | 0.1185 (bit-identical) | 981/2198 | 18.09 |
+| F4 receptor front-end wired in | **2/5** | 0.1962 | 109/2198 | 1.228 |
+| F5 amplitude guard lifted | 2/5 | 0.2109 | **0/2198** | 1.227 |
+| F6 glomerular mapping by position | 2/5 | **0.2719** | 0/2198 | 1.294 |
+
+- **F4** (plume + carrier + adaptation, `strength/50` → concentration, `amplitude_scale=10.0` unchanged) took mixtures from 24.84% to **35.60% PASS** and made responses genuinely transient: benzaldehyde went from flat at 0% adaptation to peaking at 50 ms with 77.34%.
+- **F5** derived the guard bound from the dynamics (`A* = |v|·0.1/γ`, `|v| ≤ F_max/2γ = 30.3`) instead of guessing, and `count_at_amplitude_ceiling()` makes "the guard is off the signal path" testable — it returns 0 for all 8 dt-sweep runs.
+- **F6** clustering PNs by connectome position dropped within-channel spatial spread from **0.993** to **0.300** of the whole-population spread, and gave the largest single invariance gain.
+- **temporal_dynamics fails on both halves alternately**: F5 gives peak 50 ms (in band) with adaptation 74.07% (out); F6 gives adaptation 34.21% (in) with peak 200 ms (out). Neither satisfies both. Not tuned.
+
+**Four dead tests revived**
+- `project_to_pca_basis` was not their only breakage nor even their first: each constructed `SparseProbabilisticBrain(num_neurons=..., dt=...)`, which raises TypeError. Behind that: `load_connectome_simple`, `inject_external_input`, absent odorants, and KC→MBON synapses identified by hardcoded index ranges over neurons that are stored in connectome order, not grouped by type.
+- **3/4 verdicts now agree with the suite, and all three that share a criterion agree.** The learning pair disagrees because the criteria differ — and the standalone applies the stricter one: KC→MBON weight growth **1.03× against a 2–3× target (FAIL)**, where the suite passes on "MBON response changed by ≥1%". **The suite's one baseline PASS rests on the weaker criterion.**
+- **Files**: `results/final/legacy_vs_suite_comparison.json`
+
+**Files**: `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` (full report), `results/final/fix_ledger.json` (per-fix ledger)
+
+---
+
+### Concentration Invariance (2026-03-16) ⚠️ NOT REPRODUCED — see 2026-09-03 entry above
 - **Result**: r = 0.724 > 0.70 target (Turner et al. 2008 benchmark)
 - **Key mechanisms**: Deterministic reset + APL normalization + logarithmic concentration scaling
 - **Files**: CONCENTRATION_INVARIANCE_SUCCESS.md, CONCENTRATION_INVARIANCE_FINDINGS.md
@@ -106,7 +164,13 @@ Why negative? Competition for scarce activation slots (1.65%) + APL winner-take-
 - Litwin-Kumar & Harris (2014): Decorrelation dynamics
 - Litwin-Kumar et al. (2017): Sparse expansion prediction ← **WE VALIDATED THIS**
 
-### CPU vs GPU Hardware Independence (2026-03-16) ✅ SCIENTIFIC EQUIVALENCE VALIDATED
+### CPU vs GPU Hardware Independence (2026-03-16) ❌ DISCARDED 2026-09-03
+> Every number in this entry comes from `cpu_vs_mlx_validation.json`, now in
+> `results/superseded/`. That file records 1,283 active KCs where current runs
+> give ~60-300, a null `pattern_correlation`, an empty `kc_pattern`, and
+> `validation_passed: true` against a 0.95 correlation threshold it never
+> evaluated. The MLX run behind it was also not reproducible. Verified
+> replacement: **10.00×** speedup, `results/final/cpu_vs_mlx_speedup.json`.
 - **Result**: CPU and GPU produce identical results (0.019% difference, 50× better than 1% threshold)
 - **GPU Speedup**: 86× faster (1.74s vs 149.8s for 100ms simulation)
 - **Active KCs**: 1283 (GPU) vs 1282 (CPU) - **1 KC difference out of 5,279**
