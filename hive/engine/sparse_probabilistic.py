@@ -245,10 +245,135 @@ class SparseProbabilisticBrain:
 
         print(f"✓ Coupling: {len(self.syn_weights):,} synapses")
 
+        # Deterministic accumulation layout (see _build_segment_layout).
+        self._build_segment_layout()
+
         if self.use_mlx:
             self.pre_indices  = mx.array(self.pre_indices)
             self.post_indices = mx.array(self.post_indices)
             self.syn_weights  = mx.array(self.syn_weights)
+
+    # ────────────────────────────────────────────────────────────────────
+    #  Deterministic segmented accumulation
+    # ────────────────────────────────────────────────────────────────────
+
+    #: Synapses per stage-1 reduction block. Any value works; 64 keeps the
+    #: padded stage-1 buffer small for this connectome's fan-in distribution.
+    SEGMENT_BLOCK = 64
+
+    def _build_segment_layout(self):
+        """
+        Precompute a static layout for summing synaptic forces per postsynaptic
+        neuron in a fixed, reproducible order.
+
+        Why this exists
+        ---------------
+        Coupling used to be accumulated with ``forces.at[post_indices].add(...)``.
+        On Metal that lowers to atomic scatter-add over 446,388 synapses, and
+        the hardware gives no guarantee about reduction order. Floating-point
+        addition is not associative, so two same-seed processes diverged by
+        ~1e-8 per step. Downstream, KC activity is thresholded by *rank*
+        (``int(n_kc * target_sparsity)``), and the threshold is a sampled array
+        value, so a reordering near that rank shifts the baseline subtracted
+        from every KC. Divergence of 1e-8 in the coupling therefore turned into
+        disagreement about which neurons were active: 303 active KCs against
+        203 on the worst same-seed pair.
+
+        Sorting the scatter indices does not help; the atomics are still
+        unordered (measured: still 7.45e-9 run-to-run after a stable sort).
+
+        The layout
+        ----------
+        Synapses are sorted by postsynaptic index once, here, in NumPy. The sum
+        is then two fixed-shape axis reductions, which have a deterministic
+        reduction tree:
+
+          stage 1  each neuron's run of synapses is padded up to a whole number
+                   of SEGMENT_BLOCK-sized blocks, so no block straddles two
+                   neurons. Reshape to (n_blocks, B) and sum along axis 1.
+          stage 2  each neuron now owns a contiguous run of block sums. Gather
+                   those into (num_neurons, max_blocks_per_neuron) and sum along
+                   axis 1.
+
+        Padding slots are masked to zero rather than gathered from garbage, and
+        every neuron sums only its own values, so there is no cancellation
+        between unrelated neurons.
+
+        Cost on the olfactory pathway (10,906 neurons, 446,388 synapses, max
+        fan-in 14,662 at APL): 2.8 MB stage 1, 10 MB stage 2, and 0.251 ms per
+        call against 0.248 ms for the atomic scatter it replaces.
+
+        The same layout drives the NumPy path, so both backends perform the
+        same additions in the same order. They are not bit-identical because
+        ``mx.sum`` and ``np.sum`` use different reduction trees, but neither
+        depends on scheduling.
+        """
+        post = np.asarray(self.post_indices, dtype=np.int64)
+        n = self.num_neurons
+        B = self.SEGMENT_BLOCK
+
+        # Stable sort so the layout is a pure function of the connectome.
+        order = np.argsort(post, kind='stable')
+        counts = np.bincount(post, minlength=n)
+
+        # Neurons with no incoming synapses still get one (fully masked) block,
+        # which keeps stage 2 a simple contiguous gather.
+        blocks_per_neuron = np.maximum(1, (counts + B - 1) // B)
+        n_blocks = int(blocks_per_neuron.sum())
+        block_start = np.concatenate([[0], np.cumsum(blocks_per_neuron)])[:-1]
+        seg_start = np.concatenate([[0], np.cumsum(counts)])[:-1]
+
+        # Stage 1 gather: index into the post-sorted force array, -1 = padding.
+        take = np.full(n_blocks * B, -1, dtype=np.int64)
+        for i in range(n):
+            c = counts[i]
+            if c:
+                base = block_start[i] * B
+                take[base:base + c] = np.arange(seg_start[i], seg_start[i] + c)
+
+        # Stage 2 gather: block indices owned by each neuron, -1 = padding.
+        max_blocks = int(blocks_per_neuron.max())
+        btake = np.full((n, max_blocks), -1, dtype=np.int64)
+        for i in range(n):
+            bp = blocks_per_neuron[i]
+            btake[i, :bp] = np.arange(block_start[i], block_start[i] + bp)
+
+        self._seg_n_blocks = n_blocks
+        self._seg_order_np = order.astype(np.int64)
+        self._seg_take_np = np.where(take >= 0, take, 0)
+        self._seg_mask_np = (take >= 0).astype(np.float32)
+        self._seg_btake_np = np.where(btake >= 0, btake, 0)
+        self._seg_bmask_np = (btake >= 0).astype(np.float32)
+
+        stage1_mb = n_blocks * B * 4 / 1024 / 1024
+        stage2_mb = n * max_blocks * 4 / 1024 / 1024
+        print(f"✓ Deterministic segment layout: {n_blocks:,} blocks of {B}, "
+              f"max {max_blocks} blocks/neuron ({stage1_mb:.1f}+{stage2_mb:.1f} MB)")
+
+        if self.use_mlx:
+            self._seg_order = mx.array(self._seg_order_np)
+            self._seg_take = mx.array(self._seg_take_np)
+            self._seg_mask = mx.array(self._seg_mask_np)
+            self._seg_btake = mx.array(self._seg_btake_np)
+            self._seg_bmask = mx.array(self._seg_bmask_np)
+
+    @staticmethod
+    def _segment_sum_mlx(syn_forces, order, take, mask, btake, bmask,
+                         n_blocks, block_size):
+        """Two-stage fixed-order segment sum. Deterministic on Metal."""
+        sorted_forces = syn_forces[order]
+        stage1 = mx.sum(
+            (sorted_forces[take] * mask).reshape(n_blocks, block_size), axis=1
+        )
+        return mx.sum(stage1[btake] * bmask, axis=1)
+
+    def _segment_sum_numpy(self, syn_forces):
+        """Same layout, same order, on the CPU path."""
+        sorted_forces = syn_forces[self._seg_order_np]
+        stage1 = (sorted_forces[self._seg_take_np] * self._seg_mask_np).reshape(
+            self._seg_n_blocks, self.SEGMENT_BLOCK
+        ).sum(axis=1)
+        return (stage1[self._seg_btake_np] * self._seg_bmask_np).sum(axis=1).astype(np.float32)
 
     def _precompute_step_constants(self):
         """
@@ -296,6 +421,16 @@ class SparseProbabilisticBrain:
         omega0_sq    = self._omega0_sq
         n            = self.num_neurons
 
+        # Static deterministic-accumulation layout
+        seg_order    = self._seg_order
+        seg_take     = self._seg_take
+        seg_mask     = self._seg_mask
+        seg_btake    = self._seg_btake
+        seg_bmask    = self._seg_bmask
+        seg_nblocks  = self._seg_n_blocks
+        seg_block    = self.SEGMENT_BLOCK
+        segment_sum  = self._segment_sum_mlx
+
         # Scalar constants as Python floats (MLX treats them as literals
         # in the compiled graph, enabling constant folding)
         two_gamma          = self._two_gamma
@@ -316,8 +451,11 @@ class SparseProbabilisticBrain:
             delta_phi  = phase_pre - phase_post
             syn_forces = syn_w * mx.sin(delta_phi) * amp_pre * var_correction
 
-            forces = mx.zeros(n, dtype=mx.float32)
-            forces = forces.at[post_idx].add(syn_forces)
+            # Fixed-order segment sum, not an atomic scatter-add: the latter
+            # has no guaranteed reduction order on Metal and made same-seed
+            # runs diverge. See _build_segment_layout.
+            forces = segment_sum(syn_forces, seg_order, seg_take, seg_mask,
+                                 seg_btake, seg_bmask, seg_nblocks, seg_block)
 
             # ── Damped harmonic oscillator ───────────────────────────────
             accel    = -two_gamma * velocity - omega0_sq * phase + forces + ext_force
@@ -449,7 +587,7 @@ class SparseProbabilisticBrain:
         self.mean_amplitude  = np.clip(self.mean_amplitude, 0.001, 10.0)
 
     def _compute_coupling_mlx(self):
-        """Sparse scatter-add coupling (MLX, interpreted)."""
+        """Sparse coupling with deterministic segment accumulation (MLX)."""
         phase_pre  = self.mean_phase[self.pre_indices]
         phase_post = self.mean_phase[self.post_indices]
         amp_pre    = self.mean_amplitude[self.pre_indices]
@@ -457,12 +595,14 @@ class SparseProbabilisticBrain:
         delta_phi  = phase_pre - phase_post
         syn_forces = self.syn_weights * mx.sin(delta_phi) * amp_pre * self._var_correction
 
-        forces = mx.zeros(self.num_neurons, dtype=mx.float32)
-        forces = forces.at[self.post_indices].add(syn_forces)
-        return forces
+        return self._segment_sum_mlx(
+            syn_forces, self._seg_order, self._seg_take, self._seg_mask,
+            self._seg_btake, self._seg_bmask,
+            self._seg_n_blocks, self.SEGMENT_BLOCK,
+        )
 
     def _compute_coupling_numpy(self):
-        """Sparse scatter-add coupling (NumPy)."""
+        """Sparse coupling with deterministic segment accumulation (NumPy)."""
         phase_pre  = self.mean_phase[self.pre_indices]
         phase_post = self.mean_phase[self.post_indices]
         amp_pre    = self.mean_amplitude[self.pre_indices]
@@ -470,9 +610,10 @@ class SparseProbabilisticBrain:
         delta_phi  = phase_pre - phase_post
         syn_forces = self.syn_weights * np.sin(delta_phi) * amp_pre * self._var_correction_scalar
 
-        forces = np.zeros(self.num_neurons, dtype=np.float32)
-        np.add.at(forces, self.post_indices, syn_forces)
-        return forces
+        # Same layout and same summation order as the MLX path. np.add.at was
+        # already deterministic, but sharing the layout keeps the two backends
+        # performing the same additions in the same sequence.
+        return self._segment_sum_numpy(syn_forces)
 
     # ────────────────────────────────────────────────────────────────────
     #  Temporal memory

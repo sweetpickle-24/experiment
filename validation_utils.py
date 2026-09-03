@@ -72,18 +72,37 @@ def git_commit() -> str:
         return "unknown"
 
 
-# Why an MLX run cannot be reproduced bit-for-bit, recorded verbatim in any
-# result file produced on the GPU backend.
-MLX_NONREPRODUCIBLE_REASON = (
-    "Synaptic coupling is accumulated with a scatter-add over 446,388 synapses "
-    "(forces.at[post_indices].add(...) in hive/engine/sparse_probabilistic.py). "
-    "Floating-point addition is not associative and Metal does not guarantee "
-    "reduction order, so same-seed processes diverge at around 1 part in 1e5. "
-    "KC activity is then thresholded by rank (int(n_kc * target_sparsity), i.e. "
-    "index 316 of 5,279 at the 0.06 default), and the threshold is a sampled "
-    "array value, so a reordering near that rank shifts the baseline subtracted "
-    "from every KC and changes which neurons are counted active. Re-run on "
-    "use_mlx=False to obtain a reproducible number."
+# Kept for provenance: this is the defect that made pre-2026-09-03 MLX result
+# files non-reproducible, and it is quoted in the superseded artifacts.
+MLX_HISTORICAL_NONREPRODUCIBLE_REASON = (
+    "Until 2026-09-03 synaptic coupling was accumulated with an atomic "
+    "scatter-add over 446,388 synapses (forces.at[post_indices].add(...) in "
+    "hive/engine/sparse_probabilistic.py). Floating-point addition is not "
+    "associative and Metal does not guarantee reduction order, so same-seed "
+    "processes diverged. KC activity is thresholded by rank (int(n_kc * "
+    "target_sparsity), i.e. index 316 of 5,279 at the 0.06 default) and the "
+    "threshold is a sampled array value, so a reordering near that rank "
+    "shifted the baseline subtracted from every KC and changed which neurons "
+    "were counted active: 303 active KCs against 203 on the worst same-seed "
+    "pair, with 11 of 15 trials differing."
+)
+
+# The scatter-add is gone. Both backends now accumulate through the static
+# two-stage segment layout in _build_segment_layout, whose reduction order is a
+# pure function of the connectome. Evidence: results/final/mlx_determinism.json
+# (5 same-seed trials per backend, bit-for-bit identical on all four state
+# fields and the KC readout).
+#
+# What is still NOT true is cross-backend bit-equality: mx.sum and np.sum use
+# different reduction trees, so CPU and MLX differ in the last bits of every
+# step. Measured at 100 ms: max phase difference 5.512 rad (the phase is
+# wrapped, so this is a fully diverged neuron), but the same 212 active KCs on
+# both backends with Jaccard overlap 0.9813.
+CROSS_BACKEND_AGREEMENT_NOTE = (
+    "Each backend is individually reproducible bit-for-bit at a fixed seed, but "
+    "CPU and MLX are not bit-identical to each other: mx.sum and np.sum use "
+    "different reduction trees. See results/final/mlx_determinism.json for the "
+    "measured divergence and active-KC overlap."
 )
 
 
@@ -105,8 +124,10 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
                       not interpretable without knowing which one ran.
 
     Always carries: timestamp, git_commit, seed, backend, dt_ms,
-    projection_method, and a `reproducible` flag. `reproducible` is False on
-    MLX, with the reason in `nonreproducible_reason`.
+    projection_method, and a `reproducible` flag. As of 2026-09-03 both
+    backends are reproducible at a fixed seed; the flag is retained because
+    older result files carry it as False and a consumer needs to tell the two
+    eras apart.
     """
     meta = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -125,6 +146,10 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
     }
     if brain is not None:
         backend = "MLX" if getattr(brain, "use_mlx", False) else "NumPy"
+        # Reproducibility is a property of the accumulation layout, not of the
+        # backend name: an engine that regressed to atomic scatter-add would
+        # not have _seg_order.
+        deterministic_accumulation = hasattr(brain, "_seg_order_np")
         meta.update({
             "backend": backend,
             "dt_ms": getattr(brain, "dt", None),
@@ -132,10 +157,11 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
             "gamma": getattr(brain, "gamma", None),
             "sigma_noise": getattr(brain, "sigma_noise", None),
             "num_neurons": getattr(brain, "num_neurons", None),
-            "reproducible": backend != "MLX",
+            "reproducible": deterministic_accumulation,
+            "deterministic_accumulation": deterministic_accumulation,
         })
         if backend == "MLX":
-            meta["nonreproducible_reason"] = MLX_NONREPRODUCIBLE_REASON
+            meta["cross_backend_agreement"] = CROSS_BACKEND_AGREEMENT_NOTE
 
     if door_client is not None:
         meta["projection_method"] = getattr(door_client, "projection_method", None)
@@ -249,15 +275,22 @@ def write_results(name, payload: dict, brain=None, door_client=None,
 
 def assert_reproducible_backend(brain) -> None:
     """
-    Refuse to proceed if a run intended for reporting is on the MLX backend.
+    Refuse to proceed if a run intended for reporting cannot be reproduced.
 
     Call this in any path that writes a result file whose numbers will be
     quoted. Raises RuntimeError rather than warning, because the failure it
-    guards against is silent: an MLX run looks identical to a CPU run in the
-    output, it just cannot be reproduced.
+    guards against is silent: a non-reproducible run looks identical to a
+    reproducible one in the output.
+
+    Until 2026-09-03 this rejected the MLX backend outright. It now checks the
+    thing that actually mattered — whether coupling is accumulated in a fixed
+    order — so MLX passes, and an engine that regressed to atomic scatter-add
+    would be caught on either backend.
     """
-    if getattr(brain, "use_mlx", False):
+    if not hasattr(brain, "_seg_order_np"):
         raise RuntimeError(
-            "This run writes a reported result but is on the MLX backend. "
-            + MLX_NONREPRODUCIBLE_REASON
+            "This run writes a reported result, but the engine has no "
+            "deterministic segment layout (_seg_order_np is absent), so its "
+            "coupling accumulation order is not guaranteed. "
+            + MLX_HISTORICAL_NONREPRODUCIBLE_REASON
         )

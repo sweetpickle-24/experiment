@@ -1,0 +1,324 @@
+{
+  "trials": 5,
+  "duration_ms": 100.0,
+  "seed": 42,
+  "state_fields": [
+    "mean_phase",
+    "mean_velocity",
+    "mean_amplitude",
+    "var_phase"
+  ],
+  "mlx": {
+    "all_runs_bitwise_identical": true,
+    "worst_state_max_abs_diff_between_runs": 0.0,
+    "distinct_active_kc_counts": [
+      212
+    ],
+    "pairwise_vs_run0": [
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      }
+    ]
+  },
+  "cpu": {
+    "all_runs_bitwise_identical": true,
+    "worst_state_max_abs_diff_between_runs": 0.0,
+    "distinct_active_kc_counts": [
+      212
+    ],
+    "pairwise_vs_run0": [
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      },
+      {
+        "mean_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_velocity": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "mean_amplitude": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "var_phase": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_normalized": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "kc_active": {
+          "bitwise_identical": true,
+          "max_abs_diff": 0.0
+        },
+        "active_kc_counts": [
+          212,
+          212
+        ]
+      }
+    ]
+  },
+  "cross_backend": {
+    "mean_phase": {
+      "bitwise_identical": false,
+      "max_abs_diff": 5.511615037918091
+    },
+    "mean_velocity": {
+      "bitwise_identical": false,
+      "max_abs_diff": 2.928823709487915
+    },
+    "mean_amplitude": {
+      "bitwise_identical": false,
+      "max_abs_diff": 1.470142126083374
+    },
+    "var_phase": {
+      "bitwise_identical": true,
+      "max_abs_diff": 0.0
+    },
+    "kc_normalized": {
+      "bitwise_identical": false,
+      "max_abs_diff": 0.020566489547491074
+    },
+    "kc_active": {
+      "bitwise_identical": false,
+      "max_abs_diff": 1.0
+    },
+    "active_kc_counts": [
+      212,
+      212
+    ],
+    "active_kc_jaccard": 0.9813084112149533
+  },
+  "cross_backend_note": "mx.sum and np.sum use different reduction trees, so the two backends differ in the last bits of every step even though both are internally reproducible. The KC readout thresholds by rank, which amplifies that difference over the run; the Jaccard overlap of the active sets is the honest measure of agreement.",
+  "verdict": "PASS",
+  "config": {
+    "timestamp": "2026-09-03T21:06:11.275302+00:00",
+    "git_commit": "94c548887de1d335560b2da0b704c5e6b592a156-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "MLX",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": false,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "nonreproducible_reason": "Synaptic coupling is accumulated with a scatter-add over 446,388 synapses (forces.at[post_indices].add(...) in hive/engine/sparse_probabilistic.py). Floating-point addition is not associative and Metal does not guarantee reduction order, so same-seed processes diverge at around 1 part in 1e5. KC activity is then thresholded by rank (int(n_kc * target_sparsity), i.e. index 316 of 5,279 at the 0.06 default), and the threshold is a sampled array value, so a reordering near that rank shifts the baseline subtracted from every KC and changes which neurons are counted active. Re-run on use_mlx=False to obtain a reproducible number.",
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "mlx_determinism"
+  }
+}
