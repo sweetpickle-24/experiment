@@ -175,19 +175,23 @@ DEFAULT_BRAIN_CONFIG = {
 }
 
 
-def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None):
+def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
+                         projection='sklearn_pca'):
     """
     Initialise the olfactory system for validation experiments.
 
     Args:
-        use_mlx   : use the MLX GPU backend. Pass False for any run whose number
-                    will be reported: the MLX scatter-add is order-dependent, so
-                    same-seed runs diverge (see MLX_NONREPRODUCIBLE_REASON).
+        use_mlx   : use the MLX GPU backend. Deterministic as of 2026-09-03; see
+                    hive/engine/sparse_probabilistic.py for the segmented
+                    reduction that replaced the order-dependent scatter-add.
         fast_mode : dt = 0.5 ms instead of 0.1 ms. Not used for validation runs.
         seed      : RNG seed, or None to leave RNGs unseeded.
         config    : optional physics overrides. Keys the engine understands are
                     'dt', 'gamma' and 'sigma_noise'. Anything else raises, rather
                     than being silently discarded as it was before 2026-09-03.
+        projection: receptor->glomerular projection. 'sklearn_pca' (default) is
+                    the documented path; 'uncentered_svd' reproduces the
+                    pre-2026-09-03 fallback for comparison.
 
     Returns:
         tuple: (brain, door_client, connectome)
@@ -207,7 +211,7 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None):
         fast_mode=fast_mode,
     )
 
-    door_client = DoorClient()
+    door_client = DoorClient(projection=projection)
     # Build the projection now rather than on first lookup, so that
     # door_client.projection_method is populated before run_metadata reads it.
     # Same matrix either way; this only fixes when it is computed.

@@ -261,7 +261,7 @@ def analyze_concentration_invariance(all_results):
 
 def main(use_mlx=False, seed=DEFAULT_SEED,
          output_name='concentration_invariance_results.json',
-         allow_mlx_result=False):
+         allow_mlx_result=False, projection='sklearn_pca'):
     """
     Main concentration invariance test.
 
@@ -269,15 +269,17 @@ def main(use_mlx=False, seed=DEFAULT_SEED,
     0.1×, 0.5×, 1.0×, 5.0×, 10.0× (covering 100-fold range)
 
     Args:
-        use_mlx          : GPU backend. Defaults to False. The MLX scatter-add
-                           is order-dependent and the KC threshold is a rank
-                           cutoff, so same-seed MLX runs disagree on which
-                           neurons are active.
+        use_mlx          : GPU backend. Defaults to False. Deterministic as of
+                           2026-09-03 (segmented reduction replaced the
+                           order-dependent scatter-add), but CPU remains the
+                           reporting default.
         seed             : RNG seed recorded in the output.
         output_name      : filename under results/final/.
         allow_mlx_result : permit writing a result from the MLX backend. Off by
                            default so a reported number cannot come from a
                            non-reproducible run by accident.
+        projection       : receptor->glomerular projection ('sklearn_pca' or
+                           'uncentered_svd'), recorded in the output.
     """
     print("="*60)
     print("CONCENTRATION INVARIANCE TEST")
@@ -336,7 +338,7 @@ def main(use_mlx=False, seed=DEFAULT_SEED,
     
     # Load DOoR database for odor patterns
     print("Loading DOoR database...")
-    door_client = DoorClient()
+    door_client = DoorClient(projection=projection)
     print(f"  Loaded {len(door_client.odorant_names)} odorants")
     print()
     
@@ -434,6 +436,9 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=DEFAULT_SEED)
     parser.add_argument('--output', default='concentration_invariance_results.json',
                         help='filename under results/final/')
+    parser.add_argument('--projection', default='sklearn_pca',
+                        choices=['sklearn_pca', 'uncentered_svd'],
+                        help='receptor->glomerular projection to use')
     args = parser.parse_args()
 
     results, summary = main(
@@ -441,4 +446,5 @@ if __name__ == '__main__':
         seed=args.seed,
         output_name=args.output,
         allow_mlx_result=args.allow_mlx_result,
+        projection=args.projection,
     )

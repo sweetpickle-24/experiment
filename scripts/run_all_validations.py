@@ -53,17 +53,18 @@ def get_active_kc_binary(kc_activity, threshold_percentile=90):
 
 def run_all_validations(use_mlx=False, seed=SEED,
                         output_name='all_validations_results.json',
-                        allow_mlx_result=False):
+                        allow_mlx_result=False, projection='sklearn_pca'):
     """
     Run all 5 validation experiments.
 
     Args:
-        use_mlx          : GPU backend. Defaults to False, because this script
-                           writes a reported pass/fail count and the MLX
-                           scatter-add is not order-deterministic.
+        use_mlx          : GPU backend. Defaults to False. Deterministic as of
+                           2026-09-03, but CPU remains the reporting default.
         seed             : RNG seed, recorded in the output.
         output_name      : filename under results/final/.
         allow_mlx_result : permit writing a result from the MLX backend.
+        projection       : receptor->glomerular projection ('sklearn_pca' or
+                           'uncentered_svd'), recorded in the output.
     """
     logger.info("="*70)
     logger.info("COMPREHENSIVE BIOLOGICAL VALIDATION SUITE")
@@ -71,14 +72,19 @@ def run_all_validations(use_mlx=False, seed=SEED,
     logger.info("Starting all 5 validations...")
     logger.info("Backend: %s", "MLX (GPU)" if use_mlx else "NumPy (CPU)")
     if not use_mlx:
-        logger.info("CPU runtime is roughly 150 s per 100 ms simulated; expect hours.")
+        # Measured 2026-09-03: ~18 s wall per 100 ms simulated on this machine,
+        # so a full suite is minutes, not hours. The previous "150 s per 100 ms"
+        # note came from results/final/cpu_vs_mlx_validation.json, which is
+        # superseded and whose timings were never reproducible.
+        logger.info("CPU runtime is roughly 18 s per 100 ms simulated.")
 
     start_time = datetime.now()
     
     # Initialize system once. Seeded as of 2026-09-03: the suite was previously
     # unseeded and consecutive runs of identical code gave different results.
     logger.info("\nInitializing olfactory system...")
-    brain, door_client, connectome = init_olfactory_brain(use_mlx=use_mlx, seed=seed)
+    brain, door_client, connectome = init_olfactory_brain(
+        use_mlx=use_mlx, seed=seed, projection=projection)
     logger.info(f"✅ System ready: {brain.num_neurons} neurons, backend={'MLX' if brain.use_mlx else 'NumPy'}")
     if not allow_mlx_result:
         assert_reproducible_backend(brain)
@@ -571,6 +577,9 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=SEED)
     parser.add_argument('--output', default='all_validations_results.json',
                         help='filename under results/final/')
+    parser.add_argument('--projection', default='sklearn_pca',
+                        choices=['sklearn_pca', 'uncentered_svd'],
+                        help='receptor->glomerular projection to use')
     args = parser.parse_args()
 
     run_all_validations(
@@ -578,4 +587,5 @@ if __name__ == '__main__':
         seed=args.seed,
         output_name=args.output,
         allow_mlx_result=args.allow_mlx_result,
+        projection=args.projection,
     )
