@@ -76,7 +76,30 @@ class SparseProbabilisticBrain:
     - Fast mode:  ~7× RT    (dt=0.5 ms, mx.compile)
     """
 
-    _RECOGNISED_CONFIG_KEYS = {'dt', 'gamma', 'sigma_noise'}
+    _RECOGNISED_CONFIG_KEYS = {'dt', 'gamma', 'sigma_noise',
+                               'amplitude_min', 'amplitude_max'}
+
+    #: Divergence guards on the amplitude field.
+    #:
+    #: These are numerical safety rails, not model parameters, and they are only
+    #: doing their job while they never bind. Until 2026-09-03 the ceiling was
+    #: 10.0, which sat *inside* the physical operating range and therefore acted
+    #: as a hard nonlinearity on the signal: under the old constant drive all
+    #: 981 driven PNs were pinned at exactly 10.0, so PN amplitude was identical
+    #: at every concentration and concentration reached the KCs through phase
+    #: alone.
+    #:
+    #: The reachable range is bounded by the dynamics rather than guessed. The
+    #: amplitude recursion has unit steady-state gain to |v|
+    #: (A* = |v| * 0.1 / gamma with gamma = 0.1), and a damped oscillator under
+    #: bounded forcing satisfies |v| <= F_max / (2 * gamma). With the front-end
+    #: drive (F_max = 6.06 measured) that is |v| <= 30.3, and the measured peak
+    #: is 12.28. DEFAULT_AMPLITUDE_MAX is set three orders of magnitude above
+    #: that, so it can still catch a genuine runaway while provably not
+    #: shaping the signal. Whether it binds is recorded, not assumed: see
+    #: count_at_amplitude_ceiling().
+    DEFAULT_AMPLITUDE_MIN = 0.0
+    DEFAULT_AMPLITUDE_MAX = 1.0e4
 
     def __init__(self, connectome, config=None, use_mlx=True, fast_mode=False):
         """
@@ -141,6 +164,10 @@ class SparseProbabilisticBrain:
         self.dt = float(self.config.get('dt', 0.5 if fast_mode else 0.1))   # ms
         self.gamma = float(self.config.get('gamma', 0.1))
         self.sigma_noise = float(self.config.get('sigma_noise', 0.1))
+        self.amplitude_min = float(self.config.get('amplitude_min',
+                                                   self.DEFAULT_AMPLITUDE_MIN))
+        self.amplitude_max = float(self.config.get('amplitude_max',
+                                                   self.DEFAULT_AMPLITUDE_MAX))
         self.time = 0.0
 
         if self.dt > 2.0:
@@ -459,6 +486,8 @@ class SparseProbabilisticBrain:
         amp_decay          = self._amp_decay
         amp_drive_dt_scale = self._amp_drive_dt_scale
         var_correction     = self._var_correction_scalar
+        amp_min            = self.amplitude_min
+        amp_max            = self.amplitude_max
 
         stim_chan    = self._stim_chan_mx
         stim_mask    = self._stim_mask_mx
@@ -497,7 +526,7 @@ class SparseProbabilisticBrain:
             # ── Amplitude update ─────────────────────────────────────────
             amp_drive = mx.abs(velocity) * amp_drive_dt_scale
             amplitude = amplitude * amp_decay + amp_drive
-            amplitude = mx.clip(amplitude, 0.001, 10.0)
+            amplitude = mx.clip(amplitude, amp_min, amp_max)
 
             return phase, velocity, amplitude, var_phase
 
@@ -618,7 +647,8 @@ class SparseProbabilisticBrain:
 
         amp_drive           = mx.abs(self.mean_velocity) * self._amp_drive_dt_scale
         self.mean_amplitude = self.mean_amplitude * self._amp_decay + amp_drive
-        self.mean_amplitude = mx.clip(self.mean_amplitude, 0.001, 10.0)
+        self.mean_amplitude = mx.clip(self.mean_amplitude,
+                                      self.amplitude_min, self.amplitude_max)
 
     def _step_numpy(self, stim_row=None):
         """NumPy CPU step."""
@@ -643,7 +673,8 @@ class SparseProbabilisticBrain:
 
         amp_drive            = np.abs(self.mean_velocity) * self._amp_drive_dt_scale
         self.mean_amplitude  = self.mean_amplitude * self._amp_decay + amp_drive
-        self.mean_amplitude  = np.clip(self.mean_amplitude, 0.001, 10.0)
+        self.mean_amplitude  = np.clip(self.mean_amplitude,
+                                       self.amplitude_min, self.amplitude_max)
 
     def _compute_coupling_mlx(self):
         """Sparse coupling with deterministic segment accumulation (MLX)."""
@@ -677,6 +708,18 @@ class SparseProbabilisticBrain:
     # ────────────────────────────────────────────────────────────────────
     #  Temporal memory
     # ────────────────────────────────────────────────────────────────────
+
+    def count_at_amplitude_ceiling(self, rel_tol: float = 1e-6) -> int:
+        """
+        How many neurons currently sit at the amplitude divergence guard.
+
+        Must be 0. A non-zero count means the guard is clipping live signal
+        rather than catching a runaway, which is the defect this replaced: with
+        the old ceiling of 10.0 this returned 981 under the constant drive and
+        109 with the front-end drive.
+        """
+        amp = np.array(self.mean_amplitude) if self.use_mlx else self.mean_amplitude
+        return int(np.sum(amp >= self.amplitude_max * (1.0 - rel_tol)))
 
     def get_amplitude_delayed(self, delay_ms: float) -> np.ndarray:
         """

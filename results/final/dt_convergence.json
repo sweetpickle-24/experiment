@@ -1,0 +1,145 @@
+{
+  "dt_sweep_ms": [
+    0.1,
+    0.05,
+    0.02,
+    0.01
+  ],
+  "duration_ms": 100.0,
+  "odor": "benzaldehyde",
+  "strength": 50.0,
+  "aliasing_limit_rad": 3.141592653589793,
+  "constant_drive": [
+    {
+      "dt_ms": 0.1,
+      "steps": 1000,
+      "peak_abs_velocity": 190.649658203125,
+      "phase_advance_per_step_rad": 19.0649658203125,
+      "aliasing": true,
+      "amplitude_max": 186.5203857421875,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 302,
+      "kc_r_vs_finest_dt": 0.23257742627624187,
+      "active_kc_jaccard_vs_finest_dt": 0.07430340557275542
+    },
+    {
+      "dt_ms": 0.05,
+      "steps": 2000,
+      "peak_abs_velocity": 191.49879455566406,
+      "phase_advance_per_step_rad": 9.574939727783203,
+      "aliasing": true,
+      "amplitude_max": 186.43212890625,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 259,
+      "kc_r_vs_finest_dt": 0.30001297784317393,
+      "active_kc_jaccard_vs_finest_dt": 0.07042253521126761
+    },
+    {
+      "dt_ms": 0.02,
+      "steps": 5000,
+      "peak_abs_velocity": 180.937255859375,
+      "phase_advance_per_step_rad": 3.6187451171875002,
+      "aliasing": true,
+      "amplitude_max": 180.67123413085938,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 103,
+      "kc_r_vs_finest_dt": 0.8487415551025214,
+      "active_kc_jaccard_vs_finest_dt": 0.32142857142857145
+    },
+    {
+      "dt_ms": 0.01,
+      "steps": 10000,
+      "peak_abs_velocity": 180.9150390625,
+      "phase_advance_per_step_rad": 1.809150390625,
+      "aliasing": false,
+      "amplitude_max": 180.6667022705078,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 45,
+      "kc_r_vs_finest_dt": 0.9999999999999998,
+      "active_kc_jaccard_vs_finest_dt": 1.0
+    }
+  ],
+  "front_end_drive": [
+    {
+      "dt_ms": 0.1,
+      "steps": 1000,
+      "peak_abs_velocity": 19.992895126342773,
+      "phase_advance_per_step_rad": 1.9992895126342773,
+      "aliasing": false,
+      "amplitude_max": 13.66260814666748,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 62,
+      "kc_r_vs_finest_dt": 0.3402321889151151,
+      "active_kc_jaccard_vs_finest_dt": 0.08527131782945736
+    },
+    {
+      "dt_ms": 0.05,
+      "steps": 2000,
+      "peak_abs_velocity": 5.2166666984558105,
+      "phase_advance_per_step_rad": 0.26083333492279054,
+      "aliasing": false,
+      "amplitude_max": 4.37289571762085,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 53,
+      "kc_r_vs_finest_dt": 0.3712324605342116,
+      "active_kc_jaccard_vs_finest_dt": 0.09166666666666666
+    },
+    {
+      "dt_ms": 0.02,
+      "steps": 5000,
+      "peak_abs_velocity": 23.95063018798828,
+      "phase_advance_per_step_rad": 0.4790126037597656,
+      "aliasing": false,
+      "amplitude_max": 18.0621280670166,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 112,
+      "kc_r_vs_finest_dt": 0.3275726756869094,
+      "active_kc_jaccard_vs_finest_dt": 0.13095238095238096
+    },
+    {
+      "dt_ms": 0.01,
+      "steps": 10000,
+      "peak_abs_velocity": 27.8210391998291,
+      "phase_advance_per_step_rad": 0.278210391998291,
+      "aliasing": false,
+      "amplitude_max": 20.95265769958496,
+      "at_amplitude_ceiling": 0,
+      "active_kc": 78,
+      "kc_r_vs_finest_dt": 0.9999999999999998,
+      "active_kc_jaccard_vs_finest_dt": 1.0
+    }
+  ],
+  "summary": {
+    "production_dt_ms": 0.1,
+    "phase_advance_at_production_dt_constant_drive": 19.0649658203125,
+    "phase_advance_at_production_dt_front_end_drive": 1.9992895126342773,
+    "aliasing_at_production_dt_front_end_drive": false,
+    "kc_r_dt0p1_vs_dt0p01_constant_drive": 0.23257742627624187,
+    "converges_under_constant_drive": false,
+    "amplitude_ceiling_binds_anywhere": false,
+    "front_end_caveat": "The plume is sampled on dt, so each dt in the front-end sweep draws a different turbulence realisation. Its KC correlations across dt therefore mix integrator error with stimulus resampling and are not a convergence measure; the per-step phase advance is unaffected by that confound."
+  },
+  "config": {
+    "timestamp": "2026-09-03T21:47:30.153990+00:00",
+    "git_commit": "249384b2d0c2817c3692bc1f5f0323f373d0c8ae-dirty",
+    "seed": 42,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "MLX",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "cross_backend_agreement": "Each backend is individually reproducible bit-for-bit at a fixed seed, but CPU and MLX are not bit-identical to each other: mx.sum and np.sum use different reduction trees. See results/final/mlx_determinism.json for the measured divergence and active-KC overlap.",
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "test": "dt_convergence"
+  }
+}
