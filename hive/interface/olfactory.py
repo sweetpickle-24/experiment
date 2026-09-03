@@ -266,6 +266,20 @@ class OdorReceptorArray:
         Force = activation × adaptation × amplitude_scale × sin(ω_channel × t + φ)
         
         The adaptation term is key: real ORNs fire less as odor persists.
+
+        UNITS DEFECT, unresolved. channel_frequencies is in Hz and t is passed
+        in milliseconds, but omega below is formed as 2*pi*f and multiplied by t
+        with no ms-to-s conversion, so the carrier advances f whole cycles per
+        millisecond instead of per second, i.e. 1000x too fast. Because the
+        frequencies are whole numbers of Hz, sampling on a whole-millisecond
+        grid lands on an exact multiple of 2*pi every time and the carrier
+        returns the same value at every sample: a 7 Hz channel advances exactly
+        70 cycles per 10 ms step. Callers stepping in whole milliseconds
+        therefore see a constant force, not an oscillation.
+
+        Not corrected here because dividing t by 1000 changes the forcing
+        waveform for every consumer of this class, which is a behavioural
+        change rather than a reporting one.
         """
         omega = 2 * np.pi * self.channel_frequencies  # rad/ms
         # Carrier wave at channel-intrinsic frequency
