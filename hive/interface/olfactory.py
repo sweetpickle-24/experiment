@@ -259,29 +259,29 @@ class OdorReceptorArray:
             recovery = np.exp(-dt / self.tau_recover)
             self.adaptation = self.adaptation * recovery + (1 - recovery) * 1.0
     
+    #: Milliseconds per second. channel_frequencies is in Hz and t arrives in
+    #: milliseconds, so the angular frequency must be converted before use.
+    _MS_PER_S = 1000.0
+
     def compute_forces(self, t: float, amplitude_scale: float) -> np.ndarray:
         """
-        Compute sinusoidal forces for each glomerular channel at time t.
-        
+        Compute sinusoidal forces for each glomerular channel at time t (ms).
+
         Force = activation × adaptation × amplitude_scale × sin(ω_channel × t + φ)
-        
+
         The adaptation term is key: real ORNs fire less as odor persists.
 
-        UNITS DEFECT, unresolved. channel_frequencies is in Hz and t is passed
-        in milliseconds, but omega below is formed as 2*pi*f and multiplied by t
-        with no ms-to-s conversion, so the carrier advances f whole cycles per
-        millisecond instead of per second, i.e. 1000x too fast. Because the
-        frequencies are whole numbers of Hz, sampling on a whole-millisecond
-        grid lands on an exact multiple of 2*pi every time and the carrier
-        returns the same value at every sample: a 7 Hz channel advances exactly
-        70 cycles per 10 ms step. Callers stepping in whole milliseconds
-        therefore see a constant force, not an oscillation.
-
-        Not corrected here because dividing t by 1000 changes the forcing
-        waveform for every consumer of this class, which is a behavioural
-        change rather than a reporting one.
+        Units, fixed 2026-09-03. omega was formed as ``2*pi*f`` with f in Hz and
+        then multiplied by t in milliseconds, so the carrier advanced f whole
+        cycles per millisecond instead of per second — 1000x too fast. Because
+        every channel frequency is a whole number of Hz, the aliased phase
+        landed on a multiple of 2*pi at every sample and the carrier returned a
+        single constant value: measured at 1 distinct value across 10 samples on
+        a 1 ms grid, and zero sign changes across 2 ms at dt=0.1 ms, for a
+        channel whose period is 50 ms. Dividing by _MS_PER_S makes omega
+        rad/ms, so a 20 Hz channel completes one cycle per 50 ms as intended.
         """
-        omega = 2 * np.pi * self.channel_frequencies  # rad/ms
+        omega = 2 * np.pi * self.channel_frequencies / self._MS_PER_S  # rad/ms
         # Carrier wave at channel-intrinsic frequency
         carrier = np.sin(omega * t + self.channel_phases)
         # Force = adapted activation × carrier
