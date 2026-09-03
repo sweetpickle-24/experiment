@@ -789,3 +789,109 @@ Initializing olfactory system...
 Overall: 1/5 validations passed
 2026-09-03 16:07:23,559 - 
 Results saved to /Users/vladyslav/Documents/GitHub/experiment/results/final/all_validations_cpu_seed42.json
+2026-09-03 16:58:25,323 - ======================================================================
+2026-09-03 16:58:25,323 - COMPREHENSIVE BIOLOGICAL VALIDATION SUITE
+2026-09-03 16:58:25,323 - ======================================================================
+2026-09-03 16:58:25,323 - Starting all 5 validations...
+2026-09-03 16:58:25,323 - Backend: NumPy (CPU)
+2026-09-03 16:58:25,323 - CPU runtime is roughly 18 s per 100 ms simulated.
+2026-09-03 16:58:25,323 - 
+Initializing olfactory system...
+2026-09-03 16:58:30,508 - Computing receptor->glomerular projection: 40 -> 20 dimensions (sklearn_pca)
+2026-09-03 16:58:30,508 - Projection: sklearn PCA (mean-centred), 94.0% variance explained
+2026-09-03 16:58:31,132 - ✅ System ready: 10906 neurons, backend=NumPy
+2026-09-03 16:58:31,162 - Configuration: {
+  "timestamp": "2026-09-03T20:58:31.132464+00:00",
+  "git_commit": "83c604e3f1011bc9678ac2adfaf7a60c90d3a231-dirty",
+  "seed": 42,
+  "duration_ms": 100.0,
+  "python": "3.14.3",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "backend": "NumPy",
+  "dt_ms": 0.1,
+  "projection_method": "sklearn_pca",
+  "reproducible": true,
+  "fast_mode": false,
+  "gamma": 0.1,
+  "sigma_noise": 0.1,
+  "num_neurons": 10906,
+  "projection_explained_variance": 0.940047562122345,
+  "door_matrix_synthetic": false,
+  "door_n_odorants": 372,
+  "suite": "run_all_validations",
+  "n_benchmarks": 5
+}
+2026-09-03 16:58:31,162 - Test odors: ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
+2026-09-03 16:58:31,162 - 
+======================================================================
+2026-09-03 16:58:31,162 - VALIDATION 1/5: TEMPORAL DYNAMICS
+2026-09-03 16:58:31,162 - ======================================================================
+2026-09-03 16:58:31,162 -   Testing benzaldehyde...
+2026-09-03 16:59:21,367 -     Peak: 1000ms, Adaptation: 0.0%
+2026-09-03 16:59:21,367 -   Testing 2-heptanone...
+2026-09-03 17:00:12,074 -     Peak: 50ms, Adaptation: 55.9%
+2026-09-03 17:00:12,074 -   Testing isopentyl_acetate...
+2026-09-03 17:01:03,042 -     Peak: 100ms, Adaptation: 8.5%
+2026-09-03 17:01:03,042 - ✅ Temporal dynamics complete
+2026-09-03 17:01:03,042 - 
+======================================================================
+2026-09-03 17:01:03,042 - VALIDATION 2/5: ODOR MIXTURES
+2026-09-03 17:01:03,042 - ======================================================================
+2026-09-03 17:01:14,106 -   Binary mixture overlap: 24.8%
+2026-09-03 17:01:14,106 - ✅ Odor mixtures complete
+2026-09-03 17:01:14,106 - 
+======================================================================
+2026-09-03 17:01:14,106 - VALIDATION 3/5: DISCRIMINATION THRESHOLDS
+2026-09-03 17:01:14,106 - ======================================================================
+2026-09-03 17:01:19,659 -   benzaldehyde +5%: r=0.296, discriminable=True
+2026-09-03 17:01:22,451 -   benzaldehyde +10%: r=0.414, discriminable=True
+2026-09-03 17:01:25,186 -   benzaldehyde +15%: r=0.185, discriminable=True
+2026-09-03 17:01:27,920 -   benzaldehyde +20%: r=0.337, discriminable=True
+2026-09-03 17:01:30,671 -   benzaldehyde +25%: r=0.236, discriminable=True
+2026-09-03 17:01:30,672 -   benzaldehyde: JND = 5%
+2026-09-03 17:01:36,221 -   2-heptanone +5%: r=0.148, discriminable=True
+2026-09-03 17:01:38,982 -   2-heptanone +10%: r=0.212, discriminable=True
+2026-09-03 17:01:41,760 -   2-heptanone +15%: r=0.101, discriminable=True
+2026-09-03 17:01:44,544 -   2-heptanone +20%: r=-0.013, discriminable=True
+2026-09-03 17:01:47,326 -   2-heptanone +25%: r=0.108, discriminable=True
+2026-09-03 17:01:47,326 -   2-heptanone: JND = 5%
+2026-09-03 17:01:47,326 - ✅ Discrimination thresholds complete
+2026-09-03 17:01:47,326 - 
+======================================================================
+2026-09-03 17:01:47,326 - VALIDATION 4/5: ODOR SIMILARITY STRUCTURE
+2026-09-03 17:01:47,327 - ======================================================================
+2026-09-03 17:01:55,616 -   Chem-neural correlation: r=0.994
+2026-09-03 17:01:55,617 - ✅ Odor similarity complete
+2026-09-03 17:01:55,617 - 
+======================================================================
+2026-09-03 17:01:55,617 - VALIDATION 5/5: LEARNING & PLASTICITY
+2026-09-03 17:01:55,617 - ======================================================================
+2026-09-03 17:01:55,617 -   Testing plasticity with benzaldehyde (5 training trials)...
+2026-09-03 17:01:58,395 -     Pre-training  MBON=0.0158, active KCs=316
+2026-09-03 17:02:00,885 -     Trial 1/5: mean |Δw|=0.018555
+2026-09-03 17:02:03,387 -     Trial 2/5: mean |Δw|=0.014488
+2026-09-03 17:02:05,864 -     Trial 3/5: mean |Δw|=0.013561
+2026-09-03 17:02:08,344 -     Trial 4/5: mean |Δw|=0.014265
+2026-09-03 17:02:10,826 -     Trial 5/5: mean |Δw|=0.016520
+2026-09-03 17:02:13,600 -     Post-training MBON=0.0679, active KCs=4
+2026-09-03 17:02:13,600 -     MBON change: 331.26% (target ≥1.0%)
+2026-09-03 17:02:13,600 - ✅ Learning & plasticity complete
+2026-09-03 17:02:13,600 - 
+======================================================================
+2026-09-03 17:02:13,600 - ALL VALIDATIONS COMPLETE
+2026-09-03 17:02:13,600 - ======================================================================
+2026-09-03 17:02:13,600 - Total time: 3.8 minutes
+2026-09-03 17:02:13,600 - 
+======================================================================
+2026-09-03 17:02:13,600 - BIOLOGICAL VALIDATION SUMMARY
+2026-09-03 17:02:13,600 - ======================================================================
+2026-09-03 17:02:13,600 - ❌ temporal_dynamics: FAIL
+2026-09-03 17:02:13,600 - ❌ odor_mixtures: FAIL
+2026-09-03 17:02:13,600 - ❌ discrimination: FAIL
+2026-09-03 17:02:13,601 - ❌ similarity: FAIL
+2026-09-03 17:02:13,601 - ✅ learning: PASS
+2026-09-03 17:02:13,601 - 
+Overall: 1/5 validations passed
+2026-09-03 17:02:13,624 - 
+Results saved to /Users/vladyslav/Documents/GitHub/experiment/results/final/all_validations_F0_after.json

@@ -265,6 +265,261 @@
       "label": "F0_before_diagnostics",
       "recorded_at": "2026-09-03T20:57:03.720411+00:00",
       "git_commit": "88c887434032a67ee33c92606649b7854528053e-dirty"
+    },
+    {
+      "note": "After installing scikit-learn and making mean-centred PCA the explicit projection. Only the projection changed; drive is still constant DC.",
+      "projection_requested": "sklearn_pca",
+      "seed": 42,
+      "diagnostics": {
+        "odor": "benzaldehyde",
+        "strength_arg": 50.0,
+        "duration_ms": 100.0,
+        "projection_method": "sklearn_pca",
+        "backend": "MLX",
+        "dt_ms": 0.1,
+        "amplitude_ceiling": 10.0,
+        "drive": {
+          "n_driven_neurons": 981,
+          "force_peak": 36.13521957397461,
+          "force_min_nonzero": 4.3088202476501465,
+          "time_varying": false
+        },
+        "driven_at_amplitude_ceiling": 981,
+        "regions": {
+          "PN": {
+            "n": 2198,
+            "n_at_amplitude_ceiling": 981,
+            "amplitude_max": 10.0,
+            "amplitude_mean": 4.496329307556152
+          },
+          "KC": {
+            "n": 5279,
+            "n_at_amplitude_ceiling": 0,
+            "amplitude_max": 0.19990478456020355,
+            "amplitude_mean": 0.013557471334934235
+          }
+        },
+        "peak_abs_velocity": 180.8558807373047,
+        "phase_advance_per_step_rad": 18.08558807373047,
+        "kc_raw_max": 0.19990478456020355,
+        "kc_raw_mean": 0.013557471334934235,
+        "kc_norm_mean": 0.0012453158851712942,
+        "kc_active_above_0p01": 212
+      },
+      "concentration_invariance": {
+        "binary_correlation": {
+          "mean": 0.11568347959957288,
+          "std": 0.13407750967200155,
+          "min": -0.018499969953521,
+          "max": 0.4656971117790357
+        },
+        "jaccard_similarity": {
+          "mean": 0.06939794546572728,
+          "std": 0.0753126110142543,
+          "min": 0.010169491525423728,
+          "max": 0.2912621359223301
+        },
+        "verdict": "weak",
+        "thresholds": {
+          "binary_correlation_mean": "strong > 0.7, moderate > 0.5, else weak",
+          "jaccard_similarity_mean": "strong > 0.6, moderate > 0.4"
+        },
+        "per_odor_active_counts": {
+          "benzaldehyde": {
+            "0.1": {
+              "active_count": 47,
+              "sparsity": 0.008903201363894678,
+              "mean_amplitude": 0.0003350616025272757,
+              "max_amplitude": 0.05866894870996475
+            },
+            "0.5": {
+              "active_count": 269,
+              "sparsity": 0.050956620572078046,
+              "mean_amplitude": 0.0032462216913700104,
+              "max_amplitude": 0.9200910329818726
+            },
+            "1.0": {
+              "active_count": 282,
+              "sparsity": 0.05341920818336806,
+              "mean_amplitude": 0.008637795224785805,
+              "max_amplitude": 0.42722684144973755
+            },
+            "5.0": {
+              "active_count": 86,
+              "sparsity": 0.01629096419776473,
+              "mean_amplitude": 0.00048586391494609416,
+              "max_amplitude": 0.09084073454141617
+            },
+            "10.0": {
+              "active_count": 261,
+              "sparsity": 0.049441182042053416,
+              "mean_amplitude": 0.004142704885452986,
+              "max_amplitude": 2.7994887828826904
+            }
+          },
+          "2-heptanone": {
+            "0.1": {
+              "active_count": 38,
+              "sparsity": 0.007198333017616973,
+              "mean_amplitude": 0.00031038999441079795,
+              "max_amplitude": 0.0826273113489151
+            },
+            "0.5": {
+              "active_count": 45,
+              "sparsity": 0.00852434173138852,
+              "mean_amplitude": 0.00032402941724285483,
+              "max_amplitude": 0.08162856101989746
+            },
+            "1.0": {
+              "active_count": 235,
+              "sparsity": 0.04451600681947338,
+              "mean_amplitude": 0.002767303492873907,
+              "max_amplitude": 1.3883936405181885
+            },
+            "5.0": {
+              "active_count": 263,
+              "sparsity": 0.04982004167455958,
+              "mean_amplitude": 0.004921328742057085,
+              "max_amplitude": 1.1778359413146973
+            },
+            "10.0": {
+              "active_count": 35,
+              "sparsity": 0.006630043568857738,
+              "mean_amplitude": 0.00027351881726644933,
+              "max_amplitude": 0.034574221819639206
+            }
+          },
+          "isopentyl_acetate": {
+            "0.1": {
+              "active_count": 32,
+              "sparsity": 0.006061754120098503,
+              "mean_amplitude": 0.0002641575410962105,
+              "max_amplitude": 0.03264584019780159
+            },
+            "0.5": {
+              "active_count": 164,
+              "sparsity": 0.03106648986550483,
+              "mean_amplitude": 0.0009982874616980553,
+              "max_amplitude": 0.10340534895658493
+            },
+            "1.0": {
+              "active_count": 284,
+              "sparsity": 0.05379806781587422,
+              "mean_amplitude": 0.015283151529729366,
+              "max_amplitude": 0.6549034118652344
+            },
+            "5.0": {
+              "active_count": 278,
+              "sparsity": 0.05266148891835575,
+              "mean_amplitude": 0.002954880939796567,
+              "max_amplitude": 0.44240525364875793
+            },
+            "10.0": {
+              "active_count": 271,
+              "sparsity": 0.0513354802045842,
+              "mean_amplitude": 0.013012443669140339,
+              "max_amplitude": 1.0451067686080933
+            }
+          }
+        },
+        "projection_method": "sklearn_pca",
+        "backend": "NumPy"
+      },
+      "suite": {
+        "temporal_dynamics": {
+          "peak_time_mean_ms": 383.3333333333333,
+          "adaptation_mean_percent": 21.469475196911446,
+          "thresholds": {
+            "peak_time_mean_ms": "50 <= x <= 150",
+            "adaptation_mean_percent": "30 <= x <= 70"
+          },
+          "verdict": "FAIL",
+          "per_odor": {
+            "benzaldehyde": {
+              "peak_time_ms": 1000,
+              "adaptation_percent": 0.0,
+              "activities": [
+                0.0,
+                0.001256747986190021,
+                0.0012448504567146301,
+                0.0013251249911263585,
+                0.001326451194472611,
+                0.0013207027222961187
+              ]
+            },
+            "2-heptanone": {
+              "peak_time_ms": 50,
+              "adaptation_percent": 55.91160284678612,
+              "activities": [
+                0.0,
+                0.0008887568837963045,
+                0.0004193591885268688,
+                0.00039183866465464234,
+                0.00038875493919476867,
+                0.0003998788888566196
+              ]
+            },
+            "isopentyl_acetate": {
+              "peak_time_ms": 100,
+              "adaptation_percent": 8.496822743948222,
+              "activities": [
+                0.0,
+                0.0007391716353595257,
+                0.0008324472000822425,
+                0.0007617156370542943,
+                0.0007579360390082002,
+                0.0007583573460578918
+              ]
+            }
+          }
+        },
+        "odor_mixtures": {
+          "mean_overlap_percent": 24.841772151898734,
+          "thresholds": {
+            "mean_overlap_percent": "30 <= x <= 50"
+          },
+          "verdict": "FAIL"
+        },
+        "discrimination": {
+          "jnd_per_odor": {
+            "benzaldehyde": 5,
+            "2-heptanone": 5
+          },
+          "mean_jnd_percent": 5.0,
+          "thresholds": {
+            "jnd_percent_per_odor": "10 <= x <= 20 (all odours)"
+          },
+          "verdict": "FAIL"
+        },
+        "similarity": {
+          "chem_neural_correlation": 0.9937432109165794,
+          "thresholds": {
+            "chem_neural_correlation": "0.3 <= x <= 0.5"
+          },
+          "verdict": "FAIL"
+        },
+        "learning": {
+          "mbon_pre": 0.015753446146845818,
+          "mbon_post": 0.06793836504220963,
+          "mbon_change_pct": 331.2601273582264,
+          "kc_active_pre": 316,
+          "kc_active_post": 4,
+          "thresholds": {
+            "mbon_change_pct": "x >= 1.0"
+          },
+          "verdict": "PASS"
+        },
+        "score": {
+          "passed": 1,
+          "total": 5
+        },
+        "projection_method": "sklearn_pca",
+        "backend": "NumPy",
+        "dt_ms": 0.1
+      },
+      "label": "F0_after",
+      "recorded_at": "2026-09-03T21:02:13.862483+00:00",
+      "git_commit": "83c604e3f1011bc9678ac2adfaf7a60c90d3a231-dirty"
     }
   ]
 }
