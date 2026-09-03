@@ -7,6 +7,7 @@ fast mode, simulated duration, hardware, seed, and git commit. A number without
 its configuration cannot be attributed to anything.
 """
 
+import json
 import os
 import platform
 import subprocess
@@ -215,6 +216,31 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None):
     )
 
     return brain, door_client, connectome
+
+
+def write_results(name, payload: dict, brain=None, door_client=None,
+                  duration_ms=None, seed=None, kind: str = "final", **extra):
+    """
+    Write a result file with its configuration block attached.
+
+    Every result file must carry seed, git commit, dt, backend and projection
+    path. A number without them cannot be attributed to a run, which is how
+    this repository ended up quoting figures no run produced.
+
+    The metadata is written under the top-level key 'config', replacing any
+    'config' already in payload.
+
+    Returns the path written.
+    """
+    payload = dict(payload)
+    payload["config"] = run_metadata(
+        brain=brain, duration_ms=duration_ms, seed=seed,
+        door_client=door_client, **extra
+    )
+    path = results_path(name, kind=kind) if not isinstance(name, Path) else name
+    with open(path, "w") as f:
+        json.dump(payload, f, indent=2)
+    return path
 
 
 def assert_reproducible_backend(brain) -> None:

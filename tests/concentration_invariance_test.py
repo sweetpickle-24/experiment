@@ -12,6 +12,7 @@ Author: [Your Name]
 Date: March 13, 2026
 """
 
+import argparse
 import numpy as np
 import json
 import time
@@ -21,12 +22,30 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from validation_utils import results_path, log_path
+from validation_utils import (
+    assert_reproducible_backend, log_path, results_path, set_seed, write_results,
+)
 
 from hive.substrate.connectome import Connectome
 from hive.substrate.olfactory_subgraph import extract_olfactory_pathway
 from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
 from hive.data.door_client import DoorClient
+
+# Three odorants that resolve against the DoOR matrix.
+#
+# The third entry was 'isoamyl acetate', which is the same molecule as
+# isopentyl_acetate but is not a key in the matrix. Before 2026-09-03 that miss
+# returned a zero vector, and a zero pattern correlates with itself at exactly
+# 1.0 at every concentration, so this odorant contributed a perfect score at
+# all ten concentration pairs without simulating anything. It is now named as
+# the matrix names it. See ODOR_AUDIT.md.
+TEST_ODORS = [
+    'benzaldehyde',        # aromatic aldehyde
+    '2-heptanone',         # aliphatic methyl ketone
+    'isopentyl_acetate',   # branched acetate ester (a.k.a. isoamyl acetate)
+]
+
+DEFAULT_SEED = 42
 
 def compute_pattern_correlation(pattern1, pattern2, threshold=0.01):
     """
@@ -240,26 +259,38 @@ def analyze_concentration_invariance(all_results):
     }
 
 
-def main():
+def main(use_mlx=False, seed=DEFAULT_SEED,
+         output_name='concentration_invariance_results.json',
+         allow_mlx_result=False):
     """
     Main concentration invariance test.
-    
+
     Tests 3 representative odors at 5 concentration levels:
     0.1×, 0.5×, 1.0×, 5.0×, 10.0× (covering 100-fold range)
+
+    Args:
+        use_mlx          : GPU backend. Defaults to False. The MLX scatter-add
+                           is order-dependent and the KC threshold is a rank
+                           cutoff, so same-seed MLX runs disagree on which
+                           neurons are active.
+        seed             : RNG seed recorded in the output.
+        output_name      : filename under results/final/.
+        allow_mlx_result : permit writing a result from the MLX backend. Off by
+                           default so a reported number cannot come from a
+                           non-reproducible run by accident.
     """
     print("="*60)
     print("CONCENTRATION INVARIANCE TEST")
     print("Wave-Based Olfactory Simulation")
     print("="*60)
     print()
+
+    set_seed(seed)
+    print(f"Seed: {seed}")
     
     # Configuration
-    test_odors = [
-        'benzaldehyde',       # Strong, reliable response
-        '2-heptanone',        # Well-characterized odor  
-        'isoamyl acetate'     # Banana odor, widely used in fly research
-    ]
-    
+    test_odors = list(TEST_ODORS)
+
     concentrations = [0.1, 0.5, 1.0, 5.0, 10.0]  # 100-fold range
     
     duration_ms = 100.0  # 100 ms simulation per trial
@@ -293,11 +324,14 @@ def main():
     brain = SparseProbabilisticBrain(
         connectome=connectome,
         config=config,
-        use_mlx=True  # GPU acceleration
+        use_mlx=use_mlx,
     )
     memory_mb = (brain.num_neurons * 5 * 4) / (1024 * 1024)  # 5 fields × 4 bytes
     print(f"  Memory usage: {memory_mb:.1f} MB")
     print(f"  Backend: {'MLX (GPU)' if brain.use_mlx else 'NumPy (CPU)'}")
+    if not allow_mlx_result:
+        # This run's number is reported, so the backend must be reproducible.
+        assert_reproducible_backend(brain)
     print()
     
     # Load DOoR database for odor patterns
@@ -310,13 +344,12 @@ def main():
     all_results = {}
     
     for odor_name in test_odors:
-        # Get glomerular pattern
+        # Resolve and fetch. An unresolvable name raises rather than becoming a
+        # zero vector; there is no synthetic substitute, because a fabricated
+        # pattern silently entering a reported mean is the defect this test was
+        # inflated by.
         glomerular_pattern = door_client.get_glomerular_pattern(odor_name)
-        
-        if glomerular_pattern is None:
-            print(f"⚠️  Warning: Odor '{odor_name}' not found in DOoR database, using synthetic pattern")
-            glomerular_pattern = np.random.rand(20) * 0.5
-        
+
         # Test this odor at multiple concentrations
         results = test_single_odor_concentrations(
             brain=brain,
@@ -337,6 +370,8 @@ def main():
             'odors': test_odors,
             'concentrations': concentrations,
             'duration_ms': duration_ms,
+            'binary_threshold': 0.01,
+            'kc_target_sparsity': 0.06,
             'brain_parameters': {
                 'num_neurons': brain.num_neurons,
                 'dt': float(brain.dt),
@@ -347,10 +382,16 @@ def main():
         'summary': summary,
         'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
     }
-    
-    output_file = results_path('concentration_invariance_results.json')
-    with open(output_file, 'w') as f:
-        json.dump(output_data, f, indent=2)
+
+    output_file = write_results(
+        output_name, output_data,
+        brain=brain, door_client=door_client,
+        duration_ms=duration_ms, seed=seed,
+        test='concentration_invariance',
+        n_pairwise_comparisons=len(test_odors) * (
+            len(concentrations) * (len(concentrations) - 1) // 2
+        ),
+    )
     
     print(f"\n{'='*60}")
     print(f"Results saved to: {output_file}")
@@ -385,4 +426,19 @@ def main():
 
 
 if __name__ == '__main__':
-    results, summary = main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--use-mlx', action='store_true',
+                        help='run on the MLX GPU backend (not reproducible)')
+    parser.add_argument('--allow-mlx-result', action='store_true',
+                        help='permit writing a result file from an MLX run')
+    parser.add_argument('--seed', type=int, default=DEFAULT_SEED)
+    parser.add_argument('--output', default='concentration_invariance_results.json',
+                        help='filename under results/final/')
+    args = parser.parse_args()
+
+    results, summary = main(
+        use_mlx=args.use_mlx,
+        seed=args.seed,
+        output_name=args.output,
+        allow_mlx_result=args.allow_mlx_result,
+    )

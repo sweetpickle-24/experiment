@@ -7,6 +7,7 @@ Runs all 5 validations in sequence using the optimized common initialization.
 Est. 60-90 min total runtime.
 """
 
+import argparse
 import sys
 import json
 import numpy as np
@@ -17,12 +18,20 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from validation_utils import (
-    init_olfactory_brain, results_path, log_path, run_metadata,
+    assert_reproducible_backend, init_olfactory_brain, results_path, log_path,
+    run_metadata, write_results,
 )
 
 # Run configuration. Recorded into every result file this script writes.
 SEED = 42
 TRIAL_DURATION_MS = 100.0
+
+# Third odorant was 'geosmin', which is absent from the DoOR matrix. Before
+# 2026-09-03 that miss returned a zero vector and each validation below silently
+# skipped or scored it. It is replaced by isopentyl_acetate, an ester that is
+# present in the matrix and chemically distinct from the other two. This changes
+# what the suite measures; see ODOR_AUDIT.md.
+TEST_ODORS = ['benzaldehyde', '2-heptanone', 'isopentyl_acetate']
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,39 +51,54 @@ def get_active_kc_binary(kc_activity, threshold_percentile=90):
     threshold = np.percentile(kc_activity, threshold_percentile)
     return (kc_activity > threshold).astype(float)
 
-def run_all_validations():
-    """Run all 5 validation experiments."""
-    
+def run_all_validations(use_mlx=False, seed=SEED,
+                        output_name='all_validations_results.json',
+                        allow_mlx_result=False):
+    """
+    Run all 5 validation experiments.
+
+    Args:
+        use_mlx          : GPU backend. Defaults to False, because this script
+                           writes a reported pass/fail count and the MLX
+                           scatter-add is not order-deterministic.
+        seed             : RNG seed, recorded in the output.
+        output_name      : filename under results/final/.
+        allow_mlx_result : permit writing a result from the MLX backend.
+    """
     logger.info("="*70)
     logger.info("COMPREHENSIVE BIOLOGICAL VALIDATION SUITE")
     logger.info("="*70)
     logger.info("Starting all 5 validations...")
-    logger.info("Estimated time: 60-90 minutes")
-    
+    logger.info("Backend: %s", "MLX (GPU)" if use_mlx else "NumPy (CPU)")
+    if not use_mlx:
+        logger.info("CPU runtime is roughly 150 s per 100 ms simulated; expect hours.")
+
     start_time = datetime.now()
     
     # Initialize system once. Seeded as of 2026-09-03: the suite was previously
     # unseeded and consecutive runs of identical code gave different results.
     logger.info("\nInitializing olfactory system...")
-    brain, door_client, connectome = init_olfactory_brain(use_mlx=True, seed=SEED)
+    brain, door_client, connectome = init_olfactory_brain(use_mlx=use_mlx, seed=seed)
     logger.info(f"✅ System ready: {brain.num_neurons} neurons, backend={'MLX' if brain.use_mlx else 'NumPy'}")
+    if not allow_mlx_result:
+        assert_reproducible_backend(brain)
 
-    config = run_metadata(brain=brain, duration_ms=TRIAL_DURATION_MS, seed=SEED,
+    config = run_metadata(brain=brain, duration_ms=TRIAL_DURATION_MS, seed=seed,
+                          door_client=door_client,
                           suite='run_all_validations', n_benchmarks=5)
     logger.info(f"Configuration: {json.dumps(config, indent=2)}")
 
     results = {
         'timestamp': start_time.isoformat(),
-        # Full run configuration. No number in this file should be quoted without it.
-        'config': config,
         'system': {
             'num_neurons': brain.num_neurons,
             'backend': 'MLX' if brain.use_mlx else 'NumPy'
         },
         'validations': {}
     }
-    
-    test_odors = ['benzaldehyde', '2-heptanone', 'geosmin']
+
+    test_odors = list(TEST_ODORS)
+    logger.info(f"Test odors: {test_odors}")
     
     # 1. Temporal Dynamics
     logger.info("\n" + "="*70)
@@ -130,12 +154,18 @@ def run_all_validations():
     logger.info("="*70)
     logger.info(f"Total time: {elapsed:.1f} minutes")
     
-    generate_summary(results)
-    
-    # Save
-    with open(results_path('all_validations_results.json'), 'w') as f:
-        json.dump(results, f, indent=2)
-    logger.info("\n✅ Results saved to all_validations_results.json")
+    passed, total = generate_summary(results)
+    results['score'] = {'passed': passed, 'total': total}
+
+    out = write_results(
+        output_name, results,
+        brain=brain, door_client=door_client,
+        duration_ms=TRIAL_DURATION_MS, seed=seed,
+        suite='run_all_validations', n_benchmarks=total,
+        elapsed_minutes=elapsed,
+    )
+    logger.info(f"\nResults saved to {out}")
+    return results
 
 def validate_temporal_dynamics(brain, door_client, test_odors):
     """Temporal dynamics: onset, peak, adaptation."""
@@ -529,6 +559,23 @@ def generate_summary(results):
     passed = sum(1 for v in validations.values() if v['summary']['validation'] == 'PASS')
     
     logger.info(f"\nOverall: {passed}/{total} validations passed")
+    return passed, total
+
 
 if __name__ == '__main__':
-    run_all_validations()
+    parser = argparse.ArgumentParser(description='Run the 5-benchmark validation suite.')
+    parser.add_argument('--use-mlx', action='store_true',
+                        help='run on the MLX GPU backend (not reproducible)')
+    parser.add_argument('--allow-mlx-result', action='store_true',
+                        help='permit writing a result file from an MLX run')
+    parser.add_argument('--seed', type=int, default=SEED)
+    parser.add_argument('--output', default='all_validations_results.json',
+                        help='filename under results/final/')
+    args = parser.parse_args()
+
+    run_all_validations(
+        use_mlx=args.use_mlx,
+        seed=args.seed,
+        output_name=args.output,
+        allow_mlx_result=args.allow_mlx_result,
+    )
