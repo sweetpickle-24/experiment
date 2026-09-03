@@ -52,8 +52,28 @@ class ProbabilisticField:
 class ProbabilisticWaveBrain:
     """
     Brain as probabilistic wave field using mean-field theory.
-    
-    Key advantages over discrete simulation:
+
+    NON-FUNCTIONAL ON REAL CONNECTOME DATA. Do not use this class with a
+    Connectome loaded from the FAFB export; use SparseProbabilisticBrain
+    instead, which is what every validation path already uses.
+
+    The grid is derived from the connectome bounding box in
+    _build_spatial_grid, and those coordinates arrive in FAFB native units with
+    no conversion (see Connectome._load_coordinates). Read as micrometres they
+    span about 445 mm, so at the documented grid_spacing=100.0 the shape is
+    (4457, 3032, 2313), about 31.3 billion voxels. _initialize_fields then asks
+    for roughly 116 GB per float32 field across six fields, plus a coupling
+    kernel of the same shape and a transient FFT buffer several times larger.
+    The process is killed by the OS with exit code 137 during the first
+    allocation, before any timestep runs. Reducing grid_spacing does not help;
+    the bounding box is wrong by about three orders of magnitude.
+
+    Fixing this means either rescaling the coordinates at load time, which
+    changes the coupling distances behind every recorded run, or bounding the
+    grid to occupied voxels. Neither has been done. The intended advantages
+    below have therefore never been measured on real data.
+
+    Key advantages over discrete simulation (design intent, unmeasured here):
     - 10-100× faster (FFT instead of scatter-add)
     - 3-10× less memory (fields vs. individual neurons)
     - More biologically accurate (captures noise naturally)

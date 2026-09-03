@@ -119,7 +119,26 @@ class Connectome:
                 )
     
     def _load_coordinates(self):
-        """Load 3D spatial coordinates for all neurons."""
+        """
+        Load 3D spatial coordinates for all neurons.
+
+        UNITS DEFECT, unresolved. Positions are stored exactly as they appear in
+        the FAFB export, with no unit conversion and no unit recorded anywhere on
+        the Neuron. The values are FAFB voxel/nanometre-scale coordinates, so the
+        loaded cloud spans roughly 445000 x 303000 x 231000. Any consumer that
+        reads them as micrometres therefore sees a brain about 445 mm across.
+
+        This is harmless for SparseProbabilisticBrain, which only uses positions
+        for distance-based delays, but it is fatal for ProbabilisticWaveBrain:
+        that engine derives a dense voxel grid from the bounding box, and at its
+        documented 100 um spacing the shape comes out (4457, 3032, 2313), about
+        31.3 billion voxels, roughly 116 GB per float32 field with six or seven
+        such fields allocated. The process is killed before the first timestep.
+
+        Not fixed here because rescaling changes the coupling distances every
+        recorded run used, which is a separate decision from the lookup and
+        reporting work this file was touched under.
+        """
         path = self.data_dir / "coordinates.csv.gz"
         with gzip.open(path, 'rt') as f:
             reader = csv.DictReader(f)

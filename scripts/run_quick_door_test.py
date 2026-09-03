@@ -3,6 +3,13 @@ Quick DOoR test with minimal memory usage.
 
 Tests just 3 odors instead of full validation to verify the system works
 without loading massive datasets.
+
+Uses SparseProbabilisticBrain, which tracks one state vector per neuron. The
+script previously used ProbabilisticWaveBrain and was killed by the OS with
+exit code 137 before reaching the first timestep: that engine allocates dense
+3D voxel fields sized from the connectome bounding box, and the FAFB
+coordinates are consumed in their native units without conversion, so the grid
+comes out around 31 billion voxels. See the note on ProbabilisticWaveBrain.
 """
 
 import sys
@@ -17,8 +24,8 @@ from pathlib import Path
 # Import modules
 from hive.substrate.connectome import Connectome
 from hive.substrate.olfactory_subgraph import extract_olfactory_pathway
-from hive.engine.probabilistic_wave import ProbabilisticWaveBrain
-from hive.data.door_client import DoorClient
+from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
+from hive.data.door_client import DoorClient, OdorantNotFoundError
 from hive.data.published_patterns import PublishedPatternLibrary
 from hive.metrics.pattern_similarity import composite_similarity
 
@@ -37,12 +44,12 @@ olfactory = extract_olfactory_pathway(connectome)
 print(f"  Olfactory neurons: {len(olfactory.neurons):,}")
 print(f"  Olfactory synapses: {len(olfactory.synapses):,}")
 
-# 3. Initialize probabilistic brain (coarse grid for memory efficiency)
-print("\n3. Initializing probabilistic brain (100μm grid)...")
-brain = ProbabilisticWaveBrain(
+# 3. Initialize probabilistic brain (one state vector per neuron, no voxel grid)
+print("\n3. Initializing sparse probabilistic brain...")
+brain = SparseProbabilisticBrain(
     connectome=olfactory,
-    grid_spacing=100.0,  # Coarse grid: 100μm instead of 50μm
-    use_mlx=True
+    config=None,
+    use_mlx=True,
 )
 
 # 4. Load DOoR
@@ -59,18 +66,25 @@ test_odors = ['ethyl_acetate', 'acetic_acid', 'CO2']
 
 results = []
 for odor in test_odors:
-    if odor not in door.odorant_names:
-        print(f"  ⚠ {odor} not in DOoR, skipping")
-        continue
-    
     print(f"\n  Testing {odor}...")
-    
+
+    # Resolve through the client so spacing and synonyms are handled. An
+    # unresolvable name is reported and skipped here rather than silently
+    # becoming a zero pattern, which is what the old membership check allowed.
+    try:
+        resolved = door.resolve_odorant_name(odor)
+    except OdorantNotFoundError as exc:
+        print(f"    SKIPPED: {exc}")
+        continue
+    if resolved != odor:
+        print(f"    resolved '{odor}' -> '{resolved}'")
+
     # Get pattern
-    glom = door.get_glomerular_pattern(odor)
+    glom = door.get_glomerular_pattern(resolved)
     print(f"    Glom pattern: {glom.shape}, norm={np.linalg.norm(glom):.3f}")
-    
+
     # Simulate
-    brain.reset()
+    brain.reset(deterministic=True)
     brain.inject_odor(glom)
     brain.evolve(duration=100.0)  # Short: 100ms
     
