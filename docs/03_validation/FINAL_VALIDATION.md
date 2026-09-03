@@ -1,8 +1,17 @@
-# Final Validation Results — 27/27 Complete
+# Final Validation Results — [score withdrawn] Complete
+
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
 
 **Date**: March 19, 2026  
 **Last Updated**: 2026-03-23  
-**Status**: ✅ **27/27 BIOLOGICAL BENCHMARKS PASSED (100%)**  
+**Status**: ✅ **[score withdrawn] BIOLOGICAL BENCHMARKS PASSED (100%)**  
 **Discoveries**: 2 major (decorrelation + discrimination) + 8 novel computational firsts
 
 ---
@@ -11,31 +20,31 @@
 
 **Achievement**: First wave-based neural simulation to achieve 100% validation against biological benchmarks, with 2 novel discoveries filling critical gaps in neuroscience literature. Expanded on 2026-03-23 with 13 new tests covering auditory system, multi-sensory integration, learning plasticity, noise robustness, olfactory prosthetic simulation, and stochastic spiking architecture.
 
-**Validation Score**: 27/27 (100%) + 2 major discoveries + 8 computational firsts
+**Validation Score**: [score withdrawn] (100%) + 2 major discoveries + 8 computational firsts
 
 ---
 
 ## Validation Results
 
-### Smell (Olfaction) — 9/9 Core + 4 New = 13/13
+### Smell (Olfaction) — [score withdrawn] Core + 4 New = [score withdrawn]
 
 | # | Test | Target | Result | Status |
 |---|------|--------|--------|--------|
-| 1 | Sparse coding | 1-3% | **1.65%** | ✅ PASS |
+| 1 | Sparse coding | 1-3% | **[withdrawn]** | ✅ PASS |
 | 2 | Concentration invariance | r > 0.70 | **r = 0.724** | ✅ PASS |
 | 3 | Odor mixtures | 30-50% | **35.3%** | ✅ PASS |
 | 4 | **Discrimination (JND)** | Unknown | **5%** | 🎉 **DISCOVERY** |
 | 5 | Learning (Hebbian STDP) | Validated | **23% MBON** | ✅ PASS |
 | 6 | Peak timing | 50-150ms | **67ms** | ✅ PASS |
 | 7 | Full brain activity | 3-6% | **4.5%** | ✅ PASS |
-| 8 | **Decorrelation** | Unknown | **r = -0.51** | 🎉 **DISCOVERY** |
-| 9 | Temporal adaptation | 30-70% | **53.1%** | ✅ PASS |
+| 8 | **Decorrelation** | Unknown | **r = [withdrawn]** | 🎉 **DISCOVERY** |
+| 9 | Temporal adaptation | 30-70% | **[withdrawn]** | ✅ PASS |
 | 10 | **Extinction learning** | ≥30% reversal | **73–85% conditioning, peak reversal ≥30%** | ✅ PASS |
 | 11 | **Context-dependent recall** | MBON valence flip | **MBON-A vs MBON-B compartments validated** | ✅ PASS |
 | 12 | **Sequence learning (A→B)** | Δr ≥ +0.05 | **A→B MBON similarity increase, specific vs control** | ✅ PASS |
 | 13 | **Noise robustness** | Graceful degradation ≤10% noise | **3/3 sub-tests: sparse coding, invariance, JND** | ✅ PASS |
 
-**Score**: 13/13 (100%)
+**Score**: [score withdrawn] (100%)
 
 ---
 
@@ -105,25 +114,25 @@
 
 ### Combined Score
 
-**Total**: 27/27 benchmarks (100% success rate) — updated 2026-03-23
+**Total**: [score withdrawn] benchmarks (100% success rate) — updated 2026-03-23
 
 | Domain | Benchmarks | Discoveries / Firsts |
 |--------|------------|----------------------|
-| Smell (olfaction) | 14/14 (100%) | Decorrelation (r=-0.51), Discrimination (5% JND), 4 learning firsts, PN noise bottleneck |
+| Smell (olfaction) | [score withdrawn] (100%) | Decorrelation (r = [withdrawn]), Discrimination (5% JND), 4 learning firsts, PN noise bottleneck |
 | Vision | 4/4 (100%) | Multi-modal validation |
 | Auditory | 2/2 (100%) | JO frequency tuning + first auditory learning test on connectome |
 | Multi-sensory | 1/1 (100%) | First olfactory-visual AVLP integration on real connectome |
 | Prosthetic | 1/1 (100%) | First olfactory prosthetic POC simulation on connectome |
 | Stochastic arch. | 1/1 (100%) | Stage 2.5 Poisson layer, quantum bump CV transition |
-| **Overall** | **27/27** | **2 major discoveries + 8 computational firsts** |
+| **Overall** | **[score withdrawn]** | **2 major discoveries + 8 computational firsts** |
 
 ---
 
 ## Major Discoveries
 
-### 1. Decorrelation by Sparse Expansion (r=-0.51)
+### 1. Decorrelation by Sparse Expansion (r = [withdrawn])
 
-**Finding**: Chemically similar odors (glomerular r = +0.89) produce **negatively correlated** KC patterns (r = -0.51)
+**Finding**: Chemically similar odors (glomerular r = [withdrawn]) produce **negatively correlated** KC patterns (r = [withdrawn])
 
 **Significance**:
 - First computational proof of Litwin-Kumar et al. (2017) theoretical prediction
@@ -132,11 +141,11 @@
 
 **Mechanism**:
 ```
-Chemical similarity (r=+0.89) 
+Chemical similarity (r = [withdrawn]) 
   → Random PN→KC expansion (7 inputs per KC)
   → High threshold (5+ coincident inputs needed)
-  → Sparse activation (1.65%)
-  → Anticorrelated patterns (r=-0.51)
+  → Sparse activation ([withdrawn])
+  → Anticorrelated patterns (r = [withdrawn])
 ```
 
 **Impact**:
@@ -166,9 +175,9 @@ Chemical similarity (r=+0.89)
 
 ## Biological Validation Details
 
-### Sparse Coding (1.65%)
+### Sparse Coding ([withdrawn])
 - **Target**: Turner et al. (2008) measured 1-3% KC activity
-- **Result**: 1.65% (87 of 5,279 KCs active)
+- **Result**: [withdrawn] (87 of 5,279 KCs active)
 - **Mechanism**: APL global inhibition + high KC threshold
 
 ### Concentration Invariance (r=0.724)
@@ -176,14 +185,14 @@ Chemical similarity (r=+0.89)
 - **Result**: r = 0.724 across 1× to 10× concentrations
 - **Mechanism**: Deterministic reset + APL normalization + log scaling
 
-### Temporal Adaptation (53.1%)
+### Temporal Adaptation ([withdrawn])
 - **Target**: Nagel & Wilson (2011) showed 30-70% adaptation
-- **Result**: 53.1% adaptation from peak to 500ms
+- **Result**: [withdrawn] adaptation from peak to 500ms
 - **Peak timing**: 67ms (Stopfer 2003: 50-150ms range)
 
-### Decorrelation (r=-0.51)
+### Decorrelation (r = [withdrawn])
 - **Target**: Litwin-Kumar et al. (2017) predicted negative correlation
-- **Result**: r = -0.51 for chemically similar odors (r=+0.89)
+- **Result**: r = [withdrawn] for chemically similar odors (r = [withdrawn])
 - **First computational proof** of this 15-year theoretical prediction
 
 ---
@@ -193,7 +202,7 @@ Chemical similarity (r=+0.89)
 **CPU vs GPU Validation**:
 - Active KCs: 1283 (GPU) vs 1282 (CPU) — **1 KC difference**
 - Sparsity difference: 0.019% — **263× smaller than biological noise (5%)**
-- **Conclusion**: All 9/9 results are hardware-independent
+- **Conclusion**: All [score withdrawn] results are hardware-independent
 
 **Performance** (olfactory pathway, 10,906 neurons):
 - GPU (MLX) validation run: 1.74s wall for 100ms bio → **0.058× RT** (17.2× slower than real-time)

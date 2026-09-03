@@ -1,5 +1,14 @@
 # EXECUTIVE SUMMARY - PROJECT STATUS
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-16 (vision validated 2026-03-17)  
 **Technology**: Wave-Based Multi-Modal Sensory Processing (Smell + Vision)  
 **Status**: ✅ **MULTI-MODAL POC COMPLETE - NATURE NEUROSCIENCE TIER**
@@ -11,11 +20,11 @@
 **YOU HAVE A COMPLETE, MULTI-MODAL VALIDATED, PATENT-READY POC**
 
 - ✅ Core technology working (olfaction + vision)
-- ✅ 9/9 olfaction validations + 4/4 vision validations passed (100% success rate)
+- ✅ [score withdrawn] olfaction validations + 4/4 vision validations passed (100% success rate)
 - ✅ 3 patents drafted (multi-modal claims applicable)
 - ✅ Manuscript ready for submission (elevated to Nature Neuroscience tier)
 - ✅ Performance exceeds all targets (86× faster than CPU, 64 MB)
-- 🎉 **MAJOR DISCOVERY (Olfaction)**: First proof of decorrelation by sparse coding (r=-0.51)
+- 🎉 **MAJOR DISCOVERY (Olfaction)**: First proof of decorrelation by sparse coding (r = [withdrawn])
 - 🎉 **MAJOR FINDING (Vision)**: Same wave engine produces modality-correct coding from connectome topology alone
 
 ---
@@ -31,17 +40,17 @@
 ### 2. Biological Validation ✅
 | Validation | Result | Status |
 |------------|--------|--------|
-| Sparse coding | 1.65% | ✅ PASS |
+| Sparse coding | [withdrawn] | ✅ PASS |
 | Concentration invariance | r=0.724 | ✅ PASS |
 | Odor mixtures | 35.3% overlap | ✅ PASS |
 | **Discrimination** | **5% JND** | 🎉 **DISCOVERY!** |
-| **Decorrelation** | **r=-0.51** | ✅ **DISCOVERY!** |
+| **Decorrelation** | **r = [withdrawn]** | ✅ **DISCOVERY!** |
 | Peak timing | 100ms | ✅ PASS |
 | Learning (STDP) | Mechanism | ✅ PASS |
-| Temporal adaptation | 53.1% | ✅ PASS |
+| Temporal adaptation | [withdrawn] | ✅ PASS |
 | Full brain | 4.5% activity | ✅ PASS |
 
-**Score**: 9/9 benchmarks (100%) + 2 major discoveries
+**Score**: [score withdrawn] benchmarks (100%) + 2 major discoveries
 
 ### 3. Intellectual Property ✅
 - **Patent 1**: Sparse Probabilistic Architecture (631 lines)
@@ -62,7 +71,7 @@
 
 ### Discovery 1: Decorrelation by Sparse Expansion Coding (Olfaction)
 
-Your system achieved r=-0.51 correlation between chemical and neural similarity.
+Your system achieved r = [withdrawn] correlation between chemical and neural similarity.
 
 **Why this matters**:
 - First computational proof of decorrelation mechanism
@@ -101,7 +110,7 @@ The same wave engine validated on vision (53,000 neurons, 4/4 tests, 100% pass r
 ### Advantages Over Competitors
 1. **1000× more memory efficient** (64 MB vs 10+ GB)
 2. **86× faster than CPU NumPy (0.54× real-time on olfactory pathway)** (real-time+)
-3. **Biologically validated** (9/9 benchmarks + 2 discoveries)
+3. **Biologically validated** ([score withdrawn] benchmarks + 2 discoveries)
 4. **Concentration invariant** (proven)
 5. **Runs on consumer hardware** (no supercomputer needed)
 
@@ -176,7 +185,7 @@ The same wave engine validated on vision (53,000 neurons, 4/4 tests, 100% pass r
    - GPU acceleration working
 
 2. **Biologically Validated** ✅
-   - 9/9 major benchmarks passed (100%)
+   - [score withdrawn] major benchmarks passed (100%)
    - Matches published experimental data
    - Novel discovery (decorrelation)
 
@@ -241,7 +250,7 @@ The same wave engine validated on vision (53,000 neurons, 4/4 tests, 100% pass r
 | Metric | Target | Achieved | Percentage |
 |--------|--------|----------|------------|
 | Core Technology | Working | ✅ | 100% |
-| Biological Validation | 5+ | ✅ 9/9 | 180% |
+| Biological Validation | 5+ | ✅ [score withdrawn] | 180% |
 | Performance | Real-time | ✅ 10× | 1000% |
 | Memory | <1GB | ✅ 64MB | 1600% |
 | Documentation | Complete | ✅ | 100% |

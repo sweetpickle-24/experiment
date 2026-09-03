@@ -1,5 +1,14 @@
 # Vision Proof of Concept (POC) Status
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17 (validated 2026-03-17)  
 **Status**: ✅ **FULLY VALIDATED — 4/4 TESTS PASSED (100%)**
 
@@ -95,8 +104,8 @@ Vision POC demonstrates that wave-based physics:
 | **Synapses** | ~500K | ~2M (4× larger) |
 | **Input dim** | 20 glomeruli | 8 photoreceptors |
 | **Stimuli** | 693 odorants | 820 wavelengths |
-| **Validation** | 9/9 passed (100%) | **4/4 passed (100%)** |
-| **Key finding** | r=-0.51 decorrelation | DSI=0.975 motion, gap=0.061 color |
+| **Validation** | [score withdrawn] passed (100%) | **4/4 passed (100%)** |
+| **Key finding** | r = [withdrawn] decorrelation | DSI=0.975 motion, gap=0.061 color |
 | **Biophysics** | Simplified receptors | Full 10-state cascade |
 
 ---
@@ -217,4 +226,4 @@ Vision POC demonstrates that wave-based physics:
 **Vision Branch**: Parallel to olfaction research  
 **Technology Readiness Level**: TRL 4 (Technology validated in lab) ✅  
 **Validation date**: 2026-03-17  
-**Score**: 4/4 (100%) — matches olfaction benchmark (9/9, 100%)
+**Score**: 4/4 (100%) — matches olfaction benchmark ([score withdrawn], 100%)

@@ -1,32 +1,41 @@
 # Chapter 6: Conclusion
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 ---
 
 We have demonstrated that **wave-based probabilistic simulation** on *Drosophila* connectome data produces biologically realistic sensory processing representations across **two distinct sensory modalities** — olfaction and vision — without modality-specific tuning of the core wave dynamics.
 
 ## Summary of Contributions
 
-1. **Digital smells are sparse KC patterns** (1.65% sparsity in full brain, 6-20% in olfactory-only)
+1. **Digital smells are sparse KC patterns** ([withdrawn] sparsity in full brain, 6-20% in olfactory-only)
 2. **Wave physics on real connectomes** reproduces experimental observations with biological precision
 3. **Real-time simulation is feasible** on consumer GPUs (26s for 100ms biology = 0.54× real-time (olfactory pathway, 1.87× slower than RT) for full brain)
 4. **Memory efficiency is extreme** (64 MB for 139,255 neurons vs 10+ GB for spiking models)
 5. **Concentration invariance validated** (r = 0.724 > 0.70 biological threshold) ✅
-6. **Decorrelation by sparse expansion** (r = -0.51) proves 15-year theoretical prediction ✅
+6. **Decorrelation by sparse expansion** (r = [withdrawn]) proves 15-year theoretical prediction ✅
 7. **Multi-modal generalization**: Vision (53,000 neurons) validated at 4/4 (100%) with same engine ✅
 8. **Connectome topology determines coding strategy**: random wiring → decorrelation; retinotopic → opponency ✅
 
 ## Major Validations Achieved
 
-### Olfaction (10,906 neurons) — 9/9 (100%) ✅
-- ✅ **Sparse coding**: 1.65% KC sparsity (Turner et al. 2008: 1-3%)
+### Olfaction (10,906 neurons) — [score withdrawn] (100%) ✅
+- ✅ **Sparse coding**: [withdrawn] KC sparsity (Turner et al. 2008: 1-3%)
 - ✅ **Concentration invariance**: r = 0.724 (Turner et al. 2008: r > 0.70)
 - ✅ **Full brain simulation**: 139,255 neurons, 5.3M synapses
 - 🎉 **Fine discrimination (5% JND) - NOVEL DISCOVERY**
-- ✅ **Temporal adaptation (53.1%)**
-- 🎉 **Decorrelation discovery (r=-0.51) - MAJOR BREAKTHROUGH**
+- ✅ **Temporal adaptation ([withdrawn])**
+- 🎉 **Decorrelation discovery (r = [withdrawn]) - MAJOR BREAKTHROUGH**
 - ✅ **Real-time performance**: 86× faster than CPU NumPy (0.54× real-time on olfactory pathway) on laptop
-- ✅ **Decorrelation**: r = -0.51 (Litwin-Kumar et al. 2017 prediction validated)
-- ✅ **9/9 biological benchmarks** (100% success rate) + 2 major discoveries
+- ✅ **Decorrelation**: r = [withdrawn] (Litwin-Kumar et al. 2017 prediction validated)
+- ✅ **[score withdrawn] biological benchmarks** (100% success rate) + 2 major discoveries
 
 ### Vision (53,000 neurons) — 4/4 (100%)
 - ✅ **Layer-specific sparsity**: Lamina 18.7%, Medulla 6.9%, Lobula 20.6%, LP 42.1%
@@ -68,7 +77,7 @@ This work opens new directions for:
 ## Future Directions
 
 ### Near-Term (3-6 months)
-1. ✅ Temporal adaptation validated (53.1% - already passing)
+1. ✅ Temporal adaptation validated ([withdrawn] - already passing)
 2. Implement Hebbian learning (KC→MBON plasticity)
 3. Validate against real calcium imaging datasets
 4. Vision: color constancy test (light-invariant wavelength identity — analogous to concentration invariance)

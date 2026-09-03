@@ -1,205 +1,135 @@
-# Quick Start Guide
+# Quick start
 
-## Prerequisites
+**Last Updated**: 2026-09-03
 
-1. **Python 3.11+**
-2. **Fly Connectome Data** in `Fly Brain Female/` folder:
-   - `neurons.csv.gz`
-   - `coordinates.csv.gz`
-   - `connections_princeton.csv.gz`
-   - `consolidated_cell_types.csv.gz`
-
-## Installation
-
-```bash
-# Install dependencies
-cd hive
-pip install -r requirements.txt
-```
-
-## Running the System
-
-### Option 1: Basic Simulation (1 second)
-```bash
-python hive/main.py
-```
-
-Expected output:
-```
-Loading fly brain connectome...
-Loaded 139255 neurons, 5342447 synapses
-Building spatial index (k-d tree)...
-Indexed 139255 neurons
-...
-[t=1000.0ms] Coherence: 0.234 | Hives: 23 | Free neurons: 138532
-```
-
-### Option 2: Run Tests
-```bash
-python test_system.py
-```
-
-Tests verify:
-- ✓ Substrate loading
-- ✓ Oscillator dynamics
-- ✓ Hive formation
-- ✓ Consciousness states
-- ✓ Full integration
-
-### Option 3: Interactive Demo
-```bash
-python demo.py
-```
-
-Shows:
-1. Wave dynamics & hive emergence
-2. Consciousness state transitions
-3. Sensory stimulation & motor response
-4. Thought pattern detection
-
-## Understanding the Output
-
-### During Simulation
-```
-[t=100.0ms] Coherence: 0.345 | Hives: 12 | Free neurons: 138900
-```
-- **t**: Simulation time in milliseconds
-- **Coherence**: Global synchronization (0=incoherent, 1=perfect sync)
-- **Hives**: Number of active coherent clusters
-- **Free neurons**: Neurons not in any hive
-
-### Hive Formation
-```
-Detected 3 new hives
-  Hive size: 45 neurons
-  Coherence: 0.823
-```
-Hives are coherent neuron clusters that form spontaneously.
-
-### State Transitions
-```
-[t=5234.5ms] State transition: WAKE → SLEEP
-```
-System automatically switches between consciousness states.
-
-## Configuration
-
-Edit `hive/config.yaml` to adjust:
-
-```yaml
-# Oscillator timestep
-oscillator:
-  dt: 0.0005  # 0.5ms steps
-
-# Frequency bands
-frequency_bands:
-  gamma: [30.0, 100.0]  # Hz
-
-# Hive formation
-hives:
-  min_size: 10  # Minimum neurons per hive
-  coherence_threshold: 0.7  # Formation threshold
-```
-
-## Common Issues
-
-### "File not found: Fly Brain Female/..."
-**Solution**: Ensure connectome data is in correct location:
-```
-Fly Brain Female/
-├── neurons.csv.gz
-├── coordinates.csv.gz
-├── connections_princeton.csv.gz
-└── consolidated_cell_types.csv.gz
-```
-
-### "ModuleNotFoundError"
-**Solution**: Install dependencies:
-```bash
-cd hive
-pip install -r requirements.txt
-```
-
-### Slow performance
-**Solution**: Reduce simulation time or enable GPU:
-```bash
-pip install cupy-cuda12x  # If you have CUDA
-```
-
-## What to Expect
-
-### First Run (~1 minute)
-- Loads 139K neurons (~10 seconds)
-- Initializes oscillators (~5 seconds)
-- Runs simulation (~30-60 seconds)
-
-### Output
-- Console logs showing time, coherence, hive count
-- Final statistics (coherence, energy, hives)
-
-### Success Indicators
-- ✓ Global coherence between 0.2-0.8 (metastable)
-- ✓ Hives forming and dissolving dynamically
-- ✓ Energy remains bounded (not exploding)
-- ✓ Consciousness states transition correctly
-
-## Next Steps
-
-1. **Experiment with parameters**: Edit `config.yaml`
-2. **Run longer simulations**: Increase duration in `main.py`
-3. **Add sensory input**: Use `SensoryInterface` class
-4. **Monitor specific hives**: Access `hive_detector.active_hives`
-5. **Visualize**: Build dashboard (see plan)
-
-## Getting Help
-
-Check these files:
-- `README.md` - Project overview
-- `IMPLEMENTATION_STATUS.md` - What's implemented
-- Architecture plan in `.cursor/plans/`
-
-## Example Session
-
-```bash
-$ python hive/main.py
-Loading fly brain connectome...
-Loaded 139255 neurons, 5342447 synapses
-Building spatial index...
-Assigning natural frequencies...
-
-Frequency band distribution (139255 neurons):
-  delta  ( 0.5- 4.0 Hz):  27851 (20.0%)
-  theta  ( 4.0- 8.0 Hz):  27851 (20.0%)
-  alpha  ( 8.0-13.0 Hz):  27851 (20.0%)
-  beta   (13.0-30.0 Hz):  27851 (20.0%)
-  gamma  (30.0-100.0 Hz):  27851 (20.0%)
-
-System initialized. Ready to simulate.
-
-Running simulation for 1000.0 ms...
-
-[t=100.0ms] Coherence: 0.145 | Hives: 0 | Free neurons: 139255
-[t=200.0ms] Coherence: 0.234 | Hives: 3 | Free neurons: 139180
-[t=300.0ms] Coherence: 0.312 | Hives: 8 | Free neurons: 139087
-[t=400.0ms] Coherence: 0.298 | Hives: 12 | Free neurons: 138943
-[t=500.0ms] Coherence: 0.267 | Hives: 15 | Free neurons: 138821
-[t=600.0ms] Coherence: 0.289 | Hives: 18 | Free neurons: 138712
-[t=700.0ms] Coherence: 0.312 | Hives: 21 | Free neurons: 138634
-[t=800.0ms] Coherence: 0.298 | Hives: 23 | Free neurons: 138567
-[t=900.0ms] Coherence: 0.276 | Hives: 24 | Free neurons: 138512
-[t=1000.0ms] Coherence: 0.289 | Hives: 25 | Free neurons: 138478
-
-Final state at t=1000.0ms:
-  Global coherence: 0.289
-  Dominant frequency: 24.56 Hz
-  Total energy: 1234567.8
-  Active hives: 25
-
-Simulation complete.
-```
-
-Success! The wave-based fly brain is alive.
+Setup and first run. Read the [README](README.md) first for what the results mean
+and what they do not.
 
 ---
 
-**That's it. You're ready to explore consciousness through waves.**
+## Prerequisites
+
+- **Python 3.11 or newer** (developed on 3.14.3)
+- **Connectome data** in `Fly Brain Female/`, not distributed with this repository:
+  - `neurons.csv.gz`
+  - `coordinates.csv.gz`
+  - `connections_princeton.csv.gz`
+  - `consolidated_cell_types.csv.gz`
+- **Apple silicon** for GPU acceleration via MLX. The CPU path works everywhere but
+  is roughly 86× slower on the olfactory subgraph.
+- Around 16 GB RAM for full-brain runs.
+
+## Install
+
+```bash
+pip install -r requirements.txt
+```
+
+MLX installs only on Apple silicon. On other platforms the engine falls back to
+NumPy automatically.
+
+---
+
+## Running
+
+### Olfactory validation suite
+
+```bash
+python3 scripts/run_all_validations.py
+```
+
+Runs five olfactory benchmarks on the 10,906-neuron olfactory subgraph and writes
+`results/final/all_validations_results.json`. Takes about a minute on an M4 Pro after
+the connectome loads.
+
+Three of the five benchmarks did not reproduce their biological targets in the most
+recent run. That is the expected outcome, not a setup failure. See the README for
+which ones and why.
+
+The suite is currently unseeded, so consecutive runs give different numbers. Do not
+treat a single run as definitive.
+
+### Concentration invariance
+
+```bash
+python3 tests/concentration_invariance_test.py
+```
+
+Writes `results/final/concentration_invariance_results.json`. Three odors across a
+100-fold concentration range.
+
+### Cross-language benchmarks
+
+```bash
+python3 benchmarks/real_connectome/export_connectome.py    # once, exports binaries
+python3 benchmarks/real_connectome/python_mlx_benchmark.py
+```
+
+Rust and Julia equivalents live alongside. Note that the two benchmark families use
+opposite conventions: `rt_factor` is biology over wall clock, `realtime_ratio` is
+wall clock over biology.
+
+### Interactive demo
+
+```bash
+python3 scripts/demo.py
+```
+
+---
+
+## Configuration
+
+Physics parameters are set in the engine constructor, not in a config file:
+
+```python
+# hive/engine/sparse_probabilistic.py
+self.dt = 0.5 if fast_mode else 0.1   # ms
+self.gamma = 0.1
+```
+
+`fast_mode=True` uses a 0.5 ms timestep for roughly 5× fewer integration steps. It is
+intended for interactive use and is not used in any validation run. The accuracy cost
+has been measured informally but never written to a file, so treat it as
+uncharacterised.
+
+Timesteps above about 2 ms are numerically unstable for the APL feedback loop under
+forward Euler.
+
+`hive/config.yaml` configures the older standalone `hive/main.py` simulation, which
+is separate from the validation path.
+
+---
+
+## Common problems
+
+**`File not found: Fly Brain Female/...`** — the connectome data is not in the
+repository. Place the four `.csv.gz` files in `Fly Brain Female/` at the repository
+root.
+
+**`ModuleNotFoundError`** — run `pip install -r requirements.txt` from the repository
+root, not from `hive/`.
+
+**MLX import fails** — expected on non-Apple hardware. The engine falls back to
+NumPy. Expect roughly 150 seconds per 100 ms of simulated biology on the olfactory
+subgraph instead of 0.17 seconds.
+
+**Slower than you expected** — the simulation runs slower than real time on all
+hardware tested. 100 ms of biology takes about 170 ms of wall clock on an M4 Pro GPU.
+
+---
+
+## What to expect on a first run
+
+Loading the connectome takes 6-10 seconds. The olfactory subgraph extraction runs
+once per process. A 100 ms trial then takes roughly 0.17 seconds on GPU.
+
+Console output reports per-benchmark results as they complete, followed by a summary
+listing which passed and which failed.
+
+---
+
+## Next
+
+- [README.md](README.md) — what the results mean, and their limitations
+- [docs/00_START_HERE.md](docs/00_START_HERE.md) — documentation index
+- `results/README.md` — which artifact backs which claim

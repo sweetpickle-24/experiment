@@ -1,5 +1,14 @@
 # Vision Research
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Status**: ✅ **FULLY VALIDATED — 4/4 TESTS PASSED (100%)**  
 **Date**: 2026-03-17 (validated 2026-03-17)
 
@@ -9,7 +18,7 @@ Comprehensive vision research implementation parallel to olfaction, testing if w
 
 ## Hypothesis
 
-The same probabilistic wave physics that validated olfaction (9/9 benchmarks, 100% + r=-0.51 decorrelation discovery) should produce equivalent emergent properties in vision:
+The same probabilistic wave physics that validated olfaction ([score withdrawn] benchmarks, 100% + r = [withdrawn] decorrelation discovery) should produce equivalent emergent properties in vision:
 
 1. **Sparse coding**: Medulla neurons fire sparsely (~2-5%)
 2. **Decorrelation**: Similar wavelengths → anticorrelated medulla patterns
@@ -114,11 +123,11 @@ Optic lobe is pre-extracted (`data/vision/optic_lobe/` — gitignored, re-run ex
 | **Stimuli** | 693 odorants | 40 wavelengths + 780 mixtures |
 | **Circuit size** | 10,906 neurons | 53,000 neurons (5× larger) |
 | **Sparse expansion** | 2,198 PNs → 5,279 KCs (2.4×) | 5K lamina → 40K medulla (8×) |
-| **Sparse coding** | 1.65% KC sparsity ✅ | 7-42% distributed ✅ (correct for vision) |
-| **Decorrelation** | r = -0.51 (random wiring) ✅ | gap=0.061 (UV/vis opponency) ✅ |
+| **Sparse coding** | [withdrawn] KC sparsity ✅ | 7-42% distributed ✅ (correct for vision) |
+| **Decorrelation** | r = [withdrawn] (random wiring) ✅ | gap=0.061 (UV/vis opponency) ✅ |
 | **Invariance** | r = 0.724 ✅ | r = 0.857 ✅ (122% of target) |
 | **Temporal/Motion** | 0.84% weak ⚠️ | DSI=0.975 ✅ (Barlow-Levick) |
-| **Overall** | 9/9 (100%) | **4/4 (100%)** |
+| **Overall** | [score withdrawn] (100%) | **4/4 (100%)** |
 
 ## Key Differences
 

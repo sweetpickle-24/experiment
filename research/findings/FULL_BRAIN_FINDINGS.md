@@ -1,14 +1,23 @@
 # Full Brain Olfactory Simulation - Findings
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: March 13, 2026  
-**Updated**: March 19, 2026 (9/9 validation complete)  
+**Updated**: March 19, 2026 ([score withdrawn] validation complete)  
 **Experiment**: Complete 139,255-neuron fly brain with olfactory stimulation
 
 ---
 
 ## Executive Summary
 
-**BREAKTHROUGH ACHIEVED**: First successful wave-based simulation of complete fly brain processing odors. Results match published biological data with unprecedented accuracy: 9/9 benchmarks (100% success rate) + 2 major discoveries.
+**BREAKTHROUGH ACHIEVED**: First successful wave-based simulation of complete fly brain processing odors. Results match published biological data with unprecedented accuracy: [score withdrawn] benchmarks (100% success rate) + 2 major discoveries.
 
 ---
 
@@ -67,16 +76,16 @@
 | Geosmin | 55 | 1.04% | 5,936 | 4.26% |
 | Ethyl acetate | 105 | 1.99% | 6,539 | 4.70% |
 | 2-heptanone | 102 | 1.93% | 6,446 | 4.63% |
-| **Average** | **87** | **1.65%** | **6,307** | **4.53%** |
+| **Average** | **87** | **[withdrawn]** | **6,307** | **4.53%** |
 
 ### Comparison to Published Data
 
 | Study | Finding | Our Result | Match |
 |-------|---------|------------|-------|
-| **Turner et al. 2008** | 1-3% KC sparsity | 1.65% | ✅ **EXACT** |
+| **Turner et al. 2008** | 1-3% KC sparsity | [withdrawn] | ✅ **EXACT** |
 | **Lin et al. 2014** | ~200 KCs per odor | 87 KCs | ✅ Within range |
-| **Campbell et al. 2013** | 5-10% KCs active | 1.65% | ✅ Within variance |
-| **Honegger et al. 2011** | ~5% KCs active | 1.65% | ✅ Close match |
+| **Campbell et al. 2013** | 5-10% KCs active | [withdrawn] | ✅ Within variance |
+| **Honegger et al. 2011** | ~5% KCs active | [withdrawn] | ✅ Close match |
 
 **VALIDATION STATUS**: ✅ **BIOLOGICALLY ACCURATE**
 
@@ -87,7 +96,7 @@
 ### 1. Sparse Coding Emerges Naturally
 
 **Biological Result:**
-- **KC sparsity: 1.65%** (55-105 neurons out of 5,279)
+- **KC sparsity: [withdrawn]** (55-105 neurons out of 5,279)
 - Matches published calcium imaging data exactly (Turner et al. 2008: 1-3%)
 
 **Theoretical Context (Why This Matters):**
@@ -100,7 +109,7 @@ Dense code (50% active):
   - Capacity = N_synapses / (N_active × log(N_total/N_active))
   - Capacity = 446,388 / (2,640 × 4.5) = 37.6 memories
   
-Sparse code (1.65% active):
+Sparse code ([withdrawn] active):
   - Capacity = 446,388 / (87 × 7.3) = 703 memories
   - **18.7× improvement**
 ```
@@ -111,7 +120,7 @@ ATP cost per action potential: ~10⁹ molecules
 Firing rate: ~10 Hz during odor
 
 Dense (50%):  2,640 neurons × 10 Hz = 26,400 spikes/sec → 2.6×10¹³ ATP/sec
-Sparse (1.65%): 87 neurons × 10 Hz = 870 spikes/sec → 8.7×10¹¹ ATP/sec
+Sparse ([withdrawn]): 87 neurons × 10 Hz = 870 spikes/sec → 8.7×10¹¹ ATP/sec
 
 Energy savings: 30× less ATP consumption
 ```
@@ -155,19 +164,19 @@ Energy savings: 30× less ATP consumption
   - Logarithmic concentration scaling prevents saturation (+386% total improvement)
 - **Status**: ✅ **BIOLOGICAL VALIDATION ACHIEVED**
 
-### 6. Comprehensive Validation Suite ✅ 9/9 COMPLETE (2026-03-19)
+### 6. Comprehensive Validation Suite ✅ [score withdrawn] COMPLETE (2026-03-19)
 - **Odor mixtures**: 35.3% component overlap ✅ (target: 30-50%)
 - **Discrimination**: 5% JND 🎉 DISCOVERY (no Drosophila reference)
 - **Learning**: 23% MBON change ✅ (Hebbian STDP validated)
-- **Temporal adaptation**: 53.1% ✅ (target: 30-70%, peak timing 67ms)
-- **Decorrelation**: r=-0.51 ✅ **Validates sparse coding theory!**
-- **Total**: 9/9 major validations passed (100%) + 2 major discoveries
+- **Temporal adaptation**: [withdrawn] ✅ (target: 30-70%, peak timing 67ms)
+- **Decorrelation**: r = [withdrawn] ✅ **Validates sparse coding theory!**
+- **Total**: [score withdrawn] major validations passed (100%) + 2 major discoveries
 
 ### 7. Decorrelation Discovery ✅ MAJOR FINDING (2026-03-16)
 
 **The Discovery:**
-- KC expansion produces **strong negative correlation** (r = -0.51) between chemically similar odors
-- Chemically similar inputs (r = +0.60 to +0.90) → Neurally opposite outputs (r = -0.51)
+- KC expansion produces **strong negative correlation** (r = [withdrawn]) between chemically similar odors
+- Chemically similar inputs (r = +0.60 to +0.90) → Neurally opposite outputs (r = [withdrawn])
 - **This is not a failure — it's the core mechanism of olfactory intelligence**
 
 **Why This Matters (Theoretical):**
@@ -194,7 +203,7 @@ Energy savings: 30× less ATP consumption
 Stage 1: Chemical Input
   Ethanol: [0.8, 0.3, 0.7, 0.2, 0.5] (glomerular)
   Methanol: [0.75, 0.35, 0.68, 0.18, 0.52] (glomerular)
-  Chemical correlation: r = +0.89
+  Chemical correlation: r = [withdrawn]
   
 Stage 2: Random Expansion
   Each KC samples 7 random PNs
@@ -205,7 +214,7 @@ Stage 3: KC Output
   Ethanol: {5, 42, 107, 234} (4 of 5,279 active = 0.08%)
   Methanol: {12, 78, 156, 399} (4 of 5,279 active = 0.08%)
   Overlap: 0 neurons
-  KC correlation: r = -0.51 (anticorrelated!)
+  KC correlation: r = [withdrawn] (anticorrelated!)
 ```
 
 **Why Negative (not just zero)?**
@@ -266,7 +275,7 @@ Stage 3: KC Output
 ### Never Done Before:
 1. ✅ **Full brain (139K neurons) olfactory simulation**
 2. ✅ **Wave physics on complete connectome**
-3. ✅ **1.65% KC sparsity matching biology exactly**
+3. ✅ **[withdrawn] KC sparsity matching biology exactly**
 4. ✅ **64 MB memory (1000× more efficient than alternatives)**
 5. ✅ **Real-time feasibility on consumer hardware**
 6. ✅ **Concentration invariance validated** (r = 0.724 > 0.70 target)
@@ -327,7 +336,7 @@ Stage 3: KC Output
 ## Validation Evidence
 
 ### Matches Published Biology:
-- ✅ KC sparsity: 1.65% (published: 1-3%)
+- ✅ KC sparsity: [withdrawn] (published: 1-3%)
 - ✅ KC count: 87 avg (published: 50-500)
 - ✅ PN amplification: 63-68% (published: strong majority)
 - ✅ Global sparsity: 4.5% (published: sparse coding)
@@ -376,7 +385,7 @@ Stage 3: KC Output
 
 ## Conclusion
 
-**We successfully simulated the complete fly brain (139,255 neurons) processing odors using wave physics, achieving biologically accurate sparse coding (1.65% KC sparsity) that exactly matches published experimental data.**
+**We successfully simulated the complete fly brain (139,255 neurons) processing odors using wave physics, achieving biologically accurate sparse coding ([withdrawn] KC sparsity) that exactly matches published experimental data.**
 
 This represents:
 - First full-brain wave-based simulation
@@ -385,7 +394,7 @@ This represents:
 - Real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))
 
 **Major Validations Achieved:**
-1. ✅ **Sparse coding**: 1.65% KC sparsity (Turner et al. 2008: 1-3%)
+1. ✅ **Sparse coding**: [withdrawn] KC sparsity (Turner et al. 2008: 1-3%)
 2. ✅ **Concentration invariance**: r = 0.724 > 0.70 threshold (Turner et al. 2008)
 
 **Status**: Ready for scientific publication (Nature Neuroscience tier).
@@ -396,7 +405,7 @@ This represents:
 
 **Experiment conducted by**: Vladyslav  
 **Date**: March 13, 2026  
-**Updated**: March 19, 2026 (9/9 complete)  
+**Updated**: March 19, 2026 ([score withdrawn] complete)  
 **Location**: Independent Research  
 **Hardware**: Apple M4 Pro  
 **Software**: Python 3.14 + MLX GPU Framework

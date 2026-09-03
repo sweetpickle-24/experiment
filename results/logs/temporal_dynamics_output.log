@@ -1,0 +1,255 @@
+2026-03-15 22:09:43,493 - INFO - ======================================================================
+2026-03-15 22:09:43,493 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-15 22:09:43,493 - INFO - ======================================================================
+2026-03-15 22:09:43,493 - INFO - Loading full brain connectome...
+2026-03-15 22:10:24,585 - INFO - ======================================================================
+2026-03-15 22:10:24,585 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-15 22:10:24,585 - INFO - ======================================================================
+2026-03-15 22:10:24,585 - INFO - Loading full brain connectome...
+2026-03-15 22:10:30,712 - INFO -   Loaded 139255 total neurons
+2026-03-15 22:10:30,712 - INFO - Extracting olfactory pathway...
+2026-03-15 22:10:31,225 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-15 22:10:31,225 - INFO - Creating sparse probabilistic brain...
+2026-03-17 13:56:21,670 - INFO - ======================================================================
+2026-03-17 13:56:21,671 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-17 13:56:21,671 - INFO - ======================================================================
+2026-03-17 13:56:21,671 - INFO - Loading full brain connectome...
+2026-03-17 13:56:26,745 - INFO -   Loaded 139255 total neurons
+2026-03-17 13:56:26,745 - INFO - Extracting olfactory pathway...
+2026-03-17 13:56:27,166 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-17 13:56:27,167 - INFO - Creating sparse probabilistic brain...
+2026-03-17 13:56:57,248 - INFO - ======================================================================
+2026-03-17 13:56:57,248 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-17 13:56:57,248 - INFO - ======================================================================
+2026-03-17 13:56:57,248 - INFO - Loading full brain connectome...
+2026-03-17 13:57:02,428 - INFO -   Loaded 139255 total neurons
+2026-03-17 13:57:02,429 - INFO - Extracting olfactory pathway...
+2026-03-17 13:57:02,835 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-17 13:57:02,835 - INFO - Creating sparse probabilistic brain...
+2026-03-17 13:57:03,026 - INFO - Backend: MLX (GPU)
+2026-03-17 13:57:03,026 - INFO - Initializing DOoR database...
+2026-03-17 13:57:03,026 - INFO - 
+======================================================================
+2026-03-17 13:57:03,026 - INFO - Testing odor: benzaldehyde
+2026-03-17 13:57:03,026 - INFO - ======================================================================
+2026-03-17 13:57:03,026 - INFO - Testing temporal dynamics for: benzaldehyde
+2026-03-17 13:57:40,606 - INFO - ======================================================================
+2026-03-17 13:57:40,606 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-17 13:57:40,606 - INFO - ======================================================================
+2026-03-17 13:57:40,606 - INFO - Loading full brain connectome...
+2026-03-17 13:57:45,777 - INFO -   Loaded 139255 total neurons
+2026-03-17 13:57:45,777 - INFO - Extracting olfactory pathway...
+2026-03-17 13:57:46,199 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-17 13:57:46,199 - INFO - Creating sparse probabilistic brain...
+2026-03-17 13:57:46,390 - INFO - Backend: MLX (GPU)
+2026-03-17 13:57:46,391 - INFO - Initializing DOoR database...
+2026-03-17 13:57:46,391 - INFO - 
+======================================================================
+2026-03-17 13:57:46,391 - INFO - Testing odor: benzaldehyde
+2026-03-17 13:57:46,391 - INFO - ======================================================================
+2026-03-17 13:57:46,391 - INFO - Testing temporal dynamics for: benzaldehyde
+2026-03-17 13:58:54,791 - INFO - ======================================================================
+2026-03-17 13:58:54,791 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-17 13:58:54,791 - INFO - ======================================================================
+2026-03-17 13:58:54,791 - INFO - Loading full brain connectome...
+2026-03-17 13:59:00,041 - INFO -   Loaded 139255 total neurons
+2026-03-17 13:59:00,041 - INFO - Extracting olfactory pathway...
+2026-03-17 13:59:00,443 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-17 13:59:00,443 - INFO - Creating sparse probabilistic brain...
+2026-03-17 13:59:00,634 - INFO - Backend: MLX (GPU)
+2026-03-17 13:59:00,634 - INFO - Initializing DOoR database...
+2026-03-17 13:59:00,634 - INFO - 
+======================================================================
+2026-03-17 13:59:00,634 - INFO - Testing odor: benzaldehyde
+2026-03-17 13:59:00,634 - INFO - ======================================================================
+2026-03-17 13:59:00,634 - INFO - Testing temporal dynamics for: benzaldehyde
+2026-03-17 13:59:01,262 - INFO -   t=10ms: 114 active KCs, mean=0.0001
+2026-03-17 13:59:05,830 - INFO -   t=110ms: 99 active KCs, mean=0.0003
+2026-03-17 13:59:10,406 - INFO -   t=210ms: 98 active KCs, mean=0.0003
+2026-03-17 13:59:14,990 - INFO -   t=310ms: 98 active KCs, mean=0.0003
+2026-03-17 13:59:19,564 - INFO -   t=410ms: 97 active KCs, mean=0.0003
+2026-03-17 13:59:24,096 - INFO -   t=510ms: 96 active KCs, mean=0.0003
+2026-03-17 13:59:28,624 - INFO -   t=610ms: 98 active KCs, mean=0.0003
+2026-03-17 13:59:33,163 - INFO -   t=710ms: 96 active KCs, mean=0.0003
+2026-03-17 13:59:37,748 - INFO -   t=810ms: 97 active KCs, mean=0.0003
+2026-03-17 13:59:42,331 - INFO -   t=910ms: 97 active KCs, mean=0.0003
+2026-03-17 13:59:46,916 - INFO -   t=1010ms: 96 active KCs, mean=0.0003
+2026-03-17 13:59:51,514 - INFO -   t=1110ms: 98 active KCs, mean=0.0003
+2026-03-17 13:59:56,098 - INFO -   t=1210ms: 96 active KCs, mean=0.0003
+2026-03-17 14:00:00,689 - INFO -   t=1310ms: 95 active KCs, mean=0.0003
+2026-03-17 14:00:05,287 - INFO -   t=1410ms: 95 active KCs, mean=0.0003
+2026-03-17 14:00:09,830 - INFO -   t=1510ms: 93 active KCs, mean=0.0003
+2026-03-17 14:00:14,440 - INFO -   t=1610ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:19,054 - INFO -   t=1710ms: 91 active KCs, mean=0.0003
+2026-03-17 14:00:23,634 - INFO -   t=1810ms: 90 active KCs, mean=0.0003
+2026-03-17 14:00:28,198 - INFO -   t=1910ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:32,794 - INFO -   t=2010ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:37,309 - INFO -   t=2110ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:41,843 - INFO -   t=2210ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:46,351 - INFO -   t=2310ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:50,877 - INFO -   t=2410ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:55,392 - INFO -   t=2510ms: 92 active KCs, mean=0.0003
+2026-03-17 14:00:59,893 - INFO -   t=2610ms: 92 active KCs, mean=0.0003
+2026-03-17 14:01:04,427 - INFO -   t=2710ms: 92 active KCs, mean=0.0003
+2026-03-17 14:01:08,968 - INFO -   t=2810ms: 92 active KCs, mean=0.0003
+2026-03-17 14:01:13,474 - INFO -   t=2910ms: 92 active KCs, mean=0.0003
+2026-03-17 14:01:17,552 - INFO - 
+📊 Temporal Analysis for benzaldehyde:
+2026-03-17 14:05:23,066 - INFO - ======================================================================
+2026-03-17 14:05:23,066 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-17 14:05:23,066 - INFO - ======================================================================
+2026-03-17 14:05:23,066 - INFO - Loading full brain connectome...
+2026-03-17 14:05:28,185 - INFO -   Loaded 139255 total neurons
+2026-03-17 14:05:28,185 - INFO - Extracting olfactory pathway...
+2026-03-17 14:05:28,585 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-17 14:05:28,585 - INFO - Creating sparse probabilistic brain...
+2026-03-17 14:05:28,774 - INFO - Backend: MLX (GPU)
+2026-03-17 14:05:28,775 - INFO - Initializing DOoR database...
+2026-03-17 14:05:28,775 - INFO - 
+======================================================================
+2026-03-17 14:05:28,775 - INFO - Testing odor: benzaldehyde
+2026-03-17 14:05:28,775 - INFO - ======================================================================
+2026-03-17 14:05:28,775 - INFO - Testing temporal dynamics for: benzaldehyde
+2026-03-17 14:05:29,401 - INFO -   t=10ms: 114 active KCs, mean=0.0001
+2026-03-17 14:05:33,934 - INFO -   t=110ms: 99 active KCs, mean=0.0003
+2026-03-17 14:05:38,498 - INFO -   t=210ms: 98 active KCs, mean=0.0003
+2026-03-17 14:05:43,056 - INFO -   t=310ms: 99 active KCs, mean=0.0003
+2026-03-17 14:05:47,638 - INFO -   t=410ms: 97 active KCs, mean=0.0003
+2026-03-17 14:05:52,222 - INFO -   t=510ms: 96 active KCs, mean=0.0003
+2026-03-17 14:05:56,800 - INFO -   t=610ms: 98 active KCs, mean=0.0003
+2026-03-17 14:06:01,375 - INFO -   t=710ms: 96 active KCs, mean=0.0003
+2026-03-17 14:06:05,960 - INFO -   t=810ms: 97 active KCs, mean=0.0003
+2026-03-17 14:06:10,534 - INFO -   t=910ms: 97 active KCs, mean=0.0003
+2026-03-17 14:06:15,117 - INFO -   t=1010ms: 96 active KCs, mean=0.0003
+2026-03-17 14:06:19,682 - INFO -   t=1110ms: 98 active KCs, mean=0.0003
+2026-03-17 14:06:24,223 - INFO -   t=1210ms: 96 active KCs, mean=0.0003
+2026-03-17 14:06:28,824 - INFO -   t=1310ms: 95 active KCs, mean=0.0003
+2026-03-17 14:06:33,409 - INFO -   t=1410ms: 95 active KCs, mean=0.0003
+2026-03-17 14:06:37,997 - INFO -   t=1510ms: 93 active KCs, mean=0.0003
+2026-03-17 14:06:42,586 - INFO -   t=1610ms: 92 active KCs, mean=0.0003
+2026-03-17 14:06:47,220 - INFO -   t=1710ms: 91 active KCs, mean=0.0003
+2026-03-17 14:06:51,851 - INFO -   t=1810ms: 90 active KCs, mean=0.0003
+2026-03-17 14:06:56,517 - INFO -   t=1910ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:01,123 - INFO -   t=2010ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:05,734 - INFO -   t=2110ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:10,288 - INFO -   t=2210ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:14,901 - INFO -   t=2310ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:19,515 - INFO -   t=2410ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:24,134 - INFO -   t=2510ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:28,735 - INFO -   t=2610ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:33,331 - INFO -   t=2710ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:37,935 - INFO -   t=2810ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:42,568 - INFO -   t=2910ms: 92 active KCs, mean=0.0003
+2026-03-17 14:07:46,707 - INFO - 
+📊 Temporal Analysis for benzaldehyde:
+2026-03-17 14:07:46,707 - INFO -   Onset latency: N/A (no threshold crossing) (target: 50-100 ms)
+2026-03-17 14:07:46,707 - INFO -   Peak time: 150.0 ms (target: 100-500 ms)
+2026-03-17 14:07:46,707 - INFO -   Peak activity: 97 KCs
+2026-03-17 14:07:46,707 - INFO -   Adaptation (1s→2s): 3.2% (target: 30-70%)
+2026-03-17 14:07:46,707 - INFO -   Sustained response: 91.9 KCs
+2026-03-17 14:07:46,707 - INFO - 
+======================================================================
+2026-03-17 14:07:46,708 - INFO - Testing odor: 2-heptanone
+2026-03-17 14:07:46,708 - INFO - ======================================================================
+2026-03-17 14:07:46,708 - INFO - Testing temporal dynamics for: 2-heptanone
+2026-03-17 14:07:47,318 - INFO -   t=10ms: 129 active KCs, mean=0.0001
+2026-03-17 14:07:51,934 - INFO -   t=110ms: 164 active KCs, mean=0.0003
+2026-03-17 14:07:56,559 - INFO -   t=210ms: 160 active KCs, mean=0.0003
+2026-03-17 14:08:01,194 - INFO -   t=310ms: 161 active KCs, mean=0.0003
+2026-03-17 14:08:05,834 - INFO -   t=410ms: 160 active KCs, mean=0.0003
+2026-03-17 14:08:10,474 - INFO -   t=510ms: 160 active KCs, mean=0.0002
+2026-03-17 14:08:15,104 - INFO -   t=610ms: 161 active KCs, mean=0.0002
+2026-03-17 14:08:19,790 - INFO -   t=710ms: 156 active KCs, mean=0.0002
+2026-03-17 14:08:24,458 - INFO -   t=810ms: 159 active KCs, mean=0.0002
+2026-03-17 14:08:29,112 - INFO -   t=910ms: 159 active KCs, mean=0.0002
+2026-03-17 14:08:33,719 - INFO -   t=1010ms: 158 active KCs, mean=0.0002
+2026-03-17 14:08:38,310 - INFO -   t=1110ms: 158 active KCs, mean=0.0002
+2026-03-17 14:08:42,929 - INFO -   t=1210ms: 158 active KCs, mean=0.0002
+2026-03-17 14:08:47,529 - INFO -   t=1310ms: 158 active KCs, mean=0.0002
+2026-03-17 14:08:52,176 - INFO -   t=1410ms: 158 active KCs, mean=0.0002
+2026-03-17 14:08:56,775 - INFO -   t=1510ms: 154 active KCs, mean=0.0002
+2026-03-17 14:09:01,383 - INFO -   t=1610ms: 152 active KCs, mean=0.0002
+2026-03-17 14:09:05,980 - INFO -   t=1710ms: 154 active KCs, mean=0.0002
+2026-03-17 14:09:10,588 - INFO -   t=1810ms: 149 active KCs, mean=0.0002
+2026-03-17 14:09:15,214 - INFO -   t=1910ms: 152 active KCs, mean=0.0002
+2026-03-17 14:09:19,902 - INFO -   t=2010ms: 155 active KCs, mean=0.0002
+2026-03-17 14:09:24,546 - INFO -   t=2110ms: 155 active KCs, mean=0.0002
+2026-03-17 14:09:29,199 - INFO -   t=2210ms: 151 active KCs, mean=0.0002
+2026-03-17 14:09:33,857 - INFO -   t=2310ms: 155 active KCs, mean=0.0002
+2026-03-17 14:09:38,509 - INFO -   t=2410ms: 150 active KCs, mean=0.0002
+2026-03-17 14:09:43,029 - INFO -   t=2510ms: 158 active KCs, mean=0.0002
+2026-03-17 14:09:47,693 - INFO -   t=2610ms: 154 active KCs, mean=0.0002
+2026-03-17 14:09:52,342 - INFO -   t=2710ms: 153 active KCs, mean=0.0002
+2026-03-17 14:09:56,949 - INFO -   t=2810ms: 154 active KCs, mean=0.0002
+2026-03-17 14:10:01,582 - INFO -   t=2910ms: 153 active KCs, mean=0.0002
+2026-03-17 14:10:05,807 - INFO - 
+📊 Temporal Analysis for 2-heptanone:
+2026-03-17 14:10:05,807 - INFO -   Onset latency: N/A (no threshold crossing) (target: 50-100 ms)
+2026-03-17 14:10:05,807 - INFO -   Peak time: 130.0 ms (target: 100-500 ms)
+2026-03-17 14:10:05,807 - INFO -   Peak activity: 166 KCs
+2026-03-17 14:10:05,807 - INFO -   Adaptation (1s→2s): -2.5% (target: 30-70%)
+2026-03-17 14:10:05,807 - INFO -   Sustained response: 152.8 KCs
+2026-03-17 14:10:05,807 - INFO - 
+======================================================================
+2026-03-17 14:10:05,807 - INFO - Testing odor: geosmin
+2026-03-17 14:10:05,807 - INFO - ======================================================================
+2026-03-17 14:10:05,807 - INFO - Testing temporal dynamics for: geosmin
+2026-03-17 14:10:06,428 - INFO -   t=10ms: 115 active KCs, mean=0.0001
+2026-03-17 14:10:11,097 - INFO -   t=110ms: 138 active KCs, mean=0.0002
+2026-03-17 14:10:15,720 - INFO -   t=210ms: 137 active KCs, mean=0.0002
+2026-03-17 14:10:20,383 - INFO -   t=310ms: 131 active KCs, mean=0.0002
+2026-03-17 14:10:25,022 - INFO -   t=410ms: 127 active KCs, mean=0.0002
+2026-03-17 14:10:29,636 - INFO -   t=510ms: 130 active KCs, mean=0.0002
+2026-03-17 14:10:34,248 - INFO -   t=610ms: 133 active KCs, mean=0.0002
+2026-03-17 14:10:38,854 - INFO -   t=710ms: 131 active KCs, mean=0.0002
+2026-03-17 14:10:43,501 - INFO -   t=810ms: 134 active KCs, mean=0.0002
+2026-03-17 14:10:48,167 - INFO -   t=910ms: 130 active KCs, mean=0.0002
+2026-03-17 14:10:52,782 - INFO -   t=1010ms: 131 active KCs, mean=0.0002
+2026-03-17 14:10:57,400 - INFO -   t=1110ms: 128 active KCs, mean=0.0002
+2026-03-17 14:11:02,010 - INFO -   t=1210ms: 135 active KCs, mean=0.0002
+2026-03-17 14:11:06,622 - INFO -   t=1310ms: 131 active KCs, mean=0.0002
+2026-03-17 14:11:11,236 - INFO -   t=1410ms: 129 active KCs, mean=0.0002
+2026-03-17 14:11:15,883 - INFO -   t=1510ms: 128 active KCs, mean=0.0002
+2026-03-17 14:11:20,526 - INFO -   t=1610ms: 130 active KCs, mean=0.0002
+2026-03-17 14:11:25,136 - INFO -   t=1710ms: 131 active KCs, mean=0.0002
+2026-03-17 14:11:29,763 - INFO -   t=1810ms: 127 active KCs, mean=0.0002
+2026-03-17 14:11:34,374 - INFO -   t=1910ms: 132 active KCs, mean=0.0002
+2026-03-17 14:11:38,935 - INFO -   t=2010ms: 131 active KCs, mean=0.0002
+2026-03-17 14:11:43,526 - INFO -   t=2110ms: 131 active KCs, mean=0.0002
+2026-03-17 14:11:48,196 - INFO -   t=2210ms: 132 active KCs, mean=0.0002
+2026-03-17 14:11:52,847 - INFO -   t=2310ms: 136 active KCs, mean=0.0002
+2026-03-17 14:11:57,469 - INFO -   t=2410ms: 133 active KCs, mean=0.0002
+2026-03-17 14:12:02,081 - INFO -   t=2510ms: 134 active KCs, mean=0.0002
+2026-03-17 14:12:06,691 - INFO -   t=2610ms: 134 active KCs, mean=0.0002
+2026-03-17 14:12:11,338 - INFO -   t=2710ms: 133 active KCs, mean=0.0002
+2026-03-17 14:12:15,962 - INFO -   t=2810ms: 137 active KCs, mean=0.0002
+2026-03-17 14:12:20,647 - INFO -   t=2910ms: 131 active KCs, mean=0.0002
+2026-03-17 14:12:24,805 - INFO - 
+📊 Temporal Analysis for geosmin:
+2026-03-17 14:12:24,805 - INFO -   Onset latency: N/A (no threshold crossing) (target: 50-100 ms)
+2026-03-17 14:12:24,805 - INFO -   Peak time: 80.0 ms (target: 100-500 ms)
+2026-03-17 14:12:24,805 - INFO -   Peak activity: 135 KCs
+2026-03-17 14:12:24,805 - INFO -   Adaptation (1s→2s): 0.4% (target: 30-70%)
+2026-03-17 14:12:24,805 - INFO -   Sustained response: 134.0 KCs
+2026-03-17 14:12:24,805 - INFO - 
+======================================================================
+2026-03-17 14:12:24,805 - INFO - SUMMARY - TEMPORAL DYNAMICS
+2026-03-17 14:12:24,805 - INFO - ======================================================================
+2026-03-17 14:12:24,805 - INFO - 
+📊 Peak Time:
+2026-03-17 14:12:24,805 - INFO -    Mean: 120.0 ms
+2026-03-17 14:12:24,805 - INFO -    Range: [80.0, 150.0] ms
+2026-03-17 14:12:24,805 - INFO -    Target: [100, 500] ms
+2026-03-17 14:12:24,805 - INFO -    Status: ✅ PASS
+2026-03-17 14:12:24,805 - INFO - 
+📊 Adaptation (1s→2s):
+2026-03-17 14:12:24,805 - INFO -    Mean: 0.4%
+2026-03-17 14:12:24,805 - INFO -    Range: [-2.5, 3.2]%
+2026-03-17 14:12:24,805 - INFO -    Target: [30, 70]%
+2026-03-17 14:12:24,805 - INFO -    Status: ❌ FAIL
+2026-03-17 14:12:24,806 - INFO - 
+✅ Results saved to temporal_dynamics_results.json
+2026-03-17 14:12:24,806 - INFO - 
+======================================================================
+2026-03-17 14:12:24,806 - INFO - TEMPORAL DYNAMICS VALIDATION COMPLETE
+2026-03-17 14:12:24,806 - INFO - ======================================================================

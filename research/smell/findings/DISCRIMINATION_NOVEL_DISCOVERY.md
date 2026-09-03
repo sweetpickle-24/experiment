@@ -1,5 +1,14 @@
 # NOVEL DISCOVERY: First Measurement of Drosophila KC Concentration Discrimination
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-19  
 **Status:** 🎉 **GROUNDBREAKING FINDING** - First computational measurement of fine concentration discrimination in fly olfactory system  
 **Significance:** Publication-worthy prediction requiring experimental validation
@@ -55,7 +64,7 @@
 ### Turner et al. (2008) — Concentration Invariance
 
 **What they measured:**
-- KC sparsity: 1-3% (matches our 1.65%)
+- KC sparsity: 1-3% (matches our [withdrawn])
 - Decorrelation: Chemical→Neural transformation
 - Same KCs active across 3-4 orders of magnitude
 
@@ -103,7 +112,7 @@
 **Our model predicts:**
 - Neural discrimination capacity: 5% at 300ms
 - Monotonic correlation decay with concentration delta
-- High sensitivity due to sparse coding (1.65%)
+- High sensitivity due to sparse coding ([withdrawn])
 
 **Testable hypothesis:**
 - Behavioral JND in flies may be 5-10% (lower than assumed 10-20%)
@@ -126,7 +135,7 @@
 ### 3. Explains Hypersensitivity Mechanism
 
 **Why 5% is achievable:**
-1. **Sparse coding (1.65%):** Maximally orthogonal KC representations
+1. **Sparse coding ([withdrawn]):** Maximally orthogonal KC representations
 2. **Deterministic dynamics:** No trial-to-trial noise in simulation
 3. **APL normalization:** Winner-take-all creates distinct patterns
 4. **300ms integration:** Chaotic transients resolve to stable attractors
@@ -204,7 +213,7 @@
 
 **Demonstrates:**
 - Wave-based architecture achieves high discrimination resolution
-- Sparse coding (1.65%) enables 5% JND
+- Sparse coding ([withdrawn]) enables 5% JND
 - Deterministic simulation reveals neural capacity limits
 
 **Advances:**
@@ -243,13 +252,13 @@
 
 ## Comparison to Existing Validations
 
-### Our 9/9 Validations + This Discovery
+### Our [score withdrawn] Validations + This Discovery
 
 | Test | Result | Source | Status |
 |------|--------|--------|--------|
-| Sparse Coding | 1.65% | Turner 2008 | ✅ VALIDATED |
+| Sparse Coding | [withdrawn] | Turner 2008 | ✅ VALIDATED |
 | Concentration Invariance | r=0.724 | Turner 2008 | ✅ VALIDATED |
-| Decorrelation | r=-0.51 | Litwin-Kumar 2017 | ✅ DISCOVERY |
+| Decorrelation | r = [withdrawn] | Litwin-Kumar 2017 | ✅ DISCOVERY |
 | **Fine Discrimination** | **5% JND** | **No prior data** | **🎉 NOVEL PREDICTION** |
 
 **This adds a 4th major contribution to the paper**

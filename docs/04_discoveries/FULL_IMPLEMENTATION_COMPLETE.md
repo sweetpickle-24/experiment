@@ -1,5 +1,14 @@
 # COMPLETE IMPLEMENTATION - Wave-Based Fly Brain
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 ## Status: 100% FULLY FUNCTIONAL ✅
 
 All systems have been **fully implemented** with production-quality code. No stubs, no placeholders - everything works.
@@ -240,7 +249,7 @@ Final state at t=2000.0ms:
 ## Performance
 
 - **Lines of code**: 4,500+ (implementation only)
-- **Systems**: 11/11 fully operational
+- **Systems**: [score withdrawn] fully operational
 - **Files**: 35 Python modules
 - **No stubs**: Everything implemented
 - **No TODOs**: All complete
@@ -299,5 +308,5 @@ No stubs. No placeholders. No "TODO" comments.
 
 Date: March 11, 2026  
 Lines Added: 3,000+  
-Systems: 11/11 Operational  
+Systems: [score withdrawn] Operational  
 Status: **COMPLETE** ✅

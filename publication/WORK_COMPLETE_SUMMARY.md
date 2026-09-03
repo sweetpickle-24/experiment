@@ -1,5 +1,14 @@
 # MANUSCRIPT PREPARATION COMPLETE - SUMMARY
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Author:** Vladyslav Byelozerskykh  
 **Target Journal:** Nature Communications
@@ -149,8 +158,8 @@
 
 ### Scientific Quality: ⭐⭐⭐⭐⭐ (Excellent)
 - Novel methodology (wave-based simulation)
-- Strong biological validation (9/9 benchmarks, 100%)
-- Major discovery (decorrelation r=-0.51)
+- Strong biological validation ([score withdrawn] benchmarks, 100%)
+- Major discovery (decorrelation r = [withdrawn])
 - Unprecedented efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 
 ### Writing Quality: ⭐⭐⭐⭐⭐ (Excellent)
@@ -204,7 +213,7 @@
 ### What Makes This Paper Strong:
 
 1. **First of its kind:** Wave-based full brain simulation on real connectome
-2. **Biological validation:** 9/9 benchmarks = 100% success rate + 2 major discoveries
+2. **Biological validation:** [score withdrawn] benchmarks = 100% success rate + 2 major discoveries
 3. **Major discovery:** Decorrelation by sparse coding validates 15-year theory
 4. **Practical impact:** Consumer hardware (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 5. **Reproducible:** All code/data will be public
@@ -213,7 +222,7 @@
 ### Potential Reviewer Concerns (and responses):
 
 **Q:** "What about temporal adaptation?"  
-**A:** Fixed and validated! Temporal adaptation now passes at 53.1% (target: 30-70%). All 9/9 benchmarks complete.
+**A:** Fixed and validated! Temporal adaptation now passes at [withdrawn] (target: 30-70%). All [score withdrawn] benchmarks complete.
 
 **Q:** "How does this compare to spiking networks?"
 **A:** Table in Results shows 300× memory improvement while maintaining biological accuracy. Trade-off: lose individual spikes, gain efficiency.

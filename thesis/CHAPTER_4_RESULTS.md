@@ -1,5 +1,14 @@
 # Chapter 4: Results
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 ---
 
 ## 4.1 Digital Smell Signatures
@@ -100,7 +109,7 @@ Weak approach signal
 - Consistent with Weber's law (Borst & Heisenberg 1982)
 
 **6. Decorrelation by Sparse Expansion Coding** ✅ **MAJOR DISCOVERY (2026-03-16)**
-- **Finding**: Chemically similar odors produce negatively correlated KC patterns (r = -0.51)
+- **Finding**: Chemically similar odors produce negatively correlated KC patterns (r = [withdrawn])
 - **Mechanism**: 2.4× sparse expansion (2,198 PNs → 5,279 KCs) + random connectivity
 - **Validation**: First computational proof of Litwin-Kumar et al. (2017) theoretical prediction
 - **Impact**: Explains why flies can discriminate 1000+ odors with only 5,279 KCs
@@ -115,23 +124,23 @@ Weak approach signal
 **Results**:
 - **Memory**: 64 MB (full brain)
 - **Speed**: 26s per 100ms (0.54× real-time (olfactory pathway, 1.87× slower than RT) on M4 Pro)
-- **Validation**: 1.65% KC sparsity (matches Turner et al. 2008 exactly)
+- **Validation**: [withdrawn] KC sparsity (matches Turner et al. 2008 exactly)
 - **Global activity**: 4.5% of brain active during odor processing
 
 **Status**: ✅ Multi-modal integration feasible (vision + smell + motor) on consumer hardware.
 
-## 4.6 Comprehensive Validation Suite ✅ **9/9 BENCHMARKS PASSED** 🎉
+## 4.6 Comprehensive Validation Suite ✅ **[score withdrawn] BENCHMARKS PASSED** 🎉
 
 | Test | Target | Result | Status |
 |------|--------|--------|--------|
-| Sparse coding | 1-3% | 1.65% | ✅ PASS |
+| Sparse coding | 1-3% | [withdrawn] | ✅ PASS |
 | Concentration invariance | r > 0.70 | r = 0.724 | ✅ PASS |
 | Odor mixtures | 30-50% overlap | 35.3% | ✅ PASS |
 | Discrimination | Unknown | 5% JND | 🎉 DISCOVERY |
 | Learning | Hebbian STDP | 23% MBON | ✅ PASS |
 | Peak timing | 50-150ms | 67ms | ✅ PASS |
 | Full brain | 3-6% global | 4.5% | ✅ PASS |
-| Decorrelation | Unknown | r = -0.51 | 🎉 DISCOVERY |
-| Temporal adaptation | 30-70% | 53.1% | ✅ PASS |
+| Decorrelation | Unknown | r = [withdrawn] | 🎉 DISCOVERY |
+| Temporal adaptation | 30-70% | [withdrawn] | ✅ PASS |
 
-**Overall Score**: 9/9 COMPLETE (100%) + 2 MAJOR DISCOVERIES - **Ready for Nature Neuroscience**
+**Overall Score**: [score withdrawn] COMPLETE (100%) + 2 MAJOR DISCOVERIES - **Ready for Nature Neuroscience**

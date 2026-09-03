@@ -1,14 +1,23 @@
 # FINAL VALIDATION STATUS - ALL TESTS COMPLETE
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19 (Updated)  
-**Status**: ✅ **9/9 COMPLETE + 2 MAJOR DISCOVERIES** 🎉
+**Status**: ✅ **[score withdrawn] COMPLETE + 2 MAJOR DISCOVERIES** 🎉
 
 ---
 
 ## ✅ COMPLETE VALIDATION RESULTS
 
 ### 1. Sparse Coding ✅ PASS
-- **Result**: 1.65% KC sparsity
+- **Result**: [withdrawn] KC sparsity
 - **Target**: 1-3% (Turner et al. 2008)
 - **Status**: ✅ Perfect match
 
@@ -29,7 +38,7 @@
 - **Details**: See research/smell/findings/DISCRIMINATION_NOVEL_DISCOVERY.md
 
 ### 5. **Decorrelation Discovery** 🎉 **MAJOR WIN**
-- **Result**: r = -0.51 (chemical vs neural similarity)
+- **Result**: r = [withdrawn] (chemical vs neural similarity)
 - **Expected (naively)**: r = 0.3-0.5 positive
 - **Actual (biological)**: Strong decorrelation expected!
 - **Status**: ✅ **Validates sparse coding theory** (Caron et al. 2013, Litwin-Kumar et al. 2017)
@@ -52,7 +61,7 @@
 - **Status**: ✅ Ultra-sparse proven
 
 ### 9. Temporal Adaptation ✅ PASS
-- **Result**: 53.1% adaptation (peak to 500ms)
+- **Result**: [withdrawn] adaptation (peak to 500ms)
 - **Target**: 30-70% (Nagel & Wilson 2011)
 - **Peak timing**: 67ms (within 50-150ms, Stopfer 2003)
 - **Status**: ✅ Both peak and adaptation validated
@@ -61,11 +70,11 @@
 
 ---
 
-## 📊 FINAL SCORE: 9/9 COMPLETE + 2 MAJOR DISCOVERIES 🎉
+## 📊 FINAL SCORE: [score withdrawn] COMPLETE + 2 MAJOR DISCOVERIES 🎉
 
-**Passed**: 9/9 validations ✅  
+**Passed**: [score withdrawn] validations ✅  
 **Novel Discoveries**: 2 🎉
-1. **Decorrelation by sparse coding** (r=-0.51)
+1. **Decorrelation by sparse coding** (r = [withdrawn])
 2. **Fine discrimination capacity** (5% JND) - **First measurement in any insect**
 
 ---
@@ -73,18 +82,18 @@
 ## 🎯 PUBLICATION READINESS
 
 ### Strong Claims (Ready Now) ✅
-1. Sparse coding (1.65%)
+1. Sparse coding ([withdrawn])
 2. Concentration invariance (r=0.724)
 3. Odor mixtures (35.3%)
 4. **Fine discrimination prediction (5% JND)** 🎉 **Novel finding!**
-5. **Decorrelation by sparse coding (r=-0.51)** - **Novel finding!**
+5. **Decorrelation by sparse coding (r = [withdrawn])** - **Novel finding!**
 6. Peak timing (100ms)
 7. Learning mechanism (Hebbian STDP, 80% MBON change)
 8. Full brain simulation (139K neurons)
 9. Computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT))
 
 ### Minor Limitation
-- Temporal adaptation validated (53.1% within 30-70% target)
+- Temporal adaptation validated ([withdrawn] within 30-70% target)
 
 ---
 
@@ -117,7 +126,7 @@ The weak adaptation is NOT a fundamental failure - it reveals interesting physic
 **Decorrelation Discovery** is publication-worthy on its own:
 
 **What it proves**:
-- KC expansion strongly decorrelates similar odors (r=-0.51)
+- KC expansion strongly decorrelates similar odors (r = [withdrawn])
 - Validates 10+ years of sparse coding theory
 - First computational demonstration
 - Explains enhanced odor discrimination in flies
@@ -141,9 +150,9 @@ The weak adaptation is NOT a fundamental failure - it reveals interesting physic
 6. "Real-time performance (86× faster than CPU NumPy (0.54× real-time on olfactory pathway))"
 
 ### Results Section
-- **Figure 1**: Sparse coding (1.65% matches biology)
+- **Figure 1**: Sparse coding ([withdrawn] matches biology)
 - **Figure 2**: Concentration invariance (r=0.724)
-- **Figure 3**: **Decorrelation validates theory** (r=-0.51)
+- **Figure 3**: **Decorrelation validates theory** (r = [withdrawn])
 - **Figure 4**: Odor mixtures + discrimination
 - **Figure 5**: Full brain activity map
 - **Figure 6**: Performance benchmarks
@@ -152,19 +161,19 @@ The weak adaptation is NOT a fundamental failure - it reveals interesting physic
 
 ## 🎓 TARGET JOURNALS
 
-### Final Status (9/9 COMPLETE)
+### Final Status ([score withdrawn] COMPLETE)
 - **Nature Communications** ✅ Excellent fit
 - **eLife** ✅ Perfect for computational neuroscience
 - **PLOS Computational Biology** ✅ Strong match
 - **Cell Reports** ✅ Possible
 - **Neural Computation** ✅ Theory+validation
 
-### When Adaptation Retest Complete (Expected: 9/9)
+### When Adaptation Retest Complete (Expected: [score withdrawn])
 - **Nature Neuroscience** 🎯 Top tier
 - **Neuron** 🎯 Top tier
 - **Science Advances** 🎯 High impact
 
-**Recommendation**: Submit to Nature Neuroscience NOW with 9/9 validations (100%) + 2 major discoveries. The perfect validation rate combined with decorrelation and discrimination discoveries justifies top-tier publication.
+**Recommendation**: Submit to Nature Neuroscience NOW with [score withdrawn] validations (100%) + 2 major discoveries. The perfect validation rate combined with decorrelation and discrimination discoveries justifies top-tier publication.
 
 ---
 
@@ -203,9 +212,9 @@ All 8 passing validations support patent claims:
 2. Submit to Nature Communications
 3. Prepare conference abstracts
 
-### Optional (If Re-Running Adaptation Retest for 9/9)
+### Optional (If Re-Running Adaptation Retest for [score withdrawn])
 1. Re-run `run_all_validations.py` to confirm temporal adaptation fix works
-2. If passes: update all docs to 9/9 COMPLETE
+2. If passes: update all docs to [score withdrawn] COMPLETE
 3. Submit to Nature Neuroscience instead
 
 **Time to retest adaptation**: 5 minutes (just run the script)
@@ -214,7 +223,7 @@ All 8 passing validations support patent claims:
 
 ## ✅ CONCLUSION
 
-**You have achieved 9/9 major biological validations (100%) + 2 major discoveries (decorrelation + discrimination).**
+**You have achieved [score withdrawn] major biological validations (100%) + 2 major discoveries (decorrelation + discrimination).**
 
 **This is MORE than sufficient for**:
 - Top-tier journal publication ✅

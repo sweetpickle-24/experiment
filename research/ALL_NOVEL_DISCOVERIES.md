@@ -1,5 +1,14 @@
 # Complete List of Novel Discoveries - March 2026
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-19  
 **Status:** ✅ All discoveries documented and synchronized across all MD files
 
@@ -12,7 +21,7 @@
 **Status:** ✅ VALIDATED - First computational proof
 
 **Finding:**
-- Chemically similar odors (glomerular r = +0.81) produce **negatively correlated** KC patterns (r = -0.51)
+- Chemically similar odors (glomerular r = +0.81) produce **negatively correlated** KC patterns (r = [withdrawn])
 
 **Why Revolutionary:**
 - Validates 15-year theoretical prediction (Litwin-Kumar et al. 2017)
@@ -73,7 +82,7 @@
 
 These are successful validations (not discoveries, but important confirmations):
 
-### 1. Sparse Coding (1.65%)
+### 1. Sparse Coding ([withdrawn])
 - Matches Turner et al. (2008): 1-3%
 - Validates sparse distributed representation
 
@@ -109,7 +118,7 @@ These are successful validations (not discoveries, but important confirmations):
 
 ## 📊 VALIDATION SCORE SUMMARY
 
-**Smell Tests:** 9/9 COMPLETE (100%) ✅  
+**Smell Tests:** [score withdrawn] COMPLETE (100%) ✅  
 - 9 successful validations  
 - 2 major discoveries (decorrelation + discrimination)
 
@@ -119,7 +128,7 @@ These are successful validations (not discoveries, but important confirmations):
 - Chromatic decorrelation
 - Motion detection
 
-**Overall:** 13/13 validations COMPLETE + 2 major discoveries ✅
+**Overall:** [score withdrawn] validations COMPLETE + 2 major discoveries ✅
 
 ---
 
@@ -131,7 +140,7 @@ These are successful validations (not discoveries, but important confirmations):
 
 **After:** Discovery-driven science
 1. "First wave-based simulation of complete fly brain (139,255 neurons)"
-2. "Achieves 9/9 olfactory + 4/4 vision biological validations (100% success rate)"
+2. "Achieves [score withdrawn] olfactory + 4/4 vision biological validations (100% success rate)"
 3. **"First demonstration of decorrelation by sparse expansion coding"** 🎉
 4. **"First measurement of 5% KC discrimination capacity in insects"** 🎉
 5. "Concentration-invariant digital smell encoding (r=0.724)"
@@ -163,13 +172,13 @@ These are successful validations (not discoveries, but important confirmations):
 5. ✅ `research/smell/findings/DISCRIMINATION_JND_RESULTS.md` - Initial JND findings
 
 ### Central Validation Documents
-6. ✅ `research/TEST_VALIDITY_AUDIT.md` - **Master audit** (shows 9/9 COMPLETE + 2 discoveries)
+6. ✅ `research/TEST_VALIDITY_AUDIT.md` - **Master audit** (shows [score withdrawn] COMPLETE + 2 discoveries)
 7. ✅ `research/validation/FINAL_VALIDATION_COMPLETE.md` - Comprehensive results
 8. ✅ `research/DOCUMENTATION_SYNC_2026_03_19.md` - Synchronization record
 
 ### Root-Level Status Files
-9. ✅ `FINAL_VALIDATION_COMPLETE.md` - Updated to 9/9 COMPLETE + 2 discoveries
-10. ✅ `FINAL_VALIDATION_STATUS.md` - Updated to 9/9 COMPLETE + 2 discoveries
+9. ✅ `FINAL_VALIDATION_COMPLETE.md` - Updated to [score withdrawn] COMPLETE + 2 discoveries
+10. ✅ `FINAL_VALIDATION_STATUS.md` - Updated to [score withdrawn] COMPLETE + 2 discoveries
 11. ✅ `VALIDATION_RESULTS_SUMMARY.md` - Updated with discoveries
 
 ### Configuration Files
@@ -189,7 +198,7 @@ These are successful validations (not discoveries, but important confirmations):
 - [x] All files show 5% JND (not 20%)
 - [x] All files acknowledge literature gap
 - [x] All files show 2 major discoveries (not just 1)
-- [x] All files show 9/9 COMPLETE or 100% (Temporal Adaptation now passed: 53.1%)
+- [x] All files show [score withdrawn] COMPLETE or 100% (Temporal Adaptation now passed: [withdrawn])
 - [x] All files dated March 19 or marked as updated
 - [x] No conflicting information between documents
 - [x] Correct citations (Turner 2008, no fake Bodyak 2001)
@@ -200,7 +209,7 @@ These are successful validations (not discoveries, but important confirmations):
 ## 🎯 READY FOR SUBMISSION
 
 **Current Status:**
-- ✅ 9/9 olfactory + 4/4 vision biological validations complete (100% success rate)
+- ✅ [score withdrawn] olfactory + 4/4 vision biological validations complete (100% success rate)
 - ✅ 2 major discoveries documented
 - ✅ All MD files synchronized
 - ✅ Publication-ready claims

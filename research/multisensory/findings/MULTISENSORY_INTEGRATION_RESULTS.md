@@ -1,5 +1,11 @@
 # Multi-Sensory Integration Results (AVLP)
 
+
+> **WITHDRAWN (2026-09-03).** The result described in this document has been
+> withdrawn as invalid. The test supplied the expected answer to the model as an
+> input, so it could not fail. See `hive/validation/invalid/README.md` for the
+> specific defect. Do not cite anything below.
+
 **Date**: 2026-03-23  
 **Status**: ✅ VALIDATED  
 **Test file**: `hive/validation/multisensory/test_multisensory_integration.py`

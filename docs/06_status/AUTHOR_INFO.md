@@ -13,14 +13,10 @@
 
 **Primary Research Area:** Wave-based neural computation and connectomics
 
-**Current Project:** Wave-Based Simulation of Drosophila Olfactory Connectome
-- First full brain (139,255 neurons) wave-based simulation
-- Biological validation achieved (9/9 benchmarks, 100% success)
-- Major discovery: Decorrelation by sparse expansion coding
-
-**Publication Status:** 
-- Manuscript ready for Nature Communications submission
-- 3 provisional patent applications filed (USPTO pending)
+**Current Project:** Wave-Based Simulation of the Drosophila Connectome
+- Wave-propagation simulation over the FAFB/FlyWire connectome (139,255 neurons, 5,342,446 synapses)
+- Olfactory subgraph (10,906 neurons, 446,388 synapses) used for most benchmarking
+- Independent, unreviewed work; no results have been peer reviewed or published
 
 **Acknowledgments:**
 - Udi Shkolnik (Ehud Sagi Shkolnik) for inspiring discussions on wave physics and theoretical foundations
@@ -29,11 +25,10 @@
 
 ## Research Philosophy
 
-**Approach:** "Garage-style" independent research
+**Approach:** Independent research
 - Self-funded, no institutional overhead
 - Consumer hardware (Apple M4 Pro laptop)
 - Open collaboration and knowledge sharing
-- Focus on fundamental questions and breakthrough innovations
 
 ---
 
@@ -45,4 +40,4 @@
 
 ---
 
-**Last Updated:** March 16, 2026
+**Last Updated:** 2026-09-03

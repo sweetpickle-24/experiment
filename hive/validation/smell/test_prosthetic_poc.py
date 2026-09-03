@@ -104,12 +104,12 @@ PN_LESION_FRACTION: float = 0.30     # Remove 30% of PNs
 LESION_SEED: int = 42
 COMPENSATION_FACTORS: List[float] = [1.0, 1.5, 2.0, 3.0, 4.0]
 
-BRAIN_CONFIG = {
-    'dt': 0.01,
-    'gamma': 0.5,
-    'omega0': 40.0,
-    'coupling_strength': 2.0,
-}
+# NOTE (2026-09-03): this dict previously carried dt=0.01, gamma=0.5,
+# omega0=40.0 and coupling_strength=2.0. The engine silently discarded all
+# four and ran at dt=0.1 ms, gamma=0.1. The engine now rejects unknown keys,
+# so the dict is empty to preserve the behaviour every recorded run actually
+# used. Set 'dt', 'gamma' or 'sigma_noise' here to override deliberately.
+BRAIN_CONFIG: dict = {}
 
 
 # ─── Lesion helper ────────────────────────────────────────────────────────────

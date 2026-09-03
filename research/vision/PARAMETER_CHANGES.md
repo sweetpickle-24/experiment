@@ -1,5 +1,14 @@
 # Parameter Updates: Vision Simulation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17  
 **Status**: CORRECTED BASED ON BIOLOGICAL RESEARCH
 
@@ -46,7 +55,7 @@ brain.external_force[idx] = float(flat_response[i] * 500.0)
 ```
 
 **Rationale**:
-- Olfaction (validated 9/9): uses strength=50.0 for 5K neurons
+- Olfaction (validated [score withdrawn]): uses strength=50.0 for 5K neurons
 - Vision: 93K neurons (18× larger) requires proportionally stronger forcing
 - Mathematical estimate: 50 × (93K/5K) = 930
 - Conservative choice: 500 (may need to increase to 1000-5000 if still weak)
@@ -238,7 +247,7 @@ All changes based on:
    - H-current dynamics: ~50ms time constant
    - Response duration: 50-100ms
 
-2. **Olfaction Validation**: 9/9 benchmarks passed (100%)
+2. **Olfaction Validation**: [score withdrawn] benchmarks passed (100%)
    - 100ms duration standard
    - Strength=50.0 for 5K neurons
    - Scaling relationship established

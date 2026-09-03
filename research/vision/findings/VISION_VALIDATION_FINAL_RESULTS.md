@@ -1,5 +1,14 @@
 # Vision Validation — Final Results
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17 (updated 2026-03-17)  
 **Status**: ✅ **100% Pass Rate — 4/4 TESTS PASSED**  
 **Runtime**: ~25 minutes total
@@ -16,7 +25,7 @@
 | **Motion Detection** | ✅ **PASS** | 325% | DSI=0.975 (target: 0.30) |
 
 **Overall**: **4/4 tests passed (100%)**  
-**Comparison to olfaction**: Olfaction 9/9 (100%), Vision 4/4 (100%) — Both modalities perfect
+**Comparison to olfaction**: Olfaction [score withdrawn] (100%), Vision 4/4 (100%) — Both modalities perfect
 
 ---
 
@@ -128,11 +137,11 @@ The first attempt tested adjacent UV wavelengths (400nm vs 430nm). Both activate
 
 | Metric | Vision | Olfaction |
 |--------|--------|-----------|
-| **Sparse Coding** | ✅ 4/4 layers (100%) | ✅ 1.65% KCs (100%) |
-| **Decorrelation** | ✅ UV/vis gap=0.061 | ✅ r=-0.51 (100%) |
+| **Sparse Coding** | ✅ 4/4 layers (100%) | ✅ [withdrawn] KCs (100%) |
+| **Decorrelation** | ✅ UV/vis gap=0.061 | ✅ r = [withdrawn] (100%) |
 | **Invariance** | ✅ r=0.857 (122%) | ✅ r=0.724 (103%) |
 | **Temporal/Motion** | ✅ DSI=0.975 (325%) | ⚠️ 0.84% temporal (weak) |
-| **Overall** | **4/4 (100%)** | **9/9 (100%)** |
+| **Overall** | **4/4 (100%)** | **[score withdrawn] (100%)** |
 
 ---
 
@@ -162,8 +171,8 @@ The first attempt tested adjacent UV wavelengths (400nm vs 430nm). Both activate
 
 ```
 OLFACTION (discrimination):
-- Random wiring → decorrelation (r=-0.51)
-- Sparse expansion (264×) → 1.65% KCs active
+- Random wiring → decorrelation (r = [withdrawn])
+- Sparse expansion (264×) → [withdrawn] KCs active
 - Goal: Maximize chemical discrimination
 
 VISION (continuity + motion detection):
@@ -183,11 +192,11 @@ Vision achieves **4/4 (100%)** pass rate, validating that wave-based physics gen
 
 **Wave physics correctly implements**:
 - ✅ Modality-specific architectures (retinotopic vs random wiring)
-- ✅ Layer-specific coding strategies (distributed 7-20% vs sparse 1.65%)
+- ✅ Layer-specific coding strategies (distributed 7-20% vs sparse [withdrawn])
 - ✅ Contrast invariance (Weber-Fechner logarithmic encoding)
 - ✅ Chromatic decorrelation (Dm8/Tm5 UV/visible opponency)
 - ✅ Motion detection (Barlow-Levick temporal asymmetry + GABA shunting)
 - ✅ Temporal memory (50ms ring buffer for delay-line modeling)
 
 **Status**: 🚀 **VISION POC COMPLETE — READY FOR PUBLICATION**  
-Combined with olfaction (9/9, 100%), this constitutes multi-modal validation of wave-based neural simulation.
+Combined with olfaction ([score withdrawn], 100%), this constitutes multi-modal validation of wave-based neural simulation.

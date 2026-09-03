@@ -1,5 +1,14 @@
 # CPU vs MLX Validation Test - RESULTS
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Test Duration:** ~5 minutes (330 seconds total)  
 **Purpose:** Verify NumPy (CPU) produces equivalent results to MLX (GPU)
@@ -152,7 +161,7 @@ This demonstrates scientific rigor and addresses potential reviewer concerns bef
 - ✅ Results emerge from **biology (connectome) + physics (waves)**
 - ✅ MLX is just a **performance optimization**, not a scientific dependency
 
-**The 9/9 biological validations (100% success rate) are legitimate scientific findings.**
+**The [score withdrawn] biological validations (100% success rate) are legitimate scientific findings.**
 
 ---
 

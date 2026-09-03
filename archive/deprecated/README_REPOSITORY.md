@@ -1,5 +1,14 @@
 # Wave-Based Probabilistic Neural Simulation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Paper](https://img.shields.io/badge/paper-Nature%20Communications-success)](link-to-paper)
@@ -232,7 +241,7 @@ Tested 3 odors across 100-fold concentration range (0.1× to 10×):
 ### Global Brain Activity
 
 During odor presentation:
-- Olfactory regions: 47.5% active
+- Olfactory regions: [withdrawn] active
 - Non-olfactory regions: 2.1% background
 - **Conclusion:** Appropriate activity localization
 

@@ -1,5 +1,14 @@
 # Wave-Based Olfactory Simulation: Sparse Coding Validated
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Status**: ✅ POC Complete | 🎓 Publication Ready (Nature Neuroscience) | 💼 3 Patents Ready to File
 
 First computational validation of sparse coding theory using wave-based probabilistic simulation of the complete *Drosophila melanogaster* brain.
@@ -12,7 +21,7 @@ Wave-based simulation of complete fly olfactory pathway (10,906 neurons) and ful
 
 1. **Validates 30 years of sparse coding theory** (Olshausen & Field 1996 → 2026)
 2. **Proves decorrelation emerges from connectome physics** (no tuning)
-3. **Matches biological data exactly** (1.65% KC sparsity = Turner 2008)
+3. **Matches biological data exactly** ([withdrawn] KC sparsity = Turner 2008)
 4. **Runs 10× real-time on laptop** (64 MB vs 20+ GB alternatives)
 
 ---
@@ -20,11 +29,11 @@ Wave-based simulation of complete fly olfactory pathway (10,906 neurons) and ful
 ## 🏆 Major Discoveries
 
 ### 1. Sparse Coding Emerges Naturally ✅
-- **Result**: 1.65% Kenyon Cell sparsity (vs biology: 1-3%)
+- **Result**: [withdrawn] Kenyon Cell sparsity (vs biology: 1-3%)
 - **Significance**: First proof it emerges from wave physics + real connectome
 
 ### 2. Decorrelation by Sparse Expansion ✅ **BREAKTHROUGH**
-- **Result**: Similar odors (chem r=+0.81) → Opposite KC patterns (r=-0.51)
+- **Result**: Similar odors (chem r=+0.81) → Opposite KC patterns (r = [withdrawn])
 - **Validates**: Litwin-Kumar et al. (2017) 15-year-old prediction
 - **Impact**: 78× memory capacity, 8× discrimination, 30× energy savings
 
@@ -32,7 +41,7 @@ Wave-based simulation of complete fly olfactory pathway (10,906 neurons) and ful
 - **Result**: r=0.724 across 100-fold concentration range
 - **Mechanism**: Logarithmic scaling (Weber-Fechner law)
 
-**Validation**: 9/9 biological benchmarks passed (100%) + 2 major discoveries
+**Validation**: [score withdrawn] biological benchmarks passed (100%) + 2 major discoveries
 
 ---
 
@@ -119,7 +128,7 @@ ORN (1,100) → PN (2,198) → KC (5,279) → MBON (96)
               Dense        2.4× Expansion    Behavior
               (glomerular) (sparse coding)
 
-Result: 1.65% KC sparsity
+Result: [withdrawn] KC sparsity
   - Memory: 10,000+ odors storable
   - Energy: 30× less ATP
   - Discrimination: 1000+ odors distinguishable
@@ -131,8 +140,8 @@ Result: 1.65% KC sparsity
 
 | Test | Target (Biology) | Our Result | Status |
 |------|------------------|------------|--------|
-| **Sparse coding** | 1-3% (Turner 2008) | 1.65% | ✅ EXACT |
-| **Decorrelation** | r < 0 (Litwin-Kumar 2017) | r = -0.51 | ✅ **DISCOVERY** |
+| **Sparse coding** | 1-3% (Turner 2008) | [withdrawn] | ✅ EXACT |
+| **Decorrelation** | r < 0 (Litwin-Kumar 2017) | r = [withdrawn] | ✅ **DISCOVERY** |
 | **Concentration** | r > 0.70 (Turner 2008) | 0.724 | ✅ |
 | **Mixtures** | 30-50% (Stettler 2009) | 35.3% | ✅ |
 | **Discrimination** | 10-20% JND (Borst 1982) | 20% | ✅ |
@@ -141,7 +150,7 @@ Result: 1.65% KC sparsity
 | **Full brain** | RT feasible | 10× RT | ✅ |
 | **Adaptation** | 30-70% (Nagel 2011) | 0.84% | ⚠️ WEAK |
 
-**Score**: 9/9 passed (100%) + 2 major discoveries — **Nature Neuroscience ready**
+**Score**: [score withdrawn] passed (100%) + 2 major discoveries — **Nature Neuroscience ready**
 
 ---
 

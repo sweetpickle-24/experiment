@@ -1,5 +1,14 @@
 # Lamina Cartridge Architecture - Biological Implementation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-18  
 **Status**: ✅ IMPLEMENTED
 
@@ -207,7 +216,7 @@ forcing = voltage × VOLTAGE_TO_FIRING_RATE × FIRING_TO_FORCING
 | **Network size** | 5,279 neurons | 92,948 neurons | 92,948 neurons | 18× |
 | **Forcing range** | 50-5,000 | 0-400 | 0-20,000 | **50×** ↑ |
 | **Coupling gain** | 1× baseline | 10× | 10× | 10× |
-| **Validation** | 9/9 pass ✅ | 4/4 pass ✅ | Both 100% | Multi-modal complete |
+| **Validation** | [score withdrawn] pass ✅ | 4/4 pass ✅ | Both 100% | Multi-modal complete |
 
 **File**: `hive/validation/vision/test_sparse_coding.py` (lines 30-35)
 

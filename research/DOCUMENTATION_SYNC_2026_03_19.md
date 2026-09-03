@@ -1,5 +1,14 @@
 # Documentation Synchronization Complete - March 19, 2026
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-19  
 **Action:** Major discovery documented and all MD files synchronized  
 **Status:** ✅ All documents now reflect accurate, consistent information
@@ -42,7 +51,7 @@
 **Changes:**
 - Line 28: Changed "HYPERSENSITIVE" → "NOVEL PREDICTION"
 - Line 35-38: Updated summary to reflect discovery status
-- Now shows: "8/9 PASS + 1 NOVEL DISCOVERY"
+- Now shows: "[score withdrawn] PASS + 1 NOVEL DISCOVERY"
 
 ---
 
@@ -54,7 +63,7 @@
 - Line 16-29: Updated comprehensive validation suite entry
 - Line 20: Changed "20% JND PASS" → "5% JND NOVEL DISCOVERY"
 - Added new section (lines 157-175): Full discrimination discovery documentation
-- Score updated: "9/9 validations + 2 major discoveries"
+- Score updated: "[score withdrawn] validations + 2 major discoveries"
 
 ---
 
@@ -148,7 +157,7 @@
 ### Two Major Discoveries Now Documented
 
 **Discovery 1: Decorrelation (March 16)**
-- r = -0.51 anticorrelation
+- r = [withdrawn] anticorrelation
 - Validates 15 years of theory
 - First computational proof
 
@@ -162,9 +171,9 @@
 
 ### Enhanced Publication Claims
 
-**Before:** 8/9 validations + 1 discovery
+**Before:** [score withdrawn] validations + 1 discovery
 
-**After:** 8/9 validations + **2 discoveries**
+**After:** [score withdrawn] validations + **2 discoveries**
 
 **Abstract impact:**
 - Stronger novelty claims
@@ -215,7 +224,7 @@
 5. ✅ Enhanced publication narrative
 
 **Current status:**
-- 8/9 validations PASS
+- [score withdrawn] validations PASS
 - 2 major discoveries documented
 - All MD files synchronized
 - Publication-ready with stronger claims

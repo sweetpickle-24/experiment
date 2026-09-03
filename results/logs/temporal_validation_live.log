@@ -1,0 +1,41 @@
+2026-03-15 22:10:24,585 - INFO - ======================================================================
+2026-03-15 22:10:24,585 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-03-15 22:10:24,585 - INFO - ======================================================================
+2026-03-15 22:10:24,585 - INFO - Loading full brain connectome...
+Loading connectome from cache (Fly Brain Female/connectome_cache.pkl)...
+✓ Loaded 139255 neurons, 5342446 synapses from cache (instant)
+2026-03-15 22:10:30,712 - INFO -   Loaded 139255 total neurons
+2026-03-15 22:10:30,712 - INFO - Extracting olfactory pathway...
+
+======================================================================
+EXTRACTING OLFACTORY PATHWAY
+======================================================================
+Identifying olfactory neurons...
+✓ Found 10,906 olfactory neurons:
+  - ORN: 2,279
+  - PN: 2,198
+  - LN: 721
+  - KC: 5,279
+  - APL: 2
+  - MBON: 96
+  - DAN: 331
+Extracting olfactory synapses...
+✓ Found 446,388 olfactory synapses
+✓ Olfactory pathway extracted:
+  - Neurons: 139,255 → 10,906 (7.8%)
+  - Synapses: 5,342,446 → 446,388 (8.4%)
+  - Spatial extent: [445648 303124 231280] μm
+======================================================================
+2026-03-15 22:10:31,225 - INFO - Extracted 10906 neurons, 446388 synapses
+2026-03-15 22:10:31,225 - INFO - Creating sparse probabilistic brain...
+Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_temporal_dynamics.py", line 326, in <module>
+    main()
+    ~~~~^^
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_temporal_dynamics.py", line 193, in main
+    brain = SparseProbabilisticBrain(
+        num_neurons=len(neurons),
+        dt=0.01,  # 0.01 ms timestep
+        use_mlx=True
+    )
+TypeError: SparseProbabilisticBrain.__init__() got an unexpected keyword argument 'num_neurons'

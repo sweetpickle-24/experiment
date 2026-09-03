@@ -74,26 +74,45 @@ class SparseProbabilisticBrain:
     - Fast mode:  ~7× RT    (dt=0.5 ms, mx.compile)
     """
 
+    _RECOGNISED_CONFIG_KEYS = {'dt', 'gamma', 'sigma_noise'}
+
     def __init__(self, connectome, config=None, use_mlx=True, fast_mode=False):
         """
         Initialise sparse probabilistic brain.
 
         Args:
             connectome : Connectome with neurons and synapses.
-            config     : Optional configuration dict.
+            config     : Optional physics overrides. Recognised keys are 'dt'
+                         (ms), 'gamma' and 'sigma_noise'. An unrecognised key
+                         raises ValueError.
+
+                         Before 2026-09-03 this argument was accepted and then
+                         silently discarded, so callers passing dt=0.01 were in
+                         fact running at dt=0.1 and recording the wrong value in
+                         their result files.
             use_mlx    : Use MLX GPU acceleration (recommended).
             fast_mode  : If True, use dt=0.5 ms (5× speedup) instead of
                          dt=0.1 ms.  Suitable for real-time demos; not used
-                         during biological validation runs.
+                         during biological validation runs. An explicit 'dt' in
+                         config takes precedence over fast_mode.
         """
         print("\n" + "="*70)
         print("SPARSE PROBABILISTIC BRAIN (Memory Efficient)")
         print("="*70)
 
         self.connectome = connectome
-        self.config = config or {}
+        self.config = dict(config or {})
         self.use_mlx = use_mlx and MLX_AVAILABLE
         self.fast_mode = fast_mode
+
+        unknown = set(self.config) - self._RECOGNISED_CONFIG_KEYS
+        if unknown:
+            raise ValueError(
+                f"Unrecognised config key(s): {sorted(unknown)}. "
+                f"Recognised keys are {sorted(self._RECOGNISED_CONFIG_KEYS)}. "
+                "Unknown keys are rejected rather than ignored so that a result "
+                "file cannot record a parameter the engine never applied."
+            )
 
         if self.use_mlx:
             print("✓ MLX GPU acceleration enabled")
@@ -115,11 +134,18 @@ class SparseProbabilisticBrain:
         self._build_coupling_structure()
 
         # ── Physics parameters ──────────────────────────────────────────
-        # fast_mode: 5× larger step, still 10× finer than 5 ms KC timescale
-        self.dt = 0.5 if fast_mode else 0.1   # ms
-        self.gamma = 0.1
-        self.sigma_noise = 0.1
+        # fast_mode: 5× larger step, still 10× finer than 5 ms KC timescale.
+        # An explicit config['dt'] overrides fast_mode.
+        self.dt = float(self.config.get('dt', 0.5 if fast_mode else 0.1))   # ms
+        self.gamma = float(self.config.get('gamma', 0.1))
+        self.sigma_noise = float(self.config.get('sigma_noise', 0.1))
         self.time = 0.0
+
+        if self.dt > 2.0:
+            print(f"⚠ dt={self.dt} ms exceeds the 2 ms stability ceiling for the "
+                  f"APL feedback loop under forward Euler; results may be invalid.")
+        print(f"Physics: dt={self.dt} ms, gamma={self.gamma}, "
+              f"sigma_noise={self.sigma_noise}")
 
         # ── Precomputed constants (avoid recomputation every step) ───────
         self._precompute_step_constants()

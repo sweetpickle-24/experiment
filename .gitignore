@@ -1,20 +1,30 @@
-# Fly Brain Data (too large for git)
+# Fly Brain connectome data (too large for git, not redistributable)
 Fly Brain Female/
 data/fly_brain/
+data/flywire/
+data/hemibrain/
 *.csv.gz
 *.csv
 
-# Connectome cache (large binary files)
+# Connectome cache (large binaries)
 connectome_cache.pkl
 *.pkl
 
-# Data directories with large files
-data/flywire/
-data/hemibrain/
-
-# Optic lobe extracted connectome (large JSON files)
+# Optic lobe extracted connectome (large JSON)
 data/vision/optic_lobe/
 flywire_optic_lobe.json
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+# Logs are ignored by default, BUT results/logs/ is tracked deliberately. Those
+# files are the evidence behind the numbers quoted in the README; before
+# 2026-09-03 a blanket *.log rule meant none of them were in the repository and
+# every claim would have been unverifiable to anyone who cloned it.
+*.log
+!results/logs/
+!results/logs/**
+
+# ── Results ──────────────────────────────────────────────────────────────────
+# Result artifacts are tracked. Do not add results/ here.
 
 # Python
 __pycache__/
@@ -40,6 +50,7 @@ wheels/
 
 # Virtual environments
 venv/
+.venv/
 ENV/
 env/
 
@@ -50,15 +61,11 @@ env/
 *.swo
 *~
 
-# Logs
-*.log
-/tmp/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Experiment data
+# Experiment scratch data
 experiments/
 checkpoints/
 *.db
@@ -70,3 +77,6 @@ node_modules/
 .yarn
 frontend/dist/
 frontend/build/
+
+# Agent worktrees
+.claude/worktrees/

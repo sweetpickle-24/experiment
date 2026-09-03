@@ -1,5 +1,14 @@
 # Wave-Based Simulation of the Complete Drosophila Olfactory Connectome Reveals Biologically Accurate Sparse Coding
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Running Title:** Wave Physics Produces Biological Sparse Coding
 
 **Authors:** Vladyslav Byelozerskykh¹
@@ -426,7 +435,7 @@ To validate that results are not GPU computational artifacts, we compared MLX GP
 
 **Biological Context:** The 0.019% sparsity difference is 263× smaller than biological trial-to-trial variability (5-10%, Stopfer et al. 2003), confirming that observed sparse coding emerges from wave physics and connectome structure, not hardware quirks.
 
-**Implication:** All biological validation results (9/9 benchmarks, 100%) are hardware-independent and scientifically valid. GPU acceleration provides massive speedup (86×) without compromising accuracy.
+**Implication:** All biological validation results ([score withdrawn] benchmarks, 100%) are hardware-independent and scientifically valid. GPU acceleration provides massive speedup (86×) without compromising accuracy.
 
 ### Statistical Analysis
 

@@ -1,5 +1,14 @@
 # Project Documentation Index
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Last Updated**: March 19, 2026  
 **Status**: Complete reorganization - all documents properly structured
 
@@ -32,7 +41,7 @@ experiment/
 │   │   └── MLX_GPU_IMPLEMENTATION.md
 │   │
 │   ├── 03_validation/                # Validation Results
-│   │   ├── FINAL_VALIDATION.md       # 9/9 complete ⭐
+│   │   ├── FINAL_VALIDATION.md       # [score withdrawn] complete ⭐
 │   │   ├── FINAL_VALIDATION_STATUS.md
 │   │   ├── FINAL_VALIDATION_COMPLETE.md
 │   │   └── VALIDATION_RESULTS_SUMMARY.md
@@ -111,7 +120,7 @@ experiment/
 3. [`QUICKSTART.md`](../QUICKSTART.md) - Fast setup
 
 ### For Results
-- [`docs/03_validation/FINAL_VALIDATION.md`](docs/03_validation/FINAL_VALIDATION.md) - **9/9 complete**
+- [`docs/03_validation/FINAL_VALIDATION.md`](docs/03_validation/FINAL_VALIDATION.md) - **[score withdrawn] complete**
 - [`docs/04_discoveries/ALL_DISCOVERIES.md`](docs/04_discoveries/ALL_DISCOVERIES.md) - **2 major findings**
 
 ### For Publication

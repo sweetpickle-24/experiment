@@ -1,5 +1,14 @@
 # Concentration Test Monitoring - Active
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 ## 🔄 Status: RUNNING
 
 **Test Started:** ~7:13 PM, March 13, 2026  
@@ -55,7 +64,7 @@ I've set up a monitoring script that checks progress every 2 minutes and will au
 7:25 PM  ⏳ Trial 3/15 (ethyl acetate @ 1.0×)
 7:40 PM  ⏳ Trial 7/15 (benzaldehyde @ 0.5×)
 7:55 PM  ⏳ Trial 12/15 (2-heptanone @ 5.0×)
-8:10 PM  ⏳ Trial 15/15 (2-heptanone @ 10.0×)
+8:10 PM  ⏳ Trial [score withdrawn] (2-heptanone @ 10.0×)
 8:15 PM  ⏳ Computing correlations & analysis
 8:18 PM  ✅ Test complete, results saved
 ```

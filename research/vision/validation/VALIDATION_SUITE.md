@@ -1,5 +1,14 @@
 # Vision Validation Suite
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Purpose**: Validate wave-based physics in vision system  
 **Date**: 2026-03-17 (completed 2026-03-17)  
 **Status**: ✅ **ALL 4 TESTS PASSED (100%)**
@@ -8,7 +17,7 @@
 
 ## Validation Framework
 
-Similar to olfaction validation (9/9 tests passed, 100%), vision tests check if wave physics produces biologically realistic phenomena.
+Similar to olfaction validation ([score withdrawn] tests passed, 100%), vision tests check if wave physics produces biologically realistic phenomena.
 
 ### Core Hypothesis
 
@@ -81,7 +90,7 @@ Same as olfaction decorrelation:
 4. Compute decorrelation strength: Δr = r_input - r_medulla
 
 ### Target Benchmark
-Olfaction achieved **r = -0.51** (similar odors → anticorrelated KCs).  
+Olfaction achieved **r = [withdrawn]** (similar odors → anticorrelated KCs).  
 Vision target: **r < 0** (any negative correlation)
 
 ### Pass Criteria (Updated)
@@ -199,7 +208,7 @@ python hive/validation/vision/test_motion_detection.py
 
 ### Achieved: 4/4 (100%) ✅
 Validates wave physics universality across sensory modalities.  
-Exceeds olfaction benchmark (9/9, 100%).  
+Exceeds olfaction benchmark ([score withdrawn], 100%).  
 Confirms multi-modal generalization for Nature Neuroscience submission.
 
 ---
@@ -234,7 +243,7 @@ After running tests, document results in:
 ### Benchmarks
 - Campbell et al. (2013) - Medulla sparsity: 3-8%
 - Borst & Euler (2011) - T4/T5 direction selectivity
-- Olfaction validation suite (this project) - Decorrelation r=-0.51
+- Olfaction validation suite (this project) - Decorrelation r = [withdrawn]
 
 ### Methods
 - Hardie & Raghu (2001) - Phototransduction kinetics
@@ -244,4 +253,4 @@ After running tests, document results in:
 ---
 
 **Status**: ✅ All 4 tests PASSED (100%)  
-**Score**: 4/4 vision + 9/9 olfaction = multi-modal validation complete (100%)
+**Score**: 4/4 vision + [score withdrawn] olfaction = multi-modal validation complete (100%)

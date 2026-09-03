@@ -1,5 +1,14 @@
 # Organization Summary: Research & Publication Materials
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Status:** Complete - All files organized into proper folders
 
@@ -40,7 +49,7 @@
 │   │   └── CONCENTRATION_INVARIANCE_FINAL.md
 │   │
 │   └── validation/                        # Validation studies
-│       ├── FINAL_VALIDATION_COMPLETE.md   # 9/9 benchmarks
+│       ├── FINAL_VALIDATION_COMPLETE.md   # [score withdrawn] benchmarks
 │       ├── VALIDATION_RESULTS_SUMMARY.md
 │       ├── VALIDATION_SUITE_STATUS.md
 │       ├── FINAL_VALIDATION_STATUS.md

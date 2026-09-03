@@ -1,5 +1,14 @@
 # Digital Smell: Wave-Based Simulation of the Drosophila Olfactory Connectome
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **A Thesis on Probabilistic Oscillator Networks for Neural Olfaction**
 
 ---
@@ -292,7 +301,7 @@ Weak approach signal
 - Consistent with Weber's law (Borst & Heisenberg 1982)
 
 **6. Decorrelation by Sparse Expansion Coding** ✅ **MAJOR DISCOVERY (2026-03-16)**
-- **Finding**: Chemically similar odors produce negatively correlated KC patterns (r = -0.51)
+- **Finding**: Chemically similar odors produce negatively correlated KC patterns (r = [withdrawn])
 - **Mechanism**: 2.4× sparse expansion (2,198 PNs → 5,279 KCs) + random connectivity
 - **Validation**: First computational proof of Litwin-Kumar et al. (2017) theoretical prediction
 - **Impact**: Explains why flies can discriminate 1000+ odors with only 5,279 KCs
@@ -374,7 +383,7 @@ Our simulation reveals the mechanism (matching Litwin-Kumar et al. 2017 theory):
 - 20 glomerular channels
 - Similar odors → High correlation (r = +0.60 to +0.90)
 - Example: Acetone [0.8, 0.3, 0.7] vs. 2-butanone [0.75, 0.35, 0.68]
-- Pearson r = +0.89
+- Pearson r = [withdrawn]
 
 **Stage 2: Sparse Expansion (2,198 PNs → 5,279 KCs)**
 - Each KC samples ~7 random PNs
@@ -386,7 +395,7 @@ Our simulation reveals the mechanism (matching Litwin-Kumar et al. 2017 theory):
 - Acetone activates KCs: {5, 42, 107, 234, 501, 888, 1205, ...}
 - 2-butanone activates KCs: {12, 78, 156, 399, 612, 943, 1567, ...}
 - **Overlap: 0-5% despite 89% chemical similarity**
-- **KC correlation: r = -0.51 (negative!)**
+- **KC correlation: r = [withdrawn] (negative!)**
 
 **Why Negative Correlation?**
 
@@ -504,7 +513,7 @@ glom_pattern = optimize(
 **Results**:
 - **Memory**: 64 MB (full brain)
 - **Speed**: 26s per 100ms (0.54× real-time (olfactory pathway, 1.87× slower than RT) on M4 Pro)
-- **Validation**: 1.65% KC sparsity (matches Turner et al. 2008 exactly)
+- **Validation**: [withdrawn] KC sparsity (matches Turner et al. 2008 exactly)
 - **Global activity**: 4.5% of brain active during odor processing
 
 **Status**: ✅ Multi-modal integration feasible (vision + smell + motor) on consumer hardware.
@@ -523,14 +532,14 @@ glom_pattern = optimize(
 
 We have demonstrated that **wave-based probabilistic simulation** of the *Drosophila* olfactory connectome produces biologically realistic digital smell representations. Our key findings:
 
-1. **Digital smells are sparse KC patterns** (1.65% sparsity in full brain, 6-20% in olfactory-only)
+1. **Digital smells are sparse KC patterns** ([withdrawn] sparsity in full brain, 6-20% in olfactory-only)
 2. **Wave physics on real connectomes** reproduces experimental observations with biological precision
 3. **Real-time simulation is feasible** on consumer GPUs (26s for 100ms biology = 0.54× real-time (olfactory pathway, 1.87× slower than RT) for full brain)
 4. **Memory efficiency is extreme** (64 MB for 139,255 neurons vs 10+ GB for spiking models)
 5. **Concentration invariance validated** (r = 0.724 > 0.70 biological threshold) ✅ **NEW (2026-03-16)**
 
 **Major Validations Achieved**:
-- ✅ **Sparse coding**: 1.65% KC sparsity (Turner et al. 2008: 1-3%)
+- ✅ **Sparse coding**: [withdrawn] KC sparsity (Turner et al. 2008: 1-3%)
 - ✅ **Concentration invariance**: r = 0.724 (Turner et al. 2008: r > 0.70)
 - ✅ **Full brain simulation**: 139,255 neurons, 5.3M synapses
 - ✅ **Real-time performance**: 86× faster than CPU NumPy (0.54× real-time on olfactory pathway) on laptop

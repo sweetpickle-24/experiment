@@ -1,5 +1,14 @@
 # Biological Validation Suite - Status
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-16  
 **Status**: ✅ **ALL VALIDATION SCRIPTS IMPLEMENTED**
 
@@ -138,7 +147,7 @@ tail -f all_validations_live.log
 
 ## Previous Validations (Already Passed)
 
-1. ✅ **Sparse Coding**: 1.65% KC sparsity (target: 1-3%)
+1. ✅ **Sparse Coding**: [withdrawn] KC sparsity (target: 1-3%)
 2. ✅ **Concentration Invariance**: r = 0.724 (target: > 0.70)
 3. ✅ **Full Brain Simulation**: 139K neurons, 4.5% global activity
 4. ✅ **Computational Efficiency**: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)

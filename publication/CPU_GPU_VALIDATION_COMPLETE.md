@@ -1,5 +1,14 @@
 # CPU vs GPU Validation - Complete Documentation Update
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Status:** ✅ **ALL UPDATES COMPLETE**
 
@@ -175,7 +184,7 @@ than biology) while maintaining CPU reproducibility for verification.
 1. ✅ **Hardware Independence:** Results identical on CPU and GPU (0.019% difference)
 2. ✅ **No GPU Artifacts:** Difference 263× smaller than biological noise
 3. ✅ **GPU Speedup:** 86× performance improvement without accuracy loss
-4. ✅ **Scientific Validity:** All 9/9 benchmarks are hardware-agnostic
+4. ✅ **Scientific Validity:** All [score withdrawn] benchmarks are hardware-agnostic
 5. ✅ **Reproducibility:** CPU implementation confirms GPU results
 
 ### Scientific Integrity
@@ -227,7 +236,7 @@ than biology) while maintaining CPU reproducibility for verification.
 
 **March 15, 2026:**
 - All validation tests run with MLX GPU ✅
-- Results: 9/9 benchmarks passed (100% success rate) ✅ + 2 major discoveries
+- Results: [score withdrawn] benchmarks passed (100% success rate) ✅ + 2 major discoveries
 
 **March 16, 2026 (Morning):**
 - Attempted CPU vs GPU test without MLX → both ran on CPU
@@ -247,7 +256,7 @@ than biology) while maintaining CPU reproducibility for verification.
 ✅ **CPU vs GPU validation complete and fully documented**
 
 ### All Claims Now Validated:
-- ✅ Biological accuracy (9/9 benchmarks, 100%)
+- ✅ Biological accuracy ([score withdrawn] benchmarks, 100%)
 - ✅ Hardware independence (0.019% difference)
 - ✅ GPU speedup (86× faster)
 - ✅ Real-time performance (86× faster than CPU NumPy)

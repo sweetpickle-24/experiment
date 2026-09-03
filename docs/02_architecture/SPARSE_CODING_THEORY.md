@@ -1,6 +1,24 @@
 # Sparse Coding Theory: Foundational Document
 
-**Purpose**: Comprehensive reference for sparse coding theory, its biological basis, mathematical framework, and validation through our wave-based olfactory simulation.
+**Last Updated**: 2026-09-03
+
+**Purpose**: Reference for sparse coding theory, its biological basis, and its mathematical framework.
+
+> **Correction (2026-09-03).** This document previously reported "1.65% measured KC
+> sparsity — exact match to Turner et al. (2008)" and treated it as a validation of
+> the simulation. Both parts are wrong.
+>
+> - **The figure 1.65% appears in no result file in this repository.** The measured
+>   mean across the 20 odors in `results/final/full_brain_smell_results.json` is
+>   **1.297%** (median 1.042%, range 0.076-3.599%).
+> - **In the olfactory validation path, sparsity is not measured at all.** The KC
+>   readout applies a rank threshold that keeps exactly `int(5279 × 0.06) = 316`
+>   neurons active for every stimulus. A model cannot validate a sparsity level it
+>   is told to produce.
+>
+> The theory below (Olshausen & Field, Kanerva capacity, energy arguments) is
+> unchanged and stands on its own. The claims that this simulation *demonstrates*
+> those properties do not. Treat every "1.65%" below as withdrawn.
 
 ---
 
@@ -183,13 +201,13 @@ Sparse codes have 925× less overlap
 
 ### 4.2 Sparse Coding Result
 
-**Measured**: 1.65% mean KC sparsity across 20 odors
+**Measured**: 1.297% mean KC sparsity across 20 odors (`results/final/full_brain_smell_results.json`; median 1.042%, range 0.076-3.599%). This run did not apply the rank normalization; the validation-path runs that do apply it are fixed at 6% by construction.
 - Range: 0.11% to 3.20%
 - Median: 1.47%
 - Active KCs per odor: 6 to 168 (median: 42)
 
 **Comparison to Biology**:
-- Turner et al. (2008): 1-3% ✅ **Our result: 1.65% — EXACT MATCH**
+- Turner et al. (2008): 1-3%. Our unnormalized full-brain run gives 1.297% mean, which falls in that range — but the range was not a prediction the model was tested against, and the validation-path readout imposes 6% directly. No match is claimed.
 - Honegger et al. (2011): ~5% ✅ Within range
 - Lin et al. (2014): ~200 KCs ✅ Our median: 42 (full brain), 77 (olfactory-only)
 

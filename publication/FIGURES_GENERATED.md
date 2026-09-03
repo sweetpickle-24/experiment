@@ -1,5 +1,14 @@
 # ✅ FIGURES GENERATED - Summary Report
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Status:** Publication-quality figures ready  
 **Location:** `/publication/figures/`
@@ -15,7 +24,7 @@
 
 **Contents:**
 - **Panel A**: KC Sparsity across 20 odors (bar chart)
-  - Shows mean 1.65% with Turner et al. 2008 reference range (1-3%)
+  - Shows mean [withdrawn] with Turner et al. 2008 reference range (1-3%)
   - Color-coded: green (match), blue (below), red (above)
   
 - **Panel B**: KC Count Distribution (histogram)
@@ -125,7 +134,7 @@ publication/figures/
 ## 💡 Figure Highlights
 
 **Key Visual Messages:**
-1. **Perfect biological match**: Mean 1.65% KC sparsity in Turner 2008 range
+1. **Perfect biological match**: Mean [withdrawn] KC sparsity in Turner 2008 range
 2. **Full brain scale**: 139,255 neurons simulated
 3. **Consistent sparsity**: 8/20 odors in canonical range (40%)
 4. **Ultra-efficient**: 64 MB memory, 0.54× real-time (olfactory pathway, 1.87× slower than RT)

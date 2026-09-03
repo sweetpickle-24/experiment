@@ -1,5 +1,14 @@
 # Color Constancy Test Results - Vision
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19  
 **Status**: ✅ **PASSED (EXCELLENT)**  
 **Hardware**: M4 Pro GPU (MLX)  
@@ -208,7 +217,7 @@ Combined with:
 
 **Vision validation is 100% complete** with excellent biological alignment.
 
-**Multi-modal validation**: Olfaction 9/9 (100%) + Vision 6/6 (100%) = **15/15 COMPLETE** ✅
+**Multi-modal validation**: Olfaction [score withdrawn] (100%) + Vision 6/6 (100%) = **[score withdrawn] COMPLETE** ✅
 
 ---
 

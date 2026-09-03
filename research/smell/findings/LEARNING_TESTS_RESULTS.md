@@ -1,5 +1,11 @@
 # Olfactory Learning Tests — Results
 
+
+> **WITHDRAWN (2026-09-03).** The context-dependent recall result in this document has
+> been withdrawn as invalid. That test supplied the expected answer to the model as an
+> input, so it could not fail. See `hive/validation/invalid/README.md` for the
+> specific defect. Do not cite anything below.
+
 **Date**: 2026-03-23  
 **Status**: ✅ 3/3 PASS  
 **Tests**: Extinction Learning · Context-Dependent Recall · Sequence Learning

@@ -1,5 +1,14 @@
 # Documentation Structure
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: March 19, 2026  
 **Status**: Complete reorganization of all project documentation
 
@@ -23,7 +32,7 @@
 │   │   ├── SPARSE_BRAIN.md
 │   │   └── CONNECTOME.md
 │   ├── 03_validation/                # Validation results
-│   │   ├── FINAL_VALIDATION.md       # 9/9 results
+│   │   ├── FINAL_VALIDATION.md       # [score withdrawn] results
 │   │   ├── SMELL_VALIDATION.md
 │   │   └── VISION_VALIDATION.md
 │   ├── 04_discoveries/               # Novel findings
@@ -76,12 +85,12 @@
 - Connectome integration
 
 ### 4. Validation (`docs/03_validation/`)
-- 9/9 biological benchmarks
-- Smell validation (9/9)
+- [score withdrawn] biological benchmarks
+- Smell validation ([score withdrawn])
 - Vision validation (4/4)
 
 ### 5. Discoveries (`docs/04_discoveries/`)
-- Decorrelation (r=-0.51)
+- Decorrelation (r = [withdrawn])
 - Fine discrimination (5% JND)
 - All novel findings
 

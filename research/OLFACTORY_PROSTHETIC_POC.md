@@ -1,5 +1,14 @@
 # The Olfactory Prosthetic — The One Buildable Device
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-20  
 **Status**: Realistic POC — Buildable in 3-6 Months  
 **Based on**: Our validated engine + cochlear implant physics
@@ -227,7 +236,7 @@ Specifically, from our validated research:
 |---------------|--------------------------------|
 | 20 glomerular channel map (olfactory.py) | Tells us what each electrode should activate |
 | Concentration invariance r=0.724 | Device works without perfect calibration |
-| Decorrelation r=-0.51 | Different smells produce non-overlapping patterns — easier discrimination |
+| Decorrelation r = [withdrawn] | Different smells produce non-overlapping patterns — easier discrimination |
 | 5% JND (fine discrimination) | Device can produce subtly different smells, not just broad categories |
 | Hebbian STDP learning | Device improves over weeks as patient's brain adapts to stimulation patterns |
 | SmellOptimizer (MLX autodiff) | Inverse solver: any smell → electrode pattern in <300ms |

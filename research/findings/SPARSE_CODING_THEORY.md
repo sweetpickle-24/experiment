@@ -1,5 +1,14 @@
 # Sparse Coding Theory: Foundational Document
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Purpose**: Comprehensive reference for sparse coding theory, its biological basis, mathematical framework, and validation through our wave-based olfactory simulation.
 
 ---
@@ -64,7 +73,7 @@ Where:
   
 Example (Drosophila KC→MBON):
   N_synapses = 446,388
-  k_active = 87 (1.65% of 5,279 KCs)
+  k_active = 87 ([withdrawn] of 5,279 KCs)
   N_total = 5,279
   log(5,279/87) = 4.20
   
@@ -83,7 +92,7 @@ Sparse codes enable better discrimination through reduced overlap:
 ```
 Overlap probability P(overlap) ∝ (k_active / N_total)²
 
-Sparse (1.65%): P = (87/5,279)² = 0.027% 
+Sparse ([withdrawn]): P = (87/5,279)² = 0.027% 
 Dense (50%):    P = (2,640/5,279)² = 25%
 
 Sparse codes have 925× less overlap
@@ -156,7 +165,7 @@ Sparse codes have 925× less overlap
 2. **Energy Efficiency**:
    - Action potential cost: ~10⁹ ATP molecules per spike
    - Firing rate during odor: ~10 Hz
-   - Sparse (1.65%): 87 KCs × 10 Hz = 870 spikes/sec → 8.7×10¹¹ ATP/sec
+   - Sparse ([withdrawn]): 87 KCs × 10 Hz = 870 spikes/sec → 8.7×10¹¹ ATP/sec
    - Dense (50%): 2,640 KCs × 10 Hz = 26,400 spikes/sec → 2.6×10¹³ ATP/sec
    - **30× energy savings**
 
@@ -183,13 +192,13 @@ Sparse codes have 925× less overlap
 
 ### 4.2 Sparse Coding Result
 
-**Measured**: 1.65% mean KC sparsity across 20 odors
+**Measured**: [withdrawn] mean KC sparsity across 20 odors
 - Range: 0.11% to 3.20%
 - Median: 1.47%
 - Active KCs per odor: 6 to 168 (median: 42)
 
 **Comparison to Biology**:
-- Turner et al. (2008): 1-3% ✅ **Our result: 1.65% — EXACT MATCH**
+- Turner et al. (2008): 1-3% ✅ **Our result: [withdrawn] — EXACT MATCH**
 - Honegger et al. (2011): ~5% ✅ Within range
 - Lin et al. (2014): ~200 KCs ✅ Our median: 42 (full brain), 77 (olfactory-only)
 
@@ -202,7 +211,7 @@ Sparse codes have 925× less overlap
 **Input (Glomerular Patterns)**:
 - Mean correlation across pairs: r = +0.81
 - Range: +0.67 to +0.92
-- Example: Ethanol vs Methanol, r = +0.89
+- Example: Ethanol vs Methanol, r = [withdrawn]
 
 **Output (KC Patterns)**:
 - Mean correlation across pairs: r = -0.49
@@ -219,7 +228,7 @@ Sparse codes have 925× less overlap
 Stage 1: Chemical Input (Dense, Correlated)
   Ethanol:  [0.8, 0.3, 0.7, 0.2, 0.5] glomerular pattern
   Methanol: [0.75,0.35,0.68,0.18,0.52] glomerular pattern
-  Correlation: r = +0.89
+  Correlation: r = [withdrawn]
 
 Stage 2: PN Amplification (2,198 PNs)
   Ethanol:  68 PNs strongly active
@@ -230,14 +239,14 @@ Stage 3: KC Sparse Expansion (5,279 KCs)
   Random connectivity: each KC ← 7 random PNs
   High threshold: needs 5+ coincident inputs
   
-  Ethanol:  87 KCs active (1.65%)
+  Ethanol:  87 KCs active ([withdrawn])
   Methanol: 92 KCs active (1.74%)
   Overlap: 4 KCs (4.5% overlap)
   
   Correlation: r = -0.55 (negative!)
 
 Why negative?
-  - Only 1.65% of slots available (87 of 5,279)
+  - Only [withdrawn] of slots available (87 of 5,279)
   - APL inhibition enforces winner-take-all
   - Random sampling produces different winners for similar inputs
   - Competition forces anticorrelation
@@ -390,7 +399,7 @@ Applications:
 
 | Aspect | Dense Coding | Sparse Coding | Decorrelated Sparse (Our Work) |
 |--------|--------------|---------------|-------------------------------|
-| **Activity** | 30-70% | 1-10% | 1.65% |
+| **Activity** | 30-70% | 1-10% | [withdrawn] |
 | **Energy** | High (2.6×10¹³ ATP/s) | Low (8.7×10¹¹ ATP/s) | 30× savings ✅ |
 | **Memory** | 200-400 patterns | 700-7,000 patterns | 10,000+ patterns ✅ |
 | **Overlap** | 25% | 2.7% | 0.027% (decorrelated) ✅ |

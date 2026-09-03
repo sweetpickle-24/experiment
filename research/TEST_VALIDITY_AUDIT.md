@@ -1,8 +1,17 @@
 # Test Validity Audit Report
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-19 (updated — HS/VS corrected)  
 **Audit Scope:** All validation and discovery tests (smell + vision)  
-**Status:** ✅ **CORE VALIDATION COMPLETE — 14/14 (100%)** + HS/VS discovery test now PASS
+**Status:** ✅ **CORE VALIDATION COMPLETE — [score withdrawn] (100%)** + HS/VS discovery test now PASS
 
 ---
 
@@ -15,7 +24,7 @@
 | **Vision Discovery** | 7 | 4 (57%) | 3 |
 | **TOTAL** | 21 | 18 (86%) | 3 |
 
-**✅ Core validation: 14/14 (100%) — Ready for Nature Neuroscience publication**  
+**✅ Core validation: [score withdrawn] (100%) — Ready for Nature Neuroscience publication**  
 **✅ HS/VS Optic Flow: PASS (6/6 criteria) — bugs corrected, test now validated**  
 **⏳ Remaining: 3 discovery tests (optional extensions)**
 
@@ -25,20 +34,20 @@
 
 | Test | Run? | Valid? | Status | Notes |
 |------|------|--------|--------|-------|
-| Sparse Coding | ✅ | ✅ | PASS | 1.65% activity — matches Turner 2008 |
+| Sparse Coding | ✅ | ✅ | PASS | [withdrawn] activity — matches Turner 2008 |
 | Concentration Invariance | ✅ | ✅ | PASS | r=0.724 — Weber-Fechner law validated |
 | Odor Mixtures | ✅ | ✅ | PASS | 35.3% overlap |
 | Discrimination | ✅ | ✅ RAN (100ms + 300ms) | **NOVEL PREDICTION** | 🎉 First measurement of KC discrimination at 5%! No prior fly data exists at this resolution. Provides testable prediction for behavioral validation. |
 | Learning (Hebbian STDP) | ✅ | ✅ RAN | **PASS** | 80.2% MBON change, 316→5 KCs; Hebbian STDP validated |
 | Peak Timing | ✅ | ✅ | PASS | 100ms — matches Stopfer 2003 |
-| Full Brain Activity | ✅ | ✅ | PASS | 4.5% global, 47.5% olfactory |
-| Decorrelation | ✅ | ✅ | PASS | r=-0.51 — **MAJOR DISCOVERY** (validates 15 years of theory) |
-| Temporal Adaptation | ✅ | ✅ RAN | **PASS** ✅ | 53.1% adaptation (30-70% target) — peak 67ms (50-150ms) — FIX WORKED! |
+| Full Brain Activity | ✅ | ✅ | PASS | 4.5% global, [withdrawn] olfactory |
+| Decorrelation | ✅ | ✅ | PASS | r = [withdrawn] — **MAJOR DISCOVERY** (validates 15 years of theory) |
+| Temporal Adaptation | ✅ | ✅ RAN | **PASS** ✅ | [withdrawn] adaptation (30-70% target) — peak 67ms (50-150ms) — FIX WORKED! |
 
-**Smell Score:** 9/9 COMPLETE ✅ + 2 NOVEL DISCOVERIES 🎉  
+**Smell Score:** [score withdrawn] COMPLETE ✅ + 2 NOVEL DISCOVERIES 🎉  
 **Status:** ALL 9 validations passed + 2 major discoveries  
 **Discrimination:** 🎉 **First computational measurement of 5% KC discrimination** — NOVEL DISCOVERY (no prior fly data exists)  
-**Decorrelation:** 🎉 **r=-0.51** — MAJOR DISCOVERY (validates 15 years of sparse coding theory)  
+**Decorrelation:** 🎉 **r = [withdrawn]** — MAJOR DISCOVERY (validates 15 years of sparse coding theory)  
 **Learning:** ✅ 23% MBON change — Hebbian STDP validated  
 **Major Findings:** Concentration invariance ✅, **Decorrelation discovery** 🎉, Sparse coding ✅, **Fine discrimination discovery** 🎉, Temporal adaptation ✅
 
@@ -147,11 +156,11 @@
 ## Overall Validation Status
 
 **Tests with scientifically valid results:**
-- ✅ Smell: 9/9 (100%) — All validations complete
+- ✅ Smell: [score withdrawn] (100%) — All validations complete
 - ✅ Vision: **6/6 core (100%)** + 2/6 discoveries — **Core validation complete**
 
 **Major findings confirmed:**
-- ✅ Decorrelation by sparse coding (r=-0.51) — **validates 15 years of theory**
+- ✅ Decorrelation by sparse coding (r = [withdrawn]) — **validates 15 years of theory**
 - ✅ Concentration invariance (r=0.724) — Weber-Fechner law
 - ✅ Contrast invariance (r=0.858) — Weber-Fechner in vision ← **NEW 2026-03-19**
 - ✅ Color constancy (r=0.920) — von Kries chromatic adaptation ← **NEW 2026-03-19**
@@ -159,7 +168,7 @@
 - ✅ T4/T5 anatomical symmetry — dark preference is functional, not anatomical
 - ✅ Hex lattice isotropy — square-grid models valid
 
-**Publication-ready results:** Yes — **14/14 core validations complete (100%)**.
+**Publication-ready results:** Yes — **[score withdrawn] core validations complete (100%)**.
 
 **Ready for testing:** 3 discovery tests remaining (emergent/discovery tests).
 
@@ -168,8 +177,8 @@
 ## Next Actions
 
 1. ✅ All bugs fixed (10 fixes across 8 files)
-2. ✅ **18/21 tests validated** (9/9 smell + 9/12 vision)
-3. ✅ Core validation complete: **14/14 (100%)** — smell 9/9 + vision 5/5
+2. ✅ **18/21 tests validated** ([score withdrawn] smell + 9/12 vision)
+3. ✅ Core validation complete: **[score withdrawn] (100%)** — smell [score withdrawn] + vision 5/5
 4. ✅ HS/VS optic flow corrected and **PASSES 6/6** (3 bugs fixed — symmetric inhibition, brain amplitude, anisotropic grid)
 5. ⏳ Remaining: 3 discovery tests (emergent properties, optional)
 
@@ -177,11 +186,11 @@
 
 ## Test Completion Timeline
 
-- **2026-03-16**: Smell validation 8/9 complete
+- **2026-03-16**: Smell validation [score withdrawn] complete
 - **2026-03-17**: Vision validation 4/4 complete
 - **2026-03-18**: Bug fixes applied to all tests
-- **2026-03-19**: Smell 9/9 complete (temporal adaptation fixed)
+- **2026-03-19**: Smell [score withdrawn] complete (temporal adaptation fixed)
 - **2026-03-19**: Vision 5/5 core complete (contrast invariance + color constancy) ✅
 - **2026-03-19**: HS/VS optic flow — original FAIL, 3 bugs identified and fixed → now ✅ PASS (6/6)
 
-**Status**: 🎉 **MULTI-MODAL VALIDATION COMPLETE — 14/14 (100%)** + HS/VS discovery PASS (4/7 discovery)
+**Status**: 🎉 **MULTI-MODAL VALIDATION COMPLETE — [score withdrawn] (100%)** + HS/VS discovery PASS (4/7 discovery)

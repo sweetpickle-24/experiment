@@ -1,5 +1,14 @@
 # Decorrelation Test — Vision PASSED (UV/Visible Color Opponency)
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17 (initial failure) → 2026-03-17 (fixed and passed)  
 **Status**: ✅ **PASS** — Opponent gap = 0.061 (target > 0.05)  
 **Runtime**: ~17 seconds (5 UV/vis pairs + 3 control pairs)
@@ -73,8 +82,8 @@ Different opsin channels → different Dm8/Tm5 pathways → selectively differen
 1. **Massive expansion**: 20 glomeruli → 2,198 PNs → 5,279 KCs (264× expansion)
 2. **Random wiring**: Each KC samples 7 random PNs (Caron et al. 2013)
 3. **High threshold**: KC requires 5+ coincident PN inputs (threshold=0.5)
-4. **Competition**: Only 1.65% KCs active → sparse activation slots
-5. **Result**: Similar odors compete for limited KCs → anticorrelation r=-0.51
+4. **Competition**: Only [withdrawn] KCs active → sparse activation slots
+5. **Result**: Similar odors compete for limited KCs → anticorrelation r = [withdrawn]
 
 ### Vision Failure Factors
 1. **Moderate expansion**: 8 photoreceptors → 17,486 lamina → 42,327 medulla (10× expansion)
@@ -120,7 +129,7 @@ Glomeruli (20, dense)
     ↓ random expansion
 PNs (2,198, distributed)
     ↓ 7 random inputs per KC, high threshold
-KCs (5,279, SPARSE 1.65%, ANTICORRELATED r=-0.51) ← decorrelation here
+KCs (5,279, SPARSE [withdrawn], ANTICORRELATED r = [withdrawn]) ← decorrelation here
     ↓
 MBONs (learned associations)
 
@@ -150,5 +159,5 @@ The initial interpretation ("vision correctly fails decorrelation") was **wrong*
 
 **Impact on validation**: 
 - Vision: **4/4 tests (100%)** ✅ — all tests pass including decorrelation
-- Olfaction: 9/9 tests (100%)
+- Olfaction: [score withdrawn] tests (100%)
 - **Conclusion**: Wave physics correctly reproduces modality-specific coding in BOTH modalities

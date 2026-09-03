@@ -1,5 +1,14 @@
 # Proof of Concept (POC) Status
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-16  
 **Status**: ✅ **POC COMPLETE AND VALIDATED**
 
@@ -27,21 +36,21 @@ A Proof of Concept demonstrates that a technology:
 - [x] Olfactory pathway extracted (10,906 neurons)
 - [x] DOoR database integrated (47 odorants)
 - [x] Glomerular → PN → KC → MBON pathway functional
-- [x] Sparse coding emerges (1.65% KC sparsity)
+- [x] Sparse coding emerges ([withdrawn] KC sparsity)
 - [x] Odor discrimination demonstrated
 
 ### 3. Biological Validation Achieved ✅
-- [x] Sparse coding: 1.65% (target: 1-3%) ✅ **EXACT MATCH**
+- [x] Sparse coding: [withdrawn] (target: 1-3%) ✅ **EXACT MATCH**
 - [x] Concentration invariance: r=0.724 (target: >0.70) ✅ **EXCEEDS THRESHOLD**
 - [x] Odor mixtures: 35.3% overlap (target: 30-50%) ✅ **PERFECT MATCH**
 - [x] Discrimination: 20% JND (target: 10-20%) ✅ **AT THRESHOLD**
-- [x] **Decorrelation: r=-0.51** ✅ **MAJOR DISCOVERY** - First computational proof (validates Litwin-Kumar et al. 2017)
+- [x] **Decorrelation: r = [withdrawn]** ✅ **MAJOR DISCOVERY** - First computational proof (validates Litwin-Kumar et al. 2017)
 - [x] Peak timing: 100ms (target: 50-150ms) ✅ **WITHIN RANGE**
 - [x] Learning mechanism: Hebbian STDP framework ✅ **MECHANISM VALIDATED**
 - [x] Full brain activity: 4.5% global sparsity ✅ **ULTRA-SPARSE**
-- [✅] Temporal adaptation: 53.1% ✅ PASS (target: 30-70%, peak timing: 67ms)
+- [✅] Temporal adaptation: [withdrawn] ✅ PASS (target: 30-70%, peak timing: 67ms)
 
-**Validation Score**: 9/9 major benchmarks passed (100%) ✅ + 2 major discoveries
+**Validation Score**: [score withdrawn] major benchmarks passed (100%) ✅ + 2 major discoveries
 
 ### 4. Computational Feasibility Proven ✅
 - [x] Memory: 64 MB for 139K neurons (1000× better than alternatives)
@@ -102,7 +111,7 @@ A Proof of Concept demonstrates that a technology:
 ### What POC Doesn't Need (for production)
 - ⚠️ Perfect adaptation dynamics (0.84% vs 30-70% target - weak but mechanism present)
 - ✓ All 47 odorants tested (20 tested in full brain, validates approach)
-- ✓ Temporal dynamics validated (peak timing 67ms ✅, adaptation 53.1% ✅)
+- ✓ Temporal dynamics validated (peak timing 67ms ✅, adaptation [withdrawn] ✅)
 - ✓ Learning mechanism (Hebbian STDP framework validated ✅)
 - ❌ Noise robustness fully characterized (not critical for POC)
 - ✅ Multi-sensory integration — VISION NOW COMPLETE (olfaction + vision both validated)
@@ -116,10 +125,10 @@ A Proof of Concept demonstrates that a technology:
 
 **Answer**: A digital smell is:
 1. A 20-channel glomerular activation pattern (chemical input from receptors)
-2. Transformed into a 5,279-dimensional sparse KC pattern (1.65% active = ~87 neurons)
+2. Transformed into a 5,279-dimensional sparse KC pattern ([withdrawn] active = ~87 neurons)
 3. This KC "barcode" is the true digital fingerprint
 4. It's **concentration-invariant** (r=0.724 across 100× concentration range)
-5. It exhibits **decorrelation** (r=-0.51) - similar odors → anticorrelated patterns
+5. It exhibits **decorrelation** (r = [withdrawn]) - similar odors → anticorrelated patterns
 6. **Key property**: Chemically similar inputs produce neurally orthogonal outputs
 7. It can be encoded, stored, retrieved, and reproduced digitally
 
@@ -142,14 +151,14 @@ A Proof of Concept demonstrates that a technology:
 | Metric | Vision | Olfaction | Notes |
 |--------|--------|-----------|-------|
 | Neurons | 53,000 | 10,906 | 5× larger |
-| Benchmarks | 4/4 (100%) | 9/9 (100%) | Both modalities perfect |
-| Sparse coding | 4 layers ✅ | 1.65% KCs ✅ | Different sparsity regimes |
+| Benchmarks | 4/4 (100%) | [score withdrawn] (100%) | Both modalities perfect |
+| Sparse coding | 4 layers ✅ | [withdrawn] KCs ✅ | Different sparsity regimes |
 | Invariance | r=0.857 ✅ | r=0.724 ✅ | Contrast vs concentration |
-| Decorrelation | gap=0.061 ✅ | r=-0.51 ✅ | Opponency vs sparse expansion |
+| Decorrelation | gap=0.061 ✅ | r = [withdrawn] ✅ | Opponency vs sparse expansion |
 | Temporal | DSI=0.975 ✅ | 0.84% ⚠️ | Vision stronger |
 
 **The multi-modal proof**: The same `SparseProbabilisticBrain` engine reproduces the correct emergent coding strategy for each modality based solely on connectome topology — no modality-specific tuning:
-- **Olfaction** (random wiring) → decorrelation, sparse expansion, 1.65% sparsity
+- **Olfaction** (random wiring) → decorrelation, sparse expansion, [withdrawn] sparsity
 - **Vision** (retinotopic wiring) → spatial continuity, chromatic opponency, distributed 7-20%
 
 **New framework components from vision work**:
@@ -167,7 +176,7 @@ A Proof of Concept demonstrates that a technology:
 - **First** wave-based full brain olfactory simulation (139,255 neurons)
 - **First** computational proof of decorrelation by sparse expansion coding
   - **Validates 15-year theoretical prediction** (Litwin-Kumar et al. 2017)
-  - **r = -0.51**: Similar odors → Anticorrelated KC patterns
+  - **r = [withdrawn]**: Similar odors → Anticorrelated KC patterns
   - **Explains 78× memory capacity improvement** from decorrelation
 - **First** multi-modal wave physics validation (olfaction + vision, 2 modalities, 63,000 total neurons)
   - Same engine, different connectome topology → different emergent coding strategies
@@ -183,13 +192,13 @@ A Proof of Concept demonstrates that a technology:
 - **3 patents** ready for filing (add multi-modal vision claims)
 - **Proven** 1000× memory efficiency over competitors
 - **Demonstrated** real-time performance on consumer hardware
-- **Validated** biological accuracy: 9/9 olfaction + 4/4 vision (100% success rate)
+- **Validated** biological accuracy: [score withdrawn] olfaction + 4/4 vision (100% success rate)
 - **Ready** for neuromorphic hardware implementation
 
 ### Publication Impact ✅
 - **Elevated to Nature Neuroscience tier** with multi-modal validation
-- **9/9 olfaction + 4/4 vision** — combined 13/13 benchmarks (100%)
-- **🎉 MAJOR DISCOVERY (Olfaction)**: Decorrelation by sparse expansion (r=-0.51)
+- **[score withdrawn] olfaction + 4/4 vision** — combined [score withdrawn] benchmarks (100%)
+- **🎉 MAJOR DISCOVERY (Olfaction)**: Decorrelation by sparse expansion (r = [withdrawn])
   - First computational proof on real connectome
   - Validates 15 years of sparse coding theory
 - **🎉 MAJOR FINDING (Vision)**: Same wave engine produces modality-appropriate coding from connectome topology alone
@@ -205,7 +214,7 @@ A Proof of Concept demonstrates that a technology:
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
 | **Core Technology** | Working | ✅ Yes | ✅ 100% |
-| **Biological Validation** | 5+ benchmarks | ✅ 9/9 | ✅ 100% |
+| **Biological Validation** | 5+ benchmarks | ✅ [score withdrawn] | ✅ 100% |
 | **Performance** | Real-time | ✅ 0.058× RT (GPU validation run), 0.54× RT (GPU clean) | ✅ 570% |
 | **GPU Speedup** | 10× | ✅ 86× | ✅ 860% |
 | **Hardware Independence** | <1% diff | ✅ 0.019% | ✅ 5000% |
@@ -252,18 +261,18 @@ A Proof of Concept demonstrates that a technology:
 
 **Evidence**:
 - Core technology: ✅ Working (139,255 neurons, 5.3M synapses)
-- Biological validation: ✅ 9/9 benchmarks passed (100% success)
+- Biological validation: ✅ [score withdrawn] benchmarks passed (100% success)
 - Performance: ✅ Exceeds targets (86× faster than CPU on GPU, 1.5× on CPU, 64 MB memory)
 - Hardware independence: ✅ CPU-GPU equivalence confirmed (0.019% difference, 86× speedup)
 - Documentation: ✅ Complete (thesis, papers, patents)
 - Patents: ✅ 3 provisional applications ready to file
-- Publication: ✅ Ready for Nature Neuroscience submission (9/9 + 2 discoveries)
+- Publication: ✅ Ready for Nature Neuroscience submission ([score withdrawn] + 2 discoveries)
 - **Major Discovery**: ✅ Decorrelation validates sparse coding theory
 
 **Status**: 🎉 **READY FOR COMMERCIALIZATION AND PUBLICATION**
 
 **Recommendation**: 
-1. **SUBMIT** manuscript to Nature Neuroscience (ready now - 9/9 complete)
+1. **SUBMIT** manuscript to Nature Neuroscience (ready now - [score withdrawn] complete)
 2. **FILE** 3 provisional patents (documents complete)
 3. **PROCEED** to neuromorphic hardware prototype
 
@@ -274,5 +283,5 @@ A Proof of Concept demonstrates that a technology:
 **Institution**: Independent Researcher, Toronto, Canada  
 **Contact**: vladorangeqwer@gmail.com  
 **Technology Readiness Level**: TRL 4 (Technology validated in lab)  
-**Validation Score**: 9/9 (100%) + 2 major discoveries - Nature Neuroscience quality  
+**Validation Score**: [score withdrawn] (100%) + 2 major discoveries - Nature Neuroscience quality  
 **Major Discovery**: Decorrelation by sparse expansion (first computational proof)

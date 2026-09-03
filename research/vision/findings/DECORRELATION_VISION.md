@@ -1,5 +1,14 @@
 # Decorrelation in Vision
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Test**: Similar Wavelengths → Anticorrelated Medulla Patterns  
 **Status**: Test implemented, awaiting experimental results  
 **Date**: 2026-03-17
@@ -20,7 +29,7 @@ Similar wavelengths (e.g., 450nm blue vs 480nm cyan) should produce **anticorrel
 
 **This Project** - Olfaction Results:
 - Similar odors (ethanol vs methanol): glomerular correlation **r = +0.81**
-- KC patterns: **r = -0.51** (anticorrelated!)
+- KC patterns: **r = [withdrawn]** (anticorrelated!)
 - **First computational proof** of decorrelation by sparse coding
 
 **Validates 15-year theory**:
@@ -203,9 +212,9 @@ Test across multiple pairs:
 |---------|-----------|--------|
 | **Input correlation** | r ≈ +0.8 (similar odors) | r ≈ +0.75 (similar wavelengths) |
 | **Expansion** | 2.4× (PNs→KCs) | 8× (Lamina→Medulla) |
-| **Sparsity** | 1.65% KC | 2-5% Medulla (predicted) |
+| **Sparsity** | [withdrawn] KC | 2-5% Medulla (predicted) |
 | **Random wiring** | Yes (Caron 2013) | Yes (inferred from FlyWire) |
-| **Output correlation** | r = -0.51 ✅ | r < 0 (target) |
+| **Output correlation** | r = [withdrawn] ✅ | r < 0 (target) |
 
 ### Key Question
 
@@ -257,7 +266,7 @@ Does **larger expansion (8×)** produce:
 
 2. **Analyze correlation matrices**
 
-3. **Compare to olfaction** (r=-0.51 benchmark)
+3. **Compare to olfaction** (r = [withdrawn] benchmark)
 
 4. **Document findings**
 
@@ -268,7 +277,7 @@ Does **larger expansion (8×)** produce:
 ## References
 
 ### Olfaction Decorrelation (This Project)
-- Our results: r = -0.51 ✅ (first computational proof)
+- Our results: r = [withdrawn] ✅ (first computational proof)
 - Validates Litwin-Kumar et al. (2017) prediction
 
 ### Theory

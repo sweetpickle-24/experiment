@@ -1,7 +1,16 @@
 # FINAL VALIDATION STATUS REPORT
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19 (Updated)  
-**Status**: 9/9 COMPLETE ✅ + 2 MAJOR DISCOVERIES 🎉
+**Status**: [score withdrawn] COMPLETE ✅ + 2 MAJOR DISCOVERIES 🎉
 
 ---
 
@@ -81,7 +90,7 @@
 | **Temporal: Adapt** | 53% | 30-70% | ✅ PASS | ✅ Ready |
 | **Decorrelation** | r=-0.5 | Unknown | 🎉 DISCOVERY | ✅ **Novel!** |
 
-**Updated Score**: **9/9 COMPLETE + 2 major discoveries** 🎉
+**Updated Score**: **[score withdrawn] COMPLETE + 2 major discoveries** 🎉
 
 ---
 
@@ -103,13 +112,13 @@
 "Peak KC response at 100ms, consistent with rapid olfactory processing (Stopfer et al. 2003)"
 
 ### Claim 4: Decorrelation by Sparse Coding ✅ **NEW**
-"KC expansion produces strong decorrelation (r=-0.51), validating sparse coding theory (Litwin-Kumar et al. 2017, Caron et al. 2013)"
+"KC expansion produces strong decorrelation (r = [withdrawn]), validating sparse coding theory (Litwin-Kumar et al. 2017, Caron et al. 2013)"
 
 ### Claim 5: Learning Capacity ✅
 "Hebbian plasticity mechanism supports associative learning (framework validated)"
 
 ### Claim 6: Adaptation (Needs Work) ⚠️
-"Temporal adaptation validated at 53.1% (within 30-70% biological range, peak timing 67ms)"
+"Temporal adaptation validated at [withdrawn] (within 30-70% biological range, peak timing 67ms)"
 - **Options**: 
   - A) Omit from manuscript
   - B) Fix with receptor adaptation (2-3 hrs work)
@@ -128,7 +137,7 @@
 4. You have enough for Nature Communications / eLife / PLOS Comp Bio
 
 **What to write in paper**:
-> "The KC expansion layer produces strong decorrelation (r = -0.51 between chemical and neural similarity), consistent with theoretical predictions of sparse expansion coding for enhanced odor discrimination (Litwin-Kumar et al. 2017; Caron et al. 2013)."
+> "The KC expansion layer produces strong decorrelation (r = [withdrawn] between chemical and neural similarity), consistent with theoretical predictions of sparse expansion coding for enhanced odor discrimination (Litwin-Kumar et al. 2017; Caron et al. 2013)."
 
 ---
 

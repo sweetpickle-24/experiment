@@ -1,5 +1,14 @@
 # Publication Figures Summary
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-18  
 **Status**: Complete — All main and supplementary figures ready for publication
 
@@ -14,7 +23,7 @@
 ### Figure 2: Olfactory System Validation
 **Status**: Exists (partial)  
 **Files**:
-- `full_brain_validation_summary.png` - Full brain validation (9/9 tests passed)
+- `full_brain_validation_summary.png` - Full brain validation ([score withdrawn] tests passed)
 - `odor_response_analysis.png` - Odor response patterns
 
 ### Figure 3: Connectome Architecture
@@ -45,7 +54,7 @@
 **File**: `supp_figure2_decorrelation_discovery.png`  
 **Status**: ✓ Complete  
 **Content**: Sparse expansion decorrelation mechanism
-- Result: r = -0.51 (chemically similar odors → anticorrelated KC patterns)
+- Result: r = [withdrawn] (chemically similar odors → anticorrelated KC patterns)
 - Discovery: Validates 15 years of sparse coding theory (Litwin-Kumar et al. 2017)
 - Impact: 78× memory capacity improvement, 4.4× discrimination capacity
 
@@ -111,11 +120,11 @@
 
 ### Olfaction (Smell)
 - **Tests**: 9 biological benchmarks
-- **Pass rate**: 9/9 (100%)
-- **Major discovery**: Decorrelation by sparse expansion (r = -0.51)
+- **Pass rate**: [score withdrawn] (100%)
+- **Major discovery**: Decorrelation by sparse expansion (r = [withdrawn])
 - **Key findings**: 
   - Concentration invariance (r = 0.724)
-  - 1.65% KC sparsity (matches Turner 2008)
+  - [withdrawn] KC sparsity (matches Turner 2008)
   - CPU-GPU equivalence (0.019% difference)
 
 ### Vision
@@ -162,7 +171,7 @@
 ## Next Steps
 
 1. **Create Figure 1**: Wave-based architecture overview (conceptual diagram)
-2. **Enhance Figure 2**: Complete olfactory validation figure with all 9/9 benchmarks
+2. **Enhance Figure 2**: Complete olfactory validation figure with all [score withdrawn] benchmarks
 3. **Create combined figure**: Multi-modal validation summary (olfaction + vision)
 4. **Optimization**: Ensure all figures are consistent style, 300 DPI, publication-ready
 
@@ -180,12 +189,12 @@
 
 | Aspect | Olfaction | Vision |
 |--------|-----------|--------|
-| **Sparse coding** | 1 metric (1.65% KCs) | 4 metrics (4 layers) |
+| **Sparse coding** | 1 metric ([withdrawn] KCs) | 4 metrics (4 layers) |
 | **Invariance** | Concentration (r=0.724) | Contrast (r=0.857) |
-| **Decorrelation** | Sparse expansion (r=-0.51) | Chromatic opponency (gap=0.061) |
-| **Temporal** | Adaptation (53.1%, PASS) | Motion detection (DSI=0.975, strong) |
+| **Decorrelation** | Sparse expansion (r = [withdrawn]) | Chromatic opponency (gap=0.061) |
+| **Temporal** | Adaptation ([withdrawn], PASS) | Motion detection (DSI=0.975, strong) |
 | **Architecture** | Random wiring → discrimination | Retinotopic → continuity + motion |
-| **Pass rate** | 9/9 (100%) | 4/4 (100%) |
+| **Pass rate** | [score withdrawn] (100%) | 4/4 (100%) |
 
 Both modalities use **same wave physics**, different connectome architectures produce different functional outcomes — validates generality of wave-based approach.
 

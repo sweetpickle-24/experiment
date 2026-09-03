@@ -1,5 +1,14 @@
 # Test Fixes Implementation Summary
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-18  
 **Status:** ALL FIXES COMPLETED (did not run tests)
 
@@ -123,7 +132,7 @@ self._last_history_time = 0.0
 
 1. **Run the fixed tests** to verify they produce valid results
 2. **Update TEST_VALIDITY_AUDIT.md** with new status after running tests
-3. **Re-run complete** — temporal adaptation fix validated (currently 9/9 COMPLETE)
+3. **Re-run complete** — temporal adaptation fix validated (currently [score withdrawn] COMPLETE)
 4. **Document new findings** from the previously-broken vision tests
 
 ---

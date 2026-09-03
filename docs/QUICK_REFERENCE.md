@@ -1,7 +1,16 @@
 # Quick Reference - Digital Fly Brain Project
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Last Updated**: March 19, 2026  
-**Status**: 9/9 validations (100%) + 2 discoveries
+**Status**: [score withdrawn] validations (100%) + 2 discoveries
 
 ---
 
@@ -9,8 +18,8 @@
 
 ### 1. Results & Validation
 📊 [`docs/03_validation/FINAL_VALIDATION.md`](03_validation/FINAL_VALIDATION.md)
-- **9/9 biological benchmarks** (100% success)
-- **2 major discoveries**: Decorrelation (r=-0.51) + Discrimination (5% JND)
+- **[score withdrawn] biological benchmarks** (100% success)
+- **2 major discoveries**: Decorrelation (r = [withdrawn]) + Discrimination (5% JND)
 - Ready for Nature Neuroscience
 
 ### 2. Discoveries
@@ -58,7 +67,7 @@
 
 - **Neurons**: 139,255 (full fly brain)
 - **Synapses**: 5.3 million
-- **Validation**: 9/9 smell + 4/4 vision = **13/13 (100%)**
+- **Validation**: [score withdrawn] smell + 4/4 vision = **[score withdrawn] (100%)**
 - **Discoveries**: 2 major
 - **Speed**: 86× faster than CPU (M4 Pro GPU)
 - **Memory**: 64 MB
@@ -114,6 +123,6 @@ A: Yes! See [`docs/05_publication/MANUSCRIPT.md`](05_publication/MANUSCRIPT.md)
 
 ---
 
-**Status**: ✅ 9/9 Complete + 2 Discoveries  
+**Status**: ✅ [score withdrawn] Complete + 2 Discoveries  
 **Ready**: Nature Neuroscience submission  
 **Date**: March 19, 2026

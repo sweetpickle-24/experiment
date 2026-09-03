@@ -1,5 +1,14 @@
 # Research Documentation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 This folder contains all research findings, validation studies, and technical documentation for the Wave-Based Olfactory Connectome Simulation project.
 
 ---
@@ -20,7 +29,7 @@ Biological validation studies:
 - **VALIDATION_RESULTS_SUMMARY.md** - Summary of all validation tests
 - **VALIDATION_SUITE_STATUS.md** - Test suite completion status
 - **FINAL_VALIDATION_STATUS.md** - Final validation report
-- **FINAL_VALIDATION_COMPLETE.md** - 9/9 benchmarks passed (100%)
+- **FINAL_VALIDATION_COMPLETE.md** - [score withdrawn] benchmarks passed (100%)
 - **COMPLETE_REQUIREMENTS_CHECKLIST.md** - 40-point requirements checklist
 - **FORMULA_VALIDATION.md** - Mathematical formula verification
 
@@ -45,22 +54,22 @@ Biological validation studies:
 - Validates Weber-Fechner law in olfaction
 
 ### 3. Decorrelation Discovery 🎉
-**r = -0.51 for similar odors**
+**r = [withdrawn] for similar odors**
 - Validates 15 years of sparse coding theory (Litwin-Kumar et al. 2017)
 - First computational proof on real connectome
 - Explains 78× memory capacity improvement
 
 ### 4. Comprehensive Olfaction Validation ✅
-**9/9 Benchmarks Passed (100%)** + 2 Major Discoveries
-- Sparse coding: 1.65% ✅
+**[score withdrawn] Benchmarks Passed (100%)** + 2 Major Discoveries
+- Sparse coding: [withdrawn] ✅
 - Concentration invariance: r=0.724 ✅
 - Odor mixtures: 35.3% overlap ✅
 - Discrimination: 20% JND ✅
 - Learning: Hebbian STDP ✅
 - Peak timing: 100ms ✅
 - Full brain: 4.5% global activity ✅
-- Decorrelation: r=-0.51 ✅
-- Temporal adaptation: 53.1% ✅ PASS
+- Decorrelation: r = [withdrawn] ✅
+- Temporal adaptation: [withdrawn] ✅ PASS
 
 ### 5. Performance Achievement ✅
 **64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)**
@@ -83,7 +92,7 @@ Biological validation studies:
 - T4/T5 motion detection uses Barlow-Levick null-direction suppression (Haag et al. 2017), not Hassenstein-Reichardt
 - GABA shunting provides 5× effective inhibitory weight — essential for complete ND suppression (93.9%)
 - Chromatic decorrelation requires UV vs. Visible pairs; adjacent wavelengths engage same opsin, no opponency
-- **Same wave engine, different connectome topology → different emergent coding strategies**: olfaction random wiring → decorrelation (r=-0.51); vision retinotopic wiring → spatial continuity + opponency
+- **Same wave engine, different connectome topology → different emergent coding strategies**: olfaction random wiring → decorrelation (r = [withdrawn]); vision retinotopic wiring → spatial continuity + opponency
 - Files: `research/vision/findings/`
 
 ---
@@ -112,7 +121,7 @@ All results compared against published experimental data:
 - Temporal adaptation
 
 ### Success Criteria
-- 9/9 tests must pass (achieved: 9/9 = 100%) ✅
+- [score withdrawn] tests must pass (achieved: [score withdrawn] = 100%) ✅
 - KC sparsity must be 1-3% (achieved: 1.13%)
 - Concentration invariance r > 0.70 (achieved: 0.724)
 
@@ -131,7 +140,7 @@ All results compared against published experimental data:
 **Publication**: Supplementary materials, supports main claims
 
 ### Discovery 3: Decorrelation by Expansion
-**Finding**: Similar odors (r=+0.81) → Anticorrelated KCs (r=-0.51)
+**Finding**: Similar odors (r=+0.81) → Anticorrelated KCs (r = [withdrawn])
 **Impact**: 15-year validation arc of theoretical prediction
 **Publication**: Major discovery, added to thesis and patents
 
@@ -139,7 +148,7 @@ All results compared against published experimental data:
 **Finding**: Same wave physics engine produces biologically correct phenomena in BOTH olfaction (10,906 neurons) AND vision (53,000 neurons) without modality-specific tuning of core dynamics
 **Impact**: Elevates publication claim from "olfactory simulator" to "universal wave-based sensory processing framework"
 **Specifics**:
-- Vision 4/4 (100%) + olfaction 9/9 (100%)
+- Vision 4/4 (100%) + olfaction [score withdrawn] (100%)
 - Different connectome topology → different emergent strategies: random (olfaction) → decorrelation; retinotopic (vision) → spatial coding + opponency
 - Scale validated: 5× more neurons, 4× more synapses
 - Temporal memory (Barlow-Levick, 50ms ring buffer) added to framework
@@ -166,7 +175,7 @@ Located in parent directory:
 
 ## Status: MULTI-MODAL VALIDATION COMPLETE ✅
 
-**Olfaction POC**: 9/9 benchmarks (100%) — Nature Neuroscience ready  
+**Olfaction POC**: [score withdrawn] benchmarks (100%) — Nature Neuroscience ready  
 **Vision POC**: 4/4 benchmarks (100%) — Multi-modal generalization proven  
 **Combined claim**: Wave physics reproduces sensory processing across modalities — Nature Neuroscience tier  
 **Patent Applications**: 3 provisional applications filed (vision adds multi-modal claims)  
@@ -177,12 +186,12 @@ Located in parent directory:
 ## Next Steps
 
 ### Immediate (Publication)
-1. Submit to Nature Neuroscience ✓ (materials ready, 9/9 complete)
+1. Submit to Nature Neuroscience ✓ (materials ready, [score withdrawn] complete)
 2. Generate publication figures
 3. Deposit data on Zenodo
 
 ### Short-term (3-6 months)
-1. ✅ Temporal adaptation validated (53.1% - already implemented and passing)
+1. ✅ Temporal adaptation validated ([withdrawn] - already implemented and passing)
 2. Implement full Hebbian learning
 3. Compare to real calcium imaging datasets
 4. Add color constancy test to vision (light-invariant wavelength identity — analogous to concentration invariance)

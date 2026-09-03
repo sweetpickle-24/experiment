@@ -1,5 +1,14 @@
 # Multi-Modal Significance: What Vision Proves
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17  
 **Context**: Post-validation analysis comparing vision and olfaction results
 
@@ -28,7 +37,7 @@ None of these is a standalone discovery. The circuits were known. The parameters
 
 ### Olfaction: genuinely groundbreaking
 
-The olfactory r=-0.51 decorrelation result was **unexpected** — nobody predicted the exact numerical value would emerge from purely physical dynamics on a real connectome. That's what makes it publishable as a standalone finding.
+The olfactory r = [withdrawn] decorrelation result was **unexpected** — nobody predicted the exact numerical value would emerge from purely physical dynamics on a real connectome. That's what makes it publishable as a standalone finding.
 
 ---
 
@@ -76,7 +85,7 @@ Two components added to the framework that are reusable for any future modality:
 **Central claim**: The same wave physics engine, applied to real connectome data, produces biologically accurate emergent coding strategies in both olfaction and vision without modality-specific tuning. Connectome topology, not physics parameters, determines the coding strategy.
 
 **Evidence**:
-1. Olfaction: 9/9 (100%), r=-0.51 decorrelation (the "wow" result)
+1. Olfaction: [score withdrawn] (100%), r = [withdrawn] decorrelation (the "wow" result)
 2. Vision: 4/4 (100%), DSI=0.975, gap=0.061 (the "it generalizes" result)
 3. Same engine, 0 modality-specific tuning of core dynamics
 
@@ -100,7 +109,7 @@ If you want to extract a standalone novel finding from vision, candidates are:
 
 2. **Optic flow matching**: Measure lobula plate HS/VS cell responses to full-field grating motion and compare to known electrophysiology (Joesch et al. 2008). If DSI and preferred directions match, that's a quantitative prediction from first principles.
 
-3. **Unexpected emergent property**: Something that emerges from the optic lobe connectome that wasn't predicted — analogous to how r=-0.51 wasn't predicted for olfaction. This requires running experiments and looking for surprises, not designing tests to pass.
+3. **Unexpected emergent property**: Something that emerges from the optic lobe connectome that wasn't predicted — analogous to how r = [withdrawn] wasn't predicted for olfaction. This requires running experiments and looking for surprises, not designing tests to pass.
 
 ---
 

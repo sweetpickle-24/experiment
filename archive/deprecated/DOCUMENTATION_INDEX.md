@@ -1,5 +1,14 @@
 # Documentation Index
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 Complete index of all research, publication, and technical documentation for the Wave-Based Olfactory Connectome Simulation project.
 
 **Last Updated:** March 16, 2026  
@@ -50,7 +59,7 @@ Complete index of all research, publication, and technical documentation for the
 ### Key Results
 - **Biological Validation**: 1.13% KC sparsity matches Turner et al. (2008) exactly
 - **Computational Efficiency**: 64 MB memory, 10× real-time performance
-- **Novel Discovery**: Decorrelation by sparse expansion (r=-0.51)
+- **Novel Discovery**: Decorrelation by sparse expansion (r = [withdrawn])
 
 ---
 
@@ -110,7 +119,7 @@ Complete index of all research, publication, and technical documentation for the
 **Location:** `/research/validation/`
 
 ### Validation Results
-- **FINAL_VALIDATION_COMPLETE.md** - 9/9 benchmarks passed (100% success) + 2 discoveries
+- **FINAL_VALIDATION_COMPLETE.md** - [score withdrawn] benchmarks passed (100% success) + 2 discoveries
   - Sparse coding ✅
   - Concentration invariance ✅
   - Odor mixtures ✅
@@ -208,7 +217,7 @@ Complete index of all research, publication, and technical documentation for the
 ## 🎯 Project Status Summary
 
 ### ✅ Completed
-- **POC**: 100% validation success (9/9 benchmarks) + 2 discoveries
+- **POC**: 100% validation success ([score withdrawn] benchmarks) + 2 discoveries
 - **Biological Validation**: KC sparsity matches Turner et al. 2008
 - **Publication**: Manuscript ready for Nature Communications
 - **Patents**: 3 provisional applications filed
@@ -218,7 +227,7 @@ Complete index of all research, publication, and technical documentation for the
 - **Thesis**: Complete (654 lines)
 - **Publication**: Ready for submission
 - **Research Findings**: Comprehensive (7+ major findings)
-- **Validation**: 9/9 benchmarks achieved (100%)
+- **Validation**: [score withdrawn] benchmarks achieved (100%)
 - **Patents**: 3 applications with 2,405 lines total
 
 ### 🚀 Next Steps

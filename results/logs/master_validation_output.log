@@ -1,0 +1,112 @@
+2026-03-15 22:08:48,004 - INFO - ======================================================================
+2026-03-15 22:08:48,004 - INFO - MASTER VALIDATION SUITE
+2026-03-15 22:08:48,004 - INFO - ======================================================================
+2026-03-15 22:08:48,004 - INFO - Starting at: 2026-03-15T22:08:48.004206
+2026-03-15 22:08:48,004 - INFO - Total estimated time: 65 minutes (~1.1 hours)
+2026-03-15 22:08:48,004 - INFO - 
+======================================================================
+2026-03-15 22:08:48,004 - INFO - VALIDATION 1/5: Temporal Dynamics
+2026-03-15 22:08:48,004 - INFO - Estimated time: 15 minutes
+2026-03-15 22:08:48,004 - INFO - ======================================================================
+2026-03-15 22:08:48,004 - INFO - 
+======================================================================
+2026-03-15 22:08:48,004 - INFO - Running: validate_temporal_dynamics.py
+2026-03-15 22:08:48,004 - INFO - ======================================================================
+2026-03-15 22:08:48,319 - ERROR - ❌ validate_temporal_dynamics.py failed with code 1
+2026-03-15 22:08:48,319 - ERROR - Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_temporal_dynamics.py", line 26, in <module>
+    from hive.substrate.flywire_loader import FlyWireLoader
+ModuleNotFoundError: No module named 'hive.substrate.flywire_loader'
+
+2026-03-15 22:08:48,319 - INFO - 
+======================================================================
+2026-03-15 22:08:48,319 - INFO - VALIDATION 2/5: Odor Mixtures
+2026-03-15 22:08:48,319 - INFO - Estimated time: 10 minutes
+2026-03-15 22:08:48,319 - INFO - ======================================================================
+2026-03-15 22:08:48,319 - INFO - 
+======================================================================
+2026-03-15 22:08:48,319 - INFO - Running: validate_odor_mixtures.py
+2026-03-15 22:08:48,319 - INFO - ======================================================================
+2026-03-15 22:08:48,577 - ERROR - ❌ validate_odor_mixtures.py failed with code 1
+2026-03-15 22:08:48,577 - ERROR - Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_odor_mixtures.py", line 27, in <module>
+    from hive.substrate.flywire_loader import FlyWireLoader
+ModuleNotFoundError: No module named 'hive.substrate.flywire_loader'
+
+2026-03-15 22:08:48,577 - INFO - 
+======================================================================
+2026-03-15 22:08:48,577 - INFO - VALIDATION 3/5: Learning & Plasticity
+2026-03-15 22:08:48,577 - INFO - Estimated time: 20 minutes
+2026-03-15 22:08:48,577 - INFO - ======================================================================
+2026-03-15 22:08:48,577 - INFO - 
+======================================================================
+2026-03-15 22:08:48,577 - INFO - Running: validate_learning_plasticity.py
+2026-03-15 22:08:48,577 - INFO - ======================================================================
+2026-03-15 22:08:48,898 - ERROR - ❌ validate_learning_plasticity.py failed with code 1
+2026-03-15 22:08:48,898 - ERROR - Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_learning_plasticity.py", line 26, in <module>
+    from hive.substrate.flywire_loader import FlyWireLoader
+ModuleNotFoundError: No module named 'hive.substrate.flywire_loader'
+
+2026-03-15 22:08:48,898 - INFO - 
+======================================================================
+2026-03-15 22:08:48,898 - INFO - VALIDATION 4/5: Discrimination Thresholds
+2026-03-15 22:08:48,898 - INFO - Estimated time: 12 minutes
+2026-03-15 22:08:48,898 - INFO - ======================================================================
+2026-03-15 22:08:48,898 - INFO - 
+======================================================================
+2026-03-15 22:08:48,898 - INFO - Running: validate_discrimination_threshold.py
+2026-03-15 22:08:48,898 - INFO - ======================================================================
+2026-03-15 22:08:49,144 - ERROR - ❌ validate_discrimination_threshold.py failed with code 1
+2026-03-15 22:08:49,144 - ERROR - Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_discrimination_threshold.py", line 26, in <module>
+    from hive.substrate.flywire_loader import FlyWireLoader
+ModuleNotFoundError: No module named 'hive.substrate.flywire_loader'
+
+2026-03-15 22:08:49,144 - INFO - 
+======================================================================
+2026-03-15 22:08:49,144 - INFO - VALIDATION 5/5: Odor Similarity Structure
+2026-03-15 22:08:49,144 - INFO - Estimated time: 8 minutes
+2026-03-15 22:08:49,144 - INFO - ======================================================================
+2026-03-15 22:08:49,144 - INFO - 
+======================================================================
+2026-03-15 22:08:49,144 - INFO - Running: validate_odor_similarity.py
+2026-03-15 22:08:49,144 - INFO - ======================================================================
+2026-03-15 22:08:49,376 - ERROR - ❌ validate_odor_similarity.py failed with code 1
+2026-03-15 22:08:49,376 - ERROR - Traceback (most recent call last):
+  File "/Users/vladyslav/Documents/GitHub/experiment/validate_odor_similarity.py", line 27, in <module>
+    from hive.substrate.flywire_loader import FlyWireLoader
+ModuleNotFoundError: No module named 'hive.substrate.flywire_loader'
+
+2026-03-15 22:08:49,376 - INFO - 
+======================================================================
+2026-03-15 22:08:49,376 - INFO - GENERATING MASTER REPORT
+2026-03-15 22:08:49,376 - INFO - ======================================================================
+2026-03-15 22:08:49,377 - INFO - ✅ Master report saved to master_validation_results.json
+2026-03-15 22:08:49,377 - INFO - 
+======================================================================
+2026-03-15 22:08:49,377 - INFO - MASTER VALIDATION SUMMARY
+2026-03-15 22:08:49,377 - INFO - ======================================================================
+2026-03-15 22:08:49,377 - INFO - 
+Timestamp: 2026-03-15T22:08:49.376901
+2026-03-15 22:08:49,377 - INFO - Total validations: 5
+2026-03-15 22:08:49,377 - INFO - Successful: 0
+2026-03-15 22:08:49,377 - INFO - Failed: 5
+2026-03-15 22:08:49,377 - INFO - 
+Overall status: PASS
+2026-03-15 22:08:49,377 - INFO - 
+======================================================================
+2026-03-15 22:08:49,377 - INFO - BIOLOGICAL VALIDATION RESULTS
+2026-03-15 22:08:49,377 - INFO - ======================================================================
+2026-03-15 22:08:49,377 - INFO - 
+======================================================================
+2026-03-15 22:08:49,377 - INFO - DETAILED METRICS
+2026-03-15 22:08:49,377 - INFO - ======================================================================
+2026-03-15 22:08:49,377 - INFO - 
+======================================================================
+2026-03-15 22:08:49,377 - INFO - MASTER VALIDATION COMPLETE
+2026-03-15 22:08:49,377 - INFO - ======================================================================
+2026-03-15 22:08:49,377 - INFO - Started: 2026-03-15T22:08:48.004206
+2026-03-15 22:08:49,377 - INFO - Finished: 2026-03-15T22:08:49.377528
+2026-03-15 22:08:49,377 - INFO - Elapsed: 0.0 minutes
+2026-03-15 22:08:49,377 - INFO - Overall status: PASS

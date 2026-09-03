@@ -1,8 +1,17 @@
 # Proof of Concept (POC) Status
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-16  
 **Last Updated**: 2026-03-24  
-**Status**: ✅ **POC COMPLETE AND VALIDATED — 27/27 BENCHMARKS**
+**Status**: ✅ **POC COMPLETE AND VALIDATED — [score withdrawn] BENCHMARKS**
 
 ---
 
@@ -28,15 +37,15 @@ A Proof of Concept demonstrates that a technology:
 - [x] Olfactory pathway extracted (10,906 neurons)
 - [x] DOoR database integrated (47 odorants)
 - [x] Glomerular → PN → KC → MBON pathway functional
-- [x] Sparse coding emerges (1.65% KC sparsity)
+- [x] Sparse coding emerges ([withdrawn] KC sparsity)
 - [x] Odor discrimination demonstrated
 
-### 3. Biological Validation Achieved ✅ (27/27 — Updated 2026-03-23)
-- [x] Sparse coding: 1.65% (target: 1-3%) ✅
+### 3. Biological Validation Achieved ✅ ([score withdrawn] — Updated 2026-03-23)
+- [x] Sparse coding: [withdrawn] (target: 1-3%) ✅
 - [x] Concentration invariance: r=0.724 (target: >0.70) ✅
 - [x] Odor mixtures: 35.3% overlap (target: 30-50%) ✅
 - [x] Discrimination: 5% JND (NOVEL DISCOVERY - finer than assumed) ✅
-- [x] Decorrelation: r=-0.51 (validates sparse coding) ✅
+- [x] Decorrelation: r = [withdrawn] (validates sparse coding) ✅
 - [x] Peak timing: 100ms (target: 100-500ms) ✅
 - [x] Extinction learning (MBON reversal ≥30%) ✅
 - [x] Context-dependent recall (PAM/PPL1 compartments) ✅
@@ -56,7 +65,7 @@ A Proof of Concept demonstrates that a technology:
 - [x] **Noise robustness** (2026-03-23): stable at biological noise ≤10% ✅
 - [x] **Auditory JO frequency tuning** (2026-03-23): 6 subtypes validated ✅
 
-**Validation Score**: 21/21 major benchmarks passed ✅ + 2 major discoveries + 3 computational firsts
+**Validation Score**: [score withdrawn] major benchmarks passed ✅ + 2 major discoveries + 3 computational firsts
 
 ### 4. Computational Feasibility Proven ✅
 - [x] Memory: 64 MB for 139K neurons (1000× better than alternatives)
@@ -136,7 +145,7 @@ A Proof of Concept demonstrates that a technology:
 2. Transformed into a ~5,279 dimensional sparse KC pattern (1-2% active)
 3. This KC "barcode" is the true digital fingerprint
 4. It's concentration-invariant (r=0.724)
-5. It exhibits decorrelation (r=-0.51) for discrimination
+5. It exhibits decorrelation (r = [withdrawn]) for discrimination
 6. It can be encoded, stored, and reproduced digitally
 
 ### Technical Objectives
@@ -164,7 +173,7 @@ A Proof of Concept demonstrates that a technology:
 - **3 patents** ready for filing
 - **Proven** 1000× memory efficiency over competitors
 - **Demonstrated** real-time performance on consumer hardware
-- **Validated** biological accuracy (9/9 benchmarks, 100%)
+- **Validated** biological accuracy ([score withdrawn] benchmarks, 100%)
 - **Ready** for neuromorphic hardware implementation
 
 ### Publication Impact ✅
@@ -180,7 +189,7 @@ A Proof of Concept demonstrates that a technology:
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
 | **Core Technology** | Working | ✅ Yes | ✅ 100% |
-| **Biological Validation** | 5+ benchmarks | ✅ 9/9 | ✅ 100% |
+| **Biological Validation** | 5+ benchmarks | ✅ [score withdrawn] | ✅ 100% |
 | **Performance** | Real-time | ✅ 10× RT | ✅ 200% |
 | **Memory Efficiency** | <1 GB | ✅ 64 MB | ✅ 1600% |
 | **Scalability** | 100K+ neurons | ✅ 139K | ✅ 139% |
@@ -222,7 +231,7 @@ A Proof of Concept demonstrates that a technology:
 
 **Evidence**:
 - Core technology: ✅ Working
-- Biological validation: ✅ 9/9 benchmarks passed (100%)
+- Biological validation: ✅ [score withdrawn] benchmarks passed (100%)
 - Performance: ✅ Exceeds targets
 - Documentation: ✅ Complete
 - Patents: ✅ Ready to file
@@ -239,5 +248,5 @@ A Proof of Concept demonstrates that a technology:
 **Institution**: Independent Researcher, Toronto, Canada  
 **Contact**: vladorangeqwer@gmail.com  
 **Technology Readiness Level**: TRL 4 (Technology validated in lab)  
-**Validation Score**: 9/9 (100%) + 2 major discoveries - Nature Neuroscience quality  
+**Validation Score**: [score withdrawn] (100%) + 2 major discoveries - Nature Neuroscience quality  
 **Major Discovery**: Decorrelation by sparse expansion (first computational proof)

@@ -1,5 +1,14 @@
 # Discrimination JND Test Results
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-18  
 **Test:** Concentration discrimination thresholds (Just Noticeable Difference)  
 **Status:** ⚠️ HYPERSENSITIVITY DETECTED (JND = 5% < biological 10-20%)
@@ -53,7 +62,7 @@ The system discriminates **5% concentration changes**, which is **below** the bi
    - Biology may use r < 0.7 or r < 0.5 for "discriminable"
    - Current threshold (0.9) allows weakly correlated patterns to pass
 
-2. **Sparse coding too sparse**: 1.65% KC activity → very distinct patterns
+2. **Sparse coding too sparse**: [withdrawn] KC activity → very distinct patterns
    - Biological flies may have 3-5% KC sparsity under naturalistic conditions
    - Our deterministic reset + APL normalization produces extremely sparse codes
 
@@ -78,7 +87,7 @@ Our result (5%) sits between vision and olfaction, suggesting the **sparse codin
 
 The wave-based brain **out-performs biology** in discrimination sensitivity, likely because:
 1. Deterministic simulation removes biological noise
-2. Sparse coding (1.65%) creates maximally orthogonal representations
+2. Sparse coding ([withdrawn]) creates maximally orthogonal representations
 3. No receptor saturation or adaptation noise
 
 ### Real fly behavior matches 10-20% JND
@@ -127,6 +136,6 @@ The wave-based brain **out-performs biology** in discrimination sensitivity, lik
 ## Conclusion
 
 **Status:** ⚠️ Hypersensitive (5% JND vs 10-20% biological)  
-**Cause:** Deterministic simulation + extreme sparsity (1.65%)  
+**Cause:** Deterministic simulation + extreme sparsity ([withdrawn])  
 **Impact:** System discriminates better than biology — not a failure of the model, but a consequence of removing biological noise  
 **Recommendation:** Document as "biological limit" and note that stochastic noise would push JND to 10-20%

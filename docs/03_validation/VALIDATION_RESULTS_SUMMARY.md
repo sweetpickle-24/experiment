@@ -1,5 +1,14 @@
 # Biological Validation Results - COMPLETE
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19 (Updated)  
 **Runtime**: ~17 seconds (GPU)  
 **Backend**: MLX (GPU)  
@@ -9,11 +18,11 @@
 
 ## EXECUTIVE SUMMARY
 
-**Overall Status**: 9/9 COMPLETE ✅ + 2 MAJOR DISCOVERIES 🎉  
+**Overall Status**: [score withdrawn] COMPLETE ✅ + 2 MAJOR DISCOVERIES 🎉  
 **Publication Ready**: ✅ YES - Ready for Nature Neuroscience / eLife
 
 **Novel Discoveries**:
-1. 🎉 Decorrelation by sparse coding (r=-0.51)
+1. 🎉 Decorrelation by sparse coding (r = [withdrawn])
 2. 🎉 Fine discrimination capacity (5% JND) - First measurement in any insect
 
 ---
@@ -28,7 +37,7 @@
 
 **Our Results**:
 - **Peak time**: 67 ms (mean) ✅ **PASS** (within 50-150ms, Stopfer 2003)
-- **Adaptation**: 53.1% ✅ **PASS** (within 30-70%, Nagel & Wilson 2011)
+- **Adaptation**: [withdrawn] ✅ **PASS** (within 30-70%, Nagel & Wilson 2011)
 
 **Details by Odor**:
 | Odor | Peak Time | Adaptation | Status |
@@ -39,7 +48,7 @@
 
 **Analysis**:
 - ✅ Peak timing validated (67ms mean, within 50-150ms)
-- ✅ Adaptation validated (53.1% mean, within 30-70%)
+- ✅ Adaptation validated ([withdrawn] mean, within 30-70%)
 
 ---
 
@@ -70,7 +79,7 @@
 - ✅ Finer discrimination than previously measured in *Drosophila*
 - Literature gap: Most *Drosophila* JND studies focus on learning/conditioning, not raw discrimination
 - Our system reveals native discrimination capacity
-- Validates the decorrelation mechanism (r=-0.51 enables fine discrimination)
+- Validates the decorrelation mechanism (r = [withdrawn] enables fine discrimination)
 
 **Significance**: This is likely the first direct measurement of concentration JND in the fly olfactory system using neural activity patterns rather than behavioral responses.
 
@@ -113,17 +122,17 @@
 
 | Validation | Target | Result | Status | Publication Ready |
 |------------|--------|--------|--------|-------------------|
-| **Sparse Coding** | 1-3% | 1.65% ✅ | ✅ PASS | ✅ Yes |
+| **Sparse Coding** | 1-3% | [withdrawn] ✅ | ✅ PASS | ✅ Yes |
 | **Concentration Invariance** | r>0.70 | r=0.724 ✅ | ✅ PASS | ✅ Yes |
 | **Odor Mixtures** | 30-50% overlap | 35.3% ✅ | ✅ PASS | ✅ Yes |
 | **Discrimination** | Unknown | 5% JND 🎉 | 🎉 DISCOVERY | ✅ **Novel!** |
 | **Learning (Hebbian STDP)** | Measurable | 80% MBON ✅ | ✅ PASS | ✅ Yes |
 | **Peak Timing** | 100-500ms | 100ms ✅ | ✅ PASS | ✅ Yes |
 | **Full Brain Activity** | 1-5% | 4.5% ✅ | ✅ PASS | ✅ Yes |
-| **Decorrelation** | Unknown | r=-0.51 🎉 | 🎉 DISCOVERY | ✅ **Novel!** |
-| **Temporal Adaptation** | 30-70% | 53.1% ✅ | ✅ PASS | ✅ Yes |
+| **Decorrelation** | Unknown | r = [withdrawn] 🎉 | 🎉 DISCOVERY | ✅ **Novel!** |
+| **Temporal Adaptation** | 30-70% | [withdrawn] ✅ | ✅ PASS | ✅ Yes |
 
-**Overall**: 9/9 COMPLETE (100%) + 2 major discoveries
+**Overall**: [score withdrawn] COMPLETE (100%) + 2 major discoveries
 
 ---
 
@@ -132,7 +141,7 @@
 All 9 biological benchmarks have been validated with 100% success rate + 2 major discoveries. Ready for Nature Neuroscience submission.
 1. Run `python3 run_all_validations.py` on GPU
 2. Verify adaptation now shows 30-70%
-3. Update all docs to 9/9 COMPLETE if passes
+3. Update all docs to [score withdrawn] COMPLETE if passes
 
 **Estimated time**: 5 minutes
 
@@ -149,14 +158,14 @@ Learning test is now complete (80% MBON change, Hebbian STDP validated).
 1. **Odor mixture encoding**: 35% component overlap ✅
 2. **Discrimination sensitivity**: 5% JND 🎉 **NOVEL DISCOVERY** (first measurement in insects)
 3. **Peak timing**: 100ms response latency ✅
-4. **Sparse coding**: 1.65% sparsity ✅
+4. **Sparse coding**: [withdrawn] sparsity ✅
 5. **Concentration invariance**: r=0.724 ✅
 6. **Computational efficiency**: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT) ✅
-7. **Decorrelation by sparse expansion**: r=-0.51 ✅ **MAJOR DISCOVERY!**
+7. **Decorrelation by sparse expansion**: r = [withdrawn] ✅ **MAJOR DISCOVERY!**
 8. **Learning mechanism**: Hebbian STDP validated (80% MBON change) ✅
 
 ### ⚠️ PENDING RETEST
-9. **Temporal adaptation**: 53.1% ✅ PASS (re-run complete, fixes validated)
+9. **Temporal adaptation**: [withdrawn] ✅ PASS (re-run complete, fixes validated)
 
 ---
 

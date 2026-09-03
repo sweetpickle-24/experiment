@@ -1,7 +1,16 @@
 # Validation Update - 2026-03-19
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19  
-**Status**: ✅ **MULTI-MODAL VALIDATION COMPLETE — 15/15 (100%)**
+**Status**: ✅ **MULTI-MODAL VALIDATION COMPLETE — [score withdrawn] (100%)**
 
 ---
 
@@ -29,16 +38,16 @@ Two new vision tests completed today:
 
 ## Updated Validation Status
 
-### Olfaction: 9/9 (100%) ✅
-1. Sparse coding: 1.65% ✅
+### Olfaction: [score withdrawn] (100%) ✅
+1. Sparse coding: [withdrawn] ✅
 2. Concentration invariance: r=0.724 ✅
 3. Odor mixtures: 35.3% overlap ✅
 4. Discrimination: 5% JND ✅ (novel discovery)
 5. Learning (Hebbian STDP): 23% MBON change ✅
 6. Peak timing: 67ms ✅
 7. Full brain activity: 4.5% global ✅
-8. Decorrelation: r=-0.51 ✅ (major discovery)
-9. Temporal adaptation: 53.1% ✅
+8. Decorrelation: r = [withdrawn] ✅ (major discovery)
+9. Temporal adaptation: [withdrawn] ✅
 
 ### Vision: 6/6 (100%) ✅
 1. Sparse coding: 4/4 layers ✅
@@ -48,7 +57,7 @@ Two new vision tests completed today:
 5. **Contrast invariance: r=0.858 ✅ NEW**
 6. **Color constancy: r=0.920 ✅ NEW**
 
-### **Total: 15/15 CORE VALIDATIONS (100%)** ✅
+### **Total: [score withdrawn] CORE VALIDATIONS (100%)** ✅
 
 ---
 
@@ -75,8 +84,8 @@ Two new vision tests completed today:
 |-----------|--------|-----------|---------|
 | Invariance (intensity/concentration) | r=0.858 | r=0.724 | Vision (+18%) |
 | Invariance (illuminant/concentration) | r=0.920 | r=0.724 | Vision (+27%) |
-| Sparse coding | 4/4 layers | 1.65% KCs | Both ✅ |
-| Decorrelation | UV/vis gap=0.061 | r=-0.51 | Both ✅ (different mechanisms) |
+| Sparse coding | 4/4 layers | [withdrawn] KCs | Both ✅ |
+| Decorrelation | UV/vis gap=0.061 | r = [withdrawn] | Both ✅ (different mechanisms) |
 
 **Conclusion**: Both sensory modalities achieve 100% validation with modality-specific mechanisms.
 
@@ -96,18 +105,18 @@ Two new vision tests completed today:
 3. ⏳ `research/validation/FINAL_VALIDATION_COMPLETE.md` — Add vision 6/6 results
 4. ⏳ `research/vision/findings/VISION_VALIDATION_FINAL_RESULTS.md` — Update to 6/6
 5. ⏳ `docs/05_publication/EXECUTIVE_SUMMARY.md` — Update multi-modal validation status
-6. ⏳ `README.md` — Update validation status to 15/15
+6. ⏳ `README.md` — Update validation status to [score withdrawn]
 
 ---
 
 ## Publication Impact
 
 **Before today**: 13/15 validations (87%)  
-**After today**: **15/15 validations (100%)** ✅
+**After today**: **[score withdrawn] validations (100%)** ✅
 
 **Status**: 🎉 **READY FOR NATURE NEUROSCIENCE SUBMISSION**
 
-With 15/15 complete validations + 2 major discoveries (decorrelation, discrimination), this work is now:
+With [score withdrawn] complete validations + 2 major discoveries (decorrelation, discrimination), this work is now:
 - Top-tier journal ready (Nature Neuroscience, Neuron, Science Advances)
 - Multi-modal validation complete
 - Novel mechanistic insights proven (von Kries, Barlow-Levick, decorrelation)
@@ -117,7 +126,7 @@ With 15/15 complete validations + 2 major discoveries (decorrelation, discrimina
 ## Next Steps
 
 ### Documentation (Priority 1):
-1. Update all status files with 15/15 complete
+1. Update all status files with [score withdrawn] complete
 2. Update EXECUTIVE_SUMMARY.md
 3. Update README.md
 4. Create final validation summary document
@@ -136,7 +145,7 @@ With 15/15 complete validations + 2 major discoveries (decorrelation, discrimina
 1. Generate all figures for manuscript
 2. Format results for Nature Neuroscience
 3. Write methods section
-4. Draft abstract highlighting 15/15 + 2 discoveries
+4. Draft abstract highlighting [score withdrawn] + 2 discoveries
 
 ---
 

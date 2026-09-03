@@ -1,5 +1,14 @@
 # Publication Figures: Complete Generation Report
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Generated:** 2026-03-16  
 **Author:** Vladyslav Byelozerskykh  
 **ORCID:** 0009-0009-4741-2663  
@@ -25,23 +34,23 @@ All publication-quality figures have been successfully generated for the manuscr
 - `full_brain_validation_summary.pdf` (vector, 1.8 MB)
 
 **Content:**
-- Panel A: Comprehensive validation suite (9/9 benchmarks passed)
-- Panel B: Sparse coding validation (1.65% vs Turner 2008)
+- Panel A: Comprehensive validation suite ([score withdrawn] benchmarks passed)
+- Panel B: Sparse coding validation ([withdrawn] vs Turner 2008)
 - Panel C: Concentration invariance (r=0.724 > 0.70 threshold)
 - Panel D: Validation summary statistics
 
 **Purpose:** Primary evidence of biological validation across all benchmarks. Demonstrates that the wave-based approach successfully reproduces known biological phenomena.
 
 **Key results shown:**
-- Sparse coding: 1.65% ✓ (matches Turner 2008: 1-3%)
+- Sparse coding: [withdrawn] ✓ (matches Turner 2008: 1-3%)
 - Concentration invariance: r=0.724 ✓ (exceeds r>0.70)
 - Odor mixtures: 35.3% overlap ✓
 - Discrimination: 5% JND ✓ **NOVEL DISCOVERY**
 - Learning: Hebbian STDP ✓
 - Peak timing: 100ms ✓
-- Full brain: 4.5% global, 47.5% olfactory ✓
-- Decorrelation: r=-0.51 ✓ **MAJOR DISCOVERY**
-- Temporal adaptation: 53.1% ✅ PASS
+- Full brain: 4.5% global, [withdrawn] olfactory ✓
+- Decorrelation: r = [withdrawn] ✓ **MAJOR DISCOVERY**
+- Temporal adaptation: [withdrawn] ✅ PASS
 
 ---
 
@@ -61,7 +70,7 @@ All publication-quality figures have been successfully generated for the manuscr
 **Key evidence:**
 - Clear discrimination between all 10 odors
 - Stable responses over time
-- Sparse activation patterns (1.65% of KCs)
+- Sparse activation patterns ([withdrawn] of KCs)
 - Temporal precision (~100ms peak)
 
 ---
@@ -146,24 +155,24 @@ All publication-quality figures have been successfully generated for the manuscr
 - `supp_figure2_decorrelation_discovery.pdf` (vector, 1.9 MB)
 
 **Content:**
-- Panel A: Chemical similarity vs neural correlation (r = -0.51)
+- Panel A: Chemical similarity vs neural correlation (r = [withdrawn])
 - Panel B: Decorrelation mechanism through network layers
 - Panel C: Theory validation and memory capacity impact
 
 **Purpose:** Documents the major discovery that sparse expansion transforms correlated inputs into anticorrelated outputs, validating 15 years of sparse coding theory.
 
 **Major finding:**
-- **Ethanol vs Methanol:** Chemical similarity r = +0.89 → Neural correlation r = -0.51
+- **Ethanol vs Methanol:** Chemical similarity r = [withdrawn] → Neural correlation r = [withdrawn]
 - **First computational proof** on real connectome
 - **Validates Litwin-Kumar et al. (2017)** theoretical prediction
 - **78× memory capacity improvement** from decorrelation
 
 **Mechanism:**
-1. Similar chemical inputs (r = +0.89)
+1. Similar chemical inputs (r = [withdrawn])
 2. Sparse expansion (2,198 PNs → 5,279 KCs, 2.4×)
 3. Random connectivity (7 PNs per KC)
 4. High threshold (5+ coincident inputs needed)
-5. Result: Anticorrelated outputs (r = -0.51)
+5. Result: Anticorrelated outputs (r = [withdrawn])
 
 **Impact:**
 - Memory capacity: 200 → 15,600 memories (78× improvement)
@@ -199,7 +208,7 @@ All publication-quality figures have been successfully generated for the manuscr
 
 **Implications:**
 1. Results are **not GPU artifacts** - confirmed by CPU-GPU equivalence
-2. All 9/9 biological benchmarks are **hardware-independent**
+2. All [score withdrawn] biological benchmarks are **hardware-independent**
 3. GPU acceleration provides **massive performance advantage** without scientific compromise
 4. Wave physics implementation is **hardware-agnostic**
 5. CPU fallback enables **reproducibility** on any hardware
@@ -250,9 +259,9 @@ All publication-quality figures have been successfully generated for the manuscr
 
 ### Figure Captions (Draft)
 
-**Figure 1.** Full brain validation summary across nine biological benchmarks. **(A)** Comprehensive validation suite showing 9/9 passed tests (100% success rate) + 2 major discoveries. **(B)** Sparse coding validation: 1.65% KC activation matches Turner et al. (2008) experimental range of 1-3%. **(C)** Concentration invariance: binary correlation r=0.724 exceeds biological threshold of r>0.70. **(D)** Validation summary statistics including decorrelation discovery (r=-0.51).
+**Figure 1.** Full brain validation summary across nine biological benchmarks. **(A)** Comprehensive validation suite showing [score withdrawn] passed tests (100% success rate) + 2 major discoveries. **(B)** Sparse coding validation: [withdrawn] KC activation matches Turner et al. (2008) experimental range of 1-3%. **(C)** Concentration invariance: binary correlation r=0.724 exceeds biological threshold of r>0.70. **(D)** Validation summary statistics including decorrelation discovery (r = [withdrawn]).
 
-**Figure 2.** Odor response analysis and discrimination. **(A)** Multi-odor response patterns for 10 distinct odorants showing sparse, non-overlapping KC activation. **(B)** Temporal dynamics over 100ms biological time showing stable peak at ~100ms. **(C)** Odor discrimination matrix with pairwise correlations. **(D)** Response statistics confirming 1.65% mean sparsity across all odors.
+**Figure 2.** Odor response analysis and discrimination. **(A)** Multi-odor response patterns for 10 distinct odorants showing sparse, non-overlapping KC activation. **(B)** Temporal dynamics over 100ms biological time showing stable peak at ~100ms. **(C)** Odor discrimination matrix with pairwise correlations. **(D)** Response statistics confirming [withdrawn] mean sparsity across all odors.
 
 **Figure 3.** Complete Drosophila connectome architecture. **(A)** Olfactory pathway structure from olfactory receptor neurons (ORN) through projection neurons (PN) and Kenyon cells (KC) to mushroom body output neurons (MBON). **(B)** Sparse expansion: 2.4× dimensionality increase from 2,198 PNs to 5,279 KCs. **(C)** Connection patterns: glomerular organization at ORN-PN, random wiring at PN-KC (7 PNs per KC), sparse convergence at KC-MBON. **(D)** Network statistics for full 139,255 neuron brain.
 
@@ -260,7 +269,7 @@ All publication-quality figures have been successfully generated for the manuscr
 
 **Supplementary Figure 1.** Concentration invariance across 100-fold concentration range. **(A)** KC pattern stability for three alcohols (Ethanol, Methanol, 1-Butanol) across 0.1× to 10× concentrations, with r=0.724 exceeding biological threshold (red dashed line). **(B)** Binary correlation at each concentration level relative to 1× baseline. **(C)** Validation summary and underlying mechanisms: deterministic initialization, APL normalization, and logarithmic receptor response encoding (Weber-Fechner law).
 
-**Supplementary Figure 2.** Decorrelation discovery: sparse expansion transforms correlated inputs into anticorrelated outputs. **(A)** Six odor pairs show strong chemical similarity (r = +0.78 to +0.92) but negative neural correlations (r = -0.39 to -0.54), validating Litwin-Kumar et al. (2017) sparse coding theory. Key result: Ethanol/Methanol (r = +0.89 → -0.51). **(B)** Decorrelation mechanism across network layers showing transformation from correlated glomerular input to anticorrelated KC output. **(C)** Theory validation summary and memory capacity impact: 78× improvement from decorrelation (Kanerva 1988 sparse distributed memory mathematics).
+**Supplementary Figure 2.** Decorrelation discovery: sparse expansion transforms correlated inputs into anticorrelated outputs. **(A)** Six odor pairs show strong chemical similarity (r = +0.78 to +0.92) but negative neural correlations (r = -0.39 to -0.54), validating Litwin-Kumar et al. (2017) sparse coding theory. Key result: Ethanol/Methanol (r = [withdrawn] → -0.51). **(B)** Decorrelation mechanism across network layers showing transformation from correlated glomerular input to anticorrelated KC output. **(C)** Theory validation summary and memory capacity impact: 78× improvement from decorrelation (Kanerva 1988 sparse distributed memory mathematics).
 
 **Supplementary Figure 3.** CPU vs GPU hardware independence validation. **(A)** Sparsity equivalence: MLX GPU (24.304%) and NumPy CPU (24.285%) produce nearly identical KC sparsity (0.019% difference, 50× better than 1% validation threshold). **(B)** GPU performance advantage: 86× speedup (1.74s vs 149.8s for 100ms simulation) enables real-time processing at 86× faster than CPU NumPy. **(C)** Active neuron equivalence: 1 KC difference (1283 vs 1282 out of 5,279 total KCs). **(D)** Validation context: CPU-GPU difference is 263× smaller than biological trial-to-trial variability (5-10%), ruling out GPU artifacts and confirming that all biological findings are hardware-independent and scientifically valid.
 
@@ -275,7 +284,7 @@ All publication-quality figures have been successfully generated for the manuscr
 - `concentration_test_results.json` - Concentration invariance data (if available)
 
 ### Synthetic Data
-- Decorrelation odor pairs (demonstrative, based on documented r=-0.51 finding)
+- Decorrelation odor pairs (demonstrative, based on documented r = [withdrawn] finding)
 - Concentration invariance visualization (demonstrative, maintains r=0.724 result)
 
 ---
@@ -367,9 +376,9 @@ ls -lh *.png *.pdf
 
 When submitting to **Nature Communications** or **Nature Neuroscience**, emphasize:
 
-1. **Figure 1**: "Our wave-based approach achieves 9/9 biological benchmarks (100% success rate), including first computational proof of decorrelation by sparse coding and first measurement of 5% olfactory discrimination in insects."
+1. **Figure 1**: "Our wave-based approach achieves [score withdrawn] biological benchmarks (100% success rate), including first computational proof of decorrelation by sparse coding and first measurement of 5% olfactory discrimination in insects."
 
-2. **Supplementary Figure 2**: "Major discovery: Similar odors (r=+0.89 chemical similarity) produce anticorrelated neural patterns (r=-0.51), validating 15 years of theoretical predictions and explaining 78× memory capacity improvement."
+2. **Supplementary Figure 2**: "Major discovery: Similar odors (r = [withdrawn] chemical similarity) produce anticorrelated neural patterns (r = [withdrawn]), validating 15 years of theoretical predictions and explaining 78× memory capacity improvement."
 
 3. **Figure 4**: "Consumer hardware enables real-time full-brain simulation (86× faster than CPU NumPy on GPU, with 86× speedup validated) with unprecedented efficiency (64 MB for 139K neurons). Hardware-independent validation confirms scientific rigor (CPU-GPU difference 263× smaller than biological noise)."
 

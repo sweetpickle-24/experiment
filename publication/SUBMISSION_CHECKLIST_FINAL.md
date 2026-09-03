@@ -1,5 +1,14 @@
 # FINAL SUBMISSION CHECKLIST
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Manuscript:** Wave-Based Simulation of the Complete Drosophila Olfactory Connectome  
 **Target Journal:** Nature Communications  
 **Submission Date:** Ready for March 2026  
@@ -270,8 +279,8 @@ Also update:
 
 ### Scientific Quality ✅
 - [x] Novel contribution: First wave-based full brain simulation
-- [x] Biological validation: 9/9 benchmarks passed (100%) + 2 major discoveries
-- [x] Major discovery: Decorrelation by sparse coding (r=-0.51)
+- [x] Biological validation: [score withdrawn] benchmarks passed (100%) + 2 major discoveries
+- [x] Major discovery: Decorrelation by sparse coding (r = [withdrawn])
 - [x] Practical impact: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT) on laptop
 - [x] Reproducibility: Code and data will be public
 

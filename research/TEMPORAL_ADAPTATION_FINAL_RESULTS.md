@@ -1,4 +1,13 @@
-# 🎉 9/9 VALIDATION COMPLETE - 2026-03-19
+# 🎉 [score withdrawn] VALIDATION COMPLETE - 2026-03-19
+
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
 
 **Date**: March 19, 2026, 12:24 PM  
 **Status**: ✅ **ALL 9 BIOLOGICAL VALIDATIONS PASSED**  
@@ -10,13 +19,13 @@
 
 ### Temporal Adaptation - NOW PASSES ✅
 
-**Result**: 53.1% adaptation (within 30-70% target)
+**Result**: [withdrawn] adaptation (within 30-70% target)
 
 **Per-Odor Breakdown**:
 - Benzaldehyde: 11.6%
 - 2-heptanone: 92.7%
 - Geosmin: 56.1%
-- **Mean**: 53.1% ✅
+- **Mean**: [withdrawn] ✅
 
 **Peak Timing**: 67ms (within 50-150ms, Stopfer 2003) ✅
 
@@ -29,24 +38,24 @@ Changed adaptation calculation from `activities[0] → activities[3]` (0ms→500
 
 | Test | Result | Target | Status |
 |------|--------|--------|--------|
-| 1. Sparse Coding | 1.65% | 1-3% | ✅ PASS |
+| 1. Sparse Coding | [withdrawn] | 1-3% | ✅ PASS |
 | 2. Concentration Invariance | r=0.724 | >0.70 | ✅ PASS |
 | 3. Odor Mixtures | 35.3% | 30-50% | ✅ PASS |
 | 4. Discrimination | 5% JND | Unknown | 🎉 DISCOVERY |
 | 5. Learning (Hebbian STDP) | 23% MBON | Measurable | ✅ PASS |
 | 6. Peak Timing | 67ms | 50-150ms | ✅ PASS |
 | 7. Full Brain Activity | 4.5% | 1-5% | ✅ PASS |
-| 8. Decorrelation | r=-0.51 | Unknown | 🎉 DISCOVERY |
-| 9. Temporal Adaptation | 53.1% | 30-70% | ✅ PASS |
+| 8. Decorrelation | r = [withdrawn] | Unknown | 🎉 DISCOVERY |
+| 9. Temporal Adaptation | [withdrawn] | 30-70% | ✅ PASS |
 
-**Score**: **9/9 (100%) + 2 major discoveries** 🎉
+**Score**: **[score withdrawn] (100%) + 2 major discoveries** 🎉
 
 ---
 
 ## 2 MAJOR DISCOVERIES
 
 ### 1. Decorrelation by Sparse Expansion Coding
-**Finding**: r=-0.51 (chemical vs neural similarity)  
+**Finding**: r = [withdrawn] (chemical vs neural similarity)  
 **Impact**: Validates 15 years of theory (Litwin-Kumar 2017, Caron 2013)  
 **Significance**: First computational proof on real connectome
 
@@ -62,7 +71,7 @@ Changed adaptation calculation from `activities[0] → activities[3]` (0ms→500
 **Publication Target**: **Nature Neuroscience** 🎯
 
 **Why Top Tier**:
-- 9/9 biological validations (100%)
+- [score withdrawn] biological validations (100%)
 - 2 major discoveries (not just validation)
 - Real connectome (139K neurons, no parameter fitting)
 - Multi-modal (olfaction + vision)
@@ -80,13 +89,13 @@ Changed adaptation calculation from `activities[0] → activities[3]` (0ms→500
 ## FILES UPDATED
 
 ### Primary Status Documents ✅
-1. `research/TEST_VALIDITY_AUDIT.md` - Now shows 9/9 COMPLETE
-2. `VALIDATION_RESULTS_SUMMARY.md` - Updated to 9/9
-3. `FINAL_VALIDATION_COMPLETE.md` - Updated to 9/9
-4. `FINAL_VALIDATION_STATUS.md` - Updated to 9/9
-5. `.cursor/rules/Findings.mdc` - Updated to 9/9
-6. `research/ALL_NOVEL_DISCOVERIES.md` - Updated to 9/9
-7. `research/validation/FINAL_VALIDATION_COMPLETE.md` - Updated to 9/9
+1. `research/TEST_VALIDITY_AUDIT.md` - Now shows [score withdrawn] COMPLETE
+2. `VALIDATION_RESULTS_SUMMARY.md` - Updated to [score withdrawn]
+3. `FINAL_VALIDATION_COMPLETE.md` - Updated to [score withdrawn]
+4. `FINAL_VALIDATION_STATUS.md` - Updated to [score withdrawn]
+5. `.cursor/rules/Findings.mdc` - Updated to [score withdrawn]
+6. `research/ALL_NOVEL_DISCOVERIES.md` - Updated to [score withdrawn]
+7. `research/validation/FINAL_VALIDATION_COMPLETE.md` - Updated to [score withdrawn]
 
 ### New Result Document
 8. `research/TEMPORAL_ADAPTATION_FINAL_RESULTS.md` (this file)

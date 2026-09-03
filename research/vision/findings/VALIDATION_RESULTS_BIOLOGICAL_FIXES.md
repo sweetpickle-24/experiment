@@ -1,5 +1,14 @@
 # Vision Validation Results - Biological Fixes Implementation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-18  
 **Status**: 🎯 **MAJOR SUCCESS** - 2/4 layers passing, massive improvements across all layers
 
@@ -156,7 +165,7 @@ Cross-reference with:
 | Metric | Olfaction | Vision (Before) | Vision (After) | Status |
 |--------|-----------|-----------------|----------------|--------|
 | **Neurons** | 5,279 | 92,948 | 92,948 | 18× larger ✅ |
-| **Passing layers** | 9/9 (100%) | 4/4 (100%) | 4/4 (100%) | Complete ✅ |
+| **Passing layers** | [score withdrawn] (100%) | 4/4 (100%) | 4/4 (100%) | Complete ✅ |
 | **Forcing range** | 50-5,000 | 0-400 | 0-20,000 | Fixed ✅ |
 | **Coupling gain** | 1× | 10× | 10× | Correct ✅ |
 | **Biological accuracy** | High | Low | **High** | Fixed ✅ |

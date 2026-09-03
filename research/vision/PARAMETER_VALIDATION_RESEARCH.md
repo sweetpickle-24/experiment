@@ -1,5 +1,14 @@
 # Comprehensive Research Validation: Vision Simulation Parameters
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17  
 **Status**: CRITICAL PARAMETER ISSUES IDENTIFIED
 
@@ -227,7 +236,7 @@ So:
 **Is 0.5 correct?**
 
 Hard to tell without knowing the amplitude↔voltage mapping in our probabilistic framework. But:
-- Olfaction validation (9/9 pass) used this same threshold
+- Olfaction validation ([score withdrawn] pass) used this same threshold
 - Problem is likely NOT the threshold, but the **forcing/propagation**
 
 ### Recommendation
@@ -282,7 +291,7 @@ Actually, **YES**! This matches:
 | **dt (ms)** | 0.01 | 0.01 | **0.1-1.0** | **10-100×** ↑ |
 | **Steps** | 10,000 | 2,000 | **500-1000** | **5-20×** ↓ |
 | **Threshold** | 0.5 | 0.5 | 0.5 | 1× |
-| **Validation** | 9/9 pass ✅ | 0/4 pass ❌ | TBD | - |
+| **Validation** | [score withdrawn] pass ✅ | 0/4 pass ❌ | TBD | - |
 
 ### Why Vision Needs Different Parameters
 
@@ -367,7 +376,7 @@ self.gamma = 0.2  # Was 0.1 (double damping)
 
 4. **Test 4** (if needed): Optimize all parameters
    - **Goal**: Match biological benchmarks
-   - **Expected**: Validation pass rates similar to olfaction (9/9, 100%)
+   - **Expected**: Validation pass rates similar to olfaction ([score withdrawn], 100%)
 
 ---
 
@@ -519,4 +528,4 @@ The vision simulation is **fundamentally sound** in architecture, but has **crit
 
 These are **fixable** with simple parameter changes. The biological literature strongly supports these recommendations.
 
-**Expected outcome after fixes**: Vision validation should match olfaction success rate (9/9 benchmarks, 100%), enabling cross-modal validation of the wave-based neural theory.
+**Expected outcome after fixes**: Vision validation should match olfaction success rate ([score withdrawn] benchmarks, 100%), enabling cross-modal validation of the wave-based neural theory.

@@ -1,5 +1,14 @@
 # Documentation Restructuring - Complete ✅
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: March 19, 2026  
 **Status**: All documents properly organized and structured
 
@@ -59,7 +68,7 @@ New navigation documents:
 
 Created comprehensive documents:
 - **Updated README.md** - Clean, professional entry point
-- **FINAL_VALIDATION.md** - Complete 9/9 results summary
+- **FINAL_VALIDATION.md** - Complete [score withdrawn] results summary
 - **Navigation guides** - Multiple entry points for different needs
 
 ---
@@ -90,7 +99,7 @@ experiment/
 │   ├── 00_START_HERE.md          Navigation
 │   ├── 01_setup/                 Installation
 │   ├── 02_architecture/          System design
-│   ├── 03_validation/            Results (9/9)
+│   ├── 03_validation/            Results ([score withdrawn])
 │   ├── 04_discoveries/           Findings
 │   ├── 05_publication/           Manuscript
 │   └── 06_status/                Status

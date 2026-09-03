@@ -1,5 +1,14 @@
 # Vision POC Status - Initial Implementation
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-17  
 **Status**: INFRASTRUCTURE COMPLETE, VALIDATION BLOCKED BY PERFORMANCE
 
@@ -125,7 +134,7 @@ LOBULA_PLATE: 0.00% active  (target: 10-20%)  ❌ FAIL - no activity
 | Synapses | 100K | 1.75M | 18× |
 | Simulation time (100ms) | ~2 min | ~20 min* | 10× |
 | Memory | 1.8 MB | 1.8 MB | 1× (sparse) |
-| Validation status | 9/9 pass (100%) | 4/4 pass (100%) | Both complete |
+| Validation status | [score withdrawn] pass (100%) | 4/4 pass (100%) | Both complete |
 
 *Extrapolated from 20ms test
 
@@ -148,7 +157,7 @@ LOBULA_PLATE: 0.00% active  (target: 10-20%)  ❌ FAIL - no activity
 ### Option C: Document & Defer
 1. Document infrastructure as complete
 2. Note that vision validation requires engine optimization
-3. Focus on multi-modal success (9/9 olfaction + 4/4 vision = 13/13 total)
+3. Focus on multi-modal success ([score withdrawn] olfaction + 4/4 vision = [score withdrawn] total)
 4. Return to vision after engine improvements
 
 ---

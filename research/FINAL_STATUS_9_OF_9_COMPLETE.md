@@ -1,16 +1,25 @@
-# ✅ 9/9 VALIDATION COMPLETE - 2026-03-19
+# ✅ [score withdrawn] VALIDATION COMPLETE - 2026-03-19
+
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
 
 **Date**: March 19, 2026, 12:24 PM  
 **Issue Resolved**: Temporal Adaptation now passes after fix validation  
-**Final Status**: **9/9 COMPLETE (100%) + 2 MAJOR DISCOVERIES** 🎉
+**Final Status**: **[score withdrawn] COMPLETE (100%) + 2 MAJOR DISCOVERIES** 🎉
 
 ---
 
 ## WHAT WAS WRONG
 
 Documentation showed conflicting status for Temporal Adaptation:
-- Some files: "8/9 PASS" (adaptation pending)
-- Other files: "9/9 COMPLETE" (outdated, from before retest)
+- Some files: "[score withdrawn] PASS" (adaptation pending)
+- Other files: "[score withdrawn] COMPLETE" (outdated, from before retest)
 - Actual status: Fix applied but NOT YET RE-RUN
 
 ---
@@ -21,7 +30,7 @@ Documentation showed conflicting status for Temporal Adaptation:
 
 **Result**: Temporal Adaptation **NOW PASSES** ✅
 
-- **Adaptation**: 53.1% (target: 30-70%) ✅
+- **Adaptation**: [withdrawn] (target: 30-70%) ✅
 - **Peak timing**: 67ms (target: 50-150ms) ✅
 - **Per-odor**: Benzaldehyde 11.6%, 2-heptanone 92.7%, Geosmin 56.1%
 
@@ -29,24 +38,24 @@ Documentation showed conflicting status for Temporal Adaptation:
 
 ## FINAL VALIDATION SCORE
 
-**Official Score**: **9/9 COMPLETE (100%) + 2 MAJOR DISCOVERIES** 🎉
+**Official Score**: **[score withdrawn] COMPLETE (100%) + 2 MAJOR DISCOVERIES** 🎉
 
 **All 9 Tests Passed:**
-1. Sparse Coding: 1.65% ✅
+1. Sparse Coding: [withdrawn] ✅
 2. Concentration Invariance: r=0.724 ✅
 3. Odor Mixtures: 35.3% ✅
 4. Discrimination: 5% JND 🎉 (NOVEL DISCOVERY)
 5. Learning (Hebbian STDP): 23% MBON ✅
 6. Peak Timing: 67ms ✅
 7. Full Brain Activity: 4.5% ✅
-8. Decorrelation: r=-0.51 🎉 (MAJOR DISCOVERY)
-9. Temporal Adaptation: 53.1% ✅ **NEW PASS!**
+8. Decorrelation: r = [withdrawn] 🎉 (MAJOR DISCOVERY)
+9. Temporal Adaptation: [withdrawn] ✅ **NEW PASS!**
 
 ---
 
-## FILES UPDATED TO 9/9
+## FILES UPDATED TO [score withdrawn]
 
-All major documentation now shows correct 9/9 COMPLETE status:
+All major documentation now shows correct [score withdrawn] COMPLETE status:
 
 1. ✅ `research/TEST_VALIDITY_AUDIT.md`
 2. ✅ `VALIDATION_RESULTS_SUMMARY.md`
@@ -62,11 +71,11 @@ All major documentation now shows correct 9/9 COMPLETE status:
 
 ## PUBLICATION IMPACT
 
-**Before (8/9):**
+**Before ([score withdrawn]):**
 - Target: Nature Communications / eLife
 - Claim: "Strong validation work"
 
-**After (9/9 + 2 discoveries):**
+**After ([score withdrawn] + 2 discoveries):**
 - Target: **Nature Neuroscience / Nature** 🎯
 - Claim: "Perfect validation + major discoveries"
 
@@ -103,7 +112,7 @@ if activities[peak_idx] > 0 and peak_idx < 3:
 
 ## NEXT STEPS
 
-1. ✅ All validations complete (9/9)
+1. ✅ All validations complete ([score withdrawn])
 2. ⏳ Create publication figures
 3. ⏳ Format manuscript for Nature Neuroscience
 4. ⏳ Patent attorney review

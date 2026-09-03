@@ -1,5 +1,14 @@
 # Temporal Adaptation Investigation Report
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-17  
 **Issue:** Adaptation validation failing (0.37% vs target 30-70%)  
 **Status:** 🔍 ROOT CAUSE IDENTIFIED
@@ -166,10 +175,10 @@ This will show proper 30-70% adaptation because it's implementing desensitizatio
 2. **Onset latency (None detected)**: Expected with constant input
    - Onset requires **transient** response, which needs adaptation
    
-3. **All other validations (9/9)**: ✅ PASS
-   - Sparse coding (1.65%)
+3. **All other validations ([score withdrawn])**: ✅ PASS
+   - Sparse coding ([withdrawn])
    - Concentration invariance (r=0.724)
-   - Decorrelation (r=-0.51)
+   - Decorrelation (r = [withdrawn])
    - Discrimination (20% JND)
    - Learning (STDP)
    - Full brain dynamics
@@ -196,9 +205,9 @@ This will show proper 30-70% adaptation because it's implementing desensitizatio
 **Option B: Add Adaptation & Revalidate** (1-2 hours work)
 1. Implement adaptation in `sparse_probabilistic.py`
 2. Re-run `validate_temporal_dynamics.py` with `adaptation_tau=2000`
-3. Update validation results to 9/9 COMPLETE ✅
+3. Update validation results to [score withdrawn] COMPLETE ✅
 
-**Recommendation**: Submit to **Nature Neuroscience** NOW. The 9/9 pass rate (100%) with 2 major discoveries (decorrelation + discrimination) qualifies for top-tier publication.
+**Recommendation**: Submit to **Nature Neuroscience** NOW. The [score withdrawn] pass rate (100%) with 2 major discoveries (decorrelation + discrimination) qualifies for top-tier publication.
 
 ---
 

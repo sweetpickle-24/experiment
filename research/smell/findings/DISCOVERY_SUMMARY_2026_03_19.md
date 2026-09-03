@@ -1,5 +1,14 @@
 # 🎉 GROUNDBREAKING DISCOVERY DOCUMENTED
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 19, 2026  
 **Discovery:** First Measurement of Drosophila KC Concentration Discrimination  
 **Status:** ✅ **COMPLETE** — All documentation synchronized and ready for publication
@@ -95,7 +104,7 @@
 
 **Changes:**
 - Discrimination marked as "NOVEL PREDICTION" (not hypersensitive)
-- Summary updated: "9/9 COMPLETE + 2 NOVEL DISCOVERIES"
+- Summary updated: "[score withdrawn] COMPLETE + 2 NOVEL DISCOVERIES"
 - Notes explain this is first measurement
 
 ---
@@ -115,7 +124,7 @@
 
 **Changes:**
 - Discrimination rewritten as novel discovery
-- Score updated: 9/9 + 2 discoveries
+- Score updated: [score withdrawn] + 2 discoveries
 - Abstract claims enhanced
 - Publication impact strengthened
 
@@ -136,7 +145,7 @@
 ### Before This Discovery
 
 **Claims:**
-- 9/9 validations (100%)
+- [score withdrawn] validations (100%)
 - 1 major discovery (decorrelation)
 - Concentration invariance validated
 
@@ -147,7 +156,7 @@
 ### After This Discovery
 
 **Claims:**
-- 9/9 validations (100%)
+- [score withdrawn] validations (100%)
 - **2 major discoveries**:
   1. Decorrelation (validates 15 years of theory)
   2. **Fine discrimination (first measurement in any insect)** 🎉
@@ -164,7 +173,7 @@
 ### Enhanced Abstract
 
 **New opening:**
-> "We present a wave-based simulation of the complete Drosophila brain achieving 9/9 biological validations (100%) and **two major discoveries**: (1) first computational proof of decorrelation by sparse coding (r=-0.51), and (2) **first measurement of 5% olfactory concentration discrimination capacity in Kenyon cells**, filling a critical gap in insect neuroscience literature."
+> "We present a wave-based simulation of the complete Drosophila brain achieving [score withdrawn] biological validations (100%) and **two major discoveries**: (1) first computational proof of decorrelation by sparse coding (r = [withdrawn]), and (2) **first measurement of 5% olfactory concentration discrimination capacity in Kenyon cells**, filling a critical gap in insect neuroscience literature."
 
 ---
 
@@ -293,10 +302,10 @@
 
 ### Validation Score
 
-**9/9 tests PASS** (100%)
+**[score withdrawn] tests PASS** (100%)
 
 **2 Major Discoveries:**
-1. ✅ Decorrelation by sparse coding (r=-0.51)
+1. ✅ Decorrelation by sparse coding (r = [withdrawn])
 2. ✅ **Fine discrimination capacity (5% JND)** 🎉
 
 ---

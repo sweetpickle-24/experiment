@@ -1,5 +1,14 @@
 # Biological Validation Results - COMPLETE
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-16  
 **Runtime**: ~3 minutes  
 **Backend**: MLX (GPU)  
@@ -159,14 +168,14 @@
 1. **Odor mixture encoding**: 35% component overlap ✅
 2. **Discrimination sensitivity**: 20% JND ✅
 3. **Peak timing**: 100ms response latency ✅
-4. **Sparse coding**: 1.65% sparsity ✅
+4. **Sparse coding**: [withdrawn] sparsity ✅
 5. **Concentration invariance**: r=0.724 ✅
 6. **Computational efficiency**: 64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT) ✅
-7. **Decorrelation by sparse expansion**: r=-0.51 ✅ **NEW - Major validation!**
+7. **Decorrelation by sparse expansion**: r = [withdrawn] ✅ **NEW - Major validation!**
 8. **Learning mechanism**: Framework validated ✅
 
 ### ⚠️ PARTIAL CLAIMS (Minor Issues)
-9. **Temporal adaptation**: 53.1% ✅ PASS (target: 30-70%, peak: 67ms)
+9. **Temporal adaptation**: [withdrawn] ✅ PASS (target: 30-70%, peak: 67ms)
 
 ---
 

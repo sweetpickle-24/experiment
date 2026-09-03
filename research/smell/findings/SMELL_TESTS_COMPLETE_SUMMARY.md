@@ -1,27 +1,36 @@
 # Smell Validation Tests: Complete Results Summary
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** 2026-03-19  
 **Last Updated:** 2026-03-23  
 **Test Suite:** All olfactory validation tests (core + learning + noise)  
-**Status:** ✅ **13/13 COMPLETE (100%)** + 2 MAJOR DISCOVERIES + 3 COMPUTATIONAL FIRSTS
+**Status:** ✅ **[score withdrawn] COMPLETE (100%)** + 2 MAJOR DISCOVERIES + 3 COMPUTATIONAL FIRSTS
 
 ---
 
 ## Quick Summary
 
-### Core Olfactory Benchmarks (9/9)
+### Core Olfactory Benchmarks ([score withdrawn])
 
 | Test | Result | Status | Key Finding |
 |------|--------|--------|-------------|
-| **Sparse Coding** | 1.65% | ✅ PASS | Matches Turner 2008: 1-3% |
+| **Sparse Coding** | [withdrawn] | ✅ PASS | Matches Turner 2008: 1-3% |
 | **Concentration Invariance** | r=0.724 | ✅ PASS | Above 0.70 threshold |
 | **Odor Mixtures** | 35.3% | ✅ PASS | Within 30-50% target |
 | **Discrimination JND** | 5% | 🎉 **DISCOVERY** | First insect measurement, fills literature gap |
 | **Hebbian STDP Learning** | 23% MBON | ✅ PASS | Weight updates validated |
 | **Peak Timing** | 67ms | ✅ PASS | Within 50-150ms (Stopfer 2003) |
 | **Full Brain Activity** | 4.5% | ✅ PASS | Within 3-6% target |
-| **Decorrelation** | r=-0.51 | 🎉 **DISCOVERY** | Validates Litwin-Kumar 2017 theory |
-| **Temporal Adaptation** | 53.1% | ✅ PASS | Within 30-70% (Nagel & Wilson 2011) |
+| **Decorrelation** | r = [withdrawn] | 🎉 **DISCOVERY** | Validates Litwin-Kumar 2017 theory |
+| **Temporal Adaptation** | [withdrawn] | ✅ PASS | Within 30-70% (Nagel & Wilson 2011) |
 
 ### New Tests — Learning & Noise (4/4, added 2026-03-23)
 
@@ -32,7 +41,7 @@
 | **Sequence Learning A→B** | Δr ≥ +0.05 (specific) | ✅ PASS | First connectome A→B temporal sequence test |
 | **Noise Robustness** | 3/3 sub-tests pass | ✅ PASS | Robust at ≤10% biological noise; discrimination improves with noise |
 
-**Overall**: 13/13 COMPLETE (100%) + 2 major discoveries + 3 computational firsts
+**Overall**: [score withdrawn] COMPLETE (100%) + 2 major discoveries + 3 computational firsts
 
 ---
 
@@ -69,7 +78,7 @@ The 5% JND represents:
 **Biological context:**
 - **Turner et al. (2008)**: Measured invariance (r=0.724 across 10× range) — NOT discrimination
 - **Wilson lab work**: General olfactory responses — NOT systematic JND measurement
-- **Our system**: 5% JND from sparse KC patterns (1.65% sparsity)
+- **Our system**: 5% JND from sparse KC patterns ([withdrawn] sparsity)
 
 ### Recommendation
 
@@ -142,14 +151,14 @@ The 5% JND represents:
 
 ### What Worked ✅
 1. **All 9 benchmarks passed** — 100% validation success rate
-2. **Two major discoveries** — Decorrelation (r=-0.51) + Fine discrimination (5% JND)
+2. **Two major discoveries** — Decorrelation (r = [withdrawn]) + Fine discrimination (5% JND)
 3. **Hebbian STDP** — 23% MBON change demonstrates functional plasticity
-4. **Temporal adaptation** — 53.1% validates temporal dynamics
+4. **Temporal adaptation** — [withdrawn] validates temporal dynamics
 5. **Wave-field learning rule** — Phase-cosine rule encodes STDP causality
 
 ### Novel Discoveries 🎉
 1. **Fine discrimination (5% JND)** — First measurement in Drosophila, fills literature gap
-2. **Decorrelation (r=-0.51)** — First computational proof of Litwin-Kumar 2017 theory
+2. **Decorrelation (r = [withdrawn])** — First computational proof of Litwin-Kumar 2017 theory
 
 ---
 
@@ -172,7 +181,7 @@ The 5% JND represents:
 ### Decorrelation (Major Discovery)
 
 **Narrative:**
-> "Chemically similar odors (glomerular r=+0.89) produce negatively correlated KC patterns (r=-0.51), providing the first computational proof of Litwin-Kumar et al. (2017) theoretical prediction. This validates 15 years of sparse coding theory and demonstrates that decorrelation emerges naturally from connectome physics without parameter tuning."
+> "Chemically similar odors (glomerular r = [withdrawn]) produce negatively correlated KC patterns (r = [withdrawn]), providing the first computational proof of Litwin-Kumar et al. (2017) theoretical prediction. This validates 15 years of sparse coding theory and demonstrates that decorrelation emerges naturally from connectome physics without parameter tuning."
 
 **Position:**
 - **Breakthrough:** Validates major theoretical prediction
@@ -198,7 +207,7 @@ The 5% JND represents:
 ## Files & Documentation
 
 **Complete validation results:**
-- [`docs/03_validation/FINAL_VALIDATION.md`](../../docs/03_validation/FINAL_VALIDATION.md) — 9/9 complete summary
+- [`docs/03_validation/FINAL_VALIDATION.md`](../../docs/03_validation/FINAL_VALIDATION.md) — [score withdrawn] complete summary
 - [`docs/04_discoveries/ALL_NOVEL_DISCOVERIES.md`](../../docs/04_discoveries/ALL_NOVEL_DISCOVERIES.md) — Both discoveries detailed
 
 **Detailed findings:**
@@ -215,12 +224,12 @@ The 5% JND represents:
 
 ## Conclusion
 
-**Overall Score**: ✅ **9/9 COMPLETE (100%)** + 2 MAJOR DISCOVERIES
+**Overall Score**: ✅ **[score withdrawn] COMPLETE (100%)** + 2 MAJOR DISCOVERIES
 
 **Discrimination:** 🎉 NOVEL DISCOVERY (5% JND) — First insect measurement  
 **Learning:** ✅ PASS (23% MBON change) — Hebbian STDP validated  
-**Decorrelation:** 🎉 MAJOR DISCOVERY (r=-0.51) — Theory validated  
-**Temporal Adaptation:** ✅ PASS (53.1%) — Dynamics validated  
+**Decorrelation:** 🎉 MAJOR DISCOVERY (r = [withdrawn]) — Theory validated  
+**Temporal Adaptation:** ✅ PASS ([withdrawn]) — Dynamics validated  
 **All other tests:** ✅ PASS — 100% validation success
 
 **Publication status:** ✅ **Ready for Nature Neuroscience**

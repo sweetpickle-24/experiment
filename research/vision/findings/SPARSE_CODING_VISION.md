@@ -1,5 +1,14 @@
 # Sparse Coding in Vision
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Test**: Medulla Sparsity Measurement  
 **Status**: Test implemented, awaiting experimental results  
 **Date**: 2026-03-17
@@ -8,7 +17,7 @@
 
 ## Hypothesis
 
-Visual system should produce sparse firing patterns similar to olfaction (1.65% KC sparsity), with medulla neurons exhibiting 2-5% sparsity.
+Visual system should produce sparse firing patterns similar to olfaction ([withdrawn] KC sparsity), with medulla neurons exhibiting 2-5% sparsity.
 
 ---
 
@@ -56,7 +65,7 @@ Photoreceptors (R1-R8) → Lamina (~5,000 neurons)
 
 | System | Input | Expansion | Sparsity |
 |--------|-------|-----------|----------|
-| **Olfaction** | 2,198 PNs | → 5,279 KCs (2.4×) | 1.65% |
+| **Olfaction** | 2,198 PNs | → 5,279 KCs (2.4×) | [withdrawn] |
 | **Vision** | ~5K lamina | → 40K medulla (8×) | 2-5% (predicted) |
 
 Larger expansion → potentially lower sparsity (more neurons to distribute across)
@@ -166,7 +175,7 @@ def test_sparse_coding_vision(visual_connectome, stimuli):
 ## Comparison to Olfaction
 
 ### Olfaction Results (Validated)
-- KC sparsity: **1.65%** ✅
+- KC sparsity: **[withdrawn]** ✅
 - Target: 1-3% (Turner et al. 2008)
 - Mechanism: PN→KC expansion (2.4×) + APL inhibition
 
@@ -220,7 +229,7 @@ Does **larger expansion (8× vs 2.4×)** produce:
 - Turner et al. (2008) - Olfactory KC sparsity: 1-3%
 - Kanerva (1988) - Sparse distributed memory theory
 - Olshausen & Field (1996) - Sparse coding principle
-- This project - Olfaction validation: 1.65% ✅
+- This project - Olfaction validation: [withdrawn] ✅
 
 ---
 

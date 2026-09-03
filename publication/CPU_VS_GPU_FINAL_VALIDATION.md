@@ -1,5 +1,14 @@
 # CPU vs GPU Final Validation Report
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date:** March 16, 2026  
 **Test:** Proper CPU vs MLX GPU comparison with MLX installed  
 **Status:** ✅ **VALIDATION PASSED**
@@ -76,17 +85,17 @@ After installing MLX GPU framework, a proper CPU vs GPU comparison was conducted
 
 All 9 validation benchmarks from Turner et al. (2008), Stopfer et al. (2003), and other biological studies remain valid:
 
-1. ✅ **Sparse Coding:** 1.65% KC sparsity (matches Turner 2008: 1-3%)
+1. ✅ **Sparse Coding:** [withdrawn] KC sparsity (matches Turner 2008: 1-3%)
 2. ✅ **Concentration Invariance:** r=0.724 (exceeds threshold of 0.70)
-3. ✅ **Decorrelation:** r=-0.51 (validates 15 years of theory)
+3. ✅ **Decorrelation:** r = [withdrawn] (validates 15 years of theory)
 4. ✅ **Discrimination:** 5% JND (NOVEL DISCOVERY - finer than assumed)
 5. ✅ **Peak Timing:** 100ms (Stopfer 2003: 50-150ms)
-6. ✅ **Full Brain Activity:** 4.5% global, 47.5% olfactory
+6. ✅ **Full Brain Activity:** 4.5% global, [withdrawn] olfactory
 7. ✅ **Odor Mixtures:** 35.3% overlap
 8. ✅ **Hebbian Learning:** STDP mechanism validated
-9. ✅ **Temporal Adaptation:** 53.1% PASS (target: 30-70%, peak: 67ms)
+9. ✅ **Temporal Adaptation:** [withdrawn] PASS (target: 30-70%, peak: 67ms)
 
-**Score:** 9/9 (100%) + 2 Major Discoveries - **Nature Neuroscience Ready**
+**Score:** [score withdrawn] (100%) + 2 Major Discoveries - **Nature Neuroscience Ready**
 
 ---
 
@@ -214,18 +223,18 @@ for 100ms simulation) while maintaining scientific equivalence.
 
 1. **Scientific Equivalence:** ✅ Confirmed (0.019% difference)
 2. **Performance Advantage:** ✅ Quantified (86× speedup)
-3. **Biological Validity:** ✅ Maintained (9/9 benchmarks, 100%)
+3. **Biological Validity:** ✅ Maintained ([score withdrawn] benchmarks, 100%)
 4. **Publication Ready:** ✅ All claims validated
 
 ### All Claims Are Now Verified:
 
 | Claim | Status | Evidence |
 |-------|--------|----------|
-| Biological accuracy | ✅ VALID | 9/9 benchmarks passed (100%) |
+| Biological accuracy | ✅ VALID | [score withdrawn] benchmarks passed (100%) |
 | Hardware independence | ✅ VALID | CPU-GPU difference < 0.02% |
 | Real-time performance | ✅ VALID | 86× faster than CPU NumPy |
 | GPU speedup | ✅ VALID | 86× faster than CPU |
-| Decorrelation discovery | ✅ VALID | r=-0.51 (first computational proof) |
+| Decorrelation discovery | ✅ VALID | r = [withdrawn] (first computational proof) |
 | Memory efficiency | ✅ VALID | 64 MB for 139K neurons |
 
 ---

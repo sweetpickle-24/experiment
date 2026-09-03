@@ -58,7 +58,7 @@ Total: 1,097 lines across 6 chapters
 
 Key Results Included
 --------------------
-✅ Sparse Coding: 1.65% (matches Turner et al. 2008)
+[withdrawn] Sparse Coding: figure removed 2026-09-03 — imposed by the KC readout, not measured. See README.
 ✅ Concentration Invariance: r = 0.724 (exceeds 0.70 threshold)
 ✅ Decorrelation: r = -0.51 (validates Litwin-Kumar 2017)
 ✅ Full Brain: 139K neurons in 64 MB, 10× real-time

@@ -1,5 +1,14 @@
 # The Three Real Bets
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-20  
 **Status**: Investor-Grade — Buildable From Existing Code  
 **Constraint**: Every claim here rests on research already done. No new hardware. No new science.
@@ -33,7 +42,7 @@ IFRA (International Fragrance Association) restricts fragrance ingredients every
 **Current process**: A senior perfumer manually re-blends the formula. 6 months to 3 years of iteration. $50K-$500K in labour, materials, and consumer testing. And there is no guarantee the result smells the same — because nobody has been able to quantify "smells the same" until now.
 
 **Our discovery** closes that gap. We proved:
-- Decorrelation r=-0.51: molecular similarity ≠ perceptual similarity
+- Decorrelation r = [withdrawn]: molecular similarity ≠ perceptual similarity
 - This means: the ONLY objective way to verify a reformulation is equivalent is to compare KC patterns, not molecular structure
 - And we can compute KC patterns in <2 seconds
 
@@ -69,12 +78,12 @@ The MVP is 4 weeks of UI work on top of existing code.
 
 ### Why Our Specific Discoveries Make This Impossible Without Us
 
-Every other reformulation approach works at the molecular level — find a molecule with similar chemical structure. This fails because of our decorrelation proof. Two molecules with 89% structural similarity can produce KC patterns with correlation r=-0.51 — completely different experiences. And two structurally unrelated molecules can produce nearly identical KC patterns.
+Every other reformulation approach works at the molecular level — find a molecule with similar chemical structure. This fails because of our decorrelation proof. Two molecules with 89% structural similarity can produce KC patterns with correlation r = [withdrawn] — completely different experiences. And two structurally unrelated molecules can produce nearly identical KC patterns.
 
 Without KC-level comparison, reformulation is blind guessing. With it, it's a computation.
 
 **We are the only organisation that has:**
-1. A biologically-validated brain simulation (9/9 benchmarks — no other system has 1)
+1. A biologically-validated brain simulation ([score withdrawn] benchmarks — no other system has 1)
 2. An inverse solver that searches in KC space (SmellOptimizer, exists and runs)
 3. The proof that KC space is the right search space (decorrelation discovery, published in our findings)
 
@@ -102,7 +111,7 @@ IFRA updates happen every 2-3 years. Each update affects 5,000-15,000 commercial
 
 **First revenue**: Sign one fragrance house. They submit 100 formulas. $500K. 4 weeks of work.
 
-**Moat**: Our decorrelation proof is the legal foundation. A competitor can't build this without reproducing 9/9 biological validations. 5-7 years minimum. We are already here.
+**Moat**: Our decorrelation proof is the legal foundation. A competitor can't build this without reproducing [score withdrawn] biological validations. 5-7 years minimum. We are already here.
 
 ---
 
@@ -131,8 +140,8 @@ The brand sues. The counterfeiter shows: "Our formula uses different ingredients
 
 We proved (research result, not theory):
 
-- Ethanol vs Methanol: glomerular correlation r=+0.89 (89% similar as molecules)
-- Their KC patterns: correlation r=-0.51 (anticorrelated — completely different experience)
+- Ethanol vs Methanol: glomerular correlation r = [withdrawn] (89% similar as molecules)
+- Their KC patterns: correlation r = [withdrawn] (anticorrelated — completely different experience)
 
 This means KC correlation IS the objective measure of perceptual identity. Two formulas with KC correlation > 0.95 produce experiences the brain cannot distinguish (within our 5% JND, also measured). Two formulas with KC correlation < 0.50 are perceptually distinct regardless of molecular overlap.
 
@@ -162,7 +171,7 @@ report = pattern_similarity.composite_similarity(kc_a, kc_b)
 ### Three Revenue Lines
 
 **Line 1 — Authentication Reports ($5K-$50K per dispute)**
-A brand suspects a competitor copied their formula. They submit both. We compute KC correlation. We provide a report with our biological validation credentials (9/9 benchmarks, Nature Neuroscience-ready research) as foundation. Expert witness testimony available.
+A brand suspects a competitor copied their formula. They submit both. We compute KC correlation. We provide a report with our biological validation credentials ([score withdrawn] benchmarks, Nature Neuroscience-ready research) as foundation. Expert witness testimony available.
 
 $50K per legal case. 100 cases/year = $5M ARR. One law firm partnership reaches all fragrance IP cases.
 
@@ -294,7 +303,7 @@ The previous three ideas needed hardware that doesn't exist. These three don't.
 | First demo | Needs months of engineering | Needs weeks of UI work |
 | Investor risk | Technology + market | Market only |
 | Revenue start | 2-3 years | 6-12 weeks |
-| Science required | New physics + new experiments | 0 — 9/9 validations already done |
+| Science required | New physics + new experiments | 0 — [score withdrawn] validations already done |
 
 Each one is a direct commercial wrapper around a specific validated result:
 

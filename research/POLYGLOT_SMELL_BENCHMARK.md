@@ -1,5 +1,14 @@
 # Polyglot Smell Benchmark — Python vs Julia vs Rust
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-23  
 **Status**: Complete — all three languages running, results validated
 
@@ -54,7 +63,7 @@ different RNG seeds (different initial phases), not from numerical precision.
 Key observations:
 - `fruit_ferment vs danger_mold`: r ≈ 0 across all languages (correct — distinct families → decorrelated KC patterns)
 - `fruit_ferment vs fruit_ripe`: r ≈ 0.28 across all languages (correct — same family → partial overlap)
-- Sparsity is 14% (target 1-3%) because this standalone test lacks APL inhibition. The full brain with APL reaches 1.65%.
+- Sparsity is 14% (target 1-3%) because this standalone test lacks APL inhibition. The full brain with APL reaches [withdrawn].
 
 ### KC Mean Amplitude (numerical agreement)
 
@@ -155,7 +164,7 @@ Rust's 71.7× GPU speedup (vs CPU Rust) is highest because:
 
 ## Next Steps
 
-- [ ] Add APL inhibition to get biological 1.65% KC sparsity (target for prosthetic output)
+- [ ] Add APL inhibition to get biological [withdrawn] KC sparsity (target for prosthetic output)
 - [ ] Port phototransduction Ca²⁺ ODE to Julia using `DifferentialEquations.jl` Rodas5 solver
 - [ ] Measure Rust Metal per-step latency jitter (real-time guarantee for prosthetic)
 - [ ] Scale to full brain (139K neurons) — Rust Metal expected to remain real-time

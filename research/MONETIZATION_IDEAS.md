@@ -1,9 +1,18 @@
 # Monetizable POC Ideas — Wave-Based Brain Technology
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-19  
 **Last Updated**: 2026-03-20  
 **Status**: Ideation Phase — Expanded Edition  
-**Foundation**: 14/14 biological validations + 2 major discoveries + wave physics engine
+**Foundation**: [score withdrawn] biological validations + 2 major discoveries + wave physics engine
 
 ---
 
@@ -14,9 +23,9 @@ Before any product exists, these have been proven:
 | Capability | Result | What It Enables |
 |------------|--------|-----------------|
 | 86× faster than CPU simulation | GPU validated | Sub-second predictions |
-| Decorrelation discovery | r=-0.51 | Molecular fingerprinting |
+| Decorrelation discovery | r = [withdrawn] | Molecular fingerprinting |
 | Concentration invariance | r=0.724 | Works across 10x dose range |
-| Sparse coding (1.65%) | 87 active KCs | Winner-take-all competition |
+| Sparse coding ([withdrawn]) | 87 active KCs | Winner-take-all competition |
 | 15,600x memory capacity | Kanerva 1988 | 15,600 unique molecular codes |
 | Fine discrimination (5% JND) | Novel discovery | Detects tiny molecular differences |
 | Full brain simulation | 139,255 neurons | No approximations |
@@ -254,7 +263,7 @@ Hardware:
 
 ### The Physics
 
-The fly brain's APL winner-take-all mechanism means only 1.65% of KCs can fire simultaneously. When a counter-molecule with higher amplitude is introduced, it wins the competition and pollution KCs are suppressed — the brain simply does not perceive the pollution.
+The fly brain's APL winner-take-all mechanism means only [withdrawn] of KCs can fire simultaneously. When a counter-molecule with higher amplitude is introduced, it wins the competition and pollution KCs are suppressed — the brain simply does not perceive the pollution.
 
 This is NOT:
 - A filter (pollution stays in air)
@@ -466,7 +475,7 @@ Decision time: 300ms (engine runs at 86× faster than CPU)
 
 ### The Physics
 
-Your decorrelation discovery (r=-0.51) means that even molecules with 89% chemical similarity produce completely different KC patterns. This creates a natural "neural hash" — a unique 87-KC code that cannot be reverse-engineered from smell alone.
+Your decorrelation discovery (r = [withdrawn]) means that even molecules with 89% chemical similarity produce completely different KC patterns. This creates a natural "neural hash" — a unique 87-KC code that cannot be reverse-engineered from smell alone.
 
 ### What It Does
 
@@ -477,7 +486,7 @@ Your decorrelation discovery (r=-0.51) means that even molecules with 89% chemic
 
 ### Why Chemical Analysis Alone Fails
 
-GC-MS can detect molecule X is present, but cannot prove it creates a unique perception — because perception depends on which KCs fire, not which molecules are present. Two formulas with 80% overlapping molecules can produce completely different KC patterns (proven by our r=-0.51 result).
+GC-MS can detect molecule X is present, but cannot prove it creates a unique perception — because perception depends on which KCs fire, not which molecules are present. Two formulas with 80% overlapping molecules can produce completely different KC patterns (proven by our r = [withdrawn] result).
 
 ### Market
 
@@ -624,7 +633,7 @@ Access granted / denied
 ### Properties
 
 - **Unforgeable**: Cannot synthesise matching molecule without knowing KC mapping
-- **Non-copyable**: Smell-identical molecule produces different KC pattern (r=-0.51)
+- **Non-copyable**: Smell-identical molecule produces different KC pattern (r = [withdrawn])
 - **Quantum-resistant**: Not based on mathematical hardness, based on biology
 - **Silent**: No radio signal, no electronic emission, undetectable by jammers
 - **Non-transferable**: Molecule degrades, key has limited time validity
@@ -649,7 +658,7 @@ Access granted / denied
 Current allergy shots: same protocol for everyone, 3-5 year timeline, 60% success rate.
 
 Your engine adds:
-- **Temporal adaptation (53.1%)** — predicts when olfactory system habituates (67ms peak)
+- **Temporal adaptation ([withdrawn])** — predicts when olfactory system habituates (67ms peak)
 - **Concentration invariance** — knows exactly what dose to increase to
 - **Personalised KC mapping** — each patient's threshold computed from first session
 
@@ -721,7 +730,7 @@ Total packet: ~700 bytes (smaller than a tweet)
 ### Why This Is Feasible
 
 - KC pattern IS the smell (biologically proven — all perception is KC activity)
-- 87 integers fully encode any smell (sparse coding, 1.65% of 5,279 KCs)
+- 87 integers fully encode any smell (sparse coding, [withdrawn] of 5,279 KCs)
 - Engine reconstructs smell from 87 numbers in <300ms
 - Works with ANY receiver device (chemical or wave-based)
 
@@ -1453,9 +1462,9 @@ Every product listed above is **impossible without exactly this combination**:
 
 1. **Full brain simulation** (not approximation)
 2. **86× faster than CPU** (not batch processing)
-3. **Decorrelation knowledge** (r=-0.51, not assumed)
+3. **Decorrelation knowledge** (r = [withdrawn], not assumed)
 4. **Concentration invariance** (r=0.724, proven)
-5. **1.65% sparse coding** (biologically exact, not tuned)
+5. **[withdrawn] sparse coding** (biologically exact, not tuned)
 6. **Pattern memory** (Hebbian STDP, validated)
 7. **Wave equation physics** (phase, interference, resonance — not metaphor)
 8. **Inverse problem solvability** (wave PDE is time-reversible)

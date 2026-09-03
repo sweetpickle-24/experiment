@@ -1,5 +1,14 @@
 # Real Connectome Polyglot Benchmark — Python MLX vs Julia Metal vs Rust Metal
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Date**: 2026-03-23  
 **Status**: Complete — all three languages benchmarked on actual fly olfactory connectome  
 **Network**: Real *Drosophila* olfactory pathway (FAFB v783 Princeton)
@@ -16,7 +25,7 @@ the **real fly olfactory connectome**, not a synthetic approximation:
 - **1,000 time steps** = 100ms biological time (dt = 0.1ms)
 - **Ethanol odour** injected via 20-channel glomerular pattern, strength = 50
 
-This is the same pathway used for all 9/9 olfactory validations (sparse coding, concentration
+This is the same pathway used for all [score withdrawn] olfactory validations (sparse coding, concentration
 invariance, odour mixtures, etc.).
 
 ---
@@ -102,7 +111,7 @@ Python and Rust produce **identical KC sparsity (19.72%)** — confirming the ph
 equivalent. Julia's 22.96% differs because the CSR serial path visits synapses in a different
 order, accumulating floating-point errors differently (same physics, different sum order).
 
-Note: 19.72% sparsity is higher than the validated 1.65% (from the full test suite). This is
+Note: 19.72% sparsity is higher than the validated [withdrawn] (from the full test suite). This is
 expected — the standalone benchmark injects a constant external force, whereas the full
 validation uses timed odour pulses with APL inhibitory feedback. The KC **response pattern**
 (which neurons activate) is biologically correct; the sparsity threshold is controlled by APL.

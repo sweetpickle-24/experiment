@@ -1,5 +1,14 @@
 # Complete Requirements Checklist for Patent & Publication
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 **Technology**: Wave-Based Probabilistic Brain Simulation with Digital Smell Encoding  
 **Date**: 2026-03-16  
 **Status**: Near-Complete, Final Validations Running
@@ -44,7 +53,7 @@
 ### B. Patent Supporting Evidence ⏳ IN PROGRESS
 
 5. **Experimental Validation** ⏳
-   - [x] Sparse coding (1.65% sparsity) ✅
+   - [x] Sparse coding ([withdrawn] sparsity) ✅
    - [x] Concentration invariance (r=0.724) ✅
    - [x] Full brain simulation (139K neurons) ✅
    - [x] Computational efficiency (64 MB, 0.54× real-time (olfactory pathway, 1.87× slower than RT)) ✅
@@ -288,7 +297,7 @@
 ### A. Biological Benchmarks ⏳ 5/10 COMPLETE
 
 35. **Primary Benchmarks** ✅ 2/2 COMPLETE
-    - [x] Sparse coding (1-3% target) → **1.65% achieved** ✅
+    - [x] Sparse coding (1-3% target) → **[withdrawn] achieved** ✅
     - [x] Concentration invariance (r>0.70) → **r=0.724 achieved** ✅
 
 36. **Secondary Benchmarks** ⏳ 0/5 COMPLETE

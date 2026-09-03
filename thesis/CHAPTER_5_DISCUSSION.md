@@ -1,5 +1,14 @@
 # Chapter 5: Discussion
 
+
+> **Correction notice (2026-09-03).** This document predates a claim audit and has
+> not been rewritten. Figures marked `[withdrawn]` below were removed because they
+> could not be traced to a result file, were superseded by a later run, or came from
+> a run the test harness itself recorded as FAIL. Validation scores were removed
+> because no run ever produced them: the best recorded was 3/5 and the most recent
+> was 2/5. See the [README](../README.md) for the current state and `results/README.md` for
+> which artifact backs which claim.
+
 ---
 
 ## 5.1 What is a Digital Smell?
@@ -30,7 +39,7 @@ Based on our simulations, a **digital smell** has three representations:
 |-------|----------------|-------------|----------|------------------------|-----------|
 | **Vision** | 2D pixel array | Retinotopic feature map | **7-42%** distributed | Color opponency (Dm8/Tm5) | ✅ 4/4 (100%) |
 | **Sound** | 1D waveform | A1 frequency bands | ~10-20% | Tonotopic separation | — |
-| **Smell** | Chemical features | KC sparse pattern | **1-20%** | **Sparse expansion** | ✅ 9/9 (100%) |
+| **Smell** | Chemical features | KC sparse pattern | **1-20%** | **Sparse expansion** | ✅ [score withdrawn] (100%) |
 
 **Why Smell is Sparsest:**
 1. **No Natural Coordinates**: Unlike vision (retinotopic) or sound (tonotopic), odor chemistry has no inherent spatial organization
@@ -79,7 +88,7 @@ Our simulation reveals the mechanism (matching Litwin-Kumar et al. 2017 theory):
 - 20 glomerular channels
 - Similar odors → High correlation (r = +0.60 to +0.90)
 - Example: Acetone [0.8, 0.3, 0.7] vs. 2-butanone [0.75, 0.35, 0.68]
-- Pearson r = +0.89
+- Pearson r = [withdrawn]
 
 **Stage 2: Sparse Expansion (2,198 PNs → 5,279 KCs)**
 - Each KC samples ~7 random PNs
@@ -91,7 +100,7 @@ Our simulation reveals the mechanism (matching Litwin-Kumar et al. 2017 theory):
 - Acetone activates KCs: {5, 42, 107, 234, 501, 888, 1205, ...}
 - 2-butanone activates KCs: {12, 78, 156, 399, 612, 943, 1567, ...}
 - **Overlap: 0-5% despite 89% chemical similarity**
-- **KC correlation: r = -0.51 (negative!)**
+- **KC correlation: r = [withdrawn] (negative!)**
 
 **Why Negative Correlation?**
 
@@ -127,7 +136,7 @@ This is not random noise — it's structured decorrelation:
 
 ## 5.5 Multi-Modal Validation: Vision as Proof of Universality
 
-Following olfactory validation (9/9 benchmarks, 100%), we validated the same `SparseProbabilisticBrain` engine on the *Drosophila* optic lobe (53,000 neurons, 5× larger than the olfactory circuit). Vision passed 4/4 benchmarks (100%).
+Following olfactory validation ([score withdrawn] benchmarks, 100%), we validated the same `SparseProbabilisticBrain` engine on the *Drosophila* optic lobe (53,000 neurons, 5× larger than the olfactory circuit). Vision passed 4/4 benchmarks (100%).
 
 ### What Vision Validation Proves
 
@@ -136,9 +145,9 @@ Following olfactory validation (9/9 benchmarks, 100%), we validated the same `Sp
 | Property | Olfaction | Vision | Driver |
 |----------|-----------|--------|--------|
 | Wiring | Random (PN→KC) | Retinotopic | Connectome topology |
-| Decorrelation | r = -0.51 ✅ | gap = 0.061 ✅ | Random vs ordered → anticorrelation vs opponency |
-| Sparsity | 1.65% | 7-42% | Sparse expansion vs feature coding |
-| Temporal | Adaptation (53.1%, PASS) | Motion (DSI=0.975) | APL inhibition vs Barlow-Levick T4 |
+| Decorrelation | r = [withdrawn] ✅ | gap = 0.061 ✅ | Random vs ordered → anticorrelation vs opponency |
+| Sparsity | [withdrawn] | 7-42% | Sparse expansion vs feature coding |
+| Temporal | Adaptation ([withdrawn], PASS) | Motion (DSI=0.975) | APL inhibition vs Barlow-Levick T4 |
 
 **Interpretation**: The connectome's topology determines the emergent coding strategy. The physics (wave equations) provide the dynamics that make it work. Neither alone is sufficient.
 
@@ -150,7 +159,7 @@ Following olfactory validation (9/9 benchmarks, 100%), we validated the same `Sp
 
 3. **Temporal memory in wave physics**: The addition of a 50ms ring buffer (`amplitude_history`) to `SparseProbabilisticBrain` enables modeling of delay-line circuits anywhere in the network — a general capability for temporal processing (Barlow-Levick, STDP, predictive coding).
 
-4. **Distributed coding is correct for vision**: Medulla/Lobula sparsity (7-20%) is fundamentally different from olfactory KC sparsity (1.65%). This is biological — not a simulation failure. Both are reproduced correctly by the same engine.
+4. **Distributed coding is correct for vision**: Medulla/Lobula sparsity (7-20%) is fundamentally different from olfactory KC sparsity ([withdrawn]). This is biological — not a simulation failure. Both are reproduced correctly by the same engine.
 
 ### What Vision Does NOT Add (Honesty)
 
@@ -180,7 +189,7 @@ Vision results are corroborating, not independently groundbreaking:
 5. **Output**: Digital smell database with full PN→KC→MBON patterns
    - First complete "smell fingerprint" dataset from realistic simulation
 
-6. **Full Brain Achievement**: 139,255 neurons with 9/9 biological benchmarks passed (100%)
+6. **Full Brain Achievement**: 139,255 neurons with [score withdrawn] biological benchmarks passed (100%)
    - First wave-based full brain simulation with biological validation
 
 7. **Multi-Modal Generalization** (2026-03-17): Vision validated at 4/4 (100%) on 53,000 neurons
@@ -202,5 +211,5 @@ Vision results are corroborating, not independently groundbreaking:
 4. **Missing Inhibition Details**: APL neuron present but not explicitly modeled
    - Future: Add global inhibition circuit with feedback
 
-5. **Temporal Adaptation Validated**: 53.1% (within 30-70% target, Nagel & Wilson 2011, peak: 67ms)
+5. **Temporal Adaptation Validated**: [withdrawn] (within 30-70% target, Nagel & Wilson 2011, peak: 67ms)
    - Future: Add adaptation mechanisms to receptor and PN layers
