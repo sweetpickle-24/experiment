@@ -2,18 +2,31 @@
 DOoR Database Client: Interface to Database of Odorant Responses
 
 Provides access to real Drosophila olfactory receptor responses:
-- 693 odorants × 40 receptors response matrix
+- Odorants × receptors response matrix, shape read from the data file
 - Maps receptor responses to glomerular patterns
 - Compatible with existing Odor dataclass
 
 Data source: DoOR 2.0 (neuro.uni-konstanz.de/DoOR)
+
+Odorant names in the shipped matrix are lowercase with underscores and no
+spaces. Callers frequently pass spaced names ('ethyl acetate') or synonyms
+('isoamyl acetate'). Every lookup therefore goes through
+normalize_odorant_name, and a name that cannot be resolved raises
+OdorantNotFoundError. It must never degrade to a zero vector: a zero pattern
+correlates with itself at exactly 1.0 at every concentration, which silently
+inflates any invariance or similarity measure computed over it.
 """
 
+import difflib
+import logging
+import re
 import numpy as np
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import pickle
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 # Default DOoR receptor list (simplified - real data would have all 40)
@@ -26,6 +39,95 @@ DOOR_RECEPTORS = [
 ]
 
 
+class OdorantNotFoundError(KeyError):
+    """
+    Raised when an odorant name cannot be resolved against the loaded matrix.
+
+    Carries the close matches so the caller can see whether the name is a
+    spelling variant, a synonym, or genuinely absent from the database.
+    """
+
+    def __init__(self, name: str, candidates: List[str], n_known: int):
+        self.name = name
+        self.candidates = candidates
+        self.n_known = n_known
+        if candidates:
+            hint = "closest names in the database: " + ", ".join(repr(c) for c in candidates)
+        else:
+            hint = "no similar names in the database"
+        super().__init__(
+            f"Odorant {name!r} is not in the DoOR matrix ({n_known} odorants loaded); {hint}"
+        )
+
+    def __str__(self) -> str:
+        # KeyError.__str__ reprs the whole message, which double-quotes it.
+        return self.args[0]
+
+
+# Names used in this codebase that denote a molecule stored under a different
+# name in the DoOR matrix. Isoamyl acetate, isopentyl acetate and 3-methylbutyl
+# acetate are three names for the same ester.
+ODORANT_SYNONYMS = {
+    'isoamyl_acetate': 'isopentyl_acetate',
+    '3-methylbutyl_acetate': 'isopentyl_acetate',
+    'isoamylacetate': 'isopentyl_acetate',
+    'co2': 'carbon_dioxide',
+    'carbon_dioxide_gas': 'carbon_dioxide',
+    'propionic_acid': 'propanoic_acid',
+    'propionate': 'propanoic_acid',
+}
+
+
+def _canonical_form(name: str) -> str:
+    """Lowercase, trim, collapse internal whitespace, unify separators."""
+    s = re.sub(r'\s+', ' ', str(name).strip().lower())
+    return s.replace(' ', '_')
+
+
+def normalize_odorant_name(name: str, known_names) -> str:
+    """
+    Resolve an odorant name to the exact key used in the DoOR matrix.
+
+    Tried in order: exact, lowercase, whitespace-collapsed with spaces mapped to
+    underscores, the synonym table, then hyphen/underscore substitutions. The
+    first candidate present in known_names wins.
+
+    Args:
+        name:        Name as written by the caller.
+        known_names: Sequence of odorant names in the loaded matrix.
+
+    Returns:
+        The matching entry of known_names.
+
+    Raises:
+        OdorantNotFoundError: if no candidate matches. Never returns a
+            placeholder or a zero vector.
+    """
+    if name is None:
+        raise OdorantNotFoundError('None', [], len(known_names))
+
+    known = set(known_names)
+
+    if name in known:
+        return name
+
+    base = _canonical_form(name)
+    candidates = [base, ODORANT_SYNONYMS.get(base)]
+
+    # Separator variants: the matrix mixes hyphens and underscores
+    # ('2-heptanone' but 'ethyl_acetate'), and callers guess wrong either way.
+    for variant in (base.replace('-', '_'), base.replace('_', '-')):
+        candidates.append(variant)
+        candidates.append(ODORANT_SYNONYMS.get(variant))
+
+    for candidate in candidates:
+        if candidate and candidate in known:
+            return candidate
+
+    close = difflib.get_close_matches(base, list(known_names), n=5, cutoff=0.6)
+    raise OdorantNotFoundError(name, close, len(known_names))
+
+
 class DoorClient:
     """
     Interface to DOoR database of odorant responses.
@@ -36,37 +138,67 @@ class DoorClient:
     - Map 40 receptors → 20 glomerular channels
     """
     
-    def __init__(self, data_dir='data'):
+    def __init__(self, data_dir='data', allow_synthetic=False):
         """
         Initialize DOoR client.
         
         Args:
             data_dir: Directory containing DOoR data files
+            allow_synthetic: permit fabricated response data when the data file
+                is absent. Off by default. Anything measured from synthetic data
+                describes a random matrix, not Drosophila.
         """
         self.data_dir = Path(data_dir)
         self.response_matrix = None
         self.odorant_names = []
         self.receptor_names = DOOR_RECEPTORS
         self.pca_projection = None
+        self.projection_method = None
+        self.is_synthetic = False
+        self.allow_synthetic = allow_synthetic
         
         # Try to load real data
         self._load_door_data()
     
     def _load_door_data(self):
-        """Load DOoR response matrix from file or generate synthetic."""
+        """
+        Load the DoOR response matrix.
+
+        Raises rather than fabricating data when the file is absent. The
+        synthetic generator previously ran on this path and wrote its output to
+        the canonical filename, so a missing download left a random matrix
+        sitting where the real one belongs, indistinguishable on inspection.
+        """
         door_file = self.data_dir / 'door_consensus_matrix.npy'
         
         if door_file.exists():
             print(f"Loading DOoR data from {door_file}...")
             data = np.load(door_file, allow_pickle=True).item()
             self.response_matrix = data['responses']
-            self.odorant_names = data['odorants']
-            self.receptor_names = data['receptors']
+            self.odorant_names = list(data['odorants'])
+            self.receptor_names = list(data['receptors'])
+            self.is_synthetic = bool(data.get('synthetic', False))
+            if self.is_synthetic:
+                logger.warning(
+                    "DoOR matrix at %s is SYNTHETIC (fabricated). Results derived "
+                    "from it do not describe Drosophila.", door_file
+                )
             print(f"✓ Loaded {len(self.odorant_names)} odorants × {len(self.receptor_names)} receptors")
-        else:
-            print("⚠ DOoR data file not found, generating synthetic data...")
+        elif self.allow_synthetic:
+            logger.warning(
+                "DoOR data file %s not found; generating SYNTHETIC data because "
+                "allow_synthetic=True. Do not quote any number derived from this.",
+                door_file,
+            )
             self._generate_synthetic_door_data()
+            self.is_synthetic = True
             print(f"✓ Generated synthetic data: {len(self.odorant_names)} odorants × {len(self.receptor_names)} receptors")
+        else:
+            raise FileNotFoundError(
+                f"DoOR response matrix not found at {door_file}. "
+                f"Run scripts/download_door_data.py to fetch it, or pass "
+                f"DoorClient(allow_synthetic=True) to work with fabricated data."
+            )
     
     def _generate_synthetic_door_data(self):
         """
@@ -150,31 +282,42 @@ class DoorClient:
             if norm > 0:
                 self.response_matrix[i] /= norm
         
-        # Save for future use
-        save_path = self.data_dir / 'door_consensus_matrix.npy'
-        self.data_dir.mkdir(parents=True, exist_ok=True)
-        np.save(save_path, {
-            'responses': self.response_matrix,
-            'odorants': self.odorant_names,
-            'receptors': self.receptor_names
-        })
-        print(f"✓ Saved synthetic DOoR data to {save_path}")
+        # Held in memory only. This deliberately does not write to
+        # door_consensus_matrix.npy: a fabricated matrix under the canonical
+        # filename is indistinguishable from the real download on inspection,
+        # and every later run would silently consume it.
+        logger.warning(
+            "Synthetic DoOR matrix generated in memory (%d odorants). Not written "
+            "to disk.", len(self.odorant_names)
+        )
     
+    def resolve_odorant_name(self, odorant_name: str) -> str:
+        """
+        Resolve a caller-supplied name to the exact key in the loaded matrix.
+
+        Raises:
+            OdorantNotFoundError: if the name cannot be resolved.
+        """
+        return normalize_odorant_name(odorant_name, self.odorant_names)
+
     def get_odorant_response(self, odorant_name: str) -> np.ndarray:
         """
         Get receptor response vector for an odorant.
         
         Args:
-            odorant_name: Name of odorant (e.g., 'ethyl_acetate')
+            odorant_name: Name of odorant. Spacing, case and hyphen/underscore
+                differences are resolved, as are the synonyms in
+                ODORANT_SYNONYMS.
         
         Returns:
-            40-dim receptor response vector
+            Receptor response vector, one entry per receptor in the matrix.
+
+        Raises:
+            OdorantNotFoundError: if the name cannot be resolved. This does not
+                fall back to a zero vector.
         """
-        if odorant_name not in self.odorant_names:
-            print(f"Warning: Odorant '{odorant_name}' not in database")
-            return np.zeros(len(self.receptor_names), dtype=np.float32)
-        
-        idx = self.odorant_names.index(odorant_name)
+        resolved = self.resolve_odorant_name(odorant_name)
+        idx = self.odorant_names.index(resolved)
         return self.response_matrix[idx, :]
     
     def map_to_glomerular_pattern(self, receptor_response: np.ndarray, n_components=20) -> np.ndarray:
