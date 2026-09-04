@@ -1,0 +1,171 @@
+{
+  "question": "Does the KC active set converge under timestep refinement, with the stimulus held fixed as a function of real time so that only integrator error varies?",
+  "why_existing_measurement_insufficient": {
+    "constant_drive_sweep": "clean convergence number (r = 0.3081, Jaccard = 0.0601) but uses the superseded constant-DC stimulus, which bypasses the plume, the carrier and receptor adaptation",
+    "front_end_sweep": "uses the production stimulus path, but OdorStimulusDriver.concentration_at_step(step) indexes plume sample `step`, one per integration step, so each dt draws a different and faster-fluctuating plume. Its own summary in dt_convergence.json records that its correlations \"mix integrator error with stimulus resampling and are not a convergence measure\"."
+  },
+  "method": "the full front-end is run once at a reference timestep to produce a channel-force trace, which is then sampled by linear interpolation at each test timestep's times through a shim exposing the same channel_forces(step0, num_steps) interface the engine already calls. Every timestep integrates the identical continuous stimulus from the identical initial condition, so any KC difference is integrator error alone. The engine is not modified.",
+  "protocol": {
+    "dt_reference_ms": 0.002,
+    "dt_reference_rationale": "five times finer than the finest tested timestep, so the interpolated stimulus is not itself the limiting approximation",
+    "dt_sweep_ms": [
+      0.1,
+      0.05,
+      0.02,
+      0.01
+    ],
+    "production_dt_ms": 0.1,
+    "duration_ms": 100.0,
+    "odorant": "benzaldehyde",
+    "strength": 50.0,
+    "seeds": [
+      1001,
+      1002,
+      1003
+    ],
+    "reset": "deterministic=False, seeded; initial phase is a per-neuron draw independent of dt, so the initial condition is identical across the sweep",
+    "backend": "NumPy",
+    "target_sparsity": 0.06
+  },
+  "per_seed": [
+    {
+      "seed": 1001,
+      "rows": [
+        {
+          "dt_ms": 0.1,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.6728472434261782,
+          "active_jaccard_vs_finest": 0.501187648456057,
+          "max_abs_diff_vs_finest": 0.0209254939109087
+        },
+        {
+          "dt_ms": 0.05,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.5688882501713889,
+          "active_jaccard_vs_finest": 0.4202247191011236,
+          "max_abs_diff_vs_finest": 0.02613135799765587
+        },
+        {
+          "dt_ms": 0.02,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.563583843300364,
+          "active_jaccard_vs_finest": 0.401330376940133,
+          "max_abs_diff_vs_finest": 0.020255982875823975
+        },
+        {
+          "dt_ms": 0.01,
+          "n_active": 316,
+          "kc_r_vs_finest": 1.0,
+          "active_jaccard_vs_finest": 1.0,
+          "max_abs_diff_vs_finest": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 1002,
+      "rows": [
+        {
+          "dt_ms": 0.1,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.7287178607688753,
+          "active_jaccard_vs_finest": 0.4940898345153664,
+          "max_abs_diff_vs_finest": 0.018452821299433708
+        },
+        {
+          "dt_ms": 0.05,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.5981221111246158,
+          "active_jaccard_vs_finest": 0.389010989010989,
+          "max_abs_diff_vs_finest": 0.018522044643759727
+        },
+        {
+          "dt_ms": 0.02,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.516428779308546,
+          "active_jaccard_vs_finest": 0.3277310924369748,
+          "max_abs_diff_vs_finest": 0.02063918299973011
+        },
+        {
+          "dt_ms": 0.01,
+          "n_active": 316,
+          "kc_r_vs_finest": 1.0,
+          "active_jaccard_vs_finest": 1.0,
+          "max_abs_diff_vs_finest": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 1003,
+      "rows": [
+        {
+          "dt_ms": 0.1,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.6259755021451036,
+          "active_jaccard_vs_finest": 0.4528735632183908,
+          "max_abs_diff_vs_finest": 0.019923120737075806
+        },
+        {
+          "dt_ms": 0.05,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.6003378915658998,
+          "active_jaccard_vs_finest": 0.4331065759637188,
+          "max_abs_diff_vs_finest": 0.02060447260737419
+        },
+        {
+          "dt_ms": 0.02,
+          "n_active": 316,
+          "kc_r_vs_finest": 0.6350888454002603,
+          "active_jaccard_vs_finest": 0.4528735632183908,
+          "max_abs_diff_vs_finest": 0.019846413284540176
+        },
+        {
+          "dt_ms": 0.01,
+          "n_active": 316,
+          "kc_r_vs_finest": 1.0,
+          "active_jaccard_vs_finest": 1.0,
+          "max_abs_diff_vs_finest": 0.0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "production_dt_kc_r_mean": 0.6758468687800524,
+    "production_dt_kc_r_range": [
+      0.6259755021451036,
+      0.7287178607688753
+    ],
+    "production_dt_jaccard_mean": 0.4827170153966048,
+    "production_dt_jaccard_range": [
+      0.4528735632183908,
+      0.501187648456057
+    ],
+    "agreement_monotone_in_dt_per_seed": [
+      false,
+      false,
+      false
+    ],
+    "previously_reported": {
+      "constant_drive_r": 0.30812737094715426,
+      "constant_drive_jaccard": 0.06006006006006006,
+      "front_end_r_confounded": 0.4415993635509286,
+      "front_end_jaccard_confounded": 0.1171875
+    }
+  },
+  "config": {
+    "timestamp": "2026-09-04T21:40:15.665847+00:00",
+    "git_commit": "1c02278060bb0763623c3d2b2d693877c7c2b4d6",
+    "seed": null,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": null,
+    "projection_method": "sklearn_pca",
+    "reproducible": null,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "dt_convergence_fixed_stimulus"
+  }
+}

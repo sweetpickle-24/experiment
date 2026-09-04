@@ -107,55 +107,83 @@ ODORANTS = ('benzaldehyde', '2-heptanone', 'isopentyl_acetate')
 SAMPLE_INTERVAL_MS = 25.0
 TOTAL_DURATION_MS = 2000.0
 
+#: A genuine pre-stimulus period, evolved with no odour attached, so that
+#: "baseline" means baseline.
+#:
+#: Without it there is nothing to measure onset against. The first version of
+#: this benchmark used the first 50 ms *after* stimulus onset as its baseline,
+#: which is wrong twice over: on a 25 ms grid that is two samples, and those
+#: two samples are already part of the rising response, so the threshold sat
+#: too high and onset was reported too late.
+#:
+#: 200 ms is about 20 amplitude time constants (amp_decay = 1 - gamma*dt gives
+#: tau = 1/gamma = 10 ms), so the transient from the random initial phase has
+#: decayed before the baseline statistics are taken.
+PRE_STIMULUS_MS = 200.0
+
 #: Published, sourced: KC response onset occurs within the first 200 ms.
 ONSET_LIMIT_MS = 200.0
 
-#: Where "phasic" is tested. 1000 ms is well past any published KC onset and is
-#: a sample point on the grid.
+#: Where "phasic" is tested, measured from stimulus onset. 1000 ms is well past
+#: any published KC onset and is a sample point on the grid.
 LATE_WINDOW_MS = 1000.0
 
-#: Onset is the first sample exceeding baseline by this many baseline standard
-#: deviations. Baseline is the pre-response portion of the same trace.
+#: Onset is the first post-stimulus sample exceeding the pre-stimulus baseline
+#: by this many baseline standard deviations.
 ONSET_SD_THRESHOLD = 3.0
-BASELINE_WINDOW_MS = 50.0
 
 ALPHA = 0.05
 
 
 def trace(brain, pattern, seed):
     """
-    One trial: mean KC activity sampled every SAMPLE_INTERVAL_MS.
+    One trial: mean KC activity over a pre-stimulus period and then the odour.
 
-    One continuous trajectory with the stimulus attached throughout, so
-    receptor adaptation keeps advancing across samples. ``evolve`` is resumable
-    and ``_stim_step`` carries the absolute step index, so repeated short calls
-    are equivalent to one long call.
+    Returns ``(pre, post)``. Both are sampled on the same grid.
+
+    The pre-stimulus period is evolved with no odour attached, so
+    ``evolve`` uses the engine's zero stimulus row and the network simply
+    relaxes from its random initial phase. ``inject_odor`` is then called and
+    the trajectory continues; it calls ``reset_forces`` and sets
+    ``_stim_step = 0``, so stimulus time starts at the injection.
+
+    One continuous trajectory throughout, so receptor adaptation keeps
+    advancing across samples: ``evolve`` is resumable and ``_stim_step``
+    carries the absolute step index, so repeated short calls are equivalent to
+    one long call.
     """
     set_seed(seed)
     brain.reset(deterministic=False)
+
+    n_pre = int(round(PRE_STIMULUS_MS / SAMPLE_INTERVAL_MS))
+    pre = []
+    for _ in range(n_pre):
+        brain.evolve(duration=SAMPLE_INTERVAL_MS)
+        pre.append(float(np.mean(kc_readout(brain))))
+
     brain.inject_odor(pattern, strength=REFERENCE_STRENGTH)
 
-    n = int(round(TOTAL_DURATION_MS / SAMPLE_INTERVAL_MS))
-    out = []
-    for _ in range(n):
+    n_post = int(round(TOTAL_DURATION_MS / SAMPLE_INTERVAL_MS))
+    post = []
+    for _ in range(n_post):
         brain.evolve(duration=SAMPLE_INTERVAL_MS)
-        out.append(float(np.mean(kc_readout(brain))))
-    return np.array(out)
+        post.append(float(np.mean(kc_readout(brain))))
+
+    return np.array(pre), np.array(post)
 
 
-def onset_ms(times, activity):
+def onset_ms(times, post, pre):
     """
-    First sample exceeding baseline by ONSET_SD_THRESHOLD baseline SDs.
+    First post-stimulus sample exceeding the pre-stimulus baseline by
+    ONSET_SD_THRESHOLD baseline SDs.
 
     Returns None when the trace never crosses, rather than a sentinel number
     that would be averaged into a summary.
     """
-    base_mask = times <= BASELINE_WINDOW_MS
-    if base_mask.sum() < 2:
+    if pre.size < 2:
         return None
-    base = activity[base_mask]
-    thr = base.mean() + ONSET_SD_THRESHOLD * base.std(ddof=1)
-    crossings = np.flatnonzero(activity > thr)
+    thr = pre.mean() + ONSET_SD_THRESHOLD * pre.std(ddof=1)
+    crossings = np.flatnonzero(post > thr)
     return float(times[crossings[0]]) if crossings.size else None
 
 
@@ -163,7 +191,9 @@ def analyse(brain, door, name):
     from scipy.stats import wilcoxon
 
     pattern = door.get_glomerular_pattern(name)
-    traces = np.array([trace(brain, pattern, s) for s in TRIAL_SEEDS])
+    runs = [trace(brain, pattern, s) for s in TRIAL_SEEDS]
+    pres = np.array([r[0] for r in runs])
+    traces = np.array([r[1] for r in runs])
     times = (np.arange(traces.shape[1]) + 1) * SAMPLE_INTERVAL_MS
 
     mean_trace = traces.mean(axis=0)
@@ -180,7 +210,7 @@ def analyse(brain, door, name):
     # peak falls, which is the bug that recorded 2-heptanone as 0.0 %.
     adaptation = 100.0 * (peak_values - late_values) / peak_values
 
-    onsets = [onset_ms(times, t) for t in traces]
+    onsets = [onset_ms(times, traces[i], pres[i]) for i in range(len(traces))]
     onsets_defined = [o for o in onsets if o is not None]
 
     # T1: onset within the first 200 ms, on the mean onset over trials that
@@ -195,6 +225,8 @@ def analyse(brain, door, name):
     t2 = bool(p_phasic < ALPHA)
 
     print(f"  {name}")
+    print(f"    baseline   {pres.mean():.6g} +/- {pres.std(ddof=1):.3g} "
+          f"({pres.shape[1]} pre-stimulus samples per trial)")
     print(f"    onset      {('%.1f ms' % np.mean(onsets_defined)) if onsets_defined else 'never crossed':>12}"
           f"   (limit {ONSET_LIMIT_MS:.0f} ms)  "
           f"{len(onsets_defined)}/{len(onsets)} trials crossed")
@@ -207,6 +239,10 @@ def analyse(brain, door, name):
 
     return {
         'odorant': name,
+        'baseline_mean': float(pres.mean()),
+        'baseline_std': float(pres.std(ddof=1)),
+        'n_pre_stimulus_samples_per_trial': int(pres.shape[1]),
+        'mean_pre_stimulus_trace': pres.mean(axis=0).tolist(),
         'onset_ms_per_trial': onsets,
         'onset_ms_mean': (float(np.mean(onsets_defined)) if onsets_defined
                           else None),
@@ -340,11 +376,23 @@ def run(use_mlx=False, output='temporal_repaired.json'):
                     'repaired numbers stay comparable with the F8 run',
                 'sample_interval_ms': SAMPLE_INTERVAL_MS,
                 'n_sample_points': int(TOTAL_DURATION_MS / SAMPLE_INTERVAL_MS),
+                'pre_stimulus_ms': PRE_STIMULUS_MS,
+                'pre_stimulus_rationale':
+                    'a genuine pre-stimulus period, evolved with no odour '
+                    'attached, because otherwise there is nothing to measure '
+                    'onset against. The first version of this benchmark used '
+                    f'the first 50 ms AFTER stimulus onset as its baseline, '
+                    'which on a 25 ms grid is two samples and which is already '
+                    'part of the rising response, so the threshold sat too '
+                    'high and onset was reported too late. 200 ms is about 20 '
+                    'amplitude time constants (tau = 1/gamma = 10 ms), so the '
+                    'transient from the random initial phase has decayed '
+                    'before the baseline statistics are taken.',
                 'onset_definition':
-                    f'first sample exceeding the first {BASELINE_WINDOW_MS:.0f} '
-                    f'ms baseline by {ONSET_SD_THRESHOLD:.0f} baseline SDs; '
-                    'None when the trace never crosses, never a sentinel that '
-                    'could be averaged',
+                    f'first post-stimulus sample exceeding the pre-stimulus '
+                    f'baseline by {ONSET_SD_THRESHOLD:.0f} baseline SDs; None '
+                    'when the trace never crosses, never a sentinel that could '
+                    'be averaged',
                 'adaptation_definition':
                     f'100 * (peak - activity at {LATE_WINDOW_MS:.0f} ms) / '
                     'peak, per trial, with no gate on where the peak falls',
