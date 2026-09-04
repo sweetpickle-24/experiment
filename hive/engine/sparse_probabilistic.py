@@ -467,9 +467,24 @@ class SparseProbabilisticBrain:
         """
         Build and JIT-compile the inner MLX step kernel with mx.compile.
 
-        The compiled closure captures all static tensors (indices, weights,
-        precomputed constants) so the hot-loop arguments are only the
-        mutable state arrays and the (rarely changing) external force.
+        The compiled closure captures the genuinely static tensors (synapse
+        indices, the segment layout, precomputed scalars) so the hot-loop
+        arguments are only the mutable state arrays, the external force, and
+        the synaptic weights.
+
+        Synaptic weights are an ARGUMENT, not a captured constant. They used to
+        be captured, on the assumption recorded in this docstring that they
+        "never change between steps". They do: every plasticity test in the
+        repository assigns to ``brain.syn_weights``. Because the closure held
+        the array that existed at construction time, those assignments never
+        reached the compiled kernel, so on the MLX backend with compilation
+        available **every learning test silently trained nothing**. Measured
+        2026-09-04: zeroing all 49,599 KC->MBON weights changed the MBON
+        response by exactly 0.000 %.
+
+        Passing them as an argument costs nothing. mx.compile retraces on a
+        change of shape or dtype, not of value, and the weight array is fixed in
+        both.
 
         On the first evolve() call the kernel is traced once; every
         subsequent call dispatches the pre-compiled Metal kernel without
@@ -478,7 +493,6 @@ class SparseProbabilisticBrain:
         # Capture static tensors in closure (never change between steps)
         pre_idx      = self.pre_indices
         post_idx     = self.post_indices
-        syn_w        = self.syn_weights
         omega0_sq    = self._omega0_sq
         n            = self.num_neurons
 
@@ -508,7 +522,8 @@ class SparseProbabilisticBrain:
         stim_mask    = self._stim_mask_mx
 
         @mx.compile
-        def _step(phase, velocity, amplitude, var_phase, ext_force, stim_row):
+        def _step(phase, velocity, amplitude, var_phase, ext_force, stim_row,
+                  syn_w):
             # ── Coupling force (sparse scatter-add) ─────────────────────
             phase_pre  = phase[pre_idx]
             phase_post = phase[post_idx]
@@ -601,7 +616,11 @@ class SparseProbabilisticBrain:
                  self.var_phase) = self._compiled_step(
                     self.mean_phase, self.mean_velocity,
                     self.mean_amplitude, self.var_phase,
-                    self.external_force, stim_row
+                    self.external_force, stim_row,
+                    # Read off self every step, not captured at build time, so
+                    # plasticity that assigns to brain.syn_weights actually
+                    # reaches the kernel. See _build_compiled_step.
+                    self.syn_weights,
                 )
             else:
                 self._step(stim_row)

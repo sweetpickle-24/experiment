@@ -1,0 +1,130 @@
+{
+  "question": "Why is dopamine-gated KC->MBON depression not odour-specific in this model, when Hige et al. 2015 Fig 7F-H reports the non-overlapping odour ethyl lactate as unaffected?",
+  "hypothesis_tested": "the plasticity rule dw = -eta_d * A_KC * D reads the RAW KC amplitude field, not the thresholded readout the benchmarks report, and the raw field may not be odour-distinct",
+  "reference_claim": "Hige et al. 2015 Fig 7I: 'Magnitude of depression correlates with extent of overlap in KC response patterns (p < 0.005, Pearson's r = 0.90)'",
+  "protocol": {
+    "odorants": [
+      "pentyl_acetate",
+      "ethyl_lactate",
+      "butyl_acetate"
+    ],
+    "odorant_roles": {
+      "pentyl_acetate": "paired odour in the learning benchmark (PA)",
+      "ethyl_lactate": "control odour reported unaffected in Hige Fig 7F-H (EL)",
+      "butyl_acetate": "odour reported depressed nearly as much as PA in Hige Fig 7C-E (BA)"
+    },
+    "n_trials_per_odorant": 8,
+    "trial_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+    ],
+    "backend": "MLX"
+  },
+  "per_odorant": {
+    "pentyl_acetate": {
+      "raw_min": 0.001989140553632751,
+      "raw_max": 0.0915812305174768,
+      "raw_mean": 0.016551241097373433,
+      "raw_cv": 0.55002435546454,
+      "raw_fraction_nonzero": 1.0,
+      "thresholded_n_nonzero": 861,
+      "n_kc": 5279
+    },
+    "ethyl_lactate": {
+      "raw_min": 0.0027301393129164353,
+      "raw_max": 0.14670969266444445,
+      "raw_mean": 0.029631813698114236,
+      "raw_cv": 0.5736557705750871,
+      "raw_fraction_nonzero": 1.0,
+      "thresholded_n_nonzero": 952,
+      "n_kc": 5279
+    },
+    "butyl_acetate": {
+      "raw_min": 0.002494535656296648,
+      "raw_max": 0.17733833473175764,
+      "raw_mean": 0.03898378448520266,
+      "raw_cv": 0.4972681458584796,
+      "raw_fraction_nonzero": 1.0,
+      "thresholded_n_nonzero": 744,
+      "n_kc": 5279
+    }
+  },
+  "pairwise": {
+    "pentyl_acetate__ethyl_lactate": {
+      "raw_amplitude_field_r": 0.3856332517795848,
+      "thresholded_readout_r": 0.4307323730729998,
+      "binary_active_set_jaccard": 0.16685082872928178
+    },
+    "pentyl_acetate__butyl_acetate": {
+      "raw_amplitude_field_r": 0.4480968429378861,
+      "thresholded_readout_r": 0.40227256584500304,
+      "binary_active_set_jaccard": 0.16427783902976847
+    },
+    "ethyl_lactate__butyl_acetate": {
+      "raw_amplitude_field_r": 0.9318328003807876,
+      "thresholded_readout_r": 0.884730526477526,
+      "binary_active_set_jaccard": 0.5529411764705883
+    }
+  },
+  "what_the_rule_sees": {
+    "pentyl_acetate": {
+      "total_amplitude": 87.37400175303435,
+      "amplitude_in_top_316_kcs": 12.31567183160223,
+      "fraction_of_depression_on_top_316": 0.14095350544218982
+    },
+    "ethyl_lactate": {
+      "total_amplitude": 156.42634451234505,
+      "amplitude_in_top_316_kcs": 21.81764471763745,
+      "fraction_of_depression_on_top_316": 0.13947551344790018
+    },
+    "butyl_acetate": {
+      "total_amplitude": 205.79539829738485,
+      "amplitude_in_top_316_kcs": 25.67478658957407,
+      "fraction_of_depression_on_top_316": 0.12475879831128533
+    }
+  },
+  "summary": {
+    "raw_amplitude_field_r_range": [
+      0.3856332517795848,
+      0.9318328003807876
+    ],
+    "thresholded_readout_r_range": [
+      0.40227256584500304,
+      0.884730526477526
+    ],
+    "verdict": "The plasticity rule reads the raw KC amplitude field, which is near-identical across odorants (Pearson r from 0.3856 to 0.9318), while the thresholded readout the benchmarks report is odour-distinct (r from 0.4023 to 0.8847). Depression proportional to raw amplitude therefore falls on essentially the same synapses whichever odour is paired, so it cannot be odour-specific. Hige et al. 2015 Fig 7I ties specificity directly to KC pattern overlap; in this model the overlap that the rule sees is close to total."
+  },
+  "config": {
+    "timestamp": "2026-09-04T20:46:45.008732+00:00",
+    "git_commit": "dbdab2fe95ae4e7693f6db6e08a80f30e32470ef-dirty",
+    "seed": null,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "MLX",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "cross_backend_agreement": "Each backend is individually reproducible bit-for-bit at a fixed seed, but CPU and MLX are not bit-identical to each other: mx.sum and np.sum use different reduction trees. See results/final/mlx_determinism.json for the measured divergence and active-KC overlap.",
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "diagnose_kc_odor_specificity"
+  }
+}
