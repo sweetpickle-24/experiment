@@ -4,17 +4,174 @@ alwaysApply: true
 
 save all findingsabout the waves,the brain and how all the stuff works into the MD files. the findings can be played around to build new theories and test them
 
-> ⚠️ **READ THIS FIRST (2026-09-03).** Many entries below are contradicted by
-> measurement. See `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` and
-> `OUTDATED_FILES.md`. In particular: the 86× CPU/GPU speedup is discarded and
-> the verified figure is **10.00×**; the suite scores **2/5**, not 27/27; and
-> concentration invariance measures **r = 0.2719**, not 0.724. Every smell
-> result dated before 2026-09-03 was produced with the uncentered-SVD
-> projection (documented as PCA) and a constant-DC stimulus that bypassed the
-> plume, the carrier and receptor adaptation. Do not quote a number from this
-> file without checking it against a current result file.
+> ⚠️ **READ THIS FIRST (updated 2026-09-04).** Many entries below are
+> contradicted by measurement. See
+> `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md`,
+> `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` and
+> `OUTDATED_FILES.md`.
+>
+> **The targets themselves were wrong, not just the results.** Four of the six
+> olfactory benchmark targets are not in the papers they cite, and one citation
+> ("Bodyak & Bhatt 2001") does not exist. Turner et al. 2008 contains no
+> concentration series, so `r > 0.70` was never its benchmark. Do not quote a
+> target from this file either, without checking the audit.
+>
+> Also: the 86× CPU/GPU speedup is discarded and the verified figure is
+> **10.00×**; the suite scores **2/5**, not 27/27; concentration invariance
+> measures **r = 0.5417** on 8-trial mean patterns (0.2719 single-trial), not
+> 0.724; **CPU and MLX diverge past 100 ms** so MLX cannot produce a reported
+> number; and the **KC active set does not converge under timestep refinement**
+> (Jaccard 0.4827 between production dt and 10× finer), so roughly half of any
+> KC-identity result is discretisation artifact. Every smell result dated before
+> 2026-09-03 was produced with the uncentered-SVD projection (documented as PCA)
+> and a constant-DC stimulus that bypassed the plume, the carrier and receptor
+> adaptation. Do not quote a number from this file without checking it against a
+> current result file.
 
 ## Key Findings Recorded:
+
+### Benchmark Validity Audit (2026-09-04) ✅ SUPERSEDES EVERY TARGET BELOW
+
+Full report: `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md`. Score:
+**2/5** (`results/final/all_validations_F9_corrected.json`), NumPy backend,
+8 trials per stimulus on declared seeds 1001-1008.
+
+**Four of six benchmark targets are not in the papers they cite, and one
+citation does not exist.**
+
+- **"Bodyak & Bhatt 2001" does not exist.** It was the cited source for
+  discrimination's 10-20 % JND. Nearest real work: Bodyak & Slotnick 1999,
+  Chem Senses 24:637-645, a **mouse** olfactometer study. No published
+  Drosophila concentration JND at 5-25 % resolution exists.
+- **Turner et al. 2008 contains no concentration series.** It was the cited
+  source for `r > 0.70`. All 71 KCs were recorded at a single 1:1,000 effective
+  dilution; the paper's measurements are KC response probability (6 % against
+  59 % in OSNs) and angular separation. The 0.70 appears to be Campbell et al.
+  2013 Fig 4C's pentyl-acetate/butyl-acetate **odour-pair** correlation, which
+  migrated between measurements.
+- **Stopfer et al. 2003 (locust) has no 50-150 ms KC peak band**; **Nagel &
+  Wilson 2011 (ORN filters) has no KC adaptation percentage.** The README
+  already recorded that the 50-150 band was produced by narrowing 100-500 in the
+  same editing session as the pass it produced.
+- **Mixtures' 30-50 % overlap band** came from Stettler & Axel 2009 (mouse
+  piriform) and Deisig et al. 2006 (honeybee AL). Neither is a Drosophila MB
+  measurement. The real one is Honegger et al. 2011 Fig 7: components 9 % each,
+  mixture 11 %, linear sum 15 % — **sub-additivity**, not an overlap band.
+- **Similarity's [0.3, 0.5] band** has no locatable source, and was computed
+  from 3 odorants = 3 pairs (r came out -0.97, -0.99 and -0.12 across F4/F5/F8
+  from identical code).
+
+**THE MODEL HAD NO TRIAL-TO-TRIAL VARIABILITY.** With
+`reset(deterministic=True)` — used by every benchmark — the same stimulus at
+seeds 42, 7 and 1234 gives **bit-identical** KC readouts. Nothing in `evolve`
+draws from an RNG; `sigma_noise` feeds a deterministic variance ODE. So repeats
+could not be averaged, and the noise floor was exactly r = 1.0, meaning any
+threshold below 1.0 declared a stimulus discriminable from itself. The engine
+already had the fix as its signature default: `reset(deterministic=False)`
+randomises initial phase, giving a measured replicate correlation of
+**r = 0.5658**. Theory this suggests: a mean-field model can be "reproducible"
+and still be untestable, because reproducibility and having a null distribution
+are different properties.
+
+**Calibrating the null caught a trap.** Comparing a stimulus to *itself* across
+two disjoint consecutive seed blocks reported it separable at **p = 0.0017**.
+Consecutive-seed blocks shift the mean correlation by 0.06, and with 56 within
+and 64 between pairs that reaches significance. Seed-block structure alone
+manufactures results. Seed-matched design with the same-seed diagonal excluded
+gives p = 0.4942, AUC = 0.501.
+
+**THE COMPILED MLX KERNEL CAPTURED THE SYNAPTIC WEIGHTS.**
+`_build_compiled_step` bound `syn_w = self.syn_weights` into its closure before
+`@mx.compile`, on its own docstring's assumption that weights "never change
+between steps". Every plasticity test assigns to `brain.syn_weights`, so **on
+MLX with compilation available every learning test silently trained nothing** —
+zeroing all 49,599 KC→MBON weights changed the MBON response by exactly
+**0.000 %**. F8 ran on NumPy so its learning number was real; any MLX learning
+run was not. Fixed by passing weights as an argument.
+
+**CPU AND MLX DIVERGE PAST 100 ms.** Rule fixed before the run: Jaccard ≥ 0.95
+and r ≥ 0.99 at every sample point of 2000 ms. Measured: 100 ms gives Jaccard
+0.9446 / r 0.9901; 200 ms gives 0.1902 / 0.5422; worst over the trajectory is
+**Jaccard 0.1030, r 0.0650**. The old agreement claim (Jaccard 1.0000) held only
+at 100 ms from an all-zero initial phase. **All reported numbers are now CPU.**
+Evidence: `results/final/cpu_vs_mlx_fullrun.json`.
+
+**THE KC ACTIVE SET DOES NOT CONVERGE UNDER TIMESTEP REFINEMENT.** Measured
+with the stimulus held fixed as a function of real time (the existing sweep was
+confounded: `concentration_at_step` indexes plume sample `step`, so each dt drew
+a different plume). Production dt = 0.1 ms against 0.01 ms: KC pattern
+r = **0.6758**, active-set Jaccard = **0.4827**, and **refinement does not
+help** — agreement is non-monotone in dt for all three seeds. About half the
+active set is discretisation artifact. This limits `similarity`,
+`discrimination`, `odor_mixtures` and the pattern-correlation form of
+concentration invariance. Files:
+`results/final/dt_convergence_fixed_stimulus.json`.
+
+**Two model limitations that blocked published comparisons outright:**
+- The **MBON amplitude field is not monotone in KC→MBON weight** (Spearman
+  ρ = **-0.0182, p = 0.958**; response peaks at *half* strength; dynamic range
+  14.6 % of max). Coupling is `w·sin(φ_pre−φ_post)·A_pre`, a phase-pulling term,
+  and amplitude is driven by `|velocity|`, so tighter locking *lowers* it. The
+  KC→MBON coupling current is monotone (ρ = **1.0000**), and is the analogue of
+  Hige's primary Fig 3D measurement, so that is what is scored.
+  `results/final/mbon_weight_monotonicity.json`.
+- The **rank threshold pins population sparseness** at
+  `int(5279 × 0.06) / 5279 = 0.059860`, standard deviation exactly zero. That is
+  precisely the quantity Honegger et al. 2011 reports for both its mixture and
+  its concentration results, so both published comparisons are unavailable at
+  the binary level.
+
+**Per-benchmark results** (F8 → now):
+
+| benchmark | F8 | now | headline |
+|---|---|---|---|
+| temporal_dynamics | FAIL | **PASS** | onset 50.0 ms on 8/8 trials all odorants; phasic p = 0.0039 |
+| odor_mixtures | PASS | **PASS** | sub-additivity 0.5048 and 0.4440, both p = 0.0039 (published 0.7333) |
+| discrimination | FAIL | FAIL | blend series non-monotone mid-range, correct at both ends |
+| similarity | FAIL | FAIL | Part A ordering **wrong**; Part B passes p = 0.0197 |
+| learning | PASS | FAIL | depression + dopamine-dependence pass; specificity fails |
+
+- **learning**: C1 depression PASS (p = 0.0074, 34.70 %), C2 dopamine required
+  PASS (p = 0.000205, odour alone 0.00 %), C3 odour-specific **FAIL**
+  (p = 0.3227). Power analysis is the informative part: paired 34.70 % against
+  control 12.98 % looks large, but per-trial **d = 0.038**, needing
+  **n = 8,576**. Not underpowered — the specificity is genuinely swamped by
+  variance. Depression ceiling **29.93 %** against Hige's 80-90 %, because only
+  the 316 threshold-passing KCs are depressed and they carry ~14 % of the
+  KC→MBON amplitude. The raw-amplitude variant reaches 79.96 % but has *negative*
+  specificity (control 81.73 %). **The model can produce a depression of the
+  right size, or one aimed at the right synapses, but not both.**
+- **similarity Part A**: published PA-BA 0.70 > PA-EL 0.15 > BA-EL 0.11.
+  Measured PA-BA **0.1296**, PA-EL 0.1081, BA-EL **0.4287**. ANOVA F = 102.263,
+  p = 1.29e-29 — the ordering is **wrong**, not weak. Consistent with butyl
+  acetate and ethyl lactate correlating at raw r = 0.9318 in the KC field
+  (`results/final/kc_odor_specificity.json`).
+- **similarity Part B**: KC angular separation > input in **39/66** pairs,
+  Wilcoxon p = 0.0197 (published 24/28 at P < 1e-4). Decorrelation reproduced
+  weakly. Caveat: Turner compared OSN vs KC space and this model injects at PNs,
+  so the comparison is one stage downstream and is a weaker test.
+- **discrimination**: 100:0 r = 0.1391 separable (p = 7e-20, AUC 0.996);
+  70:30 r = 0.0444 separable; 60:40 r = 0.3177 **not** separable (p = 0.164) —
+  which *matches* Campbell's "just above chance" at that ratio. But the series
+  must rise monotonically and the first step **falls**. Secondary (Xia & Tully
+  2007 two-fold intensity step): separable, p = 4.83e-05.
+- **temporal**: adaptation 54.97-67.56 % lands inside the retired 30-70 % band;
+  the band is still not used because it is not in Nagel & Wilson 2011. Peak
+  times 178/497/278 ms with SDs of 158-316 ms — variability the old six-point
+  grid could not have shown. **The first repaired run of this benchmark reported
+  FAIL and is superseded for a flaw in the repair, not the model**: it used the
+  first 50 ms *after* onset as its baseline, which on a 25 ms grid is two
+  samples already inside the rising response. Now 200 ms of genuine
+  pre-stimulus.
+
+**Theory these suggest, worth testing:** (1) in a phase-coupled network, a
+readout built on amplitude cannot be assumed monotone in synaptic weight, so
+"synaptic depression" and "reduced response" are separate claims requiring
+separate evidence; (2) a rank-threshold readout silently pins whatever the
+threshold normalises, so any published benchmark whose quantity *is* that
+normalised variable becomes untestable rather than trivially satisfied — worth
+auditing the vision and auditory benchmarks for the same trap.
+
 
 ### Deterministic MLX + Repaired Stimulus Path (2026-09-03) ✅ SUPERSEDES SEVERAL ENTRIES BELOW
 

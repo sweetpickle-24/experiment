@@ -1,6 +1,6 @@
 # Wave-based simulation of the Drosophila connectome
 
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-04
 
 This project simulates a fruit fly's brain by treating each neuron as a damped
 oscillator and letting activity spread as waves across the real wiring diagram of
@@ -12,6 +12,32 @@ laptop.
 This is independent, unreviewed work. Nothing here has been peer reviewed,
 replicated by anyone else, or published. Several results below did not reproduce
 their biological targets, and they are reported as such.
+
+> ## Read the validity audit before any benchmark number
+>
+> **[docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md](docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md)**
+>
+> Every one of the five olfactory benchmarks was checked against the full text of
+> the paper it cites. **Four of six targets are not in their cited source, and
+> one citation does not exist.** Turner et al. 2008 — the source for
+> `r > 0.70` on concentration invariance — recorded every KC at a single
+> dilution and contains no concentration series at all. "Bodyak & Bhatt 2001",
+> the source for the 10-20 % discrimination JND, cannot be located; the nearest
+> real paper is a mouse study.
+>
+> The audit rebuilds each benchmark on what its paper actually measured. The
+> repaired suite scores **2/5**
+> (`results/final/all_validations_F9_corrected.json`): `temporal_dynamics` and
+> `odor_mixtures` pass, `discrimination`, `similarity` and `learning` fail.
+>
+> Two further findings there affect everything: the model had **no
+> trial-to-trial variability** under the protocol every benchmark used, and the
+> **KC active set does not converge under timestep refinement** (active-set
+> Jaccard 0.4827 between the production timestep and ten times finer, and
+> refining further does not help).
+>
+> Reported numbers now come from the **CPU** backend, because CPU and MLX agree
+> at 100 ms and diverge past it (`results/final/cpu_vs_mlx_fullrun.json`).
 
 ---
 

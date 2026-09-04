@@ -1,7 +1,7 @@
 # Wave-Based Fly Brain: Architecture, Logic, and Findings
 
 **Date**: 2026-03-24  
-**Last Updated**: 2026-09-03 (claim audit: §13 rewritten, sparsity and decorrelation claims withdrawn)  
+**Last Updated**: 2026-09-04 (benchmark validity audit: four of six targets are not in their cited papers; see docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md)  
 **Author**: Vladyslav Byelozerskykh  
 **ORCID**: 0009-0009-4741-2663
 
@@ -622,7 +622,31 @@ run with a recorded configuration and a fixed seed: MLX GPU, 10,906-neuron olfac
 subgraph, `dt = 0.1 ms`, `fast_mode=False`, 100 ms per trial, `seed=42`, commit
 `2e41e13-dirty`.
 
-| Benchmark | Target | Result | Outcome |
+> **Superseded 2026-09-04.** Four of the six targets in the table below are not
+> in the papers they cite, and one citation does not exist. See
+> [docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md](docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md).
+> The table is kept because the *results* column remains a record of what those
+> runs produced; the *target* column should not be used.
+>
+> Repaired suite, each benchmark rebuilt on what its paper actually measured,
+> CPU backend, 8 trials per stimulus
+> (`results/final/all_validations_F9_corrected.json`):
+>
+> | Benchmark | Now measures | Result | Outcome |
+> |---|---|---|---|
+> | Temporal dynamics | onset ≤ 200 ms; response is phasic | onset 50.0 ms on 8/8 trials; phasic p = 0.0039 | **PASS** |
+> | Odor mixtures | sub-additivity vs the linear sum (Honegger 2011 Fig 7) | index 0.5048 and 0.4440, both p = 0.0039 (published 0.7333) | **PASS** |
+> | Discrimination | blend-series psychometric ordering (Campbell 2013 Fig 2) | endpoints correct, series non-monotone mid-range | **FAIL** |
+> | Similarity | Campbell 2013 Fig 4C ordering; Turner 2008 Fig 5 decorrelation | Part A ordering wrong (PA-BA 0.13 vs BA-EL 0.43); Part B 39/66 pairs, p = 0.0197 | **FAIL** |
+> | Learning | signed, dopamine-gated, odour-specific KC→MBON depression (Hige 2015) | depression 34.70 % and dopamine-dependence pass; specificity p = 0.3227, d = 0.038 | **FAIL** |
+> | Concentration invariance | *not scored* — no published threshold exists, and Honegger's sparseness is pinned by the readout | pattern r = 0.5417; sparseness 0.059860 with SD exactly 0 | — |
+>
+> **2/5.** Also measured there: the KC active set does not converge under
+> timestep refinement (Jaccard 0.4827 between production dt and 10× finer, and
+> non-monotone), so roughly half of any KC-identity result is discretisation
+> artifact.
+
+| Benchmark | Target (do not use — see above) | Result | Outcome |
 |---|---|---|---|
 | Temporal dynamics | 30-70% adaptation | peak 275 ms, adaptation 9.05% | **Did not reproduce** |
 | Odor mixtures | 30-50% overlap | 21.04% (chance floor ≈ 6.0%) | **Did not reproduce** |
