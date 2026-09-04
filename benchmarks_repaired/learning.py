@@ -432,7 +432,7 @@ def _condition(brain, door, connectome, mask, dan_indices, eta_d,
 
 
 def calibrate(brain, door, connectome, mask, dan_indices,
-              target_pct=CALIBRATION_TARGET_PCT, iterations=12,
+              target_pct=CALIBRATION_TARGET_PCT, iterations=8,
               variant=SCORED_VARIANT):
     """
     Bisect the eta_d * D product so paired-odour depression approaches
@@ -528,6 +528,61 @@ def _score(paired, odor_only):
     }
 
 
+def specificity_power(paired, alpha=ALPHA, target_power=0.80):
+    """
+    How many trials would criterion C3 need, given the effect actually observed?
+
+    C3 asks whether the paired odour is depressed more than the unpaired
+    control. At the declared 8 trials the test can be directionally correct and
+    still not significant, and reporting only "FAIL" would conflate "the model
+    does not do this" with "this protocol cannot see it". Those are different
+    findings and the user of a benchmark needs to know which one it is.
+
+    The required n is computed from the observed per-trial drops, so it is a
+    consequence of the measurement rather than a choice. Reported alongside the
+    verdict at the declared n; it never changes the verdict at that n.
+    """
+    pa_drop = (np.array(paired['paired_pre'])
+               - np.array(paired['paired_post']))
+    el_drop = (np.array(paired['control_pre'])
+               - np.array(paired['control_post']))
+
+    diff = float(np.mean(pa_drop) - np.mean(el_drop))
+    pooled_sd = float(np.sqrt(
+        (np.var(pa_drop, ddof=1) + np.var(el_drop, ddof=1)) / 2.0))
+    if pooled_sd == 0 or diff <= 0:
+        return {
+            'observed_mean_difference': diff,
+            'pooled_sd': pooled_sd,
+            'cohens_d': None,
+            'required_n_per_group': None,
+            'note': 'effect is zero or in the wrong direction; no n suffices',
+        }
+
+    d = diff / pooled_sd
+    # Two-sample one-sided normal approximation:
+    #   n per group = 2 * ((z_alpha + z_power) / d) ** 2
+    from scipy.stats import norm
+    z_a = norm.ppf(1 - alpha)
+    z_b = norm.ppf(target_power)
+    n_req = 2.0 * ((z_a + z_b) / d) ** 2
+    return {
+        'observed_mean_difference': diff,
+        'pooled_sd': pooled_sd,
+        'cohens_d': float(d),
+        'alpha': alpha,
+        'target_power': target_power,
+        'required_n_per_group': int(np.ceil(n_req)),
+        'n_used': len(pa_drop),
+        'method': 'two-sample one-sided normal approximation, '
+                  'n = 2 * ((z_alpha + z_power) / d)^2',
+        'note':
+            'computed from the observed effect, so it is a consequence of the '
+            'measurement, not a choice. Does not alter the verdict at the '
+            'declared n.',
+    }
+
+
 def _evaluate_variant(brain, door, connectome, mask, dan_indices, variant):
     """Calibrate and score one plasticity-rule variant."""
     print(f"\n{'=' * 70}\nRULE VARIANT: {variant}\n{'=' * 70}")
@@ -574,6 +629,25 @@ def _evaluate_variant(brain, door, connectome, mask, dan_indices, variant):
         print(f"  {'PASS' if c['passed'] else 'FAIL'}  {name}  "
               f"p={c['p_value']:.4g}")
 
+    power = specificity_power(paired)
+    if power.get('required_n_per_group'):
+        print(f"  C3 power: d={power['cohens_d']:.3f}, "
+              f"would need n={power['required_n_per_group']} per group "
+              f"(used {power['n_used']})")
+    else:
+        print(f"  C3 power: {power['note']}")
+
+    # The 'thresholded' rule can only depress the synapses of KCs inside the
+    # sparse code, so the depression it can produce is bounded. That ceiling is
+    # a measurable property worth reporting against Hige's 80-90 %.
+    ceiling = max((s['paired_odor_depression_pct'] for s in sweep
+                   if s['paired_odor_depression_pct'] is not None),
+                  default=None)
+    if ceiling is not None:
+        print(f"  depression ceiling over the sweep: {ceiling:.2f} % "
+              f"(Hige: {HIGE_SPIKE_RATE_DEPRESSION_PCT:.0f}-"
+              f"{HIGE_CHARGE_TRANSFER_DEPRESSION_PCT:.0f} %)")
+
     return {
         'rule_variant': variant,
         'calibration': cal,
@@ -581,6 +655,8 @@ def _evaluate_variant(brain, door, connectome, mask, dan_indices, variant):
                        'odor_only_control': odor_only},
         'eta_sweep': sweep,
         'criteria': criteria,
+        'specificity_power': power,
+        'depression_ceiling_pct': ceiling,
         'summary': {
             'paired_odor_depression_pct':
                 paired['paired_odor_depression_pct'],
@@ -745,6 +821,8 @@ def run(use_mlx=True, output='learning_repaired.json'):
                 v: (r['summary']['validation'] if r.get('summary') else 'ERROR')
                 for v, r in variants.items()
             },
+            'specificity_power': scored.get('specificity_power'),
+            'depression_ceiling_pct': scored.get('depression_ceiling_pct'),
             'published_comparison':
                 f'Hige et al. 2015 charge transfer '
                 f'{HIGE_CHARGE_TRANSFER_DEPRESSION_PCT} +/- '

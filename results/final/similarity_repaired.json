@@ -1,0 +1,817 @@
+{
+  "benchmark": "similarity",
+  "measures": "whether KC pattern similarity is graded and ordered as Campbell et al. 2013 measured it, and whether the KC layer decorrelates its input as Turner et al. 2008 measured it",
+  "target_corrections": {
+    "removed": "chem-neural correlation in [0.3, 0.5]",
+    "why": "the band is attributed to Bhandawat et al. 2007 and Mathew et al. 2013 and appears in neither. Mathew et al. 2013 is a screen of 21 larval ORNs against ~500 odorants and reports no chemical-versus-neural similarity correlation. No source for a 0.3-0.5 band was found. It was also computed from three odorants, hence three pairs, leaving one residual degree of freedom: the same code produced r = -0.97, -0.99 and -0.12 across the F4, F5 and F8 runs.",
+    "replaced_with": "two published measurements with published numbers: Campbell et al. 2013 Fig 4C (PA-BA r = 0.70 > PA-EL 0.15 and BA-EL 0.11, one-way ANOVA + Tukey, n = 24) and Turner et al. 2008 Fig 5 (KC angular separation greater than input for 24/28 pairs, Wilcoxon signed-rank P < 1e-4)",
+    "power": "Part A uses 3 pairs x 8 trials; Part B uses 66 pairs. The removed test used 3 single values."
+  },
+  "protocol": {
+    "n_trials_per_stimulus": 8,
+    "trial_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+    ],
+    "seed_selection_rule": "declared in the plan before any result was seen; eight trials matches Campbell et al. 2013 six presentations per stimulus, rounded up",
+    "reset": "deterministic=False (seeded random initial phase)",
+    "reset_rationale": "with reset(deterministic=True) the trajectory carries no randomness at all: measured 2026-09-04, the same stimulus at seeds 42, 7 and 1234 gives bit-identical KC readouts, so repeats cannot be averaged and the noise floor is exactly r = 1.0. reset(deterministic=False) is the engine signature default and changes an initial condition, not a model parameter, a noise level or the readout sparsity",
+    "trial_duration_ms": 100.0,
+    "reference_strength": 50.0,
+    "target_sparsity": 0.06,
+    "active_percentile": 90,
+    "representation": "binary active-KC vector",
+    "noise_floor": "every separability claim is judged against the within-stimulus replicate distribution from these same seeds, never against a fixed constant",
+    "separability_design": "seed-matched: both stimuli run on the same seed list, and the same-seed diagonal is excluded from the between distribution so that both distributions consist only of differing-initial-phase pairs. An unmatched design (same odorant, seeds 1001-1008 vs 2001-2008) reported the stimulus separable from itself at p = 0.0017",
+    "part_a_odorants": {
+      "PA": "pentyl_acetate",
+      "BA": "butyl_acetate",
+      "EL": "ethyl_lactate"
+    },
+    "part_b_odorants": [
+      "pentyl_acetate",
+      "butyl_acetate",
+      "ethyl_lactate",
+      "3-octanol",
+      "4-methylcyclohexanol",
+      "2-heptanone",
+      "benzaldehyde",
+      "2,3-butanedione",
+      "methyl_salicylate",
+      "ethyl_acetate",
+      "1-hexanol",
+      "isopentyl_acetate"
+    ]
+  },
+  "panel": {
+    "odorants": [
+      "pentyl_acetate",
+      "butyl_acetate",
+      "ethyl_lactate",
+      "3-octanol",
+      "4-methylcyclohexanol",
+      "2-heptanone",
+      "benzaldehyde",
+      "2,3-butanedione",
+      "methyl_salicylate",
+      "ethyl_acetate",
+      "1-hexanol",
+      "isopentyl_acetate"
+    ],
+    "selection_rule": "by paper provenance only; no odorant added, removed or reordered after a number was seen",
+    "provenance": {
+      "pentyl_acetate": "Campbell et al. 2013 Fig 4C (PA); Honegger et al. 2011 Fig 7B; Hige et al. 2015 Fig 7C-E",
+      "butyl_acetate": "Campbell et al. 2013 Fig 4C (BA); Hige et al. 2015 Fig 7C-E",
+      "ethyl_lactate": "Campbell et al. 2013 Fig 4C (EL); Hige et al. 2015 Fig 7F-H, the non-overlapping odour whose response was unaffected by pairing",
+      "3-octanol": "Campbell et al. 2013 Fig 2A (OCT); Honegger et al. 2011 Fig 7A; Hige et al. 2015 Fig 1E-F",
+      "4-methylcyclohexanol": "Campbell et al. 2013 Fig 2A (MCH); Honegger et al. 2011 Fig 7A; Xia & Tully 2007 saturation assay",
+      "2-heptanone": "Honegger et al. 2011 Fig 7B",
+      "benzaldehyde": "Turner et al. 2008 Fig 3I, the odour whose recorded PN responses drove the model KC population",
+      "2,3-butanedione": "Turner et al. 2008 Fig 1C",
+      "methyl_salicylate": "Turner et al. 2008 Fig 5, the narrowly tuned odour whose pairs reversed in angular separation",
+      "ethyl_acetate": "Honegger et al. 2011; Wang et al. 2004 MB calcium imaging",
+      "1-hexanol": "Hige et al. 2015 (hexanol, HP)",
+      "isopentyl_acetate": "Honegger et al. 2011 Fig 6C (isoamyl acetate)"
+    }
+  },
+  "part_a_campbell_2013": {
+    "reference": "Campbell RAA, Honegger KS, Qin H, Li W, Demir E, Turner GC (2013) Imaging a population code for odor identity in the Drosophila mushroom body. J Neurosci 33:10568-10581, Fig 4C",
+    "published": "PA-BA mean r = 0.70, substantially and significantly greater than PA-EL (r = 0.15) and BA-EL (r = 0.11); n = 24 recordings; one-way ANOVA followed by Tukey post hoc",
+    "pairs": {
+      "PA__BA": {
+        "odorants": [
+          "pentyl_acetate",
+          "butyl_acetate"
+        ],
+        "trialwise_r_mean": 0.1295760531185746,
+        "trialwise_r_std": 0.09639060593817403,
+        "trialwise_r_n": 56,
+        "mean_pattern_r": 0.17506681209059652,
+        "published_r": 0.7
+      },
+      "PA__EL": {
+        "odorants": [
+          "pentyl_acetate",
+          "ethyl_lactate"
+        ],
+        "trialwise_r_mean": 0.10811749714615104,
+        "trialwise_r_std": 0.18417706941323714,
+        "trialwise_r_n": 56,
+        "mean_pattern_r": 0.2150508186474298,
+        "published_r": 0.15
+      },
+      "BA__EL": {
+        "odorants": [
+          "butyl_acetate",
+          "ethyl_lactate"
+        ],
+        "trialwise_r_mean": 0.4286734607342076,
+        "trialwise_r_std": 0.09768920824426215,
+        "trialwise_r_n": 56,
+        "mean_pattern_r": 0.6780235261476054,
+        "published_r": 0.11
+      }
+    },
+    "anova": {
+      "f": 102.26273196329922,
+      "p_value": 1.2934951291898824e-29,
+      "test": "one-way ANOVA over the three pair groups"
+    },
+    "tukey": [
+      {
+        "group1": "PA__BA",
+        "group2": "PA__EL",
+        "meandiff": 0.02145855597242355,
+        "p_adj": 0.6685688225230878,
+        "reject": false
+      },
+      {
+        "group1": "PA__BA",
+        "group2": "BA__EL",
+        "meandiff": -0.29909740761563297,
+        "p_adj": 4.8960835385969403e-14,
+        "reject": true
+      },
+      {
+        "group1": "PA__EL",
+        "group2": "BA__EL",
+        "meandiff": -0.32055596358805655,
+        "p_adj": 4.8960835385969403e-14,
+        "reject": true
+      }
+    ],
+    "criterion": "r(PA,BA) significantly greater than both r(PA,EL) and r(BA,EL), by one-way ANOVA followed by Tukey, the test the paper used",
+    "pa_ba_greater_than_both": false,
+    "tukey_pa_ba_vs_pa_el": {
+      "group1": "PA__BA",
+      "group2": "PA__EL",
+      "meandiff": 0.02145855597242355,
+      "p_adj": 0.6685688225230878,
+      "reject": false
+    },
+    "tukey_pa_ba_vs_ba_el": {
+      "group1": "PA__BA",
+      "group2": "BA__EL",
+      "meandiff": -0.29909740761563297,
+      "p_adj": 4.8960835385969403e-14,
+      "reject": true
+    },
+    "passed": false
+  },
+  "part_b_turner_2008": {
+    "reference": "Turner GC, Bazhenov M, Laurent G (2008) Olfactory representations by Drosophila mushroom body neurons. J Neurophysiol 99:734-746, Fig 5",
+    "published": "separation greater in KC space for 24 of 28 odour pairs (Wilcoxon signed-rank P < 1e-4; t-test P < 1e-7), comparing 24 OSN types against 40 KCs over an 8-odour panel",
+    "metric": "1 - cos(theta), per Turner et al. 2008",
+    "layer_correspondence_caveat": "Turner et al. compared OSN space against KC space. This model's entry point is the glomerular pattern injected into projection neurons, so the comparison here is glomerular-input space against KC space: one stage downstream of the paper's input layer, and therefore a weaker test, because the antennal lobe has already transformed the representation.",
+    "n_pairs": 66,
+    "n_kc_greater": 39,
+    "fraction_kc_greater": 0.5909090909090909,
+    "published_fraction": 0.8571428571428571,
+    "input_separation_mean": 0.32650187387959045,
+    "kc_separation_mean": 0.38016552143370996,
+    "wilcoxon": {
+      "statistic": 1428.0,
+      "p_value": 0.01969180517705519,
+      "test": "Wilcoxon signed-rank, KC > input, one-sided"
+    },
+    "criterion": "KC separation greater than input separation in a significant majority of pairs (Wilcoxon signed-rank, one-sided)",
+    "pairs": [
+      {
+        "pair": [
+          "pentyl_acetate",
+          "butyl_acetate"
+        ],
+        "input_separation": 0.14255438036857537,
+        "kc_separation": 0.5868312019773647,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "ethyl_lactate"
+        ],
+        "input_separation": 0.23484123439434412,
+        "kc_separation": 0.5392542949005805,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "3-octanol"
+        ],
+        "input_separation": 0.04906773183914448,
+        "kc_separation": 0.14982577208048087,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "4-methylcyclohexanol"
+        ],
+        "input_separation": 0.5540550169560244,
+        "kc_separation": 0.6191173544027897,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "2-heptanone"
+        ],
+        "input_separation": 0.040790349955827754,
+        "kc_separation": 0.25541840299203245,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.32181272842879505,
+        "kc_separation": 0.26492874314854775,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.30530384276540645,
+        "kc_separation": 0.4225397416425283,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.5604370249529189,
+        "kc_separation": 0.45243476476364397,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.43172333312907174,
+        "kc_separation": 0.44700870731625497,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "1-hexanol"
+        ],
+        "input_separation": 0.058763873474325545,
+        "kc_separation": 0.13336655721700297,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "pentyl_acetate",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.11278116442300024,
+        "kc_separation": 0.5535186637771221,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "ethyl_lactate"
+        ],
+        "input_separation": 0.17453039768836365,
+        "kc_separation": 0.1033660800284022,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "3-octanol"
+        ],
+        "input_separation": 0.23112291205569724,
+        "kc_separation": 0.6537567220691672,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "4-methylcyclohexanol"
+        ],
+        "input_separation": 0.5409124954281,
+        "kc_separation": 0.16074751269743948,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "2-heptanone"
+        ],
+        "input_separation": 0.1798876888920249,
+        "kc_separation": 0.33881976395675206,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.4382069302380732,
+        "kc_separation": 0.6466126066304064,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.3430691675536819,
+        "kc_separation": 0.4137633948739645,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.45867399407060183,
+        "kc_separation": 0.14463906682513772,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.4572449764711438,
+        "kc_separation": 0.38604922220497395,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "1-hexanol"
+        ],
+        "input_separation": 0.1735591580263134,
+        "kc_separation": 0.5588876827320526,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "butyl_acetate",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.09458403139632265,
+        "kc_separation": 0.0824756841910973,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "3-octanol"
+        ],
+        "input_separation": 0.3058102273062713,
+        "kc_separation": 0.6120746143516234,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "4-methylcyclohexanol"
+        ],
+        "input_separation": 0.5585694004618391,
+        "kc_separation": 0.16453771122115457,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "2-heptanone"
+        ],
+        "input_separation": 0.24757475100791249,
+        "kc_separation": 0.28198122613434495,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.39569973200936326,
+        "kc_separation": 0.6336139527652846,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.3176168733365655,
+        "kc_separation": 0.3919596104630023,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.4599635243401037,
+        "kc_separation": 0.12105677068648191,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.396416816557597,
+        "kc_separation": 0.36367274693197593,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "1-hexanol"
+        ],
+        "input_separation": 0.21230305709495578,
+        "kc_separation": 0.5368875238547386,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_lactate",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.21785878043144824,
+        "kc_separation": 0.12561925710457622,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "4-methylcyclohexanol"
+        ],
+        "input_separation": 0.49588265617856353,
+        "kc_separation": 0.6906156533046414,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "2-heptanone"
+        ],
+        "input_separation": 0.02910017847637869,
+        "kc_separation": 0.28677620828981376,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.30750645946458466,
+        "kc_separation": 0.2970568167230141,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.28018172777223005,
+        "kc_separation": 0.4724524698112673,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.5720085367169401,
+        "kc_separation": 0.5332474309591025,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.45317523014002414,
+        "kc_separation": 0.48547180825670533,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "1-hexanol"
+        ],
+        "input_separation": 0.11244472056356558,
+        "kc_separation": 0.08665695730892986,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "3-octanol",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.14201575541684297,
+        "kc_separation": 0.6315029153534947,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "2-heptanone"
+        ],
+        "input_separation": 0.44982647966974953,
+        "kc_separation": 0.390265564201317,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.6517440326750557,
+        "kc_separation": 0.6921073347329734,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.39372905283417126,
+        "kc_separation": 0.3078548774859531,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.4552333867785783,
+        "kc_separation": 0.20303938293136536,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.47408783954488243,
+        "kc_separation": 0.27039311133837185,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "1-hexanol"
+        ],
+        "input_separation": 0.5101078373458958,
+        "kc_separation": 0.6096622737965347,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "4-methylcyclohexanol",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.39792104532800876,
+        "kc_separation": 0.11768690751862942,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "benzaldehyde"
+        ],
+        "input_separation": 0.2799306838681678,
+        "kc_separation": 0.363189571907232,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.2014173251299528,
+        "kc_separation": 0.38582627965293137,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.5259958288471049,
+        "kc_separation": 0.2636498711242228,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.3619660282740633,
+        "kc_separation": 0.3951191150253738,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "1-hexanol"
+        ],
+        "input_separation": 0.06287629692558994,
+        "kc_separation": 0.24342631431548167,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2-heptanone",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.08695903796304727,
+        "kc_separation": 0.33517271315277475,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "benzaldehyde",
+          "2,3-butanedione"
+        ],
+        "input_separation": 0.44459013074597675,
+        "kc_separation": 0.5463715300351428,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "benzaldehyde",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.4146965059210238,
+        "kc_separation": 0.47894178196229575,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "benzaldehyde",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.5898296168325252,
+        "kc_separation": 0.5603340361475888,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "benzaldehyde",
+          "1-hexanol"
+        ],
+        "input_separation": 0.26978544629668455,
+        "kc_separation": 0.2472972290749449,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "benzaldehyde",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.3053407090898169,
+        "kc_separation": 0.6535723226530781,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2,3-butanedione",
+          "methyl_salicylate"
+        ],
+        "input_separation": 0.5067632192082923,
+        "kc_separation": 0.3609740012431356,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "2,3-butanedione",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.05745262723536282,
+        "kc_separation": 0.11521287525887725,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2,3-butanedione",
+          "1-hexanol"
+        ],
+        "input_separation": 0.24910489713798845,
+        "kc_separation": 0.40487215792540276,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "2,3-butanedione",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.17482304860084208,
+        "kc_separation": 0.3134806154260994,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "methyl_salicylate",
+          "ethyl_acetate"
+        ],
+        "input_separation": 0.5682428900695125,
+        "kc_separation": 0.3104885446778808,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "methyl_salicylate",
+          "1-hexanol"
+        ],
+        "input_separation": 0.5482555854356382,
+        "kc_separation": 0.4576770398000912,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "methyl_salicylate",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.3411490590105273,
+        "kc_separation": 0.1543529737235746,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "ethyl_acetate",
+          "1-hexanol"
+        ],
+        "input_separation": 0.39433041442249606,
+        "kc_separation": 0.45396628132757766,
+        "kc_greater": true
+      },
+      {
+        "pair": [
+          "ethyl_acetate",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.2905950095169748,
+        "kc_separation": 0.26639364714873104,
+        "kc_greater": false
+      },
+      {
+        "pair": [
+          "1-hexanol",
+          "isopentyl_acetate"
+        ],
+        "input_separation": 0.13431878156210375,
+        "kc_separation": 0.561050447089384,
+        "kc_greater": true
+      }
+    ],
+    "passed": true
+  },
+  "summary": {
+    "part_a_passed": false,
+    "part_b_passed": true,
+    "part_a_pa_ba_r": 0.1295760531185746,
+    "part_a_pa_el_r": 0.10811749714615104,
+    "part_a_ba_el_r": 0.4286734607342076,
+    "part_b_fraction_kc_greater": 0.5909090909090909,
+    "validation": "FAIL"
+  },
+  "config": {
+    "timestamp": "2026-09-04T21:23:33.718316+00:00",
+    "git_commit": "7566173c4a203d0fb2d7e8bd94481d9599be86cb-dirty",
+    "seed": null,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "similarity_repaired"
+  }
+}
