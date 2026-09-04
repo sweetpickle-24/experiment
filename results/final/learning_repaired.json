@@ -1,0 +1,959 @@
+{
+  "benchmark": "learning",
+  "measures": "signed, dopamine-gated, odour-specific depression of the MBON response to a paired odour",
+  "reference": "Hige T, Aso Y, Modi MN, Rubin GM, Turner GC (2015) Heterosynaptic plasticity underlies aversive olfactory learning in Drosophila. Neuron 88:985-998",
+  "published_figures": {
+    "charge_transfer_depression_pct": [
+      90.0,
+      3.7
+    ],
+    "spike_rate_depression_pct": [
+      80.0,
+      5.7
+    ],
+    "specificity": "EL unaffected (p > 0.1); PA, BA, HP depressed (p < 0.005)",
+    "overlap_correlation": "Pearson r = 0.90, p < 0.005 (Fig 7I)"
+  },
+  "readout_choice": {
+    "scored": "KC->MBON coupling current",
+    "scored_analogue_of": "MBON EPSC charge transfer, the primary synaptic result in Hige et al. 2015 Fig 3D (90 +/- 3.7 %)",
+    "scored_monotonicity_in_weight": "Spearman rho = 1.0000, p = 0 over 11 weight scales, 8 trials each (results/final/mbon_weight_monotonicity.json)",
+    "reported_unscored": "MBON amplitude field",
+    "reported_unscored_analogue_of": "MBON spike rate (80 +/- 5.7 %)",
+    "why_unscored": "MBON amplitude is NOT a monotone function of KC->MBON synaptic weight in this model: Spearman rho = -0.0182, p = 0.958, with the response peaking at half weight strength and a total dynamic range of 14.6 % of maximum. Coupling enters as w * sin(phi_pre - phi_post) * A_pre, which pulls phases together rather than adding excitation, and amplitude is driven by |velocity|, so tighter phase locking lowers it. Depression of these synapses therefore does not reduce that readout and the sign is not fixed. This is a limitation of the model, recorded rather than worked around."
+  },
+  "target_corrections": {
+    "removed": "MIN_CHANGE_PCT = 1.0 on |MBON_post - MBON_pre|",
+    "why": "unsigned and directionless, so it passed on a 99.99 % collapse of the MBON response (0.03327 -> 0.0000044) caused by the `w /= max(w)` renormalisation in _apply_hebbian_stdp, which updated all 446,388 synapses in the network. A signal dying is not a memory forming and a 1 % unsigned threshold cannot distinguish them. Hige et al. 2015 measures a signed depression that requires dopaminergic pairing and is odour-specific; none of those three was tested.",
+    "replaced_with": "three criteria taken from the paper: depression is signed, requires dopamine, and spares a non-overlapping odour"
+  },
+  "protocol": {
+    "n_trials_per_stimulus": 8,
+    "trial_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+    ],
+    "seed_selection_rule": "declared in the plan before any result was seen; eight trials matches Campbell et al. 2013 six presentations per stimulus, rounded up",
+    "reset": "deterministic=False (seeded random initial phase)",
+    "reset_rationale": "with reset(deterministic=True) the trajectory carries no randomness at all: measured 2026-09-04, the same stimulus at seeds 42, 7 and 1234 gives bit-identical KC readouts, so repeats cannot be averaged and the noise floor is exactly r = 1.0. reset(deterministic=False) is the engine signature default and changes an initial condition, not a model parameter, a noise level or the readout sparsity",
+    "trial_duration_ms": 100.0,
+    "reference_strength": 50.0,
+    "target_sparsity": 0.06,
+    "active_percentile": 90,
+    "representation": "binary active-KC vector",
+    "noise_floor": "every separability claim is judged against the within-stimulus replicate distribution from these same seeds, never against a fixed constant",
+    "separability_design": "seed-matched: both stimuli run on the same seed list, and the same-seed diagonal is excluded from the between distribution so that both distributions consist only of differing-initial-phase pairs. An unmatched design (same odorant, seeds 1001-1008 vs 2001-2008) reported the stimulus separable from itself at p = 0.0017",
+    "paired_odor": "pentyl_acetate",
+    "control_odor": "ethyl_lactate",
+    "odor_selection_rule": "Hige et al. 2015's own pair (Fig 7C-H); ethyl lactate is specifically the odour the paper reports as unaffected",
+    "pairing_duration_ms": 1000.0,
+    "pairing_duration_source": "Hige et al. 2015: \"After 1-s pairing of odor presentation and PPL1-gamma1pedc activation\"",
+    "dan_drive": 10.0,
+    "n_dan_neurons": 331,
+    "n_kc_to_mbon_synapses": 49599,
+    "synapse_selection": "by cell type via classify_olfactory_neuron, not by hardcoded index range",
+    "plasticity_rule": "dw_ij = -eta_d * KC_drive(i) * D for KC->MBON only; w floored at 0; NO renormalisation",
+    "plasticity_rule_rationale": "presynaptic and heterosynaptic per Hige et al. 2015: dopamine acts at the KC terminal and the depression is not explained by MBON changes, so postsynaptic amplitude does not appear. This subgraph has 5,286 DAN->KC synapses.",
+    "rule_variants_run": [
+      "thresholded",
+      "raw"
+    ],
+    "rule_variant_scored": "thresholded",
+    "rule_variant_rationale": "KC_drive is the KC activity the depression is proportional to. 'thresholded' uses activity after the APL-like rank normalisation, zero outside the sparse code, and is scored: Hige et al. 2015 describes dopamine depressing the terminals of KCs the odour actually depolarised, and the analogue of 'depolarised by this odour' here is passing the APL threshold. 'raw' uses the raw amplitude field and is reported for contrast: measured in results/final/kc_odor_specificity.json, that field is non-zero on all 5,279 KCs and the 316 that pass the threshold carry only 12.5-14.1 % of the total, so a raw-amplitude rule aims about 86 % of its depression at KCs outside the sparse code. Both are reported because the comparison is what separates a limitation of the model from a defect in the rule."
+  },
+  "calibration": {
+    "target_pct": 80.0,
+    "rule_variant": "thresholded",
+    "target_source": "Hige et al. 2015 Fig 3D/4: 80 +/- 5.7 % reduction in spike rate",
+    "eta_d": 5.623413251903491,
+    "achieved_depression_pct": 34.697986660367405,
+    "iterations": 8,
+    "trace": [
+      {
+        "eta_d": 0.001,
+        "paired_odor_depression_pct": 2.2639189454364117
+      },
+      {
+        "eta_d": 0.31622776601683794,
+        "paired_odor_depression_pct": 22.36269824104736
+      },
+      {
+        "eta_d": 5.623413251903491,
+        "paired_odor_depression_pct": 34.697986660367405
+      },
+      {
+        "eta_d": 23.713737056616555,
+        "paired_odor_depression_pct": 28.635412522209997
+      },
+      {
+        "eta_d": 48.696752516586315,
+        "paired_odor_depression_pct": 28.635412522209997
+      },
+      {
+        "eta_d": 69.78305848598663,
+        "paired_odor_depression_pct": 28.635412522209997
+      },
+      {
+        "eta_d": 83.53625469578262,
+        "paired_odor_depression_pct": 28.635412522209997
+      },
+      {
+        "eta_d": 91.39816994654905,
+        "paired_odor_depression_pct": 28.635412522209997
+      }
+    ],
+    "note": "eta_d and the DAN drive amplitude enter only as a product, so this calibrates one parameter, not two. It is pinned to the published effect size rather than chosen to pass; all three criteria are contrasts and are independent of it."
+  },
+  "conditions": {
+    "odor_plus_dopamine": {
+      "with_dopamine": true,
+      "eta_d": 5.623413251903491,
+      "rule_variant": "thresholded",
+      "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+      "paired_odor_depression_pct": 34.697986660367405,
+      "control_odor_depression_pct": 12.984718010119668,
+      "paired_pre": [
+        0.260403181946297,
+        0.2608076071342106,
+        0.3147517788635664,
+        0.36909825072429847,
+        0.31496825309945986,
+        0.28470590919485544,
+        0.23666935257359795,
+        0.27729398238949104
+      ],
+      "paired_post": [
+        0.24247299466436284,
+        0.17224727582594385,
+        0.27685547045813613,
+        0.19446173732604974,
+        0.2870917578848686,
+        0.09234234053689468,
+        0.10425132841691978,
+        0.1444337784585113
+      ],
+      "control_pre": [
+        0.4589704860320627,
+        0.9394736760998718,
+        0.550965295684724,
+        1.0050687491771997,
+        0.869377638260663,
+        0.5362599194146187,
+        0.491756199373973,
+        0.9772928012587786
+      ],
+      "control_post": [
+        0.5679008619202083,
+        0.6920458748520796,
+        0.439516417468342,
+        0.4870211027759843,
+        0.8041790149314642,
+        0.6505646545447765,
+        0.5497727086457393,
+        0.8812635230435923
+      ],
+      "mbon_amplitude_unscored": {
+        "paired_depression_pct": 0.6402677027503436,
+        "control_depression_pct": 1.7694197015480402,
+        "paired_pre": [
+          0.028738558292388916,
+          0.029718568548560143,
+          0.029796071350574493,
+          0.026801811531186104,
+          0.030800022184848785,
+          0.029822083190083504,
+          0.028815895318984985,
+          0.026452019810676575
+        ],
+        "paired_post": [
+          0.03005906380712986,
+          0.02755667455494404,
+          0.032777588814496994,
+          0.029532724991440773,
+          0.03437715768814087,
+          0.024225259199738503,
+          0.027548624202609062,
+          0.023389270529150963
+        ],
+        "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+      },
+      "mean_abs_weight_change_kc_mbon": 0.0003503169386495185,
+      "kc_mbon_weight_sum_before": 206.16461181640625,
+      "kc_mbon_weight_sum_after": 188.78924560546875,
+      "non_kc_mbon_weight_sum_before": 3412.217529296875,
+      "non_kc_mbon_weight_sum_after": 3412.217529296875,
+      "non_kc_mbon_weights_unchanged": true
+    },
+    "odor_only_control": {
+      "with_dopamine": false,
+      "eta_d": 5.623413251903491,
+      "rule_variant": "thresholded",
+      "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+      "paired_odor_depression_pct": 0.0,
+      "control_odor_depression_pct": 0.0,
+      "paired_pre": [
+        0.260403181946297,
+        0.2608076071342106,
+        0.3147517788635664,
+        0.36909825072429847,
+        0.31496825309945986,
+        0.28470590919485544,
+        0.23666935257359795,
+        0.27729398238949104
+      ],
+      "paired_post": [
+        0.260403181946297,
+        0.2608076071342106,
+        0.3147517788635664,
+        0.36909825072429847,
+        0.31496825309945986,
+        0.28470590919485544,
+        0.23666935257359795,
+        0.27729398238949104
+      ],
+      "control_pre": [
+        0.4589704860320627,
+        0.9394736760998718,
+        0.550965295684724,
+        1.0050687491771997,
+        0.869377638260663,
+        0.5362599194146187,
+        0.491756199373973,
+        0.9772928012587786
+      ],
+      "control_post": [
+        0.4589704860320627,
+        0.9394736760998718,
+        0.550965295684724,
+        1.0050687491771997,
+        0.869377638260663,
+        0.5362599194146187,
+        0.491756199373973,
+        0.9772928012587786
+      ],
+      "mbon_amplitude_unscored": {
+        "paired_depression_pct": 0.0,
+        "control_depression_pct": 0.0,
+        "paired_pre": [
+          0.028738558292388916,
+          0.029718568548560143,
+          0.029796071350574493,
+          0.026801811531186104,
+          0.030800022184848785,
+          0.029822083190083504,
+          0.028815895318984985,
+          0.026452019810676575
+        ],
+        "paired_post": [
+          0.028738558292388916,
+          0.029718568548560143,
+          0.029796071350574493,
+          0.026801811531186104,
+          0.030800022184848785,
+          0.029822083190083504,
+          0.028815895318984985,
+          0.026452019810676575
+        ],
+        "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+      },
+      "mean_abs_weight_change_kc_mbon": 0.0,
+      "kc_mbon_weight_sum_before": 206.16461181640625,
+      "kc_mbon_weight_sum_after": 206.16461181640625,
+      "non_kc_mbon_weight_sum_before": 3412.217529296875,
+      "non_kc_mbon_weight_sum_after": 3412.217529296875,
+      "non_kc_mbon_weights_unchanged": true
+    }
+  },
+  "eta_sweep": [
+    {
+      "eta_d": 1e-06,
+      "paired_odor_depression_pct": 2.669425670130224,
+      "control_odor_depression_pct": 3.1723788401379047
+    },
+    {
+      "eta_d": 1e-05,
+      "paired_odor_depression_pct": 0.8963895815820967,
+      "control_odor_depression_pct": -3.8420629677899063
+    },
+    {
+      "eta_d": 0.0001,
+      "paired_odor_depression_pct": 4.950736513501211,
+      "control_odor_depression_pct": 11.869225542016311
+    },
+    {
+      "eta_d": 0.001,
+      "paired_odor_depression_pct": 2.2639189454364117,
+      "control_odor_depression_pct": 10.192297080909947
+    },
+    {
+      "eta_d": 0.01,
+      "paired_odor_depression_pct": 13.29313995974589,
+      "control_odor_depression_pct": 7.366663303881904
+    },
+    {
+      "eta_d": 0.1,
+      "paired_odor_depression_pct": 29.934097024038227,
+      "control_odor_depression_pct": 20.884185450228024
+    },
+    {
+      "eta_d": 1.0,
+      "paired_odor_depression_pct": 25.44557490096887,
+      "control_odor_depression_pct": 13.359932481319627
+    }
+  ],
+  "criteria": {
+    "C1_paired_odor_depressed": {
+      "passed": true,
+      "p_value": 0.007381507381507382,
+      "u": 9.0,
+      "test": "one-sided Mann-Whitney U, post < pre",
+      "source": "Hige et al. 2015: pairing induces depression",
+      "note": "signed; an increase fails, unlike the old |change| >= 1 %"
+    },
+    "C2_dopamine_required": {
+      "passed": true,
+      "p_value": 0.00020496626593241102,
+      "u": 64.0,
+      "test": "one-sided Mann-Whitney U, paired drop > odour-only drop",
+      "source": "Hige et al. 2015: pairing odour with DAN activation is what induces the plasticity"
+    },
+    "C3_odor_specific": {
+      "passed": false,
+      "p_value": 0.3226884226884226,
+      "u": 37.0,
+      "test": "one-sided Mann-Whitney U, paired drop > control drop",
+      "source": "Hige et al. 2015 Fig 7F-H: EL responses were unaffected (p > 0.1) while PA, BA and HP were depressed (p < 0.005)"
+    },
+    "_passed": false
+  },
+  "rule_variants": {
+    "thresholded": {
+      "rule_variant": "thresholded",
+      "calibration": {
+        "target_pct": 80.0,
+        "rule_variant": "thresholded",
+        "target_source": "Hige et al. 2015 Fig 3D/4: 80 +/- 5.7 % reduction in spike rate",
+        "eta_d": 5.623413251903491,
+        "achieved_depression_pct": 34.697986660367405,
+        "iterations": 8,
+        "trace": [
+          {
+            "eta_d": 0.001,
+            "paired_odor_depression_pct": 2.2639189454364117
+          },
+          {
+            "eta_d": 0.31622776601683794,
+            "paired_odor_depression_pct": 22.36269824104736
+          },
+          {
+            "eta_d": 5.623413251903491,
+            "paired_odor_depression_pct": 34.697986660367405
+          },
+          {
+            "eta_d": 23.713737056616555,
+            "paired_odor_depression_pct": 28.635412522209997
+          },
+          {
+            "eta_d": 48.696752516586315,
+            "paired_odor_depression_pct": 28.635412522209997
+          },
+          {
+            "eta_d": 69.78305848598663,
+            "paired_odor_depression_pct": 28.635412522209997
+          },
+          {
+            "eta_d": 83.53625469578262,
+            "paired_odor_depression_pct": 28.635412522209997
+          },
+          {
+            "eta_d": 91.39816994654905,
+            "paired_odor_depression_pct": 28.635412522209997
+          }
+        ],
+        "note": "eta_d and the DAN drive amplitude enter only as a product, so this calibrates one parameter, not two. It is pinned to the published effect size rather than chosen to pass; all three criteria are contrasts and are independent of it."
+      },
+      "conditions": {
+        "odor_plus_dopamine": {
+          "with_dopamine": true,
+          "eta_d": 5.623413251903491,
+          "rule_variant": "thresholded",
+          "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+          "paired_odor_depression_pct": 34.697986660367405,
+          "control_odor_depression_pct": 12.984718010119668,
+          "paired_pre": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "paired_post": [
+            0.24247299466436284,
+            0.17224727582594385,
+            0.27685547045813613,
+            0.19446173732604974,
+            0.2870917578848686,
+            0.09234234053689468,
+            0.10425132841691978,
+            0.1444337784585113
+          ],
+          "control_pre": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "control_post": [
+            0.5679008619202083,
+            0.6920458748520796,
+            0.439516417468342,
+            0.4870211027759843,
+            0.8041790149314642,
+            0.6505646545447765,
+            0.5497727086457393,
+            0.8812635230435923
+          ],
+          "mbon_amplitude_unscored": {
+            "paired_depression_pct": 0.6402677027503436,
+            "control_depression_pct": 1.7694197015480402,
+            "paired_pre": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "paired_post": [
+              0.03005906380712986,
+              0.02755667455494404,
+              0.032777588814496994,
+              0.029532724991440773,
+              0.03437715768814087,
+              0.024225259199738503,
+              0.027548624202609062,
+              0.023389270529150963
+            ],
+            "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+          },
+          "mean_abs_weight_change_kc_mbon": 0.0003503169386495185,
+          "kc_mbon_weight_sum_before": 206.16461181640625,
+          "kc_mbon_weight_sum_after": 188.78924560546875,
+          "non_kc_mbon_weight_sum_before": 3412.217529296875,
+          "non_kc_mbon_weight_sum_after": 3412.217529296875,
+          "non_kc_mbon_weights_unchanged": true
+        },
+        "odor_only_control": {
+          "with_dopamine": false,
+          "eta_d": 5.623413251903491,
+          "rule_variant": "thresholded",
+          "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+          "paired_odor_depression_pct": 0.0,
+          "control_odor_depression_pct": 0.0,
+          "paired_pre": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "paired_post": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "control_pre": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "control_post": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "mbon_amplitude_unscored": {
+            "paired_depression_pct": 0.0,
+            "control_depression_pct": 0.0,
+            "paired_pre": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "paired_post": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+          },
+          "mean_abs_weight_change_kc_mbon": 0.0,
+          "kc_mbon_weight_sum_before": 206.16461181640625,
+          "kc_mbon_weight_sum_after": 206.16461181640625,
+          "non_kc_mbon_weight_sum_before": 3412.217529296875,
+          "non_kc_mbon_weight_sum_after": 3412.217529296875,
+          "non_kc_mbon_weights_unchanged": true
+        }
+      },
+      "eta_sweep": [
+        {
+          "eta_d": 1e-06,
+          "paired_odor_depression_pct": 2.669425670130224,
+          "control_odor_depression_pct": 3.1723788401379047
+        },
+        {
+          "eta_d": 1e-05,
+          "paired_odor_depression_pct": 0.8963895815820967,
+          "control_odor_depression_pct": -3.8420629677899063
+        },
+        {
+          "eta_d": 0.0001,
+          "paired_odor_depression_pct": 4.950736513501211,
+          "control_odor_depression_pct": 11.869225542016311
+        },
+        {
+          "eta_d": 0.001,
+          "paired_odor_depression_pct": 2.2639189454364117,
+          "control_odor_depression_pct": 10.192297080909947
+        },
+        {
+          "eta_d": 0.01,
+          "paired_odor_depression_pct": 13.29313995974589,
+          "control_odor_depression_pct": 7.366663303881904
+        },
+        {
+          "eta_d": 0.1,
+          "paired_odor_depression_pct": 29.934097024038227,
+          "control_odor_depression_pct": 20.884185450228024
+        },
+        {
+          "eta_d": 1.0,
+          "paired_odor_depression_pct": 25.44557490096887,
+          "control_odor_depression_pct": 13.359932481319627
+        }
+      ],
+      "criteria": {
+        "C1_paired_odor_depressed": {
+          "passed": true,
+          "p_value": 0.007381507381507382,
+          "u": 9.0,
+          "test": "one-sided Mann-Whitney U, post < pre",
+          "source": "Hige et al. 2015: pairing induces depression",
+          "note": "signed; an increase fails, unlike the old |change| >= 1 %"
+        },
+        "C2_dopamine_required": {
+          "passed": true,
+          "p_value": 0.00020496626593241102,
+          "u": 64.0,
+          "test": "one-sided Mann-Whitney U, paired drop > odour-only drop",
+          "source": "Hige et al. 2015: pairing odour with DAN activation is what induces the plasticity"
+        },
+        "C3_odor_specific": {
+          "passed": false,
+          "p_value": 0.3226884226884226,
+          "u": 37.0,
+          "test": "one-sided Mann-Whitney U, paired drop > control drop",
+          "source": "Hige et al. 2015 Fig 7F-H: EL responses were unaffected (p > 0.1) while PA, BA and HP were depressed (p < 0.005)"
+        },
+        "_passed": false
+      },
+      "specificity_power": {
+        "observed_mean_difference": 0.00595512815429812,
+        "pooled_sd": 0.15682724436122802,
+        "cohens_d": 0.03797253582152713,
+        "alpha": 0.05,
+        "target_power": 0.8,
+        "required_n_per_group": 8576,
+        "n_used": 8,
+        "method": "two-sample one-sided normal approximation, n = 2 * ((z_alpha + z_power) / d)^2",
+        "note": "computed from the observed effect, so it is a consequence of the measurement, not a choice. Does not alter the verdict at the declared n."
+      },
+      "depression_ceiling_pct": 29.934097024038227,
+      "summary": {
+        "paired_odor_depression_pct": 34.697986660367405,
+        "control_odor_depression_pct": 12.984718010119668,
+        "odor_only_paired_depression_pct": 0.0,
+        "n_criteria_passed": 2,
+        "validation": "FAIL"
+      }
+    },
+    "raw": {
+      "rule_variant": "raw",
+      "calibration": {
+        "target_pct": 80.0,
+        "rule_variant": "raw",
+        "target_source": "Hige et al. 2015 Fig 3D/4: 80 +/- 5.7 % reduction in spike rate",
+        "eta_d": 0.02329096592460546,
+        "achieved_depression_pct": 79.96186717900848,
+        "iterations": 8,
+        "trace": [
+          {
+            "eta_d": 0.001,
+            "paired_odor_depression_pct": 13.57584447289193
+          },
+          {
+            "eta_d": 0.31622776601683794,
+            "paired_odor_depression_pct": 99.96849946096457
+          },
+          {
+            "eta_d": 0.01778279410038923,
+            "paired_odor_depression_pct": 76.04869759319304
+          },
+          {
+            "eta_d": 0.07498942093324558,
+            "paired_odor_depression_pct": 97.9016673920547
+          },
+          {
+            "eta_d": 0.03651741272548377,
+            "paired_odor_depression_pct": 91.22562515090404
+          },
+          {
+            "eta_d": 0.025482967479793464,
+            "paired_odor_depression_pct": 83.19705386549248
+          },
+          {
+            "eta_d": 0.021287516617963725,
+            "paired_odor_depression_pct": 77.21296894159684
+          },
+          {
+            "eta_d": 0.02329096592460546,
+            "paired_odor_depression_pct": 79.96186717900848
+          }
+        ],
+        "note": "eta_d and the DAN drive amplitude enter only as a product, so this calibrates one parameter, not two. It is pinned to the published effect size rather than chosen to pass; all three criteria are contrasts and are independent of it."
+      },
+      "conditions": {
+        "odor_plus_dopamine": {
+          "with_dopamine": true,
+          "eta_d": 0.02329096592460546,
+          "rule_variant": "raw",
+          "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+          "paired_odor_depression_pct": 79.96186717900848,
+          "control_odor_depression_pct": 81.73433639065071,
+          "paired_pre": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "paired_post": [
+            0.058635609356076916,
+            0.0679659005799601,
+            0.09421628537358204,
+            0.05413570601480458,
+            0.03980845260072538,
+            0.07763651746412578,
+            0.026721372856421448,
+            0.045504004017604655
+          ],
+          "control_pre": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "control_post": [
+            0.07640312081863379,
+            0.14059026917267536,
+            0.08525526342906375,
+            0.06296140278820646,
+            0.3437782451171256,
+            0.17791483542870373,
+            0.14307684002080961,
+            0.03475565048954078
+          ],
+          "mbon_amplitude_unscored": {
+            "paired_depression_pct": 7.071512087222158,
+            "control_depression_pct": 7.2314826139721005,
+            "paired_pre": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "paired_post": [
+              0.029191136360168457,
+              0.026146309450268745,
+              0.03046739660203457,
+              0.024678049609065056,
+              0.025774501264095306,
+              0.026164958253502846,
+              0.02895480953156948,
+              0.023236563429236412
+            ],
+            "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+          },
+          "mean_abs_weight_change_kc_mbon": 0.0032826107408107917,
+          "kc_mbon_weight_sum_before": 206.16461181640625,
+          "kc_mbon_weight_sum_after": 43.35040283203125,
+          "non_kc_mbon_weight_sum_before": 3412.217529296875,
+          "non_kc_mbon_weight_sum_after": 3412.217529296875,
+          "non_kc_mbon_weights_unchanged": true
+        },
+        "odor_only_control": {
+          "with_dopamine": false,
+          "eta_d": 0.02329096592460546,
+          "rule_variant": "raw",
+          "readout": "KC->MBON coupling current (analogue of EPSC charge transfer, Hige 2015 Fig 3D)",
+          "paired_odor_depression_pct": 0.0,
+          "control_odor_depression_pct": 0.0,
+          "paired_pre": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "paired_post": [
+            0.260403181946297,
+            0.2608076071342106,
+            0.3147517788635664,
+            0.36909825072429847,
+            0.31496825309945986,
+            0.28470590919485544,
+            0.23666935257359795,
+            0.27729398238949104
+          ],
+          "control_pre": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "control_post": [
+            0.4589704860320627,
+            0.9394736760998718,
+            0.550965295684724,
+            1.0050687491771997,
+            0.869377638260663,
+            0.5362599194146187,
+            0.491756199373973,
+            0.9772928012587786
+          ],
+          "mbon_amplitude_unscored": {
+            "paired_depression_pct": 0.0,
+            "control_depression_pct": 0.0,
+            "paired_pre": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "paired_post": [
+              0.028738558292388916,
+              0.029718568548560143,
+              0.029796071350574493,
+              0.026801811531186104,
+              0.030800022184848785,
+              0.029822083190083504,
+              0.028815895318984985,
+              0.026452019810676575
+            ],
+            "why_unscored": "MBON amplitude is not a monotone function of KC->MBON weight in this model; see results/final/mbon_weight_monotonicity.json"
+          },
+          "mean_abs_weight_change_kc_mbon": 0.0,
+          "kc_mbon_weight_sum_before": 206.16461181640625,
+          "kc_mbon_weight_sum_after": 206.16461181640625,
+          "non_kc_mbon_weight_sum_before": 3412.217529296875,
+          "non_kc_mbon_weight_sum_after": 3412.217529296875,
+          "non_kc_mbon_weights_unchanged": true
+        }
+      },
+      "eta_sweep": [
+        {
+          "eta_d": 1e-06,
+          "paired_odor_depression_pct": 4.179009106814481,
+          "control_odor_depression_pct": 2.288691127561641
+        },
+        {
+          "eta_d": 1e-05,
+          "paired_odor_depression_pct": -2.8757000403966346,
+          "control_odor_depression_pct": -1.3565224054283642
+        },
+        {
+          "eta_d": 0.0001,
+          "paired_odor_depression_pct": 0.3422605405594381,
+          "control_odor_depression_pct": -0.6291501315655309
+        },
+        {
+          "eta_d": 0.001,
+          "paired_odor_depression_pct": 13.57584447289193,
+          "control_odor_depression_pct": 21.91357826048177
+        },
+        {
+          "eta_d": 0.01,
+          "paired_odor_depression_pct": 61.07863522531664,
+          "control_odor_depression_pct": 47.748859726136224
+        },
+        {
+          "eta_d": 0.1,
+          "paired_odor_depression_pct": 98.71675373887825,
+          "control_odor_depression_pct": 99.36413558147743
+        },
+        {
+          "eta_d": 1.0,
+          "paired_odor_depression_pct": 99.97784433289958,
+          "control_odor_depression_pct": 99.96023428795375
+        }
+      ],
+      "criteria": {
+        "C1_paired_odor_depressed": {
+          "passed": true,
+          "p_value": 7.77000777000777e-05,
+          "u": 0.0,
+          "test": "one-sided Mann-Whitney U, post < pre",
+          "source": "Hige et al. 2015: pairing induces depression",
+          "note": "signed; an increase fails, unlike the old |change| >= 1 %"
+        },
+        "C2_dopamine_required": {
+          "passed": true,
+          "p_value": 0.00020496626593241102,
+          "u": 64.0,
+          "test": "one-sided Mann-Whitney U, paired drop > odour-only drop",
+          "source": "Hige et al. 2015: pairing odour with DAN activation is what induces the plasticity"
+        },
+        "C3_odor_specific": {
+          "passed": false,
+          "p_value": 1.0,
+          "u": 0.0,
+          "test": "one-sided Mann-Whitney U, paired drop > control drop",
+          "source": "Hige et al. 2015 Fig 7F-H: EL responses were unaffected (p > 0.1) while PA, BA and HP were depressed (p < 0.005)"
+        },
+        "_passed": false
+      },
+      "specificity_power": {
+        "observed_mean_difference": -0.36379433379683207,
+        "pooled_sd": 0.18489431543901064,
+        "cohens_d": null,
+        "required_n_per_group": null,
+        "note": "effect is zero or in the wrong direction; no n suffices"
+      },
+      "depression_ceiling_pct": 99.97784433289958,
+      "summary": {
+        "paired_odor_depression_pct": 79.96186717900848,
+        "control_odor_depression_pct": 81.73433639065071,
+        "odor_only_paired_depression_pct": 0.0,
+        "n_criteria_passed": 2,
+        "validation": "FAIL"
+      }
+    }
+  },
+  "summary": {
+    "readout": "KC->MBON coupling current",
+    "rule_variant_scored": "thresholded",
+    "paired_odor_depression_pct": 34.697986660367405,
+    "control_odor_depression_pct": 12.984718010119668,
+    "odor_only_paired_depression_pct": 0.0,
+    "per_variant_validation": {
+      "thresholded": "FAIL",
+      "raw": "FAIL"
+    },
+    "specificity_power": {
+      "observed_mean_difference": 0.00595512815429812,
+      "pooled_sd": 0.15682724436122802,
+      "cohens_d": 0.03797253582152713,
+      "alpha": 0.05,
+      "target_power": 0.8,
+      "required_n_per_group": 8576,
+      "n_used": 8,
+      "method": "two-sample one-sided normal approximation, n = 2 * ((z_alpha + z_power) / d)^2",
+      "note": "computed from the observed effect, so it is a consequence of the measurement, not a choice. Does not alter the verdict at the declared n."
+    },
+    "depression_ceiling_pct": 29.934097024038227,
+    "published_comparison": "Hige et al. 2015 charge transfer 90.0 +/- 3.7 %, spike rate 80.0 +/- 5.7 %",
+    "n_criteria_passed": 2,
+    "validation": "FAIL"
+  },
+  "config": {
+    "timestamp": "2026-09-04T23:06:17.519346+00:00",
+    "git_commit": "f713612d834d6aa29dad148dec5ec99afb51eca1",
+    "seed": null,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "sklearn_pca",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 10906,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "position",
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.940047562122345,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "learning_repaired"
+  }
+}
