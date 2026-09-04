@@ -87,13 +87,19 @@ def test_odor_response(brain, connectome, odor_pattern, backend_name):
     kc_indices = [i for i, nid in enumerate(brain.neuron_ids) if nid in kc_ids]
     kc_pattern = amplitudes[kc_indices] if kc_indices else np.array([])
     
+    # The KC pattern is kept in full. It used to be stored only when
+    # `len(kc_pattern) < 1000`, and there are 5,279 KCs, so the list was always
+    # empty. That made the `pattern_correlation` block below unreachable, and the
+    # run still reported `validation_passed: true` against a correlation
+    # threshold it never evaluated. The array is stripped at serialisation time
+    # instead, where it belongs.
     return {
         'backend': backend_name,
         'sparsity_percent': float(sparsity),
         'active_kcs': int(active),
         'total_kcs': int(total),
         'simulation_time_sec': float(elapsed),
-        'kc_pattern': kc_pattern.tolist() if len(kc_pattern) < 1000 else []  # Store if small
+        'kc_pattern': kc_pattern.tolist(),
     }
 
 def main():
@@ -175,14 +181,21 @@ def main():
     correlation_threshold = 0.95  # r > 0.95 for pattern correlation
     
     sparsity_ok = diff < sparsity_threshold
-    correlation_ok = results.get('pattern_correlation', 0) > correlation_threshold
-    
+    correlation_measured = results.get('pattern_correlation') is not None
+    correlation_ok = correlation_measured and \
+        results['pattern_correlation'] > correlation_threshold
+
     print(f"\nCriteria:")
     print(f"  Sparsity difference < {sparsity_threshold}%: {'✓ PASS' if sparsity_ok else '✗ FAIL'}")
-    if 'pattern_correlation' in results:
+    if correlation_measured:
         print(f"  Pattern correlation > {correlation_threshold}: {'✓ PASS' if correlation_ok else '✗ FAIL'}")
-    
-    overall_pass = sparsity_ok
+    else:
+        print(f"  Pattern correlation > {correlation_threshold}: ✗ NOT MEASURED")
+
+    # Both criteria are required. This was `overall_pass = sparsity_ok` alone,
+    # which is how a run with no correlation at all reported PASS against a
+    # 0.95 correlation threshold.
+    overall_pass = bool(sparsity_ok and correlation_ok)
     
     print(f"\n{'='*70}")
     if overall_pass:

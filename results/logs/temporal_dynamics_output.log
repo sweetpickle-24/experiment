@@ -253,3 +253,166 @@
 ======================================================================
 2026-03-17 14:12:24,806 - INFO - TEMPORAL DYNAMICS VALIDATION COMPLETE
 2026-03-17 14:12:24,806 - INFO - ======================================================================
+2026-09-04 16:04:59,986 - INFO - ======================================================================
+2026-09-04 16:04:59,986 - INFO - TEMPORAL DYNAMICS VALIDATION
+2026-09-04 16:04:59,986 - INFO - ======================================================================
+2026-09-04 16:04:59,986 - INFO - Building brain (CPU, seed 42, sklearn_pca, position mapping)...
+2026-09-04 16:05:05,801 - INFO - Computing receptor->glomerular projection: 40 -> 20 dimensions (sklearn_pca)
+2026-09-04 16:05:06,635 - INFO - Projection: sklearn PCA (mean-centred), 94.0% variance explained
+2026-09-04 16:05:07,247 - INFO - Backend: NumPy (CPU)
+2026-09-04 16:05:07,247 - INFO - Extracted 10906 neurons
+2026-09-04 16:05:07,248 - WARNING - odour 'geosmin' -> 'isopentyl_acetate' (substituted)
+2026-09-04 16:05:07,248 - INFO - 
+======================================================================
+2026-09-04 16:05:07,248 - INFO - Testing odor: benzaldehyde
+2026-09-04 16:05:07,248 - INFO - ======================================================================
+2026-09-04 16:05:07,248 - INFO - Testing temporal dynamics for: benzaldehyde
+2026-09-04 16:05:07,751 - INFO -   t=10ms: 186 active KCs, mean=0.0001
+2026-09-04 16:05:12,489 - INFO -   t=110ms: 105 active KCs, mean=0.0005
+2026-09-04 16:05:17,252 - INFO -   t=210ms: 122 active KCs, mean=0.0002
+2026-09-04 16:05:22,033 - INFO -   t=310ms: 209 active KCs, mean=0.0011
+2026-09-04 16:05:26,848 - INFO -   t=410ms: 97 active KCs, mean=0.0006
+2026-09-04 16:05:31,680 - INFO -   t=510ms: 154 active KCs, mean=0.0005
+2026-09-04 16:05:36,519 - INFO -   t=610ms: 124 active KCs, mean=0.0008
+2026-09-04 16:05:41,380 - INFO -   t=710ms: 111 active KCs, mean=0.0003
+2026-09-04 16:05:46,242 - INFO -   t=810ms: 120 active KCs, mean=0.0004
+2026-09-04 16:05:51,111 - INFO -   t=910ms: 68 active KCs, mean=0.0005
+2026-09-04 16:05:55,964 - INFO -   t=1010ms: 97 active KCs, mean=0.0007
+2026-09-04 16:06:00,803 - INFO -   t=1110ms: 14 active KCs, mean=0.0002
+2026-09-04 16:06:05,640 - INFO -   t=1210ms: 117 active KCs, mean=0.0002
+2026-09-04 16:06:10,490 - INFO -   t=1310ms: 40 active KCs, mean=0.0004
+2026-09-04 16:06:15,346 - INFO -   t=1410ms: 165 active KCs, mean=0.0004
+2026-09-04 16:06:20,207 - INFO -   t=1510ms: 144 active KCs, mean=0.0005
+2026-09-04 16:06:25,066 - INFO -   t=1610ms: 162 active KCs, mean=0.0004
+2026-09-04 16:06:29,945 - INFO -   t=1710ms: 135 active KCs, mean=0.0007
+2026-09-04 16:06:34,814 - INFO -   t=1810ms: 222 active KCs, mean=0.0005
+2026-09-04 16:06:39,705 - INFO -   t=1910ms: 138 active KCs, mean=0.0002
+2026-09-04 16:06:44,558 - INFO -   t=2010ms: 109 active KCs, mean=0.0002
+2026-09-04 16:06:49,413 - INFO -   t=2110ms: 136 active KCs, mean=0.0005
+2026-09-04 16:06:54,287 - INFO -   t=2210ms: 145 active KCs, mean=0.0003
+2026-09-04 16:06:59,150 - INFO -   t=2310ms: 112 active KCs, mean=0.0006
+2026-09-04 16:07:04,020 - INFO -   t=2410ms: 111 active KCs, mean=0.0003
+2026-09-04 16:07:08,901 - INFO -   t=2510ms: 99 active KCs, mean=0.0002
+2026-09-04 16:07:13,771 - INFO -   t=2610ms: 154 active KCs, mean=0.0004
+2026-09-04 16:07:18,655 - INFO -   t=2710ms: 71 active KCs, mean=0.0005
+2026-09-04 16:07:23,540 - INFO -   t=2810ms: 172 active KCs, mean=0.0003
+2026-09-04 16:07:28,453 - INFO -   t=2910ms: 89 active KCs, mean=0.0007
+2026-09-04 16:07:32,826 - INFO - 
+📊 Temporal Analysis for benzaldehyde:
+2026-09-04 16:07:32,826 - INFO -   Onset latency: 120.0 ms (target: 50-100 ms)
+2026-09-04 16:07:32,826 - INFO -   Peak time: 430.0 ms (target: 100-500 ms)
+2026-09-04 16:07:32,826 - INFO -   Peak activity: 140 KCs
+2026-09-04 16:07:32,826 - INFO -   Adaptation (1s→2s): 62.1% (target: 30-70%)
+2026-09-04 16:07:32,826 - INFO -   Sustained response: 127.6 KCs
+2026-09-04 16:07:32,826 - INFO - 
+======================================================================
+2026-09-04 16:07:32,826 - INFO - Testing odor: 2-heptanone
+2026-09-04 16:07:32,826 - INFO - ======================================================================
+2026-09-04 16:07:32,826 - INFO - Testing temporal dynamics for: 2-heptanone
+2026-09-04 16:07:33,320 - INFO -   t=10ms: 183 active KCs, mean=0.0001
+2026-09-04 16:07:38,193 - INFO -   t=110ms: 61 active KCs, mean=0.0004
+2026-09-04 16:07:43,066 - INFO -   t=210ms: 247 active KCs, mean=0.0006
+2026-09-04 16:07:47,947 - INFO -   t=310ms: 63 active KCs, mean=0.0009
+2026-09-04 16:07:52,831 - INFO -   t=410ms: 140 active KCs, mean=0.0007
+2026-09-04 16:07:57,717 - INFO -   t=510ms: 73 active KCs, mean=0.0009
+2026-09-04 16:08:02,603 - INFO -   t=610ms: 181 active KCs, mean=0.0009
+2026-09-04 16:08:07,506 - INFO -   t=710ms: 34 active KCs, mean=0.0002
+2026-09-04 16:08:12,387 - INFO -   t=810ms: 125 active KCs, mean=0.0007
+2026-09-04 16:08:17,278 - INFO -   t=910ms: 120 active KCs, mean=0.0010
+2026-09-04 16:08:22,167 - INFO -   t=1010ms: 37 active KCs, mean=0.0008
+2026-09-04 16:08:26,991 - INFO -   t=1110ms: 196 active KCs, mean=0.0003
+2026-09-04 16:08:31,837 - INFO -   t=1210ms: 64 active KCs, mean=0.0003
+2026-09-04 16:08:36,695 - INFO -   t=1310ms: 80 active KCs, mean=0.0006
+2026-09-04 16:08:41,559 - INFO -   t=1410ms: 108 active KCs, mean=0.0006
+2026-09-04 16:08:46,426 - INFO -   t=1510ms: 135 active KCs, mean=0.0005
+2026-09-04 16:08:51,309 - INFO -   t=1610ms: 90 active KCs, mean=0.0005
+2026-09-04 16:08:56,166 - INFO -   t=1710ms: 68 active KCs, mean=0.0009
+2026-09-04 16:09:01,035 - INFO -   t=1810ms: 109 active KCs, mean=0.0007
+2026-09-04 16:09:05,925 - INFO -   t=1910ms: 148 active KCs, mean=0.0003
+2026-09-04 16:09:10,809 - INFO -   t=2010ms: 122 active KCs, mean=0.0003
+2026-09-04 16:09:15,647 - INFO -   t=2110ms: 115 active KCs, mean=0.0007
+2026-09-04 16:09:20,526 - INFO -   t=2210ms: 121 active KCs, mean=0.0005
+2026-09-04 16:09:25,530 - INFO -   t=2310ms: 152 active KCs, mean=0.0008
+2026-09-04 16:09:30,555 - INFO -   t=2410ms: 91 active KCs, mean=0.0003
+2026-09-04 16:09:35,576 - INFO -   t=2510ms: 72 active KCs, mean=0.0004
+2026-09-04 16:09:40,604 - INFO -   t=2610ms: 67 active KCs, mean=0.0003
+2026-09-04 16:09:45,642 - INFO -   t=2710ms: 128 active KCs, mean=0.0005
+2026-09-04 16:09:50,665 - INFO -   t=2810ms: 177 active KCs, mean=0.0005
+2026-09-04 16:09:55,706 - INFO -   t=2910ms: 81 active KCs, mean=0.0006
+2026-09-04 16:10:00,223 - INFO - 
+📊 Temporal Analysis for 2-heptanone:
+2026-09-04 16:10:00,223 - INFO -   Onset latency: 60.0 ms (target: 50-100 ms)
+2026-09-04 16:10:00,223 - INFO -   Peak time: 170.0 ms (target: 100-500 ms)
+2026-09-04 16:10:00,223 - INFO -   Peak activity: 226 KCs
+2026-09-04 16:10:00,223 - INFO -   Adaptation (1s→2s): 24.8% (target: 30-70%)
+2026-09-04 16:10:00,223 - INFO -   Sustained response: 103.7 KCs
+2026-09-04 16:10:00,223 - INFO - 
+======================================================================
+2026-09-04 16:10:00,223 - INFO - Testing odor: isopentyl_acetate
+2026-09-04 16:10:00,223 - INFO - ======================================================================
+2026-09-04 16:10:00,223 - INFO - Testing temporal dynamics for: isopentyl_acetate
+2026-09-04 16:10:00,732 - INFO -   t=10ms: 141 active KCs, mean=0.0001
+2026-09-04 16:10:05,645 - INFO -   t=110ms: 64 active KCs, mean=0.0008
+2026-09-04 16:10:10,539 - INFO -   t=210ms: 106 active KCs, mean=0.0002
+2026-09-04 16:10:15,468 - INFO -   t=310ms: 17 active KCs, mean=0.0010
+2026-09-04 16:10:20,409 - INFO -   t=410ms: 6 active KCs, mean=0.0009
+2026-09-04 16:10:25,309 - INFO -   t=510ms: 32 active KCs, mean=0.0008
+2026-09-04 16:10:30,216 - INFO -   t=610ms: 132 active KCs, mean=0.0013
+2026-09-04 16:10:35,117 - INFO -   t=710ms: 13 active KCs, mean=0.0004
+2026-09-04 16:10:40,020 - INFO -   t=810ms: 154 active KCs, mean=0.0004
+2026-09-04 16:10:44,927 - INFO -   t=910ms: 103 active KCs, mean=0.0005
+2026-09-04 16:10:49,816 - INFO -   t=1010ms: 14 active KCs, mean=0.0009
+2026-09-04 16:10:54,694 - INFO -   t=1110ms: 73 active KCs, mean=0.0003
+2026-09-04 16:10:59,573 - INFO -   t=1210ms: 63 active KCs, mean=0.0003
+2026-09-04 16:11:04,459 - INFO -   t=1310ms: 32 active KCs, mean=0.0004
+2026-09-04 16:11:09,355 - INFO -   t=1410ms: 122 active KCs, mean=0.0005
+2026-09-04 16:11:14,223 - INFO -   t=1510ms: 20 active KCs, mean=0.0007
+2026-09-04 16:11:19,120 - INFO -   t=1610ms: 113 active KCs, mean=0.0006
+2026-09-04 16:11:24,005 - INFO -   t=1710ms: 73 active KCs, mean=0.0009
+2026-09-04 16:11:28,855 - INFO -   t=1810ms: 37 active KCs, mean=0.0005
+2026-09-04 16:11:33,726 - INFO -   t=1910ms: 174 active KCs, mean=0.0003
+2026-09-04 16:11:38,606 - INFO -   t=2010ms: 66 active KCs, mean=0.0004
+2026-09-04 16:11:43,483 - INFO -   t=2110ms: 76 active KCs, mean=0.0006
+2026-09-04 16:11:48,354 - INFO -   t=2210ms: 78 active KCs, mean=0.0004
+2026-09-04 16:11:53,245 - INFO -   t=2310ms: 159 active KCs, mean=0.0007
+2026-09-04 16:11:58,141 - INFO -   t=2410ms: 102 active KCs, mean=0.0004
+2026-09-04 16:12:03,042 - INFO -   t=2510ms: 125 active KCs, mean=0.0006
+2026-09-04 16:12:07,943 - INFO -   t=2610ms: 158 active KCs, mean=0.0008
+2026-09-04 16:12:12,848 - INFO -   t=2710ms: 150 active KCs, mean=0.0006
+2026-09-04 16:12:17,741 - INFO -   t=2810ms: 64 active KCs, mean=0.0003
+2026-09-04 16:12:22,613 - INFO -   t=2910ms: 120 active KCs, mean=0.0009
+2026-09-04 16:12:26,971 - INFO - 
+📊 Temporal Analysis for isopentyl_acetate:
+2026-09-04 16:12:26,971 - INFO -   Onset latency: 70.0 ms (target: 50-100 ms)
+2026-09-04 16:12:26,971 - INFO -   Peak time: 160.0 ms (target: 100-500 ms)
+2026-09-04 16:12:26,971 - INFO -   Peak activity: 153 KCs
+2026-09-04 16:12:26,971 - INFO -   Adaptation (1s→2s): 40.1% (target: 30-70%)
+2026-09-04 16:12:26,971 - INFO -   Sustained response: 92.6 KCs
+2026-09-04 16:12:26,971 - INFO - 
+======================================================================
+2026-09-04 16:12:26,971 - INFO - SUMMARY - TEMPORAL DYNAMICS
+2026-09-04 16:12:26,971 - INFO - ======================================================================
+2026-09-04 16:12:26,971 - INFO - 
+📊 Onset Latency:
+2026-09-04 16:12:26,971 - INFO -    Mean: 83.3 ms
+2026-09-04 16:12:26,971 - INFO -    Range: [60.0, 120.0] ms
+2026-09-04 16:12:26,971 - INFO -    Target: [50, 100] ms
+2026-09-04 16:12:26,971 - INFO -    Status: ✅ PASS
+2026-09-04 16:12:26,971 - INFO - 
+📊 Peak Time:
+2026-09-04 16:12:26,971 - INFO -    Mean: 253.3 ms
+2026-09-04 16:12:26,971 - INFO -    Range: [160.0, 430.0] ms
+2026-09-04 16:12:26,971 - INFO -    Target: [100, 500] ms
+2026-09-04 16:12:26,971 - INFO -    Status: ✅ PASS
+2026-09-04 16:12:26,971 - INFO - 
+📊 Adaptation (1s→2s):
+2026-09-04 16:12:26,971 - INFO -    Mean: 42.3%
+2026-09-04 16:12:26,971 - INFO -    Range: [24.8, 62.1]%
+2026-09-04 16:12:26,971 - INFO -    Target: [30, 70]%
+2026-09-04 16:12:26,971 - INFO -    Status: ✅ PASS
+2026-09-04 16:12:27,036 - INFO - 
+✅ Results saved to /Users/vladyslav/Documents/GitHub/experiment/results/final/temporal_dynamics_standalone.json
+2026-09-04 16:12:27,036 - INFO - 
+======================================================================
+2026-09-04 16:12:27,036 - INFO - TEMPORAL DYNAMICS VALIDATION COMPLETE
+2026-09-04 16:12:27,036 - INFO - ======================================================================

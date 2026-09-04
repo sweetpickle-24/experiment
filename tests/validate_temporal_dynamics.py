@@ -22,12 +22,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from validation_utils import results_path, log_path
+from validation_utils import log_path, write_results
 
-from hive.engine.sparse_probabilistic import SparseProbabilisticBrain
-from hive.substrate.connectome import Connectome
-from hive.substrate.olfactory_subgraph import extract_olfactory_pathway
-from hive.data.door_client import DoorClient
+from legacy_validation_support import build_brain, resolve_odor_list
 
 logging.basicConfig(
     level=logging.INFO,
@@ -178,33 +175,20 @@ def main():
     logger.info("TEMPORAL DYNAMICS VALIDATION")
     logger.info("="*70)
     
-    # Load connectome
-    logger.info("Loading full brain connectome...")
-    full_connectome = Connectome(data_dir="Fly Brain Female")
-    full_connectome.load()
-    logger.info(f"  Loaded {len(full_connectome.neurons)} total neurons")
-    
-    # Extract olfactory pathway
-    logger.info("Extracting olfactory pathway...")
-    connectome = extract_olfactory_pathway(full_connectome)
-    neurons = connectome.neurons
-    synapses = connectome.synapses
-    logger.info(f"Extracted {len(neurons)} neurons, {len(synapses)} synapses")
-    
-    # Create brain
-    logger.info("Creating sparse probabilistic brain...")
-    brain = SparseProbabilisticBrain(
-        connectome=connectome,
-        use_mlx=True
-    )
+    # Built the way scripts/run_all_validations.py builds it, so the numbers are
+    # comparable with the suite's. This script was the one of the five
+    # standalones never brought onto legacy_validation_support: it constructed
+    # the brain by hand with use_mlx=True, requested 'geosmin' (absent from the
+    # DoOR matrix, which now raises), and wrote a bare JSON file into the current
+    # working directory with no configuration block.
+    logger.info("Building brain (CPU, seed 42, sklearn_pca, position mapping)...")
+    brain, door_client, connectome = build_brain(use_mlx=False, seed=42)
     logger.info(f"Backend: {'MLX (GPU)' if brain.use_mlx else 'NumPy (CPU)'}")
-    
-    # Initialize DOoR client
-    logger.info("Initializing DOoR database...")
-    door_client = DoorClient()
-    
-    # Test odors (avoid zero-pattern ones)
-    test_odors = ['benzaldehyde', '2-heptanone', 'geosmin']
+    logger.info(f"Extracted {brain.num_neurons} neurons")
+
+    requested_odors = ['benzaldehyde', '2-heptanone', 'geosmin']
+    test_odors, odor_report = resolve_odor_list(door_client, requested_odors,
+                                                logger=logger)
     
     results = {
         'experiment': 'temporal_dynamics',
@@ -214,6 +198,14 @@ def main():
             'adaptation_percent': [30, 70],
             'peak_time_ms': [100, 500]
         },
+        # See docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md: the bands above are
+        # attributed to Stopfer et al. 2003 and Nagel & Wilson 2011, and neither
+        # paper contains them. They are kept here unchanged so this script stays
+        # comparable with its own history; the corrected criterion lives in
+        # scripts/run_all_validations.py.
+        'odorants_requested': requested_odors,
+        'odorants_used': test_odors,
+        'odorant_resolution': odor_report,
         'brain_parameters': {
             'num_neurons': brain.num_neurons,
             'dt_ms': float(brain.dt),
@@ -312,10 +304,15 @@ def main():
         }
     }
     
-    # Save results
-    output_file = 'temporal_dynamics_results.json'
-    with open(output_file, 'w') as f:
-        json.dump(results, f, indent=2)
+    # Written through write_results so the file carries seed, git commit, dt,
+    # backend and projection path. It previously dumped a bare JSON into the
+    # current working directory.
+    output_file = write_results(
+        'temporal_dynamics_standalone.json', results,
+        brain=brain, door_client=door_client,
+        duration_ms=3000.0, seed=42,
+        suite='validate_temporal_dynamics_standalone',
+    )
     logger.info(f"\n✅ Results saved to {output_file}")
     
     logger.info("\n" + "="*70)

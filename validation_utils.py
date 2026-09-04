@@ -180,6 +180,40 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
     return meta
 
 
+#: The interpreter every reported run must use. The repository ships two
+#: virtualenvs and only one of them has scikit-learn, which the documented
+#: `sklearn_pca` projection requires. Running the suite under the system
+#: interpreter raises deep inside DoorClient with a message that does not name
+#: the interpreter, which costs a connectome load to discover.
+REQUIRED_INTERPRETER_HINT = (
+    "Reported runs require scikit-learn, which the documented "
+    "projection='sklearn_pca' path uses. Use the repository virtualenv:\n"
+    "    .venv/bin/python <script>\n"
+    "The system interpreter and ./venv do not have it. Do not fall back to "
+    "projection='uncentered_svd' to work around this: it is a different "
+    "projection and produces different glomerular patterns."
+)
+
+
+def assert_reportable_environment(projection: str = 'sklearn_pca') -> None:
+    """
+    Fail before the connectome load if this interpreter cannot produce a
+    reportable result.
+
+    Checked here rather than at first odorant lookup so the failure costs
+    seconds instead of a full initialisation, and so the error names the
+    interpreter to use.
+    """
+    if projection != 'sklearn_pca':
+        return
+    import importlib.util
+    if importlib.util.find_spec('sklearn') is None:
+        raise RuntimeError(
+            f"scikit-learn is not importable under {sys.executable!r}.\n"
+            + REQUIRED_INTERPRETER_HINT
+        )
+
+
 def set_seed(seed: int = 42) -> int:
     """
     Seed every RNG the validation path can reach.
@@ -230,6 +264,8 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
     Returns:
         tuple: (brain, door_client, connectome)
     """
+    assert_reportable_environment(projection)
+
     if seed is not None:
         set_seed(seed)
 

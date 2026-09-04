@@ -263,7 +263,9 @@ def main():
         'description': 'Validation of Hebbian plasticity and associative learning',
         'biological_benchmarks': {
             'weight_increase_factor': [2.0, 3.0],
-            'num_trials': 10-20,
+            # Was written `10-20`, which Python evaluates as subtraction: every
+            # result file this script produced recorded num_trials = -10.
+            'num_trials': [10, 20],
             'response_enhancement': True
         },
         'brain_parameters': {
