@@ -58,36 +58,34 @@ glomerular patterns.
 The five scored benchmarks are separate modules, each writing its own result file
 with its own configuration block, aggregated afterwards.
 
-**The engine defaults are deliberately the old pipeline**, so that results recorded
-before 2026-09-05 stay reproducible. A bare run therefore reproduces the **2/5**
-baseline, not the current 5/5. Three environment variables select the input pipeline;
-see `benchmark_harness.stimulus_path_config`.
+**The defaults are the current pipeline** as of 2026-09-05 — the published one-to-one
+receptor-to-glomerulus map, PN assignment from the connectome's glomerulus
+annotations, and strict neuron classification. A bare run therefore reproduces the
+reported **5/5**.
 
 ```bash
-# The current configuration: 5/5
-export FLYBRAIN_PROJECTION=glomerular
-export FLYBRAIN_GLOM_MAPPING=glomerulus
-export FLYBRAIN_STRICT=1
-
 for b in temporal mixtures discrimination similarity; do
-  .venv/bin/python -m benchmarks_repaired.$b --output ${b}_G2.json
+  .venv/bin/python -m benchmarks_repaired.$b
 done
-.venv/bin/python -m benchmarks_repaired.learning --cpu --output learning_G2.json
-.venv/bin/python -m benchmarks_repaired.concentration_invariance \
-    --output concentration_invariance_G2.json
-.venv/bin/python scripts/run_repaired_suite.py --suffix G2 \
-    --output all_validations_G2.json
+.venv/bin/python -m benchmarks_repaired.learning --cpu
+.venv/bin/python -m benchmarks_repaired.concentration_invariance
+.venv/bin/python scripts/run_repaired_suite.py
 ```
 
-Or in one command, which does exactly the above:
+To reproduce the superseded **2/5** baseline, set all three environment variables
+back to the pre-repair pipeline:
 
 ```bash
-.venv/bin/python scripts/run_glomerular_ladder.py --rung G2
+export FLYBRAIN_PROJECTION=sklearn_pca
+export FLYBRAIN_GLOM_MAPPING=position
+export FLYBRAIN_STRICT=0
 ```
 
-Unset those variables to reproduce the 2/5 baseline. Expect a few hours on CPU per
-configuration; the learning benchmark and its learning-rate sweep dominate. Each
-result file records which pipeline actually ran, so a file cannot misreport itself.
+`scripts/run_all_validations.py` is the **pre-audit** suite and pins those three
+values itself, so it keeps reproducing its own baselines regardless of the
+environment. Expect a few hours on CPU per configuration; the learning benchmark and
+its learning-rate sweep dominate. Each result file records which pipeline actually
+ran, so a file cannot misreport itself.
 
 `scripts/run_all_validations.py` still exists and runs the **pre-audit** suite. It is
 kept only so the superseded numbers stay reproducible; its targets are the

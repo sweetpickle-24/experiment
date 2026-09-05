@@ -72,14 +72,6 @@ running it again neither stacks nor duplicates.
 These are real and unfixed. Tracked here because they affect how documentation should
 be read.
 
-- [ ] **The engine defaults are still the pre-2026-09-05 pipeline** —
-      `projection='sklearn_pca'`, `glomerular_mapping='position'`,
-      `strict_classification=False`. That was deliberate, so results recorded before
-      the repair stay reproducible, but it means a naive run reproduces 2/5 rather
-      than the reported 5/5. `README.md` and `QUICKSTART.md` both say so explicitly.
-      **Decision pending:** switch the defaults to the G2 configuration and relabel
-      every earlier result as belonging to a superseded pipeline, or leave them and
-      keep documenting the gap.
 - [ ] **The variance fields do not participate in the dynamics.**
       `var_amplitude` is never updated; `var_phase` is updated but never read, because
       the coupling uses a hardcoded constant. So `sigma_noise` provably cannot change
@@ -131,3 +123,28 @@ be read.
 - [x] **158 stale documents given one uniform, accurate banner** (2026-09-05),
       replacing 29 inconsistent "Correction notice" blocks and 54 files with no
       banner at all.
+- [x] **Engine defaults flipped to the current pipeline** (2026-09-05).
+      `init_olfactory_brain` and the `benchmark_harness` environment fallbacks now
+      default to `glomerular` / `glomerulus` / strict, so a bare run reproduces the
+      reported 5/5 rather than the superseded 2/5. Changing a default altered no
+      result already on disk: every artifact records the pipeline that produced it,
+      so the 5/5 files now match the defaults and the 2/5 files are correctly marked
+      as a different configuration.
+
+      Three things were deliberately **not** changed. `SparseProbabilisticBrain`
+      keeps `glomerular_mapping='position'`, because 34 files construct the engine
+      directly without channel names — including twelve vision tests on a connectome
+      that has no glomeruli — and `'glomerulus'` raises without them. The general
+      engine should not assume olfaction. `extract_olfactory_pathway` and
+      `classify_olfactory_neuron` keep `strict=False`. And the two entry points that
+      exist to reproduce superseded numbers, `scripts/run_all_validations.py` and
+      `tests/concentration_invariance_test.py`, pin all three values explicitly
+      rather than inheriting them, so they still report 10,906 neurons. Verified by
+      constructing both paths.
+
+      **Still open, deliberately deferred:** `results/final/all_validations_G2.json`
+      still carries an ablation-rung label in its filename, which ages badly now that
+      that rung is the default. Renaming it to something like
+      `all_validations_current.json` would touch several documents and was judged not
+      worth the churn today. G0/G1/G2 remain meaningful inside
+      `GLOMERULAR_PROJECTION_REPAIR.md`.

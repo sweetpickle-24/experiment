@@ -54,9 +54,22 @@ def get_active_kc_binary(kc_activity, threshold_percentile=90):
 def run_all_validations(use_mlx=False, seed=SEED,
                         output_name='all_validations_results.json',
                         allow_mlx_result=False, projection='sklearn_pca',
-                        glomerular_mapping='position'):
+                        glomerular_mapping='position',
+                        strict_classification=False):
     """
-    Run all 5 validation experiments.
+    Run all 5 validation experiments. **This is the PRE-AUDIT suite.**
+
+    It is kept only so the superseded F8/F9 numbers stay reproducible. Its
+    benchmark targets are the misattributed ones: four of six are not in the
+    papers they cite and one citation does not exist. See
+    docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md. The current suite is
+    benchmarks_repaired/, scored by scripts/run_repaired_suite.py.
+
+    All three stimulus-path arguments are pinned to the pre-2026-09-05 values and
+    passed explicitly, NOT left to the defaults. `init_olfactory_brain` now
+    defaults to the current pipeline, and inheriting those defaults here would
+    silently change the subgraph from 10,906 neurons to 9,199 and stop this script
+    reproducing the baselines it exists to preserve.
 
     Args:
         use_mlx          : GPU backend. Defaults to False. Deterministic as of
@@ -64,10 +77,14 @@ def run_all_validations(use_mlx=False, seed=SEED,
         seed             : RNG seed, recorded in the output.
         output_name      : filename under results/final/.
         allow_mlx_result : permit writing a result from the MLX backend.
-        projection       : receptor->glomerular projection ('sklearn_pca' or
-                           'uncentered_svd'), recorded in the output.
-        glomerular_mapping : channel->PN assignment ('position' or 'index'),
-                           recorded in the output.
+        projection       : receptor->glomerular projection. Pinned to
+                           'sklearn_pca' here; 'uncentered_svd' reproduces the
+                           pre-2026-09-03 fallback.
+        glomerular_mapping : channel->PN assignment. Pinned to 'position'.
+        strict_classification : pinned to False, the loose classifier that counts
+                           auditory wedge and central-complex neurons as
+                           olfactory. That is wrong, and it is what the superseded
+                           numbers were produced with.
     """
     logger.info("="*70)
     logger.info("COMPREHENSIVE BIOLOGICAL VALIDATION SUITE")
@@ -89,7 +106,8 @@ def run_all_validations(use_mlx=False, seed=SEED,
     logger.info("\nInitializing olfactory system...")
     brain, door_client, connectome = init_olfactory_brain(
         use_mlx=use_mlx, seed=seed, projection=projection,
-        glomerular_mapping=glomerular_mapping)
+        glomerular_mapping=glomerular_mapping,
+        strict_classification=strict_classification)
     logger.info(f"✅ System ready: {brain.num_neurons} neurons, backend={'MLX' if brain.use_mlx else 'NumPy'}")
     if not allow_mlx_result:
         assert_reproducible_backend(brain)
@@ -574,7 +592,11 @@ def generate_summary(results):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Run the 5-benchmark validation suite.')
+    parser = argparse.ArgumentParser(
+        description='Run the PRE-AUDIT 5-benchmark validation suite. Kept so the '
+                    'superseded F8/F9 numbers stay reproducible; its targets are '
+                    'the misattributed ones. The current suite is '
+                    'benchmarks_repaired/, scored by scripts/run_repaired_suite.py.')
     parser.add_argument('--use-mlx', action='store_true',
                         help='run on the MLX GPU backend (not reproducible)')
     parser.add_argument('--allow-mlx-result', action='store_true',
@@ -588,6 +610,11 @@ if __name__ == '__main__':
     parser.add_argument('--glomerular-mapping', default='position',
                         choices=['position', 'index'],
                         help='channel->PN assignment to use')
+    parser.add_argument('--strict-classification', action='store_true',
+                        help='use the strict neuron classifier. Off by default '
+                             'here, because the superseded numbers this script '
+                             'exists to reproduce were produced with the loose '
+                             'one (10,906 neurons rather than 9,199).')
     args = parser.parse_args()
 
     run_all_validations(
@@ -597,4 +624,5 @@ if __name__ == '__main__':
         allow_mlx_result=args.allow_mlx_result,
         projection=args.projection,
         glomerular_mapping=args.glomerular_mapping,
+        strict_classification=args.strict_classification,
     )

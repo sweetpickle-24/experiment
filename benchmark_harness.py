@@ -386,19 +386,34 @@ def panel_block(names=None):
 # the only channel that survives the process boundary without editing all six
 # modules' argument parsers.
 #
-# Defaults reproduce the F9 configuration exactly, so an unset environment gives
-# the same engine as before this was added. Nothing here can be applied silently:
-# build() prints the configuration, and validation_utils.run_metadata reads the
-# values back off the constructed brain and DoOR client, so a result file records
-# what actually ran rather than what was requested.
+# Defaults are the CURRENT pipeline as of 2026-09-05 -- the one that produced
+# results/final/all_validations_G2.json (5/5). They previously reproduced the
+# pre-repair pipeline (2/5), which meant an unset environment silently gave the
+# worse configuration while the README reported the better one. Nothing here can be
+# applied silently either way: build() prints the configuration, and
+# validation_utils.run_metadata reads the values back off the constructed brain and
+# DoOR client, so a result file records what actually ran rather than what was
+# requested.
+#
+# To reproduce the superseded 2/5 baseline, set all three back:
+#   FLYBRAIN_PROJECTION=sklearn_pca FLYBRAIN_GLOM_MAPPING=position FLYBRAIN_STRICT=0
 
 #: Environment variable -> (init_olfactory_brain kwarg, default, allowed values)
 _ENV_CONFIG = {
-    'FLYBRAIN_PROJECTION': ('projection', 'sklearn_pca',
+    'FLYBRAIN_PROJECTION': ('projection', 'glomerular',
                             ('sklearn_pca', 'uncentered_svd', 'glomerular')),
-    'FLYBRAIN_GLOM_MAPPING': ('glomerular_mapping', 'position',
+    'FLYBRAIN_GLOM_MAPPING': ('glomerular_mapping', 'glomerulus',
                               ('glomerulus', 'position', 'index')),
-    'FLYBRAIN_STRICT': ('strict_classification', '0', ('0', '1')),
+    'FLYBRAIN_STRICT': ('strict_classification', '1', ('0', '1')),
+}
+
+#: The configuration the defaults now select, for the build() printout. Kept as a
+#: named constant so the printout cannot drift out of step with _ENV_CONFIG the way
+#: it did when the defaults were flipped.
+_CURRENT_PIPELINE = {
+    'projection': 'glomerular',
+    'glomerular_mapping': 'glomerulus',
+    'strict_classification': True,
 }
 
 
@@ -429,17 +444,15 @@ def build(use_mlx, seed=42):
     Engine built exactly as the suite builds it.
 
     Stimulus-path options come from the environment; see stimulus_path_config.
-    With none set this is the F9 configuration: mean-centred PCA into 20
-    channels, PN assignment by k-means on connectome position, loose neuron
-    classification.
+    With none set this is the **current** pipeline: the published one-to-one
+    receptor-to-glomerulus map, PN assignment read off the connectome's glomerulus
+    annotations, and strict neuron classification.
     """
     cfg = stimulus_path_config()
-    non_default = {k: v for k, v in cfg.items()
-                   if v != {'projection': 'sklearn_pca',
-                            'glomerular_mapping': 'position',
-                            'strict_classification': False}[k]}
-    if non_default:
-        print(f"[benchmark_harness] non-default stimulus path: {non_default}")
+    differing = {k: v for k, v in cfg.items() if v != _CURRENT_PIPELINE[k]}
+    if differing:
+        print(f"[benchmark_harness] stimulus path DIFFERS from current: {differing}")
     else:
-        print("[benchmark_harness] stimulus path: F9 defaults")
+        print("[benchmark_harness] stimulus path: current "
+              "(glomerular / glomerulus / strict)")
     return init_olfactory_brain(use_mlx=use_mlx, seed=seed, **cfg)

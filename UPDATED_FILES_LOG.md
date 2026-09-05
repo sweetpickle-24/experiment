@@ -1,10 +1,67 @@
 # Updated Files Log
 
 **Date**: 2026-09-03
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-05
 
 Audit trail of markdown and result-artifact changes. See `OUTDATED_FILES.md` for
 files known to still need updating.
+
+---
+
+## Updates on 2026-09-05 (later the same day)
+
+### Engine defaults flipped to the current pipeline
+
+**Reason**: the defaults still selected the pre-repair input pipeline, so a bare
+`python -m benchmarks_repaired.temporal` reproduced the superseded 2/5 while the
+README reported 5/5. Anyone cloning the repository and running it without reading the
+environment-variable section would have got the worse number and concluded the
+reported one was inflated. The better configuration was reachable but not
+discoverable, which is a defect in its own right.
+
+**Files changed**: 3 python, 3 markdown. **No result artifact altered.**
+
+- [x] `validation_utils.py` - `init_olfactory_brain` now defaults to
+      `projection='glomerular'`, `glomerular_mapping='glomerulus'`,
+      `strict_classification=True`. Docstring rewritten to state what the defaults are
+      as of this date, what they were before, and where the measured cost of the old
+      projection is recorded.
+- [x] `benchmark_harness.py` - The three environment fallbacks flipped to match. The
+      hardcoded comparison dictionary that the printout used to detect a non-default
+      configuration had been written as a literal and would have silently drifted out
+      of step with the fallbacks, so it is now the named constant `_CURRENT_PIPELINE`.
+      The printout now says whether the path differs from current, rather than
+      "F9 defaults".
+- [x] `scripts/run_all_validations.py` - **Pinned, not flipped.** This is the
+      pre-audit suite, kept only so the superseded F8/F9 numbers stay reproducible; its
+      targets are the misattributed ones. It gained an explicit
+      `strict_classification=False` parameter, passed through to the constructor, plus
+      a `--strict-classification` flag for symmetry. Without the pin it would have
+      inherited the new defaults and silently stopped reproducing the baselines it
+      exists to preserve.
+- [x] `README.md`, `QUICKSTART.md` - Run instructions inverted: the bare command now
+      gives 5/5, and the three variables shown are the ones that return to 2/5.
+- [x] `OUTDATED_FILES.md` - The pending decision moved to resolved, recording what was
+      deliberately left alone and why.
+
+**Deliberately not changed.** `SparseProbabilisticBrain` keeps
+`glomerular_mapping='position'`: 34 files construct the engine directly without
+channel names, including twelve vision tests on a connectome that has no glomeruli,
+and `'glomerulus'` raises without them. The general engine should not assume
+olfaction. `extract_olfactory_pathway` and `classify_olfactory_neuron` keep
+`strict=False`. `tests/concentration_invariance_test.py` needed nothing: it builds
+the engine directly with its own pinned defaults rather than through
+`init_olfactory_brain`, so it was already insulated.
+
+**Verified by construction, without simulating.** A bare `build()` reports
+`glomerular` into 29 channels, `glomerulus` PN assignment, strict on, 9,199 neurons.
+The pinned legacy call reports `sklearn_pca` into 20 channels, `position`, 10,906
+neurons. The engine, extraction and classifier defaults are unchanged.
+
+**No result on disk changed meaning.** Every artifact records the pipeline that
+produced it, so flipping a default cannot retroactively alter an old file: the 5/5
+files now agree with the defaults and the 2/5 files remain correctly marked as a
+different configuration.
 
 ---
 
@@ -33,10 +90,10 @@ undocumented projection under the superseded stimulus path.
       fixed. Now lists the five current documents and four things to know first.
 - [x] `QUICKSTART.md` - **Updated.** Named `sklearn_pca` as the documented
       projection, pointed at the pre-audit runner as the way to run the suite, and
-      omitted the ladder, the diagnostic and the fingerprint encoder. Also now states
-      explicitly that **engine defaults are the older pipeline**, so a bare run
-      reproduces 2/5 rather than the reported 5/5, and shows the three environment
-      variables that select the current one.
+      omitted the ladder, the diagnostic and the fingerprint encoder. Then updated
+      again the same day, once the defaults were flipped, to say that a bare run now
+      reproduces the reported 5/5 and to show the three environment variables that
+      select the superseded baseline instead.
 - [x] `README.md` - Same correction to the run instructions.
 - [x] `archive/README.md` - Full score history and the discarded speedup.
 - [x] `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` - Forward pointer added;

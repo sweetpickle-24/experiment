@@ -259,36 +259,59 @@ DEFAULT_BRAIN_CONFIG = {
 
 
 def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
-                         projection='sklearn_pca', glomerular_mapping='position',
-                         strict_classification=False):
+                         projection='glomerular',
+                         glomerular_mapping='glomerulus',
+                         strict_classification=True):
     """
     Initialise the olfactory system for validation experiments.
+
+    **Defaults are the current pipeline as of 2026-09-05**, i.e. the one that
+    produced `results/final/all_validations_G2.json` (5/5). They were changed on
+    that date, having previously been the pre-repair pipeline
+    (`sklearn_pca` / `position` / loose classification, 2/5). The old values are
+    still selectable, and the two entry points that exist to reproduce superseded
+    numbers -- `scripts/run_all_validations.py` and
+    `tests/concentration_invariance_test.py` -- pin them explicitly rather than
+    relying on these defaults, so they keep reproducing their baselines.
+
+    Changing a default does not alter any result already on disk: every artifact
+    records the pipeline that produced it, so the 5/5 files now match the defaults
+    and the 2/5 files are correctly marked as a different configuration.
 
     Args:
         use_mlx   : use the MLX GPU backend. Deterministic as of 2026-09-03; see
                     hive/engine/sparse_probabilistic.py for the segmented
                     reduction that replaced the order-dependent scatter-add.
+                    Reported numbers use CPU, because the backends diverge past
+                    100 ms.
         fast_mode : dt = 0.5 ms instead of 0.1 ms. Not used for validation runs.
         seed      : RNG seed, or None to leave RNGs unseeded.
         config    : optional physics overrides. Keys the engine understands are
                     'dt', 'gamma' and 'sigma_noise'. Anything else raises, rather
                     than being silently discarded as it was before 2026-09-03.
-        projection: receptor->glomerular projection. 'sklearn_pca' (default) is
-                    the documented path; 'glomerular' is the published one-to-one
-                    receptor-to-glomerulus map, whose channel count follows the
-                    map rather than being 20; 'uncentered_svd' reproduces the
-                    pre-2026-09-03 fallback for comparison.
-        glomerular_mapping: how channels map onto PNs. 'glomerulus' reads the
-                    glomerulus off the connectome cell-type annotation and needs
-                    projection='glomerular' to supply channel names; 'position'
-                    (default) clusters PNs by connectome coordinates as a spatial
-                    proxy; 'index' reproduces the pre-2026-09-03 assignment by
-                    neuron-list order.
-        strict_classification: exclude auditory wedge PNs and unnamed
-                    central-brain neurons from the PN population. Off by default
-                    because it changes the subgraph size. Applied consistently to
-                    both the extraction and the engine's region lookups, which
-                    must agree.
+        projection: receptor->glomerular projection.
+                    'glomerular' (default) is the published one-to-one
+                    receptor-to-glomerulus map (Couto et al. 2005 Table 1), whose
+                    channel count follows the map rather than being 20.
+                    'sklearn_pca' is mean-centred PCA into 20 components, the
+                    pre-2026-09-05 default; it inflates inter-odour similarity
+                    2.72x and its rectifier discards a third of the response
+                    magnitude, both measured in
+                    results/final/glomerular_projection_diagnostic.json.
+                    'uncentered_svd' reproduces the pre-2026-09-03 fallback.
+        glomerular_mapping: how channels map onto PNs.
+                    'glomerulus' (default) reads the glomerulus off the connectome
+                    cell-type annotation, and requires projection='glomerular' to
+                    supply channel names. 'position' clusters PNs by connectome
+                    coordinates as a spatial proxy. 'index' reproduces the
+                    pre-2026-09-03 assignment by neuron-list order.
+        strict_classification: when True (default), require a whole dot-separated
+                    neuropil token and reject the non-olfactory `PN` prefixes, so
+                    auditory wedge neurons, unnamed central-brain neurons and
+                    every lateral-accessory-lobe neuron stay out of the olfactory
+                    populations. Takes the subgraph from 10,906 neurons to 9,199.
+                    Applied consistently to both the extraction and the engine's
+                    region lookups, which must agree.
 
     Returns:
         tuple: (brain, door_client, connectome)
