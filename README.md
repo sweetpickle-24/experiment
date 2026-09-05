@@ -260,18 +260,23 @@ Rust was far ahead. The bottleneck is the fan-in distribution, not the language.
 ```bash
 pip install -r requirements.txt
 
-# The scored suite
-.venv/bin/python -m benchmarks_repaired.temporal
-.venv/bin/python -m benchmarks_repaired.mixtures
-.venv/bin/python -m benchmarks_repaired.discrimination
-.venv/bin/python -m benchmarks_repaired.similarity
-.venv/bin/python -m benchmarks_repaired.learning --cpu
-.venv/bin/python scripts/run_repaired_suite.py
+# The scored suite in the configuration reported above (5/5).
+# Runs all five benchmarks plus concentration invariance, then scores them.
+.venv/bin/python scripts/run_glomerular_ladder.py --rung G2
 
-# Compare stimulus-path configurations
-.venv/bin/python scripts/run_glomerular_ladder.py --rung G1
+# Compare input pipelines side by side
 .venv/bin/python scripts/run_glomerular_ladder.py --compare
+
+# The input-projection diagnostic: seconds, no simulation
+.venv/bin/python tests/diagnose_glomerular_projection.py
 ```
+
+**Engine defaults are deliberately the older pipeline**, so results recorded before
+2026-09-05 stay reproducible. Running a benchmark module directly, with no
+environment set, reproduces the 2/5 baseline rather than the 5/5 above. The three
+variables that select the pipeline are documented in
+`benchmark_harness.stimulus_path_config`, and every result file records which one
+actually ran.
 
 Use `.venv/bin/python`. The repository ships two virtualenvs and only one has
 scikit-learn, which the default projection requires;

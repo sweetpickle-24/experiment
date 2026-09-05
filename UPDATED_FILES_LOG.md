@@ -8,6 +8,77 @@ files known to still need updating.
 
 ---
 
+## Updates on 2026-09-05
+
+### Documentation brought current, and the odorant fingerprint database regenerated
+
+**Reason**: the 5/5 result made several documents wrong rather than merely dated,
+and the 372-odorant fingerprint database had been generated with a third,
+undocumented projection under the superseded stimulus path.
+
+**Files rewritten**: 5 markdown. **Files bannered**: 158. **Artifacts regenerated**: 1.
+
+- [x] `ARCHITECTURE.md` - **Rewritten.** The previous version asserted a withdrawn
+      `r = -0.51` decorrelation result as "Discovery 1" in §14 while §6 of the same
+      file withdrew it, listed eight "computational firsts", quoted the discarded
+      86x speedup, described the engine as "mean-field Fokker-Planck" when the
+      variance fields do not participate in the dynamics, called the 5,342,446 edge
+      count "synapses", and reported "SVD projection (40 -> 20)". §14 and §15 are
+      replaced by a "What this is not" section that states plainly that the model
+      class is not novel, that Ódor/Deco/Kelling published Kuramoto on the full
+      FlyWire connectome at 124,891 nodes, and that Lazar's group already models fly
+      olfaction on the hemibrain.
+- [x] `docs/00_START_HERE.md` - **Rewritten.** Said four of five benchmarks did not
+      reproduce, and warned about an all-zero-stimulus defect that has since been
+      fixed. Now lists the five current documents and four things to know first.
+- [x] `QUICKSTART.md` - **Updated.** Named `sklearn_pca` as the documented
+      projection, pointed at the pre-audit runner as the way to run the suite, and
+      omitted the ladder, the diagnostic and the fingerprint encoder. Also now states
+      explicitly that **engine defaults are the older pipeline**, so a bare run
+      reproduces 2/5 rather than the reported 5/5, and shows the three environment
+      variables that select the current one.
+- [x] `README.md` - Same correction to the run instructions.
+- [x] `archive/README.md` - Full score history and the discarded speedup.
+- [x] `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` - Forward pointer added;
+      the report itself stands. Also notes that its "no stochasticity in the step"
+      finding goes further than stated: the variance fields are read by nothing.
+- [x] **158 stale markdown files** under `research/`, `publication/`, `thesis/`,
+      `docs/` and `archive/` given one uniform banner marked
+      `<!-- STALE-BANNER-2026-09-05 -->`, replacing 29 inconsistent "Correction
+      notice" blocks and adding one to 129 files that had none. The banner names the
+      six corrections that apply most widely and links to the current documents. This
+      is a banner, not a rewrite; those files are historical drafts and
+      `OUTDATED_FILES.md` says so.
+- [x] `scripts/batch_encode_odors.py` - **Rewritten**, and the 372-odorant database
+      regenerated. The previous artifact could not be reconciled with any reported
+      run for three independent reasons: it took glomerular patterns from
+      `SmellDatabase._receptors_to_glom`, an **uncentered SVD that appeared nowhere
+      else in the repository** and matched neither the benchmarks' PCA nor the
+      published map; it ran under the superseded constant-drive stimulus path, whose
+      signature was still visible as literal `10.0` values in its `pn_pattern` fields
+      (projection neurons pinned at the old amplitude ceiling); and it ran on MLX with
+      `fast_mode`, which is neither the reporting backend nor the reporting timestep.
+      It now builds through `init_olfactory_brain`, so the encoder and the scored
+      suite share one pipeline, and the artifact carries its own configuration block.
+      New: 372 x 5,177, `pn_pattern` max 1.47 with nothing at the old ceiling,
+      295 distinct active sets.
+- [x] **New finding recorded**: 26 of the 372 odorants produce a **null stimulus** -
+      zero active Kenyon cells - because on the 29 mapped receptors their measured
+      responses are entirely *negative*, and the projection rectifies. Most are a
+      single -1.0 on `Or71a`. The encoder now warns, and the artifact records the
+      list in `config.null_stimulus_odorants`. 346 of 372 are usable. Added as
+      `LIMITATIONS.md` §11. The root cause is that the model cannot represent
+      inhibition at all (`LIMITATIONS.md` §4).
+- [x] `hive/data/smell_database.py` - `load_kc_fingerprints` accepts both the new
+      `{"config", "entries"}` shape and the old bare list, and exposes
+      `kc_source_config` so a consumer can see which pipeline produced the
+      fingerprints.
+- [x] `OUTDATED_FILES.md` - Restructured as a status document: what is current, what
+      is bannered, and the open items in code.
+- [x] `UPDATED_FILES_LOG.md` - This entry.
+
+---
+
 ## Updates on 2026-09-04
 
 ### Glomerular projection repair, and the README rewritten as a project description

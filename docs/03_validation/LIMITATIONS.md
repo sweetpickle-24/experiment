@@ -257,10 +257,18 @@ underpowered - the specificity is genuinely swamped by variance.
   `hive/validation/` containing a `json.dump`, 14 expected output files do not
   exist, and four core vision tests write no file at all. Where a documented
   number had no artifact it was removed rather than kept.
-- **`data/digital_smell_database_full.json` is stale.** The 372-odorant KC
-  fingerprint database was generated under the superseded constant drive and the
-  old amplitude ceiling; its `pn_pattern` fields contain literal `10.0` values,
-  i.e. projection neurons pinned at that ceiling. It needs regenerating.
+- **26 of the 372 odorants in the fingerprint database are null stimuli.**
+  Regenerated 2026-09-05 on the current pipeline, so it is no longer stale — but
+  26 odorants produce **zero** active Kenyon cells, and the cause is worth
+  understanding because it is the same defect class the benchmark audit was about.
+  On the 29 receptors this projection maps, those odorants' measured responses are
+  *entirely negative* — real inhibition below spontaneous rate — and
+  `map_to_glomerular_pattern` rectifies, so the glomerular pattern comes out
+  all-zero. Most are a single −1.0 on `Or71a` and nothing else. They are recorded
+  in the artifact's `config.null_stimulus_odorants`, and the encoder prints a
+  warning, so this is visible rather than silent. **346 of 372 are usable.** The
+  underlying issue is that the model has no way to represent inhibition (see §4),
+  so an inhibition-only odorant has no representation at all.
 - **Documents under `docs/`, `research/`, `thesis/` and `publication/` predate
   the 2026-09 audit.** They carry a correction banner but have not been
   rewritten. `OUTDATED_FILES.md` tracks which and why.

@@ -1,873 +1,636 @@
-# Wave-Based Fly Brain: Architecture, Logic, and Findings
+# Architecture
 
-**Date**: 2026-03-24  
-**Last Updated**: 2026-09-04 (benchmark validity audit: four of six targets are not in their cited papers; see docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md)  
-**Author**: Vladyslav Byelozerskykh  
+**Date**: 2026-03-24
+**Last Updated**: 2026-09-05 (rewritten against the current state; the previous
+version asserted withdrawn results as discoveries)
+**Author**: Vladyslav Byelozerskykh
 **ORCID**: 0009-0009-4741-2663
 
----
+How the system is put together, what each stage does, and which parts are measured
+data as opposed to modelling choices.
 
-## Table of Contents
-
-1. [Overview](#1-overview)
-2. [Core Theory](#2-core-theory)
-3. [System Architecture](#3-system-architecture)
-4. [Connectome Substrate](#4-connectome-substrate)
-5. [Wave Engine](#5-wave-engine)
-6. [Olfactory Pipeline](#6-olfactory-pipeline)
-7. [Vision Pipeline](#7-vision-pipeline)
-8. [Auditory Pipeline](#8-auditory-pipeline)
-9. [Learning and Memory](#9-learning-and-memory)
-10. [Inverse Problem (Smell Synthesis)](#10-inverse-problem-smell-synthesis)
-11. [GPU Acceleration and Performance](#11-gpu-acceleration-and-performance)
-12. [Data Pipeline](#12-data-pipeline)
-13. [Benchmark Results](#13-benchmark-results)
-14. [Novel Discoveries](#14-novel-discoveries)
-15. [Computational Firsts](#15-computational-firsts)
-16. [Known Limitations](#16-known-limitations)
-17. [File Reference](#17-file-reference)
+For results see the [README](README.md). For what the numbers cannot support see
+[docs/03_validation/LIMITATIONS.md](docs/03_validation/LIMITATIONS.md).
 
 ---
 
-## 1. Overview
+## Contents
 
-This system is a **wave-based probabilistic brain simulator** built on the real *Drosophila melanogaster* (fruit fly) connectome from the FAFB/FlyWire electron microscopy reconstruction. It simulates **139,255 neurons** and **5.3 million synapses** using mean-field Fokker-Planck equations instead of individual spike trains.
-
-The central output is a **digital smell database**: 372 real odorants from the DoOR 2.0 database are encoded into 5,279-dimensional Kenyon Cell (KC) fingerprints — sparse neural barcodes that represent odor identity in the fly mushroom body.
-
-Benchmark outcomes are reported in §13 and in the [README](README.md). Three of the
-five olfactory benchmarks in the most recent run did not reproduce their biological
-targets. No summary score is given, because the suite is unseeded and
-nondeterministic and its pass criteria were changed between runs.
-
-### What a "Digital Smell" Is
-
-A digital smell is a three-stage transformation:
-
-```
-Chemical molecule
-    → 20-dimensional glomerular activation (receptor binding, from DoOR database)
-    → 2,198 Projection Neuron (PN) forces (channel assignment)
-    → 5,279 Kenyon Cell (KC) fingerprint (exactly 316 active, set by the readout)
-```
-
-The KC fingerprint is the model's representation of odor identity. Its properties:
-- **Sparse by construction** — the readout keeps exactly `int(5279 × 0.06) = 316`
-  neurons active for every stimulus. This is imposed, not measured. See §5.
-- **Not concentration-invariant** by the repository's own threshold. The published
-  r = 0.724 includes a null-stimulus odor that self-correlates at 1.0; on real odors
-  the full pipeline gives r = 0.587 against a 0.70 target, and the wave dynamics
-  alone give r = 0.201. See the ablation table in the [README](README.md).
-- **Distinct per odor** — different odors recruit different 316-neuron subsets. The
-  readout fixes how many are active, not which, so set identity is a real output.
+1. [What this is](#1-what-this-is)
+2. [The three stages](#2-the-three-stages)
+3. [Connectome substrate](#3-connectome-substrate)
+4. [Stimulus path](#4-stimulus-path)
+5. [Wave engine](#5-wave-engine)
+6. [Readout](#6-readout)
+7. [Determinism](#7-determinism)
+8. [Performance](#8-performance)
+9. [Learning and plasticity](#9-learning-and-plasticity)
+10. [Inverse problem](#10-inverse-problem)
+11. [Measurement harness](#11-measurement-harness)
+12. [Results](#12-results)
+13. [Other pathways](#13-other-pathways)
+14. [What this is not](#14-what-this-is-not)
+15. [File reference](#15-file-reference)
 
 ---
 
-## 2. Core Theory
+## 1. What this is
 
-### Mean-Field Probabilistic Waves
+A simulator that evolves activity across the measured wiring diagram of an adult
+*Drosophila* brain, driven by measured odour-receptor responses.
 
-Instead of simulating individual action potentials (computationally expensive, O(N^2) for spike sorting), each neuron is modeled as a **damped harmonic oscillator** with probabilistic state:
+Each neuron is a damped oscillator carrying a phase and an amplitude rather than a
+membrane voltage and a set of ion-channel variables. That makes a timestep a handful
+of operations over flat arrays, which is what allows a 139,255-neuron connectome to
+be loaded and a 9,199-neuron subgraph simulated on a laptop.
 
-```
-State per neuron:
-    E[phi]  — mean phase (radians)
-    E[v]    — mean angular velocity
-    E[A]    — mean amplitude (activity level)
-    Var[phi] — phase uncertainty (noise)
-    Var[A]  — amplitude uncertainty
-```
+The model class is not new. Phase-oscillator models on structural connectomes are
+standard in human whole-brain modelling, and Kuramoto at one-oscillator-per-neuron on
+the full FlyWire connectome is published (Ódor, Deco & Kelling 2022, *Phys. Rev.
+Research* 4:023057; 2025, arXiv:2503.20708, 124,891 nodes). What is uncommon here is
+driving such a model with real receptor data and scoring it against published
+olfactory measurements.
 
-The governing equation for each neuron j:
+## 2. The three stages
 
-```
-d²phi_j/dt² + 2*gamma * d_phi_j/dt + omega0² * phi_j = F_coupling + F_external
-```
-
-Where:
-- `gamma = 0.1` — damping coefficient
-- `omega0 = 2*pi*10/1000` rad/ms — natural frequency (10 Hz alpha band)
-- `F_coupling` — sum of synaptic forces from presynaptic partners
-- `F_external` — injected stimulus (e.g., odor)
-
-### Synaptic Coupling
-
-Coupling follows the actual connectome wiring:
-
-```
-F_j = sum_i [ w_ij * sin(phi_i - phi_j) * A_i * exp(-Var[delta_phi]/2) ]
-```
-
-This Kuramoto-like coupling is computed via sparse scatter-add on the synapse list (not a dense matrix multiply), keeping memory usage at O(synapses) rather than O(neurons^2).
-
-### Amplitude as Activity
-
-Neural "firing rate" is encoded in the amplitude field, driven by velocity:
-
-```
-dA/dt = -gamma * A + 0.1 * |v| * dt
-A = clip(A, 0.001, 10.0)
+```mermaid
+flowchart TD
+  subgraph stim [1 - Stimulus]
+    DoOR["DoOR 2.0<br/>372 odorants x 33 receptors<br/>MEASURED"] --> Map
+    Map["receptor to glomerulus lookup<br/>Couto 2005 Table 1<br/>PUBLISHED"] --> Chan
+    Chan["29 glomerular channels"] --> Plume
+    Plume["plume + carrier + adaptation<br/>MODELLED"] --> Force
+    Force["per-channel force, re-evaluated every step"]
+  end
+  subgraph engine [2 - Engine]
+    Force --> PN["projection neurons<br/>assigned by glomerulus annotation"]
+    PN --> Coupling["coupled oscillators on FlyWire wiring"]
+    Coupling --> KCraw["Kenyon cell amplitude field"]
+  end
+  subgraph readout [3 - Readout]
+    KCraw --> Rank["rank threshold<br/>APL inhibition proxy"]
+    Rank --> KC["310 active KCs"]
+    KC --> MBON["MBON output, plastic weights"]
+  end
 ```
 
-This is the quantity read out as "activity" in all downstream analyses (region extraction, KC fingerprinting, learning).
+The three stages are independently swappable, which is what made the September 2026
+work possible: the input projection was replaced without touching the engine or the
+readout, and the effect was attributable.
 
-### Why Waves Instead of Spikes
+**Provenance of each part** - this distinction matters more than any single number:
 
-| Property | Spiking (Hodgkin-Huxley) | Wave (This System) |
-|---|---|---|
-| Memory per neuron | ~200 bytes (ion channels) | 20 bytes (5 floats) |
-| 139K neurons | ~28 MB state + spike sorting | 2.8 MB state |
-| Timestep | 0.01 ms (stiff ODEs) | 0.1-0.5 ms |
-| Parallelism | Event-driven, serial spikes | Fully vectorized |
-| GPU utilization | Low (irregular events) | High (uniform arrays) |
-| Biological fidelity | Individual spikes | Population statistics |
+| Component | Status |
+|---|---|
+| Wiring, neuron positions, cell-type annotations | measured (FlyWire EM reconstruction) |
+| Odour receptor responses | measured (DoOR 2.0 meta-analysis of published recordings) |
+| Receptor-to-glomerulus assignment | published lookup (Couto et al. 2005) |
+| Plume, carrier, receptor adaptation | modelled, time constants from the literature |
+| Channel count, carrier frequencies, coupling form, readout threshold | modelling choices |
 
-The wave formulation captures the same population-level statistics (mean rates, correlations, oscillation frequencies) validated against published data, at 100x less memory and 86x faster on GPU.
+## 3. Connectome substrate
 
----
+**File**: [`hive/substrate/connectome.py`](hive/substrate/connectome.py)
 
-## 3. System Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    CONNECTOME SUBSTRATE                       │
-│  hive/substrate/connectome.py                                │
-│  139,255 neurons · 5.3M synapses · FAFB/FlyWire EM data    │
-└────────────┬───────────────┬───────────────┬────────────────┘
-             │               │               │
-    ┌────────▼────┐  ┌──────▼──────┐  ┌─────▼──────┐
-    │  Olfactory   │  │   Visual    │  │  Auditory  │
-    │  Subgraph    │  │  Pathway    │  │  Subgraph  │
-    │  10,906 n.   │  │  ~53K n.    │  │  ~1,954 n. │
-    └──────┬───────┘  └──────┬──────┘  └──────┬─────┘
-           │                 │                │
-    ┌──────▼─────────────────▼────────────────▼──────┐
-    │          SparseProbabilisticBrain                │
-    │     hive/engine/sparse_probabilistic.py          │
-    │  Damped harmonic oscillators + sparse coupling   │
-    │  MLX GPU acceleration + mx.compile JIT           │
-    └────────┬───────────────┬───────────────┬────────┘
-             │               │               │
-    ┌────────▼────┐  ┌──────▼──────┐  ┌─────▼──────┐
-    │  Olfactory   │  │  Photo-     │  │  Poisson   │
-    │  Interface   │  │ transduction│  │  Spiking   │
-    │  inject_odor │  │  RK4 ODEs   │  │  Stage 2.5 │
-    └──────┬───────┘  └─────────────┘  └────────────┘
-           │
-    ┌──────▼───────────────────────────────────────────┐
-    │                  DATA LAYER                        │
-    │  DoOR 2.0 → 372 odorants → SmellDatabase          │
-    │  Glomerular patterns (20-D) + KC fingerprints      │
-    │  (5,279-D) precomputed                             │
-    └──────┬───────────────────────────────────────────┘
-           │
-    ┌──────▼───────────────────────────────────────────┐
-    │            INVERSE PROBLEM                         │
-    │  DifferentiableSmellMapper (pure MLX)               │
-    │  SmellOptimizer: target KC → glom pattern           │
-    │  Fast mode (cosine NN) + Gradient mode (Adam)       │
-    └──────────────────────────────────────────────────┘
-```
-
----
-
-## 4. Connectome Substrate
-
-### Source Data
-
-The FAFB (Full Adult Fly Brain) connectome from FlyWire electron microscopy reconstruction:
+Source: FAFB / FlyWire, Princeton v783 export, adult female.
 
 | File | Content |
 |---|---|
-| `neurons.csv.gz` | 139,255 neurons with root IDs |
-| `coordinates.csv.gz` | 3D spatial positions (micrometers) |
-| `consolidated_cell_types.csv.gz` | Cell type annotations |
-| `connections_princeton.csv.gz` | 5,342,446 synaptic connections with weights |
+| `neurons.csv.gz` | 139,255 neurons with neurotransmitter profiles |
+| `coordinates.csv.gz` | 3D positions |
+| `consolidated_cell_types.csv.gz` | cell-type annotations |
+| `connections_princeton.csv.gz` | 5,342,446 weighted edges |
 
-**Location**: `Fly Brain Female/` directory (485 MB pickle cache for fast reload).
+### Edges are not synapses
 
-### Data Structures
+Each row of the connections file is keyed on `(pre_root_id, post_root_id, neuropil)`
+and carries a `syn_count`. So:
 
-```python
-class Neuron:
-    root_id: int          # unique identifier
-    position: [x, y, z]  # 3D coordinates (um)
-    group: str            # neuropil region (e.g., "MB", "AL")
-    nt_type: str          # neurotransmitter (ACh, GABA, Glut, etc.)
-    cell_types: list      # annotations (e.g., ["KC", "KCab"])
+- **5,342,446 edges**
+- **50,666,648 synapses** when the weights are summed, mean 9.48 per edge
 
-class Synapse:
-    pre_id: int           # presynaptic neuron
-    post_id: int          # postsynaptic neuron
-    weight: int           # synapse count (not binary — can be 1-100+)
-    nt_type: str          # neurotransmitter at this synapse
-```
+The published FlyWire figure is 139,255 neurons and 54.5 M synapses (Dorkenwald et
+al. 2024, *Nature* 634:124–138), so this export accounts for **93 %** of the
+published synapse total, the remainder being its cleft-score and proofreading
+thresholds. The neuron count matches exactly. Earlier versions of this document
+called the 5,342,446 figure "synapses"; it is the edge count.
 
-### Pathway Extraction
+Loading parses the four gzipped CSVs in 2–3 minutes and caches to a pickle for
+instant reload thereafter.
 
-The full connectome is too large for fast iteration. Pathway extractors cut specific circuits:
+### Pathway extraction
 
-| Pathway | Neurons | Synapses | Extractor |
-|---|---|---|---|
-| Olfactory | 10,906 | 446,388 | `hive/substrate/olfactory_subgraph.py` |
-| Visual | ~53,000 | ~2M | `hive/substrate/visual_pathway.py` |
-| Auditory | ~1,954 | ~8,586 | Inline in test scripts |
-| Full brain | 139,255 | 5,342,446 | Direct connectome usage |
+**File**: [`hive/substrate/olfactory_subgraph.py`](hive/substrate/olfactory_subgraph.py)
 
-Neuron classification uses keyword matching on cell type annotations and neuropil region strings. For olfaction:
-- ORN (Olfactory Receptor Neurons): 2,279
-- PN (Projection Neurons): 2,198
-- LN (Local Neurons): 721
-- KC (Kenyon Cells): 5,279
-- APL (Anterior Paired Lateral): 2
-- MBON (Mushroom Body Output Neurons): 96
-- DAN (Dopaminergic Neurons): 331
+Two classification modes, because the loose one over-matches:
 
----
-
-## 5. Wave Engine
-
-**File**: `hive/engine/sparse_probabilistic.py`  
-**Class**: `SparseProbabilisticBrain`
-
-### Integration Loop
-
-```python
-def evolve(duration_ms):
-    num_steps = int(duration_ms / dt)  # dt=0.1ms or 0.5ms
-    for step in range(num_steps):
-        # Compiled MLX kernel (JIT Metal shader):
-        phase, velocity, amplitude, var_phase = compiled_step(
-            phase, velocity, amplitude, var_phase, external_force
-        )
-```
-
-The compiled step kernel (decorated with `@mx.compile`) performs:
-
-1. **Sparse coupling**: gather pre-synaptic phases/amplitudes by synapse index, compute `sin(phi_pre - phi_post) * weight * A_pre`, scatter-add to postsynaptic neurons
-2. **Damped oscillator**: `acceleration = -2*gamma*v - omega0^2*phi + coupling + external`; Euler integration of velocity and phase
-3. **Phase wrapping**: `arctan2(sin(phi), cos(phi))` to keep phase in [-pi, pi]
-4. **Variance update**: `var_phase *= (1 - 2*gamma*dt) + sigma^2*dt`, clipped to [0.01, 10.0]
-5. **Amplitude update**: `A *= (1 - gamma*dt) + 0.1*|v|*dt`, clipped to [0.001, 10.0]
-
-### Odor Injection
-
-`inject_odor(glom_pattern, strength=50.0)` maps a 20-dimensional glomerular vector to PN external forces:
-
-```
-2,198 PNs split into 20 channels (110 PNs per channel)
-Each PN gets: external_force = glom_pattern[channel] * strength
-```
-
-Odor strength uses logarithmic concentration scaling (Weber-Fechner law):
-```python
-strength = 50.0 * log10(1 + 10 * concentration)
-```
-
-### KC Activity Extraction
-
-`get_region_activity("KC", normalize_kc=True, target_sparsity=0.06)`:
-
-1. Classify all neurons as KC using connectome annotations
-2. Read their `mean_amplitude` values
-3. Apply APL-like winner-take-all normalization:
-   - Sort KC activities descending
-   - Find threshold at the `sparsity * N_KC` position
-   - Output: `max(0, activity - threshold)`
-
-This produces sparse KC patterns matching the biological 1-3% sparsity (Lin et al. 2014, APL feedback inhibition).
-
-### Temporal Memory
-
-A ring buffer of 10 amplitude snapshots at 5 ms intervals provides 50 ms of delay-line history:
-
-```python
-brain.get_amplitude_delayed(delay_ms=20)  # T4 motion detection delay
-```
-
-Used for Barlow-Levick direction selectivity (Haag et al. 2017).
-
----
-
-## 6. Olfactory Pipeline
-
-### Forward Path
-
-```
-DoOR Database (372 odorants × 40 receptors)
-    ↓ SVD projection (40 → 20 dimensions) + ReLU + L2 normalize
-Glomerular Pattern (20-D, values in [0, 1])
-    ↓ inject_odor(): channel assignment to 2,198 PNs
-PN External Forces (2,198-D)
-    ↓ Wave engine: evolve(100 ms)
-PN Activity → synaptic coupling → KC Activity
-    ↓ APL WTA rank normalization (target 6% → exactly 316 of 5,279 active)
-KC Fingerprint (5,279-D, sparse)
-    ↓ KC→MBON synapses (with plastic weights)
-MBON Output (96-D) — behavioral decision
-```
-
-### Sparsity Mechanism
-
-The mushroom body achieves high-dimensional sparse coding through:
-
-1. **Expansion**: 2,198 PNs → 5,279 KCs (2.4x expansion ratio)
-2. **Random wiring**: Each KC receives input from ~7 random PNs (Caron et al. 2013)
-3. **High threshold**: A KC must receive coincident input from 5+ PNs to activate
-4. **Global inhibition**: APL neuron (2 in connectome) provides winner-take-all feedback
-
-Mechanisms 1-3 are properties of the connectome and the dynamics. Mechanism 4, as
-implemented, is a rank threshold that fixes the active count at 316 regardless of
-input. The resulting sparsity level is therefore a parameter, not a result.
-
-### Odor-pair similarity
-
-**The previously claimed "decorrelation" result has been withdrawn.** This section
-asserted that chemically similar odors produce negatively correlated KC patterns at
-r = -0.51.
-
-That number is not a KC pattern correlation. It is the correlation between chemical
-similarity and neural similarity across six odor pairs, recorded in
-`results/superseded/similarity_retest_results.json` with `"validation": "FAIL"`. The
-actual KC pattern correlations in that file are -0.013, 0.010, 0.017, 0.044, 0.280
-and 0.360 — none of them anticorrelated.
-
-A later run on 2026-03-19 measured the same chemical-neural correlation at **+0.632**,
-the opposite sign, also recorded FAIL. The two runs used the same simulation
-configuration and differ in odor count (4 odors / 6 pairs versus 3 odors / 3 pairs).
-The conflict is unresolved and neither value is quotable.
-
-What does hold: different odors recruit different KC subsets, since the readout fixes
-the count but not the identity.
-
-Impact on memory capacity (Kanerva 1988):
-- Dense (50% active): ~200 discriminable memories
-- Sparse (2% active): ~7,000 memories
-- Decorrelated sparse (2%, r=-0.5): **~15,600 memories** (78x improvement)
-
----
-
-## 7. Vision Pipeline
-
-### Phototransduction (Stage 1)
-
-**File**: `hive/vision/phototransduction.py`
-
-A 10-variable deterministic ODE model of the fly photoreceptor cascade, integrated with RK4:
-
-```
-Rhodopsin (R) → Metarhodopsin (M) → G-protein (G) → PLC → DAG
-    → TRP/TRPL channels → Ca²⁺ influx → Voltage (V)
-    ↑_________________________________↓ (Ca²⁺ feedback adaptation)
-```
-
-Key properties:
-- **Weber-Fechner response**: logarithmic intensity encoding (validated r=0.858 contrast invariance)
-- **von Kries chromatic adaptation**: Ca²⁺-dependent gain control makes R7/R8 ratio invariant to illuminant (r=0.920 color constancy)
-- **12 Hz damped transient**: G-protein/Ca²⁺ feedback loop oscillation (distinct from Juusola 50-200 Hz quantum bumps, which require Poisson photon events)
-
-### Visual Pathway
-
-The visual connectome contains ~53,000 neurons organized retinotopically:
-
-| Layer | Neurons | Function |
+| | loose (`strict=False`) | strict (`strict=True`) |
 |---|---|---|
-| Photoreceptors | R1-R6, R7, R8 | Intensity + spectral channels |
-| Lamina | L1, L2, L3, L4, L5 | Temporal filtering, ON/OFF |
-| Medulla | Mi1, Tm3, Mi4, C3, CT1 | Direction-selective inputs |
-| T4 (ON) / T5 (OFF) | ~12,400 total | Elementary motion detectors |
-| Lobula Plate | HS, VS cells | Wide-field optic flow |
+| neurons | 10,906 | **9,199** |
+| edges | 446,388 | **318,577** |
+| ORN | 2,279 | 2,279 |
+| PN | 2,198 | **866** |
+| LN | 721 | 448 |
+| KC | 5,279 | **5,177** |
+| APL / MBON / DAN | 2 / 96 / 331 | unchanged |
 
-### Motion Detection (Barlow-Levick)
+The loose mode matches by substring, and both of its tests over-match measurably:
 
-T4 neurons implement direction selectivity via AND-NOT gating (Haag et al. 2017):
+- `'PN' in cell_type` matches 854 neurons, of which 289 are uniglomerular olfactory
+  PNs and 264 are multiglomerular; **93 auditory wedge neurons (`WEDPN*`) and 161
+  unnamed central-brain neurons (`CB####`)** also match.
+- `'AL' in region` matches **4,796** neurons where only **2,762** are annotated `AL`.
+  Region labels are dot-separated neuropil lists, and `LAL` — the lateral accessory
+  lobe, a central-complex output region — contains those two letters. This is how
+  `PFL3` (central complex) and `LC33` (visual) were classified as olfactory
+  projection neurons.
 
-```
-output = max(0, fast_excitation(Mi1/Tm3, tau=10ms, ACh)
-               - slow_inhibition(Mi4/C3/CT1, tau=25ms, GABA * 5x))
-```
+Strict mode requires a whole dot-separated region token and rejects the
+non-olfactory `PN` prefixes. It is **off by default**, because changing the subgraph
+size makes results incomparable with every run recorded before 2026-09-05.
 
-The 5x GABA shunting factor comes from Haag et al. (2017) conductance measurements (~5nS GABA vs ~1nS ACh).
+### Fan-in is the computational problem
 
-Achieved DSI = 0.975 (3.25x the 0.30 biological threshold).
+Mean 40.9 edges per neuron; **maximum 14,662 onto a single neuron**; minimum 1–5 on
+peripheral sensory neurons. A 358× spread. See §8 for why this defeats hand-written
+GPU kernels.
 
----
+### A known, unfixed defect
 
-## 8. Auditory Pipeline
+Coordinates are stored exactly as exported, in FAFB voxel/nanometre scale, so the
+cloud spans roughly 445,000 × 303,000 × 231,000. Harmless for the sparse engine,
+which uses positions only for clustering and distance-based delays. Fatal for
+`ProbabilisticWaveBrain`, which derives a dense voxel grid from the bounding box: at
+its documented 100 µm spacing that is ~31.3 billion voxels, ~116 GB per float32
+field, and the process is killed. That engine carries a do-not-use banner. Not fixed
+because rescaling would change the coupling distances every recorded run used.
 
-### Johnston's Organ (JO) Frequency Tuning
+## 4. Stimulus path
 
-The fly antenna contains ~1,084 JO neurons in 6 subtypes, modeled as damped harmonic oscillators with subtype-specific resonant frequencies:
+**File**: [`hive/interface/olfactory.py`](hive/interface/olfactory.py),
+[`hive/data/door_client.py`](hive/data/door_client.py),
+[`hive/data/receptor_glomerulus_map.py`](hive/data/receptor_glomerulus_map.py)
 
-| Subtype | Neurons | Peak Frequency | Function |
-|---|---|---|---|
-| JO-A | 94 | 300 Hz | Sound detection |
-| JO-B | 299 | 400 Hz | Courtship song |
-| JO-C | 60 | 25 Hz | Gravity sensing |
-| JO-D | 53 | 100 Hz | Wind detection |
-| JO-E | 373 | 200 Hz | Combined |
-| JO-F | 205 | 50 Hz | Low-frequency |
+### 4.1 Receptor responses (measured)
 
-Validates Kamikouchi et al. (2009) predictions from anatomy — first computational confirmation on real connectome.
+`data/door_consensus_matrix.npy` holds a **372 × 40** matrix from DoOR 2.0 (Münch &
+Galizia 2016, *Sci Rep* 6:21841), of which **33 columns carry data** and 7 are
+all-zero padding (`Or56a`, `Or63a`, `Or83a`, `Or83b`, `Or98b`, `Gr21a`, `Gr63a`).
+Values run −1 to +1; negative means the receptor is inhibited below its spontaneous
+rate, and there are **478 such entries**. Only 28.1 % of the matrix is non-zero,
+because most receptors ignore most molecules — that sparsity *is* the combinatorial
+code.
 
-### Auditory Learning (AMMC→WED STDP)
+### 4.2 Receptor to channel (three options, one of them biological)
 
-The JO→AMMC→WED pathway (~1,954 neurons) supports Hebbian conditioning and extinction using the same STDP rule as olfactory learning:
-
-```
-Delta_w = eta * A_pre * A_post * cos(phi_pre - phi_post)
-```
-
-Conditioning (eta = +0.05, LTP) with courtship song + reward signal, followed by extinction (eta = -0.08, LTD) with song alone. Mirrors Tully (1984) olfactory paradigm in the auditory domain.
-
----
-
-## 9. Learning and Memory
-
-### STDP Plasticity Rule
-
-All learning in the system uses a wave-phase-based STDP rule applied to KC→MBON synaptic weights:
-
-```python
-delta_w = eta * A_pre * A_post * cos(phi_pre - phi_post)
-```
-
-- `eta > 0`: Long-term potentiation (conditioning)
-- `eta < 0`: Long-term depression (extinction)
-- `cos(phi_pre - phi_post)`: phase-coherence gating — only potentiates when pre and post neurons are in-phase (biologically: temporal coincidence)
-
-### Learning Paradigms Validated
-
-| Paradigm | Protocol | Result | Reference |
-|---|---|---|---|
-| **Extinction** | 8 conditioning trials + 12 extinction trials | 73-85% change, reversal ≥30% | Tully (1984) |
-| **Context recall** | Same odor, different DAN compartment | Opposite MBON dominance | Aso et al. (2014) |
-| **Sequence A→B** | Paired odor presentation | A alone recalls B pattern (Δr ≥ 0.05) | Yang et al. (2016) |
-| **Auditory** | Song + reward → song alone | WED conditioning + extinction | Kamikouchi (2009) |
-
-### Mushroom Body Compartment Architecture
-
-Following Aso et al. (2014):
-- **PAM DANs** (reward): potentiate approach MBONs
-- **PPL1 DANs** (aversive): potentiate avoidance MBONs
-- Same odor → different MBON compartment dominance depending on which DAN population is active (context encoding)
-
----
-
-## 10. Inverse Problem (Smell Synthesis)
-
-**File**: `hive/inverse/smell_optimizer.py`
-
-### Problem Statement
-
-Forward: `glomerular_pattern → brain simulation → KC_fingerprint`
-
-Inverse: `target_KC_fingerprint → ??? → glomerular_pattern`
-
-### DifferentiableSmellMapper
-
-A pure-MLX differentiable surrogate for the PN→KC transformation. Extracts the actual synaptic weight matrices from the connectome:
-
-```
-glom_logits (20 unconstrained reals)
-    → sigmoid()                         # constrain to (0, 1)
-    → W_pn_glom @ glom * 50.0          # (2198,) channel assignment
-    → W_kc_pn  @ pn_force              # (5279,) linear PN→KC
-    → max(kc_raw - mean(kc_raw), 0)    # soft-WTA (APL approximation)
-```
-
-**All operations are pure MLX** — `mx.grad()` propagates through sigmoid, matmul, maximum, and mean without interruption.
-
-Weight matrices:
-- `W_pn_glom`: (2,198 × 20) — channel assignment, mirrors `inject_odor()` exactly
-- `W_kc_pn`: (5,279 × 2,198) — extracted from 23,435 PN→KC synapses in the connectome
-
-### Optimizer Modes
-
-| Mode | Mechanism | Latency | Quality |
-|---|---|---|---|
-| **Fast** | Cosine-similarity search over 372 KC fingerprints | ~1 ms | Exact match (database only) |
-| **Gradient** | Adam optimizer through DifferentiableSmellMapper | ~200 ms (80 steps) | Novel pattern synthesis |
-
-Gradient mode uses cosine distance loss (scale-invariant, matching biological evidence that pattern shape encodes identity):
-
-```
-loss = 1 - cosine_similarity(predicted_KC, target_KC)
-```
-
-Manual Adam optimizer (beta1=0.9, beta2=0.999) on the 20-dimensional logit vector.
-
-### Biological Justification
-
-The linear surrogate is valid because for short (100 ms) odor pulses at the biological operating point, the KC response is approximately linear in PN input strength (Perez-Orive 2002, Jortner 2007). The full ODE dynamics are used for validation; the linear surrogate is sufficient for gradient-based synthesis.
-
----
-
-## 11. GPU Acceleration and Performance
-
-### Hardware Backend
-
-The system uses **MLX** (Apple's Metal-accelerated framework) as the primary GPU backend:
-
-```python
-# Backend selection priority (hive/gpu_utils.py):
-1. MLX (Apple Metal) — mx.array, mx.compile
-2. CuPy (NVIDIA CUDA) — fallback
-3. NumPy (CPU) — always available
-```
-
-### Performance Optimizations
-
-Six optimizations were applied to `SparseProbabilisticBrain` (2026-03-24):
-
-1. **`mx.compile()` JIT**: Step kernel compiled once as a Metal shader; removes Python graph-build overhead (~1.44x speedup)
-2. **Precomputed constants**: `omega0_sq`, `var_correction`, decay scalars computed once in `__init__`
-3. **`fast_mode` parameter**: `dt=0.5ms` instead of `0.1ms` (5x fewer steps, biologically valid)
-4. **`deque` ring buffer**: O(1) pop instead of O(n) `list.pop(0)` for amplitude history
-5. **Vectorized `inject_odor`**: NumPy array indexing, no Python loop over neurons
-6. **Lazy `mx.eval()` batching**: 500 steps between forced GPU flushes (compiled mode)
-
-### Benchmark Results (M4 Pro GPU, Olfactory Pathway: 10,906 neurons)
-
-| Configuration | Wall Time (100ms bio) | RT Factor | Status |
-|---|---|---|---|
-| Interpreted MLX, dt=0.1ms | 168.9 ms | 0.59x | Slower than real-time |
-| Compiled MLX, dt=0.1ms | 117.1 ms | 0.85x | Slower than real-time |
-| **Compiled MLX, dt=0.5ms (fast_mode)** | **37.2 ms** | **2.69x** | **Faster than real-time** |
-
-### dt Sweep Results
-
-| dt (ms) | RT Factor | Concentration Invariance r | Quality |
-|---|---|---|---|
-| 0.1 | 0.84x | 0.1149 (baseline) | Reference |
-| **0.5** | **3.35x** | **0.1523 (Δ=0.037)** | **Production sweet spot** |
-| 1.0 | ~6-7x (warm) | 0.1621 (Δ=0.047) | Demo-safe |
-| 2.0 | ~4.2x | 0.1792 (Δ=0.064) | Degraded |
-| 5.0 | 6.7x | 0.1548 (Δ=0.040) | Biologically suspect |
-| 10.0 | 12.0x | 0.0000 | Numerically broken |
-
-Hard ceiling: APL inhibitory feedback timescale ~3-4 ms. Euler stability requires `dt < tau_min / 2`.
-
-### CPU vs GPU Equivalence
-
-CPU and GPU produce identical scientific results:
-- Sparsity difference: 0.019% (263x smaller than biological noise)
-- Active KCs: 1,283 (GPU) vs 1,282 (CPU) — 1 neuron difference out of 5,279
-- GPU is 86x faster (1.74s vs 149.8s for 100ms simulation)
-
-### Memory Usage
-
-| Scale | Neurons | Memory |
+| Option | What it is | Channels |
 |---|---|---|
-| Olfactory pathway | 10,906 | 0.2 MB |
-| Full brain | 139,255 | ~64 MB |
-| Theoretical | per neuron | 5 fields × 4 bytes = 20 bytes |
+| `glomerular` | published one-to-one lookup, Couto et al. 2005 Table 1 | 29 |
+| `sklearn_pca` | mean-centred PCA; the historical default | 20 |
+| `uncentered_svd` | retained only to reproduce pre-2026-09-03 numbers | 20 |
 
-Linear O(N) scaling, proven up to 139,255 neurons.
+In the animal, every sensory neuron expresses one tuning receptor and all neurons
+expressing it converge on a single glomerulus (Vosshall et al. 2000), so the mapping
+is a lookup rather than something to learn. 29 of the 33 measured receptors have a
+citable assignment; four are **excluded rather than guessed** because no source could
+be found, and `Or83b` is excluded because it is Orco, a co-receptor expressed in
+nearly every sensory neuron and therefore having no glomerulus.
 
----
+Measured cost of the PCA option, without running the simulation
+(`results/final/glomerular_projection_diagnostic.json`):
 
-## 12. Data Pipeline
+| | measured receptors | PCA into 20 | one-to-one |
+|---|---|---|---|
+| mean pairwise similarity across the 12-odorant panel | 0.1845 | **0.5026** | 0.2134 |
+| fraction of magnitude surviving the rectifier | 0.998 | **0.670** | 0.998 |
+| RMSE against Campbell et al. 2013 Fig 4C | 0.1722 | **0.4702** | **0.1354** |
 
-### DoOR Database Acquisition
+PCA inflates inter-odour similarity 2.72× and discards a third of the signal, because
+component signs are arbitrary while the pipeline applies a ReLU.
 
-**Script**: `scripts/download_door_data.py`
+### 4.3 Plume, carrier and adaptation (modelled)
 
-1. Queries the `ropensci/DoOR.data` GitHub repository API for per-receptor CSV files
-2. Downloads 33 receptor response tables in parallel (8 threads)
-3. Parses semicolon-delimited CSVs with dynamic column offset detection (data rows have a leading index column absent from the header)
-4. Computes mean responses per odorant-receptor pair across studies
-5. Saves as `data/door_consensus_matrix.npy`: `{responses: (372, 33), odorants: [...], receptors: [...], source: "DoOR 2.0"}`
+Odour arrives in turbulent puffs, not as a steady concentration:
 
-### KC Fingerprint Encoding
+- **Whiff train** — intervals exponentially distributed with a 50 ms mean, durations
+  averaging 30 ms, 5 ms rise and 20 ms decay within a whiff, plus an
+  Ornstein-Uhlenbeck noise process (σ = 0.15, τ = 10 ms). Constants in
+  `hive/config.yaml`.
+- The envelope is a **scalar** multiplying the channel vector, so channel ratios
+  survive a whiff: identity is stable while intensity varies.
+- **Carrier** — a sinusoid per channel. Frequencies are *assigned*, not measured;
+  there is no published per-glomerulus carrier frequency. `frequency_mode` selects
+  between the historical 20-value spread (resampled by interpolation for other
+  channel counts) and a uniform frequency.
+- **Adaptation** — exponential decay toward a floor with a 200 ms time constant and
+  500 ms recovery.
 
-**Script**: `scripts/batch_encode_odors.py`
+Reproducibility: the plume is drawn from a dedicated seeded stream in fixed 500 ms
+chunks, chunk *k* seeded `seed + k`, with the global RNG state saved and restored
+around generation. So the plume is a pure function of absolute time regardless of how
+`evolve` calls are split, and every odorant sees the same realisation — which makes
+odour-to-odour comparison controlled rather than confounded by turbulence.
 
-For each of 372 odorants:
-1. Load olfactory pathway `SparseProbabilisticBrain` (fast_mode=True)
-2. Deterministic reset → inject glomerular pattern (log-scaled strength) → evolve 100 ms
-3. Extract KC activity with APL normalization (target_sparsity=0.06)
-4. Save to `data/digital_smell_database_full.json`
+### 4.4 Channel to projection neuron
 
-Runtime: ~14 seconds for all 372 odorants on M4 Pro GPU.
+| Mode | How |
+|---|---|
+| `glomerulus` | read the glomerulus off the cell-type annotation, so channel *k* drives exactly the neurons labelled `DM2_adPN` and so on |
+| `position` | k-means on connectome coordinates, as a spatial proxy |
+| `index` | position in the neuron list; no anatomical meaning, kept for comparison |
 
-### SmellDatabase Class
+Under `glomerulus`, **137 projection neurons are driven**. That is close to the
+anatomy — the annotations name 304 uniglomerular PNs in total across 60 glomeruli, so
+29 glomeruli should reach roughly that many. Neurons naming no channel glomerulus
+(multiglomerular `M_*` PNs, hygro/thermo `HRN_*`, and glomeruli no measured receptor
+targets such as `DA1`) are **dropped from the drive and counted**, rather than
+defaulted to channel 0.
 
-**File**: `hive/data/smell_database.py`
+## 5. Wave engine
 
-Unified API wrapping both data sources:
+**File**: [`hive/engine/sparse_probabilistic.py`](hive/engine/sparse_probabilistic.py)
 
-```python
-db = SmellDatabase()  # auto-loads door_consensus_matrix.npy + KC JSON
-entry = db.find_by_name("benzaldehyde")        # O(1) lookup
-matches = db.find_by_kc_pattern(kc_vec, top_k=5)  # cosine NN search
-matches = db.find_by_glom_pattern(glom, top_k=5)   # glomerular search
-kc = db.encode_odor("benzaldehyde", brain)       # on-demand simulation
+Each neuron is a damped harmonic oscillator:
+
+```
+d²φ/dt² + 2γ·dφ/dt + ω₀²·φ = F_coupling + F_stimulus
 ```
 
-The KC matrix `(372, 5279)` is L2-normalized for fast cosine similarity via matrix-vector multiply.
+with `γ = 0.1`, `ω₀ = 2π·10/1000` rad/ms (10 Hz), `dt = 0.1 ms`, forward Euler.
+Coupling runs along the connectome:
 
----
+```
+F_j = Σᵢ wᵢⱼ · sin(φᵢ − φⱼ) · Aᵢ · c
+```
 
-## 13. Benchmark Results
+Weights are synapse counts normalised by the maximum. `c = exp(−0.05)` is a constant.
+Activity is read from the amplitude field, driven by `|velocity|`:
 
-**This section was rewritten on 2026-09-03 after a claim audit.** The table that
-previously stood here reported 27/27 benchmarks passing. No run ever produced that
-result. See the [README](README.md) for the current state and the reasoning.
+```
+A ← A·(1 − γ·dt) + 0.1·|v|·dt
+```
 
-### Olfaction
+### 5.1 The engine is deterministic, despite the class name
 
-Most recent full run: 2026-09-03, `results/final/all_validations_results.json`. First
-run with a recorded configuration and a fixed seed: MLX GPU, 10,906-neuron olfactory
-subgraph, `dt = 0.1 ms`, `fast_mode=False`, 100 ms per trial, `seed=42`, commit
-`2e41e13-dirty`.
+The state dataclass carries `var_phase` and `var_amplitude`, and the class is named
+`SparseProbabilisticBrain`. **Neither field participates in the dynamics:**
 
-> **Superseded 2026-09-04.** Four of the six targets in the table below are not
-> in the papers they cite, and one citation does not exist. See
-> [docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md](docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md).
-> The table is kept because the *results* column remains a record of what those
-> runs produced; the *target* column should not be used.
->
-> Repaired suite, each benchmark rebuilt on what its paper actually measured,
-> CPU backend, 8 trials per stimulus
-> (`results/final/all_validations_F9_corrected.json`):
->
-> | Benchmark | Now measures | Result | Outcome |
-> |---|---|---|---|
-> | Temporal dynamics | onset ≤ 200 ms; response is phasic | onset 50.0 ms on 8/8 trials; phasic p = 0.0039 | **PASS** |
-> | Odor mixtures | sub-additivity vs the linear sum (Honegger 2011 Fig 7) | index 0.5048 and 0.4440, both p = 0.0039 (published 0.7333) | **PASS** |
-> | Discrimination | blend-series psychometric ordering (Campbell 2013 Fig 2) | endpoints correct, series non-monotone mid-range | **FAIL** |
-> | Similarity | Campbell 2013 Fig 4C ordering; Turner 2008 Fig 5 decorrelation | Part A ordering wrong (PA-BA 0.13 vs BA-EL 0.43); Part B 39/66 pairs, p = 0.0197 | **FAIL** |
-> | Learning | signed, dopamine-gated, odour-specific KC→MBON depression (Hige 2015) | depression 34.70 % and dopamine-dependence pass; specificity p = 0.3227, d = 0.038 | **FAIL** |
-> | Concentration invariance | *not scored* — no published threshold exists, and Honegger's sparseness is pinned by the readout | pattern r = 0.5417; sparseness 0.059860 with SD exactly 0 | — |
->
-> **2/5.** Also measured there: the KC active set does not converge under
-> timestep refinement (Jaccard 0.4827 between production dt and 10× finer, and
-> non-monotone), so roughly half of any KC-identity result is discretisation
-> artifact.
+- `var_amplitude` is initialised to 0.01 and **never updated by any step function**.
+- `var_phase` *is* updated every step and clipped, but the coupling multiplies by the
+  hardcoded constant `c` above rather than reading the live field. It is write-only.
+- Therefore **`sigma_noise` provably cannot change any output**, though it is
+  recorded as a configuration parameter in every result file.
 
-| Benchmark | Target (do not use — see above) | Result | Outcome |
+So this is a deterministic damped-oscillator network on a sparse graph. Earlier
+versions of this document described it as mean-field Fokker-Planck; that overstates
+what the code does. Not yet fixed — see LIMITATIONS §3.
+
+### 5.2 Amplitude guard
+
+`amplitude_max = 1e4`, and the bound is derived rather than picked. The amplitude
+recursion has unit steady-state gain to `|v|`, and a damped oscillator under bounded
+forcing satisfies `|v| ≤ F_max/(2γ)`; with the measured front-end drive that is
+`|v| ≤ 30.3` against a measured peak of 12.28. The guard sits three orders of
+magnitude above the reachable range, so it can catch a runaway while provably not
+shaping the signal — and whether it binds is *tested*, not assumed:
+`count_at_amplitude_ceiling()` returns 0 across the dt sweep.
+
+This replaced a ceiling of 10.0, which sat *inside* the operating range. Under the
+old constant drive all 981 driven PNs pinned at exactly 10.0, which made PN amplitude
+identical at every concentration and forced concentration to reach the Kenyon cells
+through phase alone.
+
+## 6. Readout
+
+`get_region_activity('KC', normalize_kc=True, target_sparsity=0.06)` applies a rank
+threshold as a proxy for APL feedback inhibition (Lin et al. 2014): sort, take the
+value at index `int(n_kc · 0.06)`, subtract it from every KC, clamp at zero.
+
+That keeps exactly **316 of 5,279** KCs (loose) or **310 of 5,177** (strict) for
+every stimulus, at every concentration. **Population sparseness is therefore a
+parameter, not a result**, with standard deviation exactly zero. Consequences in
+LIMITATIONS §1; the short version is that the threshold fixes *how many* neurons are
+active and not *which*, so set identity remains an output while the sparsity level is
+circular and nothing is claimed about it.
+
+Region membership is resolved once and cached. That lookup previously cost 0.271 s
+per call because a membership test ran against a list; it is now under 1 ms, with
+bit-identical output.
+
+## 7. Determinism
+
+The single most consequential engineering problem in the project.
+
+**Symptom.** Same code, same seed, different answers — 303 active KCs in one run and
+203 in another, with 11 of 15 trials differing.
+
+**Cause, and it is two-stage.** Coupling was accumulated with
+`forces.at[post_idx].add(...)`, which lowers to an *unordered* atomic scatter-add over
+446,388 edges on Metal. Floating-point addition is not associative and the hardware
+guarantees no reduction order, so same-seed processes diverged by ~1e-8 per step. That
+would be negligible, except the readout thresholds by **rank**: a reorder near index
+316 shifts the baseline subtracted from all 5,279 KCs, turning an analog perturbation
+into a different *set* of active neurons.
+
+**What does not fix it.** Seeding — there is no RNG in the step. Sorting the scatter
+indices — measured, 7.45e-9 of residual drift remains after a stable sort, because
+the atomics are still unordered.
+
+**The fix.** A static two-stage segment reduction (`_build_segment_layout`). Edges are
+sorted by postsynaptic index once at construction and padded into 64-wide blocks so
+no block straddles two neurons; the sum is then two fixed-shape axis reductions, which
+have a deterministic reduction tree. The same layout drives the NumPy path, so both
+backends perform the same additions in the same order.
+
+**Cost.** 0.251 ms per call against 0.248 ms for the atomic scatter — about 1.2 % —
+plus layout buffers of 2.8 + 8.0 MB (strict) or 3.6 + 9.6 MB (loose).
+
+**Result.** Bit-for-bit identical across 5 same-seed trials on all four state fields
+and the readout, on both backends (`results/final/mlx_determinism.json`).
+
+**Honest cost of the layout.** Stage 2 is a padded rectangular gather sized by the
+worst neuron: `ceil(14662/64) = 230` blocks, so all rows are 230 wide and roughly
+99 % of that buffer is padding. It is free at this scale and would not survive the
+full brain; a ragged CSR-style two-level reduction is the fix and has not been done.
+
+**Cross-backend equality is impossible**, because `mx.sum` and `np.sum` use different
+reduction trees. See §8 for how far agreement holds.
+
+## 8. Performance
+
+Apple M4 Pro, Python 3.14.3, olfactory subgraph, `dt = 0.1 ms`, 100 ms of simulated
+biology, matched configuration, 5 timed repeats after warm-up
+(`results/final/cpu_vs_mlx_speedup.json`):
+
+| | wall time | real-time factor |
+|---|---|---|
+| MLX (Metal) | 0.4867 s median, SD 0.00045 | 0.205× |
+| NumPy (CPU) | 4.8673 s median, SD 0.0080 | 0.0205× |
+| **speedup** | **10.00× median** (9.958–10.026) | |
+
+Slower than real time on both backends. The previously reported 86.3× is discarded:
+its source file recorded 1,283 active KCs where current runs give 310–316, a null
+pattern correlation, and `validation_passed: true` against a criterion it never
+evaluated.
+
+### Cross-backend agreement, and why reports use CPU
+
+At 100 ms the two backends select the **same 62 active KCs**, Jaccard 1.0000, pattern
+r = 0.99988. Agreement was then tested over 2,000 ms against a rule fixed **before
+the run and recorded in the result file** — Jaccard ≥ 0.95 and r ≥ 0.99 at every
+100 ms sample across 8 seeds, with the failure action pre-committed. **It failed:**
+0.9627/0.9932 at 100 ms, 0.1902/0.5422 by 200 ms, worst case 0.1030/0.0650. So every
+reported number comes from the 10× slower backend. Whether the divergence is bounded
+chaos or a bug in one backend is undetermined.
+
+### Why the library scatter beats hand-written kernels
+
+Same equations, three languages, same exported connectome, 1,000 steps:
+
+| Backend | Wall time | Failure mode |
+|---|---|---|
+| Python + MLX | **0.171 s** | library scatter: internal sort plus SIMD-group segmented reduction, insensitive to fan-in shape |
+| Julia + Metal (CSR) | 3.314 s | one thread per neuron, so the hub thread runs 14,662 serial iterations while 10,905 idle. Metal.jl 1.9.3 has no float atomics, which forced CSR |
+| Rust + Metal (CAS) | 6.188 s | one thread per edge balances the work, but 14,662 concurrent compare-and-swap writes land on one address |
+
+This inverted the ranking a synthetic uniform-fan-in benchmark had given, where Rust
+was far ahead. The bottleneck is the fan-in distribution, not the language.
+
+**Throughput is unremarkable.** Per edge per second of simulated biology the MLX path
+is roughly 1.8× slower than Shiu et al.'s reported figure and ~37× slower than the
+Brian 2 reference in Sandia's Loihi 2 port. Nothing here is a performance result;
+what the performance work bought was determinism and the diagnosis above.
+
+### Memory
+
+| | |
+|---|---|
+| State, 5 float32 per neuron | 0.2 MB (subgraph), 2.7 MB (full brain) |
+| Edge indices and weights, 12 B per edge | 3.8 MB (strict), 5.1 MB (loose), 61 MB (full brain) |
+| Segment layout | 10.8 MB (strict), 13.2 MB (loose) |
+
+## 9. Learning and plasticity
+
+KC→MBON weights are plastic. The rule is dopamine-gated depression restricted to the
+KC→MBON synapses selected **by cell type**, not by index range:
+
+```
+Δw_ij = −η_d · A_KC(i) · D
+```
+
+Two variants are scored: `thresholded`, where `A_KC` is the post-readout activity,
+and `raw`, where it is the raw amplitude field. There is no global weight
+renormalisation — an earlier version divided all 446,388 weights by their maximum,
+which collapsed the MBON response by 99.99 % and passed an unsigned 1 % change
+criterion. A signal dying is not a memory forming.
+
+### The readout is not monotone in synaptic weight
+
+Measured across 11 weight scales × 8 trials
+(`results/final/mbon_weight_monotonicity.json`):
+
+| readout | Spearman ρ | monotone |
+|---|---|---|
+| MBON amplitude | **−0.0182** (p = 0.958) | no; peaks at *half* strength |
+| KC→MBON coupling current | **1.0000** | yes |
+
+Coupling is a phase-pulling term and amplitude is driven by `|velocity|`, so tighter
+locking *lowers* amplitude. Hige et al. 2015 measures learning as a reduced MBON
+response following depression, which presupposes monotonicity — so the benchmark
+scores the coupling current, the analogue of that paper's Fig 3D charge-transfer
+measurement, and the substitution is declared in the result file.
+
+A regression test (`tests/test_weights_on_signal_path.py`) asserts that zeroing the
+KC→MBON weights must change the MBON readout. It exists because a compiled MLX
+closure once captured the weight array by value: zeroing all 49,599 weights changed
+the output by exactly **0.000 %**, so every learning test on that path silently
+trained nothing while passing.
+
+## 10. Inverse problem
+
+**File**: [`hive/inverse/smell_optimizer.py`](hive/inverse/smell_optimizer.py)
+
+Given a target KC fingerprint, find the glomerular pattern that produces it.
+
+The ODE integrator cannot be differentiated through — it round-trips via NumPy, which
+severs the autodiff graph. So `DifferentiableSmellMapper` is a pure-MLX surrogate of
+the dominant linear stage, built from the real connectome weights:
+
+```
+sigmoid(logits) → W_pn_glom @ glom · 50 → W_kc_pn @ pn_force → max(x − mean(x), 0)
+```
+
+Loss is cosine distance, because pattern *shape* encodes identity while magnitude
+varies with concentration. Adam is hand-rolled on a bare logit array. Two modes:
+`fast` (cosine nearest-neighbour over the fingerprint database, ~1 ms) and `gradient`
+(~200 ms).
+
+Two honest limits: gradient mode optimises the **surrogate**, not the simulator; and
+`multi_start` is broken — it draws random starting logits and then never uses them,
+so every restart runs the identical deterministic optimisation.
+
+## 11. Measurement harness
+
+**File**: [`benchmark_harness.py`](benchmark_harness.py),
+[`benchmarks_repaired/`](benchmarks_repaired/)
+
+The engine has no stochasticity in its step (§5.1), so under
+`reset(deterministic=True)` the same stimulus at different seeds gives **bit-identical**
+readouts. Repeats could not be averaged and the noise floor was exactly r = 1.0,
+meaning any threshold below 1.0 declared a stimulus discriminable from itself.
+
+The harness therefore uses `reset(deterministic=False)`, which randomises initial
+phase — the engine's own signature default. That changes an initial condition, not a
+model parameter. Measured replicate correlation: **r = 0.5658**.
+
+Protocol, fixed in source before any run:
+
+- **8 trials per stimulus**, seeds 1001–1008, declared as constants so no run can
+  choose them after seeing an outcome.
+- **12-odorant panel** selected by paper provenance only, each entry recording the
+  published measurement it comes from.
+- **Separability judged against the model's own within-stimulus replicate
+  distribution**, never a fixed constant, with a one-sided Mann-Whitney test.
+- **Seed-matched design with the same-seed diagonal excluded.** This is not
+  fussiness: an unmatched design comparing one odorant on seeds 1001–1008 against
+  seeds 2001–2008 reported it separable **from itself** at p = 0.0017, because
+  consecutive seed blocks shift the mean by 0.06 and that reaches significance at
+  56 within and 64 between pairs.
+
+Every result file carries backend, timestep, γ, σ, neuron count, seed, git commit
+with a `-dirty` suffix, platform, which projection ran and how much magnitude it
+retained, the PN assignment report, and whether the odour drive was time-varying.
+Unrecognised configuration keys **raise**, because the engine once accepted
+`dt=0.01`, ran at `dt=0.1`, and recorded 0.01.
+
+## 12. Results
+
+Five benchmarks, each rebuilt on what its cited paper actually measures. Ablation
+ladder over the input pipeline, with the engine, readout, criteria, seeds and panel
+identical throughout:
+
+| | projection | neurons | score |
 |---|---|---|---|
-| Temporal dynamics | 30-70% adaptation | peak 275 ms, adaptation 9.05% | **Did not reproduce** |
-| Odor mixtures | 30-50% overlap | 21.04% (chance floor ≈ 6.0%) | **Did not reproduce** |
-| Discrimination JND | 10-20% | smallest step tested (5%) already discriminable; threshold never bracketed | **Did not reproduce** |
-| Odor similarity | r = 0.3-0.5 | `nan` — geosmin's zero pattern has zero variance | **Did not reproduce** |
-| Learning / plasticity | ≥1% MBON change | 6.61% | Passed against a non-biological bar |
-| Concentration invariance | r > 0.70 | **0.587 on real odors** (0.724 published, inflated by a null stimulus) | **Did not reproduce** |
+| G0 | PCA into 20, k-means PN grouping, loose classifier | 10,906 | 2/5 |
+| G1 | one-to-one glomerular, 29 channels | 10,906 | 4/5 |
+| **G2** | + strict classifier | 9,199 | **5/5** |
 
-One of five. The previous unseeded run (2026-03-19) gave two of five; the best ever
-recorded was three of five, in a suite whose learning test was a stub that updated no
-weights.
+Current (`results/final/all_validations_G2.json`):
 
-**Two defects affect every number above.**
+| Benchmark | Result |
+|---|---|
+| Temporal dynamics | onset under 100 ms on 8/8 trials, all odorants; phasic p = 0.0039 — **PASS** |
+| Odour mixtures | sub-additivity 0.5201 and 0.4926, both p = 0.0039 — **PASS** |
+| Discrimination | series monotone 0.0505 → 0.3465 → 0.3759, both steps significant — **PASS** |
+| Similarity | published ordering reproduced, ANOVA p = 2.6e-37; KC more separated than input in 59/66 pairs — **PASS** |
+| Learning | all three criteria; specificity Cohen's d = 2.31 — **PASS** |
+| Concentration invariance | r = 0.6603, **not scored** (no published threshold; the other quantity is pinned by the readout) |
 
-1. **KC sparsity is imposed by the readout**, not measured. See §5.
-2. **Three odorants used throughout are absent from DoOR and yield all-zero
-   glomerular patterns**: geosmin, isoamyl acetate, ethyl acetate. `DoorClient`
-   returns zeros with a printed warning and callers do not check. The core suite's
-   odor list is `['benzaldehyde', '2-heptanone', 'geosmin']`, so one of three
-   delivers no stimulus. In the concentration invariance run, the null odor
-   self-correlates at exactly 1.0000 across all ten concentration pairs and lifts the
-   reported mean from 0.5866 to 0.7244 — across the 0.70 threshold.
+Detail and confounds:
+[docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md](docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md).
+Target derivation:
+[docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md](docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md).
 
-Also note that the DoOR 40-receptor to 20-glomerulus mapping is a **random
-projection**, not PCA: the code catches a missing `scikit-learn` import and falls
-back, and that fallback is present in the 2026-03-15 logs as well.
+**Read 5/5 correctly.** It is a correction to the *experiment* — the input is now the
+input the animal has and the neuron populations are the ones the annotations name.
+Two benchmarks pass at p = 0.0039, the floor for a one-sided Wilcoxon at n = 8, so
+they are saturated rather than comfortable. And Kenyon cell identities do not
+converge under timestep refinement (active-set Jaccard 0.4827 against a ten-times
+finer step, non-monotone), so these are improved *comparisons*, not improved absolute
+claims about which neurons are active.
 
-Withdrawn from this table: "1.65% KC sparsity" (no result file, and the quantity is
-imposed), "35.3% odor mixture overlap" (superseded by 9.3%), "53.1% temporal
-adaptation" (from a run recorded FAIL), "4.5% full brain sparsity" (measured mean is
-4.02%), "r = -0.51 decorrelation" (a 6-point regression between chemical and neural
-similarity, not a code correlation), and the extinction, context recall, sequence
-learning and noise robustness rows (pass bars are relative or trivially low, and
-context recall has been withdrawn as invalid).
+### Digital smell database
 
-### Vision
+**File**: [`hive/data/smell_database.py`](hive/data/smell_database.py),
+[`scripts/batch_encode_odors.py`](scripts/batch_encode_odors.py)
 
-None of the four core vision tests writes a result file. Two of them do not measure
-the wave simulation at all.
+372 odorants encoded to KC fingerprints, one canonical reproducible pattern per
+molecule (deterministic reset, unlike the benchmarks). The artifact carries its own
+configuration block. Lookup is O(1) by name, or cosine nearest-neighbour over an
+L2-normalised `(372 × n_kc)` matrix.
 
-| Benchmark | Reported | Status |
-|---|---|---|
-| Layer-wise sparse coding | Medulla 6.9% | Gain parameter was tuned into the pass range: `R7_R8_GAIN = 0.15  # Reduced from 0.5× to bring medulla from 9.32% to ~3.5% target`, against a 3-15% criterion |
-| Contrast invariance | r = 0.858 | No result file. Applies a logarithmic transform at the input, then measures invariance to input intensity |
-| Chromatic decorrelation | Gap = 0.061 | No result file; the value is hardcoded in `scripts/generate_vision_figures.py:315` |
-| Motion detection (T4) | DSI = 0.975 | Computed from a hand-written `BarlowLevickFilter`, not from brain amplitudes; reported figure is the best of three DSI definitions. Value hardcoded in `scripts/generate_vision_figures.py:470,487` |
-| Color constancy | r = 0.920, R7/R8 CV = 0.0066 | Traces to `research/vision/findings/color_constancy_results.json` |
-| 5 | Color constancy (ext.) | r > 0.70 | **r = 0.920** | von Kries adaptation |
-| 6 | HS/VS optic flow (ext.) | DSI > 0.30 | **DSI = 0.789** | Joesch et al. (2008) |
-| 7 | Calcium oscillations (ext.) | Mechanism resolved | **12 Hz transient** | Juusola (2003) |
+## 13. Other pathways
 
-### Auditory (2/2)
+Vision and auditory extractors exist and are **not** part of the scored suite. Their
+numbers should be treated as unvalidated:
 
-| # | Benchmark | Target | Achieved | Reference |
-|---|---|---|---|---|
-| 1 | JO frequency tuning | JO-B ≥200 Hz, JO-C ≤100 Hz | **JO-B: 400 Hz, JO-C: 25 Hz** | Kamikouchi et al. (2009) |
-| 2 | Auditory learning | Conditioning + extinction | **WED STDP pass** | Kamikouchi; Thornton (2021) |
+- **Vision** — a ~53,000-neuron optic-lobe extractor, and a 10-variable RK4 model of
+  the photoreceptor cascade (`hive/vision/phototransduction.py`).
+- **Auditory** — a Johnston's-organ subgraph and an AMMC→WED pathway.
 
-### Multi-sensory (1/1)
+Several previously reported vision and auditory figures do not come from the wave
+engine at all — the T4 motion and HS/VS optic-flow results are the outputs of
+hand-written directional filters, and the Johnston's-organ frequencies are recovered
+from values assigned in a parameter table. Those are filter implementations, not
+tests of the connectome. Two tests were withdrawn outright for supplying the expected
+answer as an input and are preserved under `hive/validation/invalid/` with an
+explanation.
 
-| # | Benchmark | Target | Achieved | Reference |
-|---|---|---|---|---|
-| 1 | AVLP integration | \|cross_modal_index\| > 0.05 | **Pass** | Bracker et al. (2013); Kim et al. (2015) |
+## 14. What this is not
 
-### Prosthetic (1/1)
+Stated explicitly because earlier versions of this document claimed otherwise.
 
-| # | Benchmark | Target | Achieved | Reference |
-|---|---|---|---|---|
-| 1 | PN lesion compensation | r_damaged < 0.70, r_best > r_damaged + 0.10 | **Pass** | Clinical ORN-bulb literature |
+- **Not a novel model class.** Phase oscillators on connectomes are standard in human
+  whole-brain modelling; phase-plus-amplitude is the Hopf/Stuart-Landau model (Deco
+  et al. 2017, *Sci Rep* 7:3095).
+- **Not the first phase model on a fly connectome.** Ódor, Deco & Kelling published
+  Kuramoto at one-oscillator-per-neuron on the hemibrain (2022) and on the full
+  FlyWire connectome, 124,891 nodes, with RK4 and an adaptive stepper (2025).
+- **Not the first connectome model of fly olfaction.** Lazar's group at Columbia has
+  a program on the hemibrain mushroom body with APL feedback across 110 odorants, and
+  obtains concentration invariance.
+- **Not spiking, and not excitation/inhibition aware.** No spikes, no threshold, no
+  refractory period, and the coupling carries no sign from neurotransmitter identity
+  even though the connectome supplies it.
+- **Not a performance result** (§8).
+- **The previous §14 "Novel Discoveries" and §15 "Computational Firsts" have been
+  removed.** They listed eight "firsts" and four "discoveries", the flagship being a
+  decorrelation result of `r = −0.51` that was withdrawn — it was a six-point
+  regression between chemical and neural similarity from a run the harness recorded
+  as FAIL, and a later run measured the same quantity at `+0.632`, the opposite sign.
+  The 27/27 benchmark score that appeared throughout was never produced by any run.
 
-### Stochastic Architecture (1/1)
+## 15. File reference
 
-| # | Benchmark | Target | Achieved | Reference |
-|---|---|---|---|---|
-| 1 | Quantum bump CV | CV(dim) > 0.8, CV(bright) < 0.5 | **Monotonic transition** | Juusola & Hardie (2001) |
-
-### Expanded Olfactory Noise (1/1)
-
-| # | Benchmark | Target | Achieved | Reference |
-|---|---|---|---|---|
-| 1 | PN noise bottleneck | PN worse than ORN at CV=0.30 | **PN is critical bottleneck** | Wilson & Laurent (2005); Caron (2013) |
-
----
-
-## 14. Novel Discoveries
-
-### Discovery 1: Decorrelation by Sparse Expansion Coding
-
-Chemically similar odors (glomerular r = +0.81) produce negatively correlated KC patterns (r = -0.51). This validates 15 years of theoretical predictions (Litwin-Kumar et al. 2017) and is the first computational proof on a real connectome with no parameter tuning.
-
-**Impact**: 78x memory capacity improvement; 4.4x discrimination capacity; 30x energy savings.
-
-### Discovery 2: Fine Concentration Discrimination (5% JND)
-
-KC patterns discriminate 5% concentration differences at 300 ms (r = 0.461). This is the **first systematic measurement** of fine olfactory discrimination in any insect — no published fly behavioral JND studies exist at 5-20% resolution. Provides testable experimental prediction for T-maze behavioral assays.
-
-### Discovery 3: von Kries Chromatic Adaptation
-
-Color constancy (r = 0.920) emerges from calcium-dependent photoreceptor adaptation alone, without top-down cortical feedback. R7/R8 ratio varies by only ±1% across 6.4x UV:visible illuminant range. **First computational proof** that peripheral adaptation is sufficient for chromatic constancy — resolves a 124-year-old debate.
-
-### Discovery 4: Stochastic Resonance in KC Discrimination
-
-Adding noise to PN inputs can **enhance** odor discrimination performance at threshold. Testable prediction for neurophysiology.
-
----
-
-## 15. Computational Firsts
-
-| # | First | Domain |
-|---|---|---|
-| 1 | Extinction learning on real FAFB connectome | Olfactory learning |
-| 2 | Context-dependent recall (PAM/PPL1) on FAFB | Mushroom body |
-| 3 | A→B temporal sequence learning on connectome | Associative memory |
-| 4 | JO frequency tuning from FAFB data | Auditory |
-| 5 | AMMC→WED STDP auditory learning | Auditory learning |
-| 6 | Olfactory-visual integration (AVLP) on FAFB | Multi-sensory |
-| 7 | PN lesion prosthetic compensation on FAFB | BCI/prosthetics |
-| 8 | Stage 2.5 Poisson spiking quantum bump CV | Stochastic architecture |
-
----
-
-## 16. Known Limitations
-
-| Limitation | Impact | Mitigation |
-|---|---|---|
-| Linear surrogate for inverse problem | Gradient mode finds chemically related but not identical patterns | Use fast mode for exact database match; gradient for novel synthesis |
-| dt=0.5ms ceiling for Euler integration | Max ~3.35x RT without changing integration method | Switch to RK4 or implicit Euler for dt>2ms |
-| No gap junctions in wave model | Wide-field integration (HS/VS) requires additional mechanisms | Direct Barlow-Levick filter for motion; HS/VS validated separately |
-| Deterministic phototransduction | Cannot reproduce Juusola 50-200 Hz quantum bumps | Stage 2.5 PoissonSpikingWrapper covers stochastic regime |
-| 183/372 odorants classified as "other" | Chemical family classification is keyword-based | Add PubChem/ChEBI taxonomy for better classification |
-| Full brain slower than real-time | 139K neurons at ~0.004x RT | Use olfactory subgraph (10.9K neurons, 3.35x RT) for real-time applications |
-
----
-
-## 17. File Reference
-
-### Core Engine
+### Core
 
 | File | Purpose |
 |---|---|
-| `hive/engine/sparse_probabilistic.py` | Main wave engine (SparseProbabilisticBrain) |
-| `hive/engine/poisson_spiking.py` | Stage 2.5 Poisson spiking wrapper |
-| `hive/engine/oscillator_gpu.py` | GPU oscillator (FlyBrainSystem path) |
-| `hive/engine/coupling_gpu.py` | GPU synaptic coupling |
-| `hive/gpu_utils.py` | MLX/CuPy/NumPy backend selection |
+| `hive/engine/sparse_probabilistic.py` | wave engine, MLX and NumPy backends, segment reduction |
+| `hive/substrate/connectome.py` | FAFB loader |
+| `hive/substrate/olfactory_subgraph.py` | pathway extraction, neuron classification |
+| `hive/interface/olfactory.py` | plume, carrier, adaptation, glomerular mapping |
+| `hive/data/door_client.py` | DoOR interface, three projections |
+| `hive/data/receptor_glomerulus_map.py` | published receptor→glomerulus map with per-entry citations |
+| `hive/data/smell_database.py` | fingerprint database and search |
+| `hive/inverse/smell_optimizer.py` | differentiable surrogate and optimiser |
+| `validation_utils.py` | engine construction, provenance, environment guards |
+| `benchmark_harness.py` | shared trial protocol and null distribution |
 
-### Substrate
-
-| File | Purpose |
-|---|---|
-| `hive/substrate/connectome.py` | FAFB connectome loader (Neuron, Synapse, Connectome) |
-| `hive/substrate/olfactory_subgraph.py` | Olfactory pathway extraction (10,906 neurons) |
-| `hive/substrate/visual_pathway.py` | Visual pathway extraction (~53K neurons) |
-| `hive/substrate/sensory_motor_map.py` | Sensory-to-motor neuron ID mapping |
-
-### Data
+### Benchmarks and diagnostics
 
 | File | Purpose |
 |---|---|
-| `hive/data/door_client.py` | DoOR 2.0 receptor response interface |
-| `hive/data/smell_database.py` | SmellDatabase (glom + KC patterns, search) |
-| `data/door_consensus_matrix.npy` | 372 odorants × 33 receptors (66 KB) |
-| `data/digital_smell_database_full.json` | 372 KC fingerprints × 5,279 dims (9.6 MB) |
+| `benchmarks_repaired/` | the five scored benchmarks |
+| `scripts/run_repaired_suite.py` | scoring and configuration-agreement check |
+| `scripts/run_glomerular_ladder.py` | ablation ladder |
+| `tests/diagnose_glomerular_projection.py` | input-space projection diagnostic |
+| `tests/test_benchmark_harness.py` | harness and null-calibration checks |
+| `tests/test_weights_on_signal_path.py` | plasticity regression test |
+| `tests/test_mlx_determinism.py` | same-seed reproducibility |
+| `tests/test_dt_convergence_fixed_stimulus.py` | timestep convergence |
+| `benchmarks/real_connectome/` | Python/Rust/Julia cross-language harness |
 
-### Inverse Problem
-
-| File | Purpose |
-|---|---|
-| `hive/inverse/smell_optimizer.py` | DifferentiableSmellMapper + SmellOptimizer |
-
-### Vision
-
-| File | Purpose |
-|---|---|
-| `hive/vision/phototransduction.py` | 10-variable ODE photoreceptor cascade (RK4) |
-| `hive/vision/compound_eye.py` | Hex ommatidium grid + optical flow |
-| `hive/vision/spectral_stimuli.py` | Wavelength-specific stimulus generation |
-| `hive/vision/photoreceptor_database.py` | Rhodopsin spectral sensitivity curves |
-| `hive/vision/lamina_cartridge.py` | Lamina L1-L5 processing |
-
-### Validation Tests
-
-| File | Benchmarks |
-|---|---|
-| `hive/validation/smell/test_extinction_learning.py` | Tully extinction paradigm |
-| `hive/validation/smell/test_context_recall.py` | PAM/PPL1 compartments |
-| `hive/validation/smell/test_sequence_learning.py` | A→B temporal prediction |
-| `hive/validation/smell/test_noise_robustness.py` | 3-stage noise characterization |
-| `hive/validation/smell/test_prosthetic_poc.py` | PN lesion compensation |
-| `hive/validation/smell/test_poisson_noise.py` | PN noise bottleneck |
-| `hive/validation/vision/test_sparse_coding.py` | 4-layer visual sparsity |
-| `hive/validation/vision/test_contrast_invariance.py` | Weber-Fechner encoding |
-| `hive/validation/vision/test_decorrelation.py` | UV/vis chromatic opponency |
-| `hive/validation/vision/test_motion_detection.py` | T4 Barlow-Levick DSI |
-| `hive/validation/vision/test_color_constancy.py` | von Kries adaptation |
-| `hive/validation/vision/test_hs_vs_optic_flow.py` | HS/VS optic flow |
-| `hive/validation/vision/test_poisson_spiking.py` | Quantum bump CV transition |
-| `hive/validation/auditory/test_jo_frequency_tuning.py` | JO subtype resonance |
-| `hive/validation/auditory/test_auditory_learning.py` | AMMC→WED STDP |
-
-Withdrawn as invalid (see `hive/validation/invalid/README.md`):
-`test_context_recall.py` and `test_multisensory_integration.py`.
-
-### Scripts
+### Documentation
 
 | File | Purpose |
 |---|---|
-| `scripts/run_all_validations.py` | Core olfactory benchmark suite |
-| `scripts/run_new_tests.py` | Supplementary test suite |
-| `scripts/download_door_data.py` | Fetch DoOR 2.0 data from GitHub |
-| `scripts/batch_encode_odors.py` | Generate KC fingerprints for all odorants (`fast_mode=True`, dt = 0.5 ms) |
-| `benchmarks/benchmark_realtime.py` | RT factor benchmark (3 configs) |
-| `tests/test_dt_sweep.py` | dt vs accuracy/speed trade-off (prints only, writes no file) |
-| `tests/test_smell_synthesis.py` | SmellOptimizer round-trip validation |
-| `tests/concentration_invariance_test.py` | Concentration invariance |
-
----
-
-*Hardware: Apple M4 Pro (MLX Metal GPU). Measured 86.3× faster than the NumPy CPU
-path on the olfactory subgraph. Output equivalence between the two backends is
-untested — `cpu_vs_mlx_validation.json` declares a 0.95 pattern-correlation criterion
-but records `pattern_correlation: null`.*
+| `README.md` | what the project is and current results |
+| `docs/03_validation/LIMITATIONS.md` | what the numbers cannot support |
+| `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md` | every target against its cited source |
+| `docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md` | the input repair and ladder |
+| `docs/03_validation/DETERMINISM_AND_STIMULUS_PATH.md` | determinism fix, per-fix ledger |
+| `results/README.md` | which artifact backs which claim |
+| `OUTDATED_FILES.md` | documents known to need updating |
 
 *Independent, unreviewed work. Nothing here has been peer reviewed or published.*

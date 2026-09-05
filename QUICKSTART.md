@@ -1,6 +1,6 @@
 # Quick start
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-05
 
 Setup and first run. Read the [README](README.md) first for what the results mean
 and what they do not.
@@ -33,8 +33,9 @@ NumPy automatically.
 
 **Use `.venv/bin/python` for anything whose numbers you intend to quote.**
 
-The documented receptor-to-glomerular projection is `projection='sklearn_pca'`, and
-it requires scikit-learn. The repository contains two virtualenvs and only `.venv`
+The current receptor-to-glomerular projection is `projection='glomerular'`, the
+published one-to-one map. The two PCA-style projections remain selectable, and one of
+them requires scikit-learn. The repository contains two virtualenvs and only `.venv`
 has it:
 
 ```bash
@@ -54,19 +55,68 @@ glomerular patterns.
 
 ### Olfactory validation suite
 
+The five scored benchmarks are separate modules, each writing its own result file
+with its own configuration block, aggregated afterwards.
+
+**The engine defaults are deliberately the old pipeline**, so that results recorded
+before 2026-09-05 stay reproducible. A bare run therefore reproduces the **2/5**
+baseline, not the current 5/5. Three environment variables select the input pipeline;
+see `benchmark_harness.stimulus_path_config`.
+
 ```bash
-.venv/bin/python scripts/run_all_validations.py
+# The current configuration: 5/5
+export FLYBRAIN_PROJECTION=glomerular
+export FLYBRAIN_GLOM_MAPPING=glomerulus
+export FLYBRAIN_STRICT=1
+
+for b in temporal mixtures discrimination similarity; do
+  .venv/bin/python -m benchmarks_repaired.$b --output ${b}_G2.json
+done
+.venv/bin/python -m benchmarks_repaired.learning --cpu --output learning_G2.json
+.venv/bin/python -m benchmarks_repaired.concentration_invariance \
+    --output concentration_invariance_G2.json
+.venv/bin/python scripts/run_repaired_suite.py --suffix G2 \
+    --output all_validations_G2.json
 ```
 
-Runs five olfactory benchmarks on the 10,906-neuron olfactory subgraph and writes
-`results/final/all_validations_results.json`. A few minutes on an M4 Pro after the
-connectome loads.
+Or in one command, which does exactly the above:
 
-Most of the five benchmarks do not reproduce their biological targets. That is the
-expected outcome, not a setup failure. Before reading any of them, read
+```bash
+.venv/bin/python scripts/run_glomerular_ladder.py --rung G2
+```
+
+Unset those variables to reproduce the 2/5 baseline. Expect a few hours on CPU per
+configuration; the learning benchmark and its learning-rate sweep dominate. Each
+result file records which pipeline actually ran, so a file cannot misreport itself.
+
+`scripts/run_all_validations.py` still exists and runs the **pre-audit** suite. It is
+kept only so the superseded numbers stay reproducible; its targets are the
+misattributed ones. Before reading anything it produces, see
 [docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md](docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md),
-which records, per benchmark, whether the cited paper contains the target it is
-scored against. Three did not, and one citation does not exist.
+which records per benchmark whether the cited paper contains the target it was scored
+against. Four of six did not, and one citation does not exist.
+
+### Comparing input pipelines
+
+```bash
+.venv/bin/python tests/diagnose_glomerular_projection.py     # seconds, no simulation
+.venv/bin/python scripts/run_glomerular_ladder.py --rung G1
+.venv/bin/python scripts/run_glomerular_ladder.py --compare
+```
+
+The diagnostic compares three receptor-to-channel projections directly and needs no
+simulation. The ladder re-runs the whole suite under a different input pipeline; see
+[docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md](docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md).
+
+### Regenerating the odorant fingerprint database
+
+```bash
+.venv/bin/python scripts/batch_encode_odors.py
+```
+
+Encodes all 372 DoOR odorants to Kenyon cell fingerprints, about 22 minutes on CPU.
+The artifact carries its own configuration block, and the encoder refuses to resume
+from a file produced under a different pipeline.
 
 The suite is seeded (`SEED = 42`) and both backends are reproducible bit-for-bit at
 a fixed seed. Note that with `reset(deterministic=True)` the seed has no effect at
@@ -77,12 +127,14 @@ be averaged for power. Benchmarks that need trial-to-trial variability use
 ### Concentration invariance
 
 ```bash
-.venv/bin/python tests/concentration_invariance_test.py
+.venv/bin/python -m benchmarks_repaired.concentration_invariance
 ```
 
-Writes `results/final/concentration_invariance_results.json`. Three odors across a
-100-fold concentration range. The 0.70 target this test is scored against is not in
-Turner et al. 2008; see the validity audit.
+Five odorants across a 100-fold concentration range. Reported but **not scored**: the
+0.70 target it used to be compared against is not in Turner et al. 2008, and the
+other quantity that paper measures is pinned to a constant by this model's readout.
+
+The older `tests/concentration_invariance_test.py` runs the pre-audit version.
 
 ### Cross-language benchmarks
 
@@ -155,12 +207,17 @@ subgraph extraction runs once per process. A 100 ms trial then takes 0.49 second
 GPU, 4.87 seconds on CPU.
 
 Console output reports per-benchmark results as they complete, followed by a summary
-listing which passed and which failed.
+listing which passed and which failed. On the default configuration all five pass;
+read [docs/03_validation/LIMITATIONS.md](docs/03_validation/LIMITATIONS.md) for what
+that does and does not establish.
 
 ---
 
 ## Next
 
-- [README.md](README.md) — what the results mean, and their limitations
+- [README.md](README.md) — what the project is and what the results are
+- [ARCHITECTURE.md](ARCHITECTURE.md) — how the system is built, stage by stage
+- [docs/03_validation/LIMITATIONS.md](docs/03_validation/LIMITATIONS.md) — what the
+  numbers cannot support
 - [docs/00_START_HERE.md](docs/00_START_HERE.md) — documentation index
 - `results/README.md` — which artifact backs which claim

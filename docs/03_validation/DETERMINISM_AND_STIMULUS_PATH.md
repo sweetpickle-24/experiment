@@ -1,8 +1,21 @@
 # Deterministic MLX and a Repaired Odour Stimulus Path
 
 **Date**: 2026-09-03
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-05 (forward pointer added; the report itself stands)
 **Status**: Complete. Score 2/5 (was 1/5). MLX bit-for-bit reproducible. Verified speedup 10.00x.
+
+> **Still accurate for what it covers, but no longer the current score.** This report
+> documents the determinism fix and the stimulus-path repair, and every measurement in
+> it stands. The 2/5 it ends on was superseded twice after it was written: the
+> benchmark targets were checked against their cited papers
+> ([BENCHMARK_VALIDITY_AUDIT.md](BENCHMARK_VALIDITY_AUDIT.md)), and then the input
+> projection was corrected, taking the suite to **5/5**
+> ([GLOMERULAR_PROJECTION_REPAIR.md](GLOMERULAR_PROJECTION_REPAIR.md)).
+>
+> One finding here has since been extended: this report establishes that the engine
+> has no stochasticity in its step. It goes further than stated — the variance fields
+> are computed every step and read by nothing, so `sigma_noise` cannot affect any
+> output at all. See [LIMITATIONS.md](LIMITATIONS.md) §3.
 
 Every number below cites the result file that produced it. Nothing here is
 quoted from prose.

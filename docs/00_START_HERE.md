@@ -1,6 +1,6 @@
 # Documentation index
 
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-05
 
 This is a navigation guide for the documentation in this repository. Start with the
 [README](../README.md), which states what the project is, what the results are, and
@@ -8,23 +8,45 @@ what they do and do not establish.
 
 ---
 
-## Read the README first
+## The five current documents
 
-The README carries three things you need before reading anything else here:
+Everything below this list is either historical or specialised. These five are
+current as of 2026-09-05, and between them they carry every claim the project makes:
 
-1. **The KC readout imposes sparsity.** Every olfactory measurement passes through a
-   rank threshold that keeps exactly 316 of 5,279 Kenyon cells active regardless of
-   stimulus. Numbers in the older documents below were often written without that
-   caveat.
-2. **Three odorants used throughout produce all-zero stimuli** — geosmin, isoamyl
-   acetate and ethyl acetate are absent from the DoOR database and the client returns
-   zeros with only a printed warning. One of the core suite's three test odors is one
-   of them.
-3. **Four of the five olfactory benchmarks did not reproduce their targets** in the
-   most recent run (2026-09-03, the first seeded one).
-4. **Several widely quoted figures come from analytic filter models, not the wave
-   simulation** — specifically T4 motion detection, HS/VS optic flow, and Johnston's
-   Organ frequency tuning.
+| Document | What it is for |
+|---|---|
+| [README](../README.md) | what the project is, how the pipeline works, current results |
+| [03_validation/LIMITATIONS.md](03_validation/LIMITATIONS.md) | twelve constraints on what the numbers can support |
+| [03_validation/BENCHMARK_VALIDITY_AUDIT.md](03_validation/BENCHMARK_VALIDITY_AUDIT.md) | every benchmark target checked against the paper it cites |
+| [03_validation/GLOMERULAR_PROJECTION_REPAIR.md](03_validation/GLOMERULAR_PROJECTION_REPAIR.md) | the input-pipeline repair and the 2/5 → 5/5 ablation ladder |
+| [../ARCHITECTURE.md](../ARCHITECTURE.md) | how the system is built, stage by stage |
+
+Plus [results/README.md](../results/README.md), which records which artifact backs
+which claim — including the claims that have no artifact.
+
+## Four things to know before reading anything else
+
+1. **The scored suite is 5/5**, on the current input pipeline
+   (`results/final/all_validations_G2.json`). It was 2/5 before the input projection
+   was corrected, and the ladder between those two numbers is documented. Any other
+   score you find in this repository — 1/5, 3/5, 9/9, 13/13, 27/27 — is either
+   historical or was never produced by a run.
+2. **Kenyon cell sparsity is imposed by the readout, not produced by the
+   simulation.** A rank threshold keeps exactly 310 of 5,177 cells active regardless
+   of stimulus. Numbers in the older documents below were generally written without
+   that caveat.
+3. **Kenyon cell identities do not converge under timestep refinement.** Active-set
+   overlap against a ten-times finer step is a Jaccard index of 0.4827, and refining
+   further does not help. Benchmarks remain valid as *comparisons*; absolute
+   identities are not properties of the equations.
+4. **Several widely quoted vision and auditory figures come from analytic filter
+   models, not the wave simulation** — T4 motion detection, HS/VS optic flow, and
+   Johnston's Organ frequency tuning. They are filter implementations, not tests of
+   the connectome, and they are not part of the scored suite.
+
+One thing that is **no longer** true and appears in older documents: missing odorants
+used to return an all-zero stimulus silently. `DoorClient` now raises
+`OdorantNotFoundError`, so a null stimulus cannot enter a run undetected.
 
 ---
 
@@ -35,9 +57,10 @@ between March 11 and April 2, 2026, before the claim audit. They contain numbers
 that are superseded, unsupported by any result file, or derived from runs the test
 harness itself recorded as failing.
 
-A documentation audit in September 2026 corrected the README, `QUICKSTART.md`, and
-this file. **The remaining documents have been marked but not rewritten.** Treat any
-number in them as unverified unless you have traced it to a file under `results/`.
+Documentation audits in September 2026 rewrote the five documents listed above.
+**The remaining documents carry a correction banner but have not been rewritten.**
+Treat any number in them as unverified unless you have traced it to a file under
+`results/`. [OUTDATED_FILES.md](../OUTDATED_FILES.md) lists which and why.
 
 Specifically, do not rely on these figures if you encounter them:
 

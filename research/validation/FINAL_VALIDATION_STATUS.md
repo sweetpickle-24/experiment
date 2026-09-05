@@ -1,13 +1,30 @@
 # FINAL VALIDATION STATUS REPORT
 
+<!-- STALE-BANNER-2026-09-05 -->
+> **SUPERSEDED — do not cite.** This document predates the September 2026 audits and
+> has not been rewritten. Corrections that apply to it:
+>
+> - The scored suite is **5/5** (`results/final/all_validations_G2.json`). Scores of
+>   9/9, 13/13, 14/14 or 27/27 appearing anywhere were **never produced by any run**;
+>   the recorded history is 3/5, then 1/5, then 2/5, then 5/5.
+> - GPU speedup is **10.00×**, not 86×.
+> - Kenyon cell sparsity is **imposed by the readout** (310 of 5,177 cells) rather
+>   than measured, so "1.65 % matching Turner et al. 2008" is withdrawn.
+> - Concentration invariance is **0.6603 and deliberately unscored**; the 0.70
+>   threshold it used to be compared against is not in the paper it was cited to.
+> - The decorrelation result **`r = −0.51` is withdrawn** — a six-point regression
+>   from a run recorded as FAIL, measured at `+0.632` on a later run.
+> - Vision and auditory "firsts" are **not** part of the scored suite, and several
+>   come from hand-written filters rather than the wave engine.
+>
+> Current: [README](../../README.md) ·
+> [ARCHITECTURE](../../ARCHITECTURE.md) ·
+> [LIMITATIONS](../../docs/03_validation/LIMITATIONS.md) ·
+> [audit](../../docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md) ·
+> [projection repair](../../docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md).
+> Tracked in [OUTDATED_FILES.md](../../OUTDATED_FILES.md).
 
-> **Correction notice (2026-09-03).** This document predates a claim audit and has
-> not been rewritten. Figures marked `[withdrawn]` below were removed because they
-> could not be traced to a result file, were superseded by a later run, or came from
-> a run the test harness itself recorded as FAIL. Validation scores were removed
-> because no run ever produced them: the best recorded was 3/5 and the most recent
-> was 2/5. See the [README](../../README.md) for the current state and `results/README.md` for
-> which artifact backs which claim.
+
 
 **Date**: 2026-03-16  
 **Status**: 4/5 PASSED ✅
@@ -116,8 +133,6 @@ The **negative correlation** between chemical and neural similarity is NOT a bug
 4. You have enough for Nature Communications / eLife / PLOS Comp Bio
 
 **What to write in paper**:
-> "The KC expansion layer produces strong decorrelation (r = [withdrawn] between chemical and neural similarity), consistent with theoretical predictions of sparse expansion coding for enhanced odor discrimination (Litwin-Kumar et al. 2017; Caron et al. 2013)."
-
 ---
 
 ## TIME TO PUBLICATION

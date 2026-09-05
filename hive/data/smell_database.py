@@ -198,7 +198,17 @@ class SmellDatabase:
             return 0
 
         with open(path) as f:
-            records = json.load(f)
+            payload = json.load(f)
+
+        # Two shapes are accepted. Since 2026-09-05 the encoder writes
+        # {"config": {...}, "entries": [...]} so the artifact carries the
+        # pipeline it was produced under; before that it wrote a bare list.
+        if isinstance(payload, dict):
+            records = payload.get("entries", [])
+            self.kc_source_config = payload.get("config")
+        else:
+            records = payload
+            self.kc_source_config = None
 
         updated = 0
         kc_rows:   list[np.ndarray] = []

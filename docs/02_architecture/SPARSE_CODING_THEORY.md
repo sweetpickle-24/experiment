@@ -1,24 +1,33 @@
 # Sparse Coding Theory: Foundational Document
 
+<!-- STALE-BANNER-2026-09-05 -->
+> **SUPERSEDED — do not cite.** This document predates the September 2026 audits and
+> has not been rewritten. Corrections that apply to it:
+>
+> - The scored suite is **5/5** (`results/final/all_validations_G2.json`). Scores of
+>   9/9, 13/13, 14/14 or 27/27 appearing anywhere were **never produced by any run**;
+>   the recorded history is 3/5, then 1/5, then 2/5, then 5/5.
+> - GPU speedup is **10.00×**, not 86×.
+> - Kenyon cell sparsity is **imposed by the readout** (310 of 5,177 cells) rather
+>   than measured, so "1.65 % matching Turner et al. 2008" is withdrawn.
+> - Concentration invariance is **0.6603 and deliberately unscored**; the 0.70
+>   threshold it used to be compared against is not in the paper it was cited to.
+> - The decorrelation result **`r = −0.51` is withdrawn** — a six-point regression
+>   from a run recorded as FAIL, measured at `+0.632` on a later run.
+> - Vision and auditory "firsts" are **not** part of the scored suite, and several
+>   come from hand-written filters rather than the wave engine.
+>
+> Current: [README](../../README.md) ·
+> [ARCHITECTURE](../../ARCHITECTURE.md) ·
+> [LIMITATIONS](../../docs/03_validation/LIMITATIONS.md) ·
+> [audit](../../docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md) ·
+> [projection repair](../../docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md).
+> Tracked in [OUTDATED_FILES.md](../../OUTDATED_FILES.md).
+
+
 **Last Updated**: 2026-09-03
 
 **Purpose**: Reference for sparse coding theory, its biological basis, and its mathematical framework.
-
-> **Correction (2026-09-03).** This document previously reported "1.65% measured KC
-> sparsity — exact match to Turner et al. (2008)" and treated it as a validation of
-> the simulation. Both parts are wrong.
->
-> - **The figure 1.65% appears in no result file in this repository.** The measured
->   mean across the 20 odors in `results/final/full_brain_smell_results.json` is
->   **1.297%** (median 1.042%, range 0.076-3.599%).
-> - **In the olfactory validation path, sparsity is not measured at all.** The KC
->   readout applies a rank threshold that keeps exactly `int(5279 × 0.06) = 316`
->   neurons active for every stimulus. A model cannot validate a sparsity level it
->   is told to produce.
->
-> The theory below (Olshausen & Field, Kanerva capacity, energy arguments) is
-> unchanged and stands on its own. The claims that this simulation *demonstrates*
-> those properties do not. Treat every "1.65%" below as withdrawn.
 
 ---
 
