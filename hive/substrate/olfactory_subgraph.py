@@ -31,18 +31,23 @@ OLFACTORY_TYPES = {
 }
 
 
-def extract_olfactory_pathway(connectome: Connectome) -> Connectome:
+def extract_olfactory_pathway(connectome: Connectome,
+                              strict: bool = False) -> Connectome:
     """
     Extract olfactory-only neurons and synapses from full connectome.
     
     Args:
         connectome: Full fly brain connectome
+        strict: forwarded to classify_olfactory_neuron. Off by default; turning
+            it on excludes auditory wedge PNs and unnamed central-brain neurons
+            from the PN population, which changes the subgraph size and makes
+            results incomparable with runs made without it. See that function.
     
     Returns:
         New Connectome with only olfactory pathway
     """
     print("\n" + "="*70)
-    print("EXTRACTING OLFACTORY PATHWAY")
+    print("EXTRACTING OLFACTORY PATHWAY" + ("  [strict]" if strict else ""))
     print("="*70)
     
     # Identify olfactory neurons
@@ -51,7 +56,7 @@ def extract_olfactory_pathway(connectome: Connectome) -> Connectome:
     type_counts = {key: 0 for key in OLFACTORY_TYPES.keys()}
     
     for nid, neuron in connectome.neurons.items():
-        neuron_type = classify_olfactory_neuron(neuron)
+        neuron_type = classify_olfactory_neuron(neuron, strict=strict)
         if neuron_type:
             olfactory_neurons[nid] = neuron
             type_counts[neuron_type] += 1
@@ -91,29 +96,68 @@ def extract_olfactory_pathway(connectome: Connectome) -> Connectome:
     return olfactory_connectome
 
 
-def classify_olfactory_neuron(neuron: Neuron) -> str:
+#: Cell-type prefixes that the loose 'PN' substring match sweeps in but that are
+#: not olfactory projection neurons. Measured against
+#: consolidated_cell_types.csv.gz on 2026-09-04: of the 854 neurons whose type
+#: string contains 'PN', 289 are uniglomerular olfactory PNs, 264 are
+#: multiglomerular M_ PNs, and these two groups account for 254 - about 30 % -
+#: that are not olfactory at all.
+NON_OLFACTORY_PN_PREFIXES = (
+    'WEDPN',   # wedge projection neurons: auditory/mechanosensory, 93 neurons
+    'CB',      # unnamed central brain neurons, 161 neurons
+)
+
+
+def _is_non_olfactory_pn(cell_types_str: str) -> bool:
+    """True when a 'PN' match came from a non-olfactory cell type."""
+    for token in cell_types_str.replace(',', ' ').split():
+        if token.startswith(NON_OLFACTORY_PN_PREFIXES):
+            return True
+    return False
+
+
+def classify_olfactory_neuron(neuron: Neuron, strict: bool = False) -> str:
     """
     Classify neuron as olfactory type (or None if not olfactory).
-    
+
     Args:
         neuron: Neuron object
-    
+        strict: reject cell types that match an olfactory keyword only by
+            substring accident. Off by default, because turning it on changes the
+            PN population and therefore the size of the extracted subgraph, which
+            would silently make every previously recorded result incomparable.
+
+            What it rejects, and why it matters: the loose match tests
+            ``'PN' in cell_types_str``, so ``WEDPN6B`` (an auditory wedge
+            projection neuron) and ``CB1078`` (an unnamed central brain neuron)
+            are both classified as olfactory PNs. Measured on the shipped
+            annotations, 93 WEDPN and 161 CB neurons are swept in this way, about
+            30 % of the 854 neurons whose type string contains 'PN'.
+
+            Strict mode does not touch the neuropil-region fallback below, which
+            is where most of the PN population actually comes from.
+
     Returns:
         Olfactory type string ('ORN', 'PN', etc.) or None
     """
     # Check cell types
     cell_types_str = ' '.join(neuron.cell_types).upper()
-    
+
     for olf_type, keywords in OLFACTORY_TYPES.items():
         for keyword in keywords:
             if keyword.upper() in cell_types_str:
+                if strict and olf_type == 'PN' and \
+                        _is_non_olfactory_pn(cell_types_str):
+                    # Do not return PN, and do not let a later keyword rescue it
+                    # on the same accident; fall through to the region check.
+                    break
                 return olf_type
     
     # Check group (neuropil region)
     group_str = neuron.group.upper()
     
     # Antennal lobe (AL) contains ORNs, PNs, LNs
-    if 'AL' in group_str or 'ANTENNAL' in group_str:
+    if _in_region(group_str, 'AL', strict) or 'ANTENNAL' in group_str:
         # Further classify by neurotransmitter or morphology
         if 'GLUT' in neuron.nt_type.upper():
             return 'PN'  # PNs are glutamatergic
@@ -123,7 +167,7 @@ def classify_olfactory_neuron(neuron: Neuron) -> str:
             return 'PN'  # Default to PN
     
     # Mushroom body (MB) contains KCs, MBONs
-    if 'MB' in group_str or 'MUSHROOM' in group_str:
+    if _in_region(group_str, 'MB', strict) or 'MUSHROOM' in group_str:
         if 'OUTPUT' in cell_types_str or 'MBON' in cell_types_str:
             return 'MBON'
         else:
@@ -134,6 +178,29 @@ def classify_olfactory_neuron(neuron: Neuron) -> str:
         return 'KC'
     
     return None
+
+
+def _in_region(group_str: str, region: str, strict: bool) -> bool:
+    """
+    Is *group_str* a neuropil annotation for *region*?
+
+    Loose (default, pre-2026-09-04 behaviour): plain substring test. This is a
+    real defect and it is large. Group strings are dot-separated neuropil lists
+    like ``AL``, ``AL.MB_CA``, ``LAL``, ``PLP.LAL``, and ``'AL' in group_str``
+    therefore matches every LAL neuron - the lateral accessory lobe, a central
+    complex output region with no olfactory role. Measured on the shipped
+    annotations: the substring test matches **4,796** neurons where only
+    **2,762** are annotated ``AL``. That is how ``PFL3`` (central complex) and
+    ``LC33`` (lobula columnar, visual) end up classified as olfactory projection
+    neurons.
+
+    Strict: *region* must appear as a whole dot-separated token. That keeps the
+    genuinely AL-related compartments - ``AL``, ``AL.LH``, ``AL.MB_CA``,
+    ``AL.PLP``, ``AL.SMP`` - and rejects ``LAL`` and its combinations.
+    """
+    if not strict:
+        return region in group_str
+    return region in {token.strip() for token in group_str.split('.')}
 
 
 def get_olfactory_region_neurons(connectome: Connectome, region: str) -> List[int]:

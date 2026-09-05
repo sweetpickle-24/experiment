@@ -1,0 +1,2405 @@
+{
+  "question": "Is the 40->20 PCA projection responsible for the similarity benchmark failing on the ordering of Campbell et al. 2013 Fig 4C, rather than the network?",
+  "why_this_is_cheap": "no simulation is run. Three input spaces are compared directly, so the projection is tested in isolation from the network for the cost of a matrix multiply.",
+  "audit_reference": "docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md lists this cause as untraced.",
+  "spaces_compared": {
+    "receptor_signed": "the measured DoOR columns, untouched",
+    "receptor_relu_l2": "measured columns with the pipeline ReLU and L2 applied, to separate the projection from the rectification",
+    "pca20": "what the model currently receives: 40->20 mean-centred PCA, ReLU, L2",
+    "glomerular": "proposed repair: published one-to-one receptor to glomerulus assignment, then the same ReLU and L2"
+  },
+  "matrix": {
+    "n_odorants": 372,
+    "n_receptor_columns": 40,
+    "n_columns_with_data": 33,
+    "n_negative_entries": 478,
+    "fraction_nonzero": 0.2811155913978495,
+    "all_zero_columns": [
+      "Or56a",
+      "Or63a",
+      "Or83a",
+      "Or83b",
+      "Or98b",
+      "Gr21a",
+      "Gr63a"
+    ]
+  },
+  "connectome_coverage": {
+    "n_receptors_in_matrix": 40,
+    "n_receptors_mapped": 29,
+    "n_channels": 29,
+    "channel_names": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "receptors_per_channel": {
+      "D": [
+        "Or69a"
+      ],
+      "DA4L": [
+        "Or43a"
+      ],
+      "DC2": [
+        "Or13a"
+      ],
+      "DL1": [
+        "Or10a"
+      ],
+      "DL3": [
+        "Or65a"
+      ],
+      "DL4": [
+        "Or49a",
+        "Or85f"
+      ],
+      "DM1": [
+        "Or42b"
+      ],
+      "DM2": [
+        "Or22a"
+      ],
+      "DM3": [
+        "Or47a"
+      ],
+      "DM4": [
+        "Or59b"
+      ],
+      "DM5": [
+        "Or85a"
+      ],
+      "DM6": [
+        "Or67a"
+      ],
+      "VA1D": [
+        "Or88a"
+      ],
+      "VA1V": [
+        "Or47b"
+      ],
+      "VA2": [
+        "Or92a"
+      ],
+      "VA3": [
+        "Or67b"
+      ],
+      "VA4": [
+        "Or85d"
+      ],
+      "VA5": [
+        "Or49b"
+      ],
+      "VA6": [
+        "Or82a"
+      ],
+      "VA7L": [
+        "Or46a"
+      ],
+      "VC1": [
+        "Or85e"
+      ],
+      "VC2": [
+        "Or71a"
+      ],
+      "VC3": [
+        "Or35a"
+      ],
+      "VC4": [
+        "Or67c"
+      ],
+      "VM2": [
+        "Or43b"
+      ],
+      "VM5D": [
+        "Or85b"
+      ],
+      "VM5V": [
+        "Or98a"
+      ],
+      "VM7D": [
+        "Or42a"
+      ],
+      "VM7V": [
+        "Or42a"
+      ]
+    },
+    "multi_receptor_channels": {
+      "DL4": [
+        "Or49a",
+        "Or85f"
+      ]
+    },
+    "unmapped_receptors": {
+      "Or45a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or45a among 'other responding units' rather than against a glomerulus; it is a larval receptor. 55 odorants measured, excluded rather than guessed.",
+      "Or45b": "not in Couto 2005 Table 1, same as Or45a. 48 odorants measured, excluded rather than guessed.",
+      "Or56a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or59a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or59a among 'other responding units'. 54 odorants measured, excluded rather than guessed.",
+      "Or63a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or83a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or83b": "Orco, the obligate co-receptor. Expressed in essentially every olfactory sensory neuron rather than defining one, so it has no glomerulus. Absent from Couto Table 1 for that reason. (Its column in the shipped matrix is all-zero in any case.)",
+      "Or85c": "not in Couto 2005 Table 1. Later work pairs it parenthetically with Or85b in VM5d - 'VM5d (Or85b/(Or85c))' - but that is a secondary, parenthetical assignment and Or85c has responses for only 51 odorants. Excluded under the citation rule; revisit if a primary source is found.",
+      "Or98b": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Gr21a": "CO2 co-receptor, targets glomerulus V together with Gr63a (Couto Table 1). All-zero column in the shipped matrix, so it contributes nothing regardless.",
+      "Gr63a": "CO2 co-receptor, partner of Gr21a, same glomerulus V. All-zero column in the shipped matrix."
+    },
+    "channels_dropped_no_projection_neurons": {},
+    "combination_rule": "mean of the contributing receptors' responses. Two glomeruli in this map receive more than one measured receptor: DL4 (Or49a and Or85f, which are co-expressed in the same ab10B neuron) and, in principle, VC1 (Or85e with Or33c, though Or33c is absent from the matrix). The mean is used rather than the sum so that a glomerulus is not made systematically stronger merely because more of its receptors happen to have been measured. Both are defensible; the choice is recorded because it is a choice.",
+    "aliases_applied": {
+      "VM7": [
+        "VM7D",
+        "VM7V"
+      ]
+    },
+    "primary_source": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+    "glomeruli_wanted_by_map": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "glomeruli_reachable": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "glomeruli_wanted_but_unreachable": [],
+    "n_glomeruli_annotated_in_connectome": 60,
+    "annotated_but_no_mapped_receptor": [
+      "DA1",
+      "DA2",
+      "DA3",
+      "DA4M",
+      "DC1",
+      "DC3",
+      "DC4",
+      "DL2D",
+      "DL2V",
+      "DL5",
+      "DP1L",
+      "DP1M",
+      "V",
+      "VA7M",
+      "VC5",
+      "VL1",
+      "VL2A",
+      "VL2P",
+      "VM1",
+      "VM3",
+      "VM4",
+      "VM6",
+      "VP1L+",
+      "VP1M",
+      "VP1M+",
+      "VP2",
+      "VP2+",
+      "VP3+",
+      "VP4",
+      "VP4+",
+      "VP5+"
+    ]
+  },
+  "projection_report": {
+    "n_receptors_in_matrix": 40,
+    "n_receptors_mapped": 29,
+    "n_channels": 29,
+    "channel_names": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "receptors_per_channel": {
+      "D": [
+        "Or69a"
+      ],
+      "DA4L": [
+        "Or43a"
+      ],
+      "DC2": [
+        "Or13a"
+      ],
+      "DL1": [
+        "Or10a"
+      ],
+      "DL3": [
+        "Or65a"
+      ],
+      "DL4": [
+        "Or49a",
+        "Or85f"
+      ],
+      "DM1": [
+        "Or42b"
+      ],
+      "DM2": [
+        "Or22a"
+      ],
+      "DM3": [
+        "Or47a"
+      ],
+      "DM4": [
+        "Or59b"
+      ],
+      "DM5": [
+        "Or85a"
+      ],
+      "DM6": [
+        "Or67a"
+      ],
+      "VA1D": [
+        "Or88a"
+      ],
+      "VA1V": [
+        "Or47b"
+      ],
+      "VA2": [
+        "Or92a"
+      ],
+      "VA3": [
+        "Or67b"
+      ],
+      "VA4": [
+        "Or85d"
+      ],
+      "VA5": [
+        "Or49b"
+      ],
+      "VA6": [
+        "Or82a"
+      ],
+      "VA7L": [
+        "Or46a"
+      ],
+      "VC1": [
+        "Or85e"
+      ],
+      "VC2": [
+        "Or71a"
+      ],
+      "VC3": [
+        "Or35a"
+      ],
+      "VC4": [
+        "Or67c"
+      ],
+      "VM2": [
+        "Or43b"
+      ],
+      "VM5D": [
+        "Or85b"
+      ],
+      "VM5V": [
+        "Or98a"
+      ],
+      "VM7D": [
+        "Or42a"
+      ],
+      "VM7V": [
+        "Or42a"
+      ]
+    },
+    "multi_receptor_channels": {
+      "DL4": [
+        "Or49a",
+        "Or85f"
+      ]
+    },
+    "unmapped_receptors": {
+      "Or45a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or45a among 'other responding units' rather than against a glomerulus; it is a larval receptor. 55 odorants measured, excluded rather than guessed.",
+      "Or45b": "not in Couto 2005 Table 1, same as Or45a. 48 odorants measured, excluded rather than guessed.",
+      "Or56a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or59a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or59a among 'other responding units'. 54 odorants measured, excluded rather than guessed.",
+      "Or63a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or83a": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Or83b": "Orco, the obligate co-receptor. Expressed in essentially every olfactory sensory neuron rather than defining one, so it has no glomerulus. Absent from Couto Table 1 for that reason. (Its column in the shipped matrix is all-zero in any case.)",
+      "Or85c": "not in Couto 2005 Table 1. Later work pairs it parenthetically with Or85b in VM5d - 'VM5d (Or85b/(Or85c))' - but that is a secondary, parenthetical assignment and Or85c has responses for only 51 odorants. Excluded under the citation rule; revisit if a primary source is found.",
+      "Or98b": "all-zero column in the shipped matrix (no DoOR data merged).",
+      "Gr21a": "CO2 co-receptor, targets glomerulus V together with Gr63a (Couto Table 1). All-zero column in the shipped matrix, so it contributes nothing regardless.",
+      "Gr63a": "CO2 co-receptor, partner of Gr21a, same glomerulus V. All-zero column in the shipped matrix."
+    },
+    "channels_dropped_no_projection_neurons": {},
+    "combination_rule": "mean of the contributing receptors' responses. Two glomeruli in this map receive more than one measured receptor: DL4 (Or49a and Or85f, which are co-expressed in the same ab10B neuron) and, in principle, VC1 (Or85e with Or33c, though Or33c is absent from the matrix). The mean is used rather than the sum so that a glomerulus is not made systematically stronger merely because more of its receptors happen to have been measured. Both are defensible; the choice is recorded because it is a choice.",
+    "aliases_applied": {
+      "VM7": [
+        "VM7D",
+        "VM7V"
+      ]
+    },
+    "primary_source": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1"
+  },
+  "receptor_glomerulus_map": [
+    {
+      "receptor": "Or10a",
+      "glomerulus": "DL1",
+      "sensillum": "ab1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or13a",
+      "glomerulus": "DC2",
+      "sensillum": "ai1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or22a",
+      "glomerulus": "DM2",
+      "sensillum": "ab3",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "Or22a and Or22b are co-expressed in ab3A and target the same glomerulus; only Or22a is in the DoOR matrix"
+    },
+    {
+      "receptor": "Or35a",
+      "glomerulus": "VC3",
+      "sensillum": "ac3",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "Couto Table 1 records the sensillum as ac1; the coeloconic nomenclature was later revised to ac3. The glomerulus is unaffected. Bates et al. 2020 (eLife 9:e66018) renamed VC3l to VC3 in hemibrain v1.3, which is the name used here"
+    },
+    {
+      "receptor": "Or42a",
+      "glomerulus": "VM7",
+      "sensillum": "pb1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "Couto Table 1 predates the split of VM7 into VM7d and VM7v. Handled by GLOMERULUS_ALIASES rather than by choosing one"
+    },
+    {
+      "receptor": "Or42b",
+      "glomerulus": "DM1",
+      "sensillum": "ab1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or43a",
+      "glomerulus": "DA4l",
+      "sensillum": "at3",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or43b",
+      "glomerulus": "VM2",
+      "sensillum": "ab8",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or46a",
+      "glomerulus": "VA7l",
+      "sensillum": "pb2",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "listed as Or46aA in Couto Table 1; the DoOR matrix column is named Or46a"
+    },
+    {
+      "receptor": "Or47a",
+      "glomerulus": "DM3",
+      "sensillum": "ab5",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or47b",
+      "glomerulus": "VA1v",
+      "sensillum": "at4",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or49a",
+      "glomerulus": "DL4",
+      "sensillum": "ab10",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "shares DL4 with Or85f; see COMBINATION_RULE"
+    },
+    {
+      "receptor": "Or49b",
+      "glomerulus": "VA5",
+      "sensillum": "ab6",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or59b",
+      "glomerulus": "DM4",
+      "sensillum": "ab2",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or65a",
+      "glomerulus": "DL3",
+      "sensillum": "at4",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "Or65a, Or65b and Or65c all target DL3; only Or65a is in the DoOR matrix"
+    },
+    {
+      "receptor": "Or67a",
+      "glomerulus": "DM6",
+      "sensillum": "ab10",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or67b",
+      "glomerulus": "VA3",
+      "sensillum": "ab9",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or67c",
+      "glomerulus": "VC4",
+      "sensillum": "ab7",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or69a",
+      "glomerulus": "D",
+      "sensillum": "ab9",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "listed as Or69aA and Or69aB in Couto Table 1, both targeting D"
+    },
+    {
+      "receptor": "Or71a",
+      "glomerulus": "VC2",
+      "sensillum": "pb1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or82a",
+      "glomerulus": "VA6",
+      "sensillum": "ab5",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or85a",
+      "glomerulus": "DM5",
+      "sensillum": "ab2",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or85b",
+      "glomerulus": "VM5d",
+      "sensillum": "ab3",
+      "confidence": "secondary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1 legend",
+      "note": "Couto Table 1 legend: 'Reporters for Or85b and Or98b both target the glomerulus VM5d, but neither has been validated by in situ hybridization.' Kept because the assignment is stated in the source and is uncontested in later work; flagged secondary because that source declines to call it validated"
+    },
+    {
+      "receptor": "Or85d",
+      "glomerulus": "VA4",
+      "sensillum": "pb3",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or85e",
+      "glomerulus": "VC1",
+      "sensillum": "pb2",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "co-expressed with Or33c in pb2A (Goldman et al. 2005); Or33c is not in the DoOR matrix, so VC1 is driven by Or85e alone here. Or85e has responses for only 11 odorants"
+    },
+    {
+      "receptor": "Or85f",
+      "glomerulus": "DL4",
+      "sensillum": "ab10",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": "co-expressed with Or49a in ab10B; shares DL4. See COMBINATION_RULE"
+    },
+    {
+      "receptor": "Or88a",
+      "glomerulus": "VA1d",
+      "sensillum": "at4",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or92a",
+      "glomerulus": "VA2",
+      "sensillum": "ab1",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    },
+    {
+      "receptor": "Or98a",
+      "glomerulus": "VM5v",
+      "sensillum": "ab7",
+      "confidence": "primary",
+      "citation": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1",
+      "note": ""
+    }
+  ],
+  "panel": {
+    "odorants": [
+      "1-hexanol",
+      "2,3-butanedione",
+      "2-heptanone",
+      "3-octanol",
+      "4-methylcyclohexanol",
+      "benzaldehyde",
+      "butyl_acetate",
+      "ethyl_acetate",
+      "ethyl_lactate",
+      "isopentyl_acetate",
+      "methyl_salicylate",
+      "pentyl_acetate"
+    ],
+    "unresolvable": [],
+    "provenance": {
+      "1-hexanol": "Hige et al. 2015 (hexanol, HP)",
+      "2,3-butanedione": "Turner et al. 2008 Fig 1C",
+      "2-heptanone": "Honegger et al. 2011 Fig 7B",
+      "3-octanol": "Campbell et al. 2013 Fig 2A (OCT); Honegger et al. 2011 Fig 7A; Hige et al. 2015 Fig 1E-F",
+      "4-methylcyclohexanol": "Campbell et al. 2013 Fig 2A (MCH); Honegger et al. 2011 Fig 7A; Xia & Tully 2007 saturation assay",
+      "benzaldehyde": "Turner et al. 2008 Fig 3I, the odour whose recorded PN responses drove the model KC population",
+      "butyl_acetate": "Campbell et al. 2013 Fig 4C (BA); Hige et al. 2015 Fig 7C-E",
+      "ethyl_acetate": "Honegger et al. 2011; Wang et al. 2004 MB calcium imaging",
+      "ethyl_lactate": "Campbell et al. 2013 Fig 4C (EL); Hige et al. 2015 Fig 7F-H, the non-overlapping odour whose response was unaffected by pairing",
+      "isopentyl_acetate": "Honegger et al. 2011 Fig 6C (isoamyl acetate)",
+      "methyl_salicylate": "Turner et al. 2008 Fig 5, the narrowly tuned odour whose pairs reversed in angular separation",
+      "pentyl_acetate": "Campbell et al. 2013 Fig 4C (PA); Honegger et al. 2011 Fig 7B; Hige et al. 2015 Fig 7C-E"
+    }
+  },
+  "published_target": {
+    "source": "Campbell et al. 2013 J Neurosci 33:10568, Fig 4C",
+    "values": {
+      "pentyl_acetate__butyl_acetate": 0.7,
+      "pentyl_acetate__ethyl_lactate": 0.15,
+      "butyl_acetate__ethyl_lactate": 0.11
+    },
+    "scored_on": "ordering only, because the published values are KC pattern correlations and these are input-space correlations; only the rank order is comparable"
+  },
+  "spaces": {
+    "receptor_signed": {
+      "space": "receptor_signed",
+      "n_channels": 33,
+      "fraction_nonzero_mean": 0.797979797979798,
+      "fraction_nonzero_range": [
+        0.30303030303030304,
+        1.0
+      ],
+      "pairwise_correlations": {
+        "1-hexanol__2,3-butanedione": 0.37301277614513223,
+        "1-hexanol__2-heptanone": 0.6399583986483126,
+        "1-hexanol__3-octanol": 0.5614359910361052,
+        "1-hexanol__4-methylcyclohexanol": 0.09760585953861366,
+        "1-hexanol__benzaldehyde": 0.21083636132208036,
+        "1-hexanol__butyl_acetate": 0.22299506082937628,
+        "1-hexanol__ethyl_acetate": 0.09996884890309814,
+        "1-hexanol__ethyl_lactate": 0.02960136180214747,
+        "1-hexanol__isopentyl_acetate": 0.3771627301769661,
+        "1-hexanol__methyl_salicylate": -0.05277160863072313,
+        "1-hexanol__pentyl_acetate": 0.6961023796415848,
+        "2,3-butanedione__2-heptanone": 0.30687146366588386,
+        "2,3-butanedione__3-octanol": 0.16679676110426275,
+        "2,3-butanedione__4-methylcyclohexanol": 0.44133011474617106,
+        "2,3-butanedione__benzaldehyde": -0.14188224230728327,
+        "2,3-butanedione__butyl_acetate": 0.030782994912976223,
+        "2,3-butanedione__ethyl_acetate": 0.6442801602803735,
+        "2,3-butanedione__ethyl_lactate": 0.07056924501227958,
+        "2,3-butanedione__isopentyl_acetate": 0.21117223843392346,
+        "2,3-butanedione__methyl_salicylate": -0.029409246448691466,
+        "2,3-butanedione__pentyl_acetate": 0.21896567849688134,
+        "2-heptanone__3-octanol": 0.7858498152474931,
+        "2-heptanone__4-methylcyclohexanol": 0.16972103968522964,
+        "2-heptanone__benzaldehyde": 0.096056249869752,
+        "2-heptanone__butyl_acetate": 0.4199232420366141,
+        "2-heptanone__ethyl_acetate": 0.1442138702125217,
+        "2-heptanone__ethyl_lactate": -0.06903916567033491,
+        "2-heptanone__isopentyl_acetate": 0.7168299124783201,
+        "2-heptanone__methyl_salicylate": -0.11791536208293484,
+        "2-heptanone__pentyl_acetate": 0.7778458939706328,
+        "3-octanol__4-methylcyclohexanol": 0.039692796494910136,
+        "3-octanol__benzaldehyde": 0.030904973227000403,
+        "3-octanol__butyl_acetate": 0.2883477073869971,
+        "3-octanol__ethyl_acetate": -0.027065652695095706,
+        "3-octanol__ethyl_lactate": -0.11393041539158809,
+        "3-octanol__isopentyl_acetate": 0.6535612426751307,
+        "3-octanol__methyl_salicylate": -0.08337201804404268,
+        "3-octanol__pentyl_acetate": 0.7474003757325234,
+        "4-methylcyclohexanol__benzaldehyde": -0.145303551438686,
+        "4-methylcyclohexanol__butyl_acetate": -0.07727516507268871,
+        "4-methylcyclohexanol__ethyl_acetate": 0.25832793771172924,
+        "4-methylcyclohexanol__ethyl_lactate": -0.04592105481333167,
+        "4-methylcyclohexanol__isopentyl_acetate": 0.10442290722931316,
+        "4-methylcyclohexanol__methyl_salicylate": 0.2610173068025238,
+        "4-methylcyclohexanol__pentyl_acetate": -0.04680983911064259,
+        "benzaldehyde__butyl_acetate": -0.0283590740922068,
+        "benzaldehyde__ethyl_acetate": -0.12038821242724257,
+        "benzaldehyde__ethyl_lactate": -0.19825615121245865,
+        "benzaldehyde__isopentyl_acetate": -0.01177407532643566,
+        "benzaldehyde__methyl_salicylate": 0.034567311952324736,
+        "benzaldehyde__pentyl_acetate": 0.11180711972599389,
+        "butyl_acetate__ethyl_acetate": -0.05451995326884988,
+        "butyl_acetate__ethyl_lactate": 0.36563057390766013,
+        "butyl_acetate__isopentyl_acetate": 0.5709882944002999,
+        "butyl_acetate__methyl_salicylate": 0.016054249931182256,
+        "butyl_acetate__pentyl_acetate": 0.6001788589429616,
+        "ethyl_acetate__ethyl_lactate": -0.030870413161046602,
+        "ethyl_acetate__isopentyl_acetate": 0.20657684630534356,
+        "ethyl_acetate__methyl_salicylate": -0.0929502007478211,
+        "ethyl_acetate__pentyl_acetate": 0.03874293508522734,
+        "ethyl_lactate__isopentyl_acetate": 0.04391602284396364,
+        "ethyl_lactate__methyl_salicylate": -0.03665642763836584,
+        "ethyl_lactate__pentyl_acetate": 0.033148777806234375,
+        "isopentyl_acetate__methyl_salicylate": 0.24735696773706065,
+        "isopentyl_acetate__pentyl_acetate": 0.6598493057956049,
+        "methyl_salicylate__pentyl_acetate": -0.1240205931790374
+      },
+      "mean_pairwise_r": 0.18445288692623046,
+      "campbell_ordering": {
+        "pa_ba": 0.6001788589429616,
+        "pa_el": 0.033148777806234375,
+        "ba_el": 0.36563057390766013,
+        "pa_ba_is_largest": true,
+        "ba_el_is_smallest": false,
+        "ordering_correct": false,
+        "published": {
+          "pa_ba": 0.7,
+          "pa_el": 0.15,
+          "ba_el": 0.11
+        },
+        "published_ordering": "pa_ba > pa_el > ba_el"
+      },
+      "relu_discarded": {
+        "pentyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.028786797076464,
+          "magnitude_kept": 4.028786797076464,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "butyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.2017917021366884,
+          "magnitude_kept": 3.200433407742821,
+          "fraction_of_magnitude_kept": 0.9995757705309309
+        },
+        "ethyl_lactate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.1808929443359375,
+          "magnitude_kept": 3.1808929443359375,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "3-octanol": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.2804573220637394,
+          "magnitude_kept": 3.261695961045916,
+          "fraction_of_magnitude_kept": 0.9942808702641434
+        },
+        "4-methylcyclohexanol": {
+          "n_channels": 33,
+          "n_negative": 2,
+          "fraction_negative": 0.06060606060606061,
+          "magnitude_total_abs": 2.218127671570983,
+          "magnitude_kept": 2.208328083564993,
+          "fraction_of_magnitude_kept": 0.9955820451042616
+        },
+        "2-heptanone": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 4.2915320072788745,
+          "magnitude_kept": 4.252640635939315,
+          "fraction_of_magnitude_kept": 0.9909376485428524
+        },
+        "benzaldehyde": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.5962787240277976,
+          "magnitude_kept": 3.5962787240277976,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "2,3-butanedione": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.109601598291192,
+          "magnitude_kept": 4.109601598291192,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "methyl_salicylate": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.0410949531942606,
+          "magnitude_kept": 3.034665372222662,
+          "fraction_of_magnitude_kept": 0.9978857677676768
+        },
+        "ethyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.781589075922966,
+          "magnitude_kept": 3.781589075922966,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "1-hexanol": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.139559859409928,
+          "magnitude_kept": 4.139559859409928,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "isopentyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 2,
+          "fraction_negative": 0.06060606060606061,
+          "magnitude_total_abs": 4.236054564360529,
+          "magnitude_kept": 4.228648109361529,
+          "fraction_of_magnitude_kept": 0.9982515676116844
+        }
+      },
+      "clip_survival": {
+        "pentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9400947695350139,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7785890808047824,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.36363636363636365
+          }
+        },
+        "butyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9090257403214848,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7599865749821136,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "ethyl_lactate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7985343865601514,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6885051259272613,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        },
+        "3-octanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8464846419812241,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7393422226770197,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "4-methylcyclohexanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.877209026874755,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.12121212121212122
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.818854738195619,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.18181818181818182
+          }
+        },
+        "2-heptanone": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9535804337865312,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7800472556059491,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        },
+        "benzaldehyde": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8172876922675295,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6565463218597187,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "2,3-butanedione": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.86656841781785,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.18181818181818182
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6310613646080336,
+            "n_channels_at_ceiling": 14,
+            "fraction_at_ceiling": 0.42424242424242425
+          }
+        },
+        "methyl_salicylate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7126073143713089,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.12121212121212122
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.5486255126418108,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.24242424242424243
+          }
+        },
+        "ethyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9018141448826674,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.699204106989691,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.30303030303030304
+          }
+        },
+        "1-hexanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9367348987918838,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.24242424242424243
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.8108811801948329,
+            "n_channels_at_ceiling": 14,
+            "fraction_at_ceiling": 0.42424242424242425
+          }
+        },
+        "isopentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9177183490973015,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7916446929164163,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        }
+      }
+    },
+    "receptor_relu_l2": {
+      "space": "receptor_relu_l2",
+      "n_channels": 33,
+      "fraction_nonzero_mean": 0.797979797979798,
+      "fraction_nonzero_range": [
+        0.30303030303030304,
+        1.0
+      ],
+      "pairwise_correlations": {
+        "1-hexanol__2,3-butanedione": 0.37301277614513234,
+        "1-hexanol__2-heptanone": 0.6375853699748456,
+        "1-hexanol__3-octanol": 0.5589876429109615,
+        "1-hexanol__4-methylcyclohexanol": 0.09806921164206797,
+        "1-hexanol__benzaldehyde": 0.2108363613220804,
+        "1-hexanol__butyl_acetate": 0.2229699668113366,
+        "1-hexanol__ethyl_acetate": 0.09996884890309823,
+        "1-hexanol__ethyl_lactate": 0.029601361802147463,
+        "1-hexanol__isopentyl_acetate": 0.37877154583430234,
+        "1-hexanol__methyl_salicylate": -0.05339281752685045,
+        "1-hexanol__pentyl_acetate": 0.6961023796415847,
+        "2,3-butanedione__2-heptanone": 0.30043296156098914,
+        "2,3-butanedione__3-octanol": 0.16323157592982573,
+        "2,3-butanedione__4-methylcyclohexanol": 0.4419579875141482,
+        "2,3-butanedione__benzaldehyde": -0.1418822423072833,
+        "2,3-butanedione__butyl_acetate": 0.03116707868954318,
+        "2,3-butanedione__ethyl_acetate": 0.6442801602803736,
+        "2,3-butanedione__ethyl_lactate": 0.07056924501227954,
+        "2,3-butanedione__isopentyl_acetate": 0.21092752061144962,
+        "2,3-butanedione__methyl_salicylate": -0.029987767977668882,
+        "2,3-butanedione__pentyl_acetate": 0.21896567849688142,
+        "2-heptanone__3-octanol": 0.7855677169296472,
+        "2-heptanone__4-methylcyclohexanol": 0.1670662587022086,
+        "2-heptanone__benzaldehyde": 0.09735249072820541,
+        "2-heptanone__butyl_acetate": 0.4184028438112704,
+        "2-heptanone__ethyl_acetate": 0.13813721610679086,
+        "2-heptanone__ethyl_lactate": -0.07662182368130084,
+        "2-heptanone__isopentyl_acetate": 0.7149799446163926,
+        "2-heptanone__methyl_salicylate": -0.12391761942410662,
+        "2-heptanone__pentyl_acetate": 0.7777800591975935,
+        "3-octanol__4-methylcyclohexanol": 0.03888658814202294,
+        "3-octanol__benzaldehyde": 0.031028260002073066,
+        "3-octanol__butyl_acetate": 0.2864854826575312,
+        "3-octanol__ethyl_acetate": -0.030256226219823407,
+        "3-octanol__ethyl_lactate": -0.11690950946846096,
+        "3-octanol__isopentyl_acetate": 0.6511754774315808,
+        "3-octanol__methyl_salicylate": -0.08469660879521031,
+        "3-octanol__pentyl_acetate": 0.7457274056253084,
+        "4-methylcyclohexanol__benzaldehyde": -0.14682376722853063,
+        "4-methylcyclohexanol__butyl_acetate": -0.0786877155836107,
+        "4-methylcyclohexanol__ethyl_acetate": 0.2591728290612425,
+        "4-methylcyclohexanol__ethyl_lactate": -0.04718673371067771,
+        "4-methylcyclohexanol__isopentyl_acetate": 0.10335225331790916,
+        "4-methylcyclohexanol__methyl_salicylate": 0.26061629571709244,
+        "4-methylcyclohexanol__pentyl_acetate": -0.04737764786338422,
+        "benzaldehyde__butyl_acetate": -0.02854700393797131,
+        "benzaldehyde__ethyl_acetate": -0.12038821242724261,
+        "benzaldehyde__ethyl_lactate": -0.19825615121245865,
+        "benzaldehyde__isopentyl_acetate": -0.01223838469494936,
+        "benzaldehyde__methyl_salicylate": 0.03382193884237929,
+        "benzaldehyde__pentyl_acetate": 0.11180711972599393,
+        "butyl_acetate__ethyl_acetate": -0.05371083256183034,
+        "butyl_acetate__ethyl_lactate": 0.36551154714667466,
+        "butyl_acetate__isopentyl_acetate": 0.5711991829384865,
+        "butyl_acetate__methyl_salicylate": 0.019748814057547654,
+        "butyl_acetate__pentyl_acetate": 0.6002652057467539,
+        "ethyl_acetate__ethyl_lactate": -0.03087041316104663,
+        "ethyl_acetate__isopentyl_acetate": 0.20692342973231845,
+        "ethyl_acetate__methyl_salicylate": -0.09233690052885563,
+        "ethyl_acetate__pentyl_acetate": 0.03874293508522735,
+        "ethyl_lactate__isopentyl_acetate": 0.043855985798077035,
+        "ethyl_lactate__methyl_salicylate": -0.03687806020467025,
+        "ethyl_lactate__pentyl_acetate": 0.033148777806234424,
+        "isopentyl_acetate__methyl_salicylate": 0.2489718129157931,
+        "isopentyl_acetate__pentyl_acetate": 0.6600876849467522,
+        "methyl_salicylate__pentyl_acetate": -0.12152879206011877
+      },
+      "mean_pairwise_r": 0.18370845453478946,
+      "campbell_ordering": {
+        "pa_ba": 0.6002652057467539,
+        "pa_el": 0.033148777806234424,
+        "ba_el": 0.36551154714667466,
+        "pa_ba_is_largest": true,
+        "ba_el_is_smallest": false,
+        "ordering_correct": false,
+        "published": {
+          "pa_ba": 0.7,
+          "pa_el": 0.15,
+          "ba_el": 0.11
+        },
+        "published_ordering": "pa_ba > pa_el > ba_el"
+      },
+      "relu_discarded": {
+        "pentyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.028786797076464,
+          "magnitude_kept": 4.028786797076464,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "butyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.2017917021366884,
+          "magnitude_kept": 3.200433407742821,
+          "fraction_of_magnitude_kept": 0.9995757705309309
+        },
+        "ethyl_lactate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.1808929443359375,
+          "magnitude_kept": 3.1808929443359375,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "3-octanol": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.2804573220637394,
+          "magnitude_kept": 3.261695961045916,
+          "fraction_of_magnitude_kept": 0.9942808702641434
+        },
+        "4-methylcyclohexanol": {
+          "n_channels": 33,
+          "n_negative": 2,
+          "fraction_negative": 0.06060606060606061,
+          "magnitude_total_abs": 2.218127671570983,
+          "magnitude_kept": 2.208328083564993,
+          "fraction_of_magnitude_kept": 0.9955820451042616
+        },
+        "2-heptanone": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 4.2915320072788745,
+          "magnitude_kept": 4.252640635939315,
+          "fraction_of_magnitude_kept": 0.9909376485428524
+        },
+        "benzaldehyde": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.5962787240277976,
+          "magnitude_kept": 3.5962787240277976,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "2,3-butanedione": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.109601598291192,
+          "magnitude_kept": 4.109601598291192,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "methyl_salicylate": {
+          "n_channels": 33,
+          "n_negative": 1,
+          "fraction_negative": 0.030303030303030304,
+          "magnitude_total_abs": 3.0410949531942606,
+          "magnitude_kept": 3.034665372222662,
+          "fraction_of_magnitude_kept": 0.9978857677676768
+        },
+        "ethyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.781589075922966,
+          "magnitude_kept": 3.781589075922966,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "1-hexanol": {
+          "n_channels": 33,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.139559859409928,
+          "magnitude_kept": 4.139559859409928,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "isopentyl_acetate": {
+          "n_channels": 33,
+          "n_negative": 2,
+          "fraction_negative": 0.06060606060606061,
+          "magnitude_total_abs": 4.236054564360529,
+          "magnitude_kept": 4.228648109361529,
+          "fraction_of_magnitude_kept": 0.9982515676116844
+        }
+      },
+      "clip_survival": {
+        "pentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9400947693671152,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.778589080289108,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.36363636363636365
+          }
+        },
+        "butyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9090255293887173,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.75998644007786,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "ethyl_lactate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7985343841696467,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6885051248304099,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        },
+        "3-octanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8464474359891252,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7393135902384496,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "4-methylcyclohexanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8772052678790159,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.12121212121212122
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.8188534051603192,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.18181818181818182
+          }
+        },
+        "2-heptanone": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9534743992186258,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7797514826812495,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        },
+        "benzaldehyde": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8172876914740725,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6565463208671523,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3333333333333333
+          }
+        },
+        "2,3-butanedione": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8665684309644252,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.18181818181818182
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6310613843465382,
+            "n_channels_at_ceiling": 14,
+            "fraction_at_ceiling": 0.42424242424242425
+          }
+        },
+        "methyl_salicylate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7126039551639969,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.12121212121212122
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.5486199290049031,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.24242424242424243
+          }
+        },
+        "ethyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9018141414466179,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.15151515151515152
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6992041021565414,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.30303030303030304
+          }
+        },
+        "1-hexanol": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9367349001602572,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.24242424242424243
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.810881181930253,
+            "n_channels_at_ceiling": 14,
+            "fraction_at_ceiling": 0.42424242424242425
+          }
+        },
+        "isopentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.917715974974427,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.2727272727272727
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7916390170267233,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.3939393939393939
+          }
+        }
+      }
+    },
+    "pca20": {
+      "space": "pca20",
+      "n_channels": 20,
+      "fraction_nonzero_mean": 0.5958333333333333,
+      "fraction_nonzero_range": [
+        0.45,
+        0.75
+      ],
+      "pairwise_correlations": {
+        "1-hexanol__2,3-butanedione": 0.6618949927279076,
+        "1-hexanol__2-heptanone": 0.9183826477167741,
+        "1-hexanol__3-octanol": 0.8502151532368022,
+        "1-hexanol__4-methylcyclohexanol": 0.2714440290817821,
+        "1-hexanol__benzaldehyde": 0.6358803213936344,
+        "1-hexanol__butyl_acetate": 0.76761566547579,
+        "1-hexanol__ethyl_acetate": 0.45622043478620056,
+        "1-hexanol__ethyl_lactate": 0.7118725553933045,
+        "1-hexanol__isopentyl_acetate": 0.8296023767237404,
+        "1-hexanol__methyl_salicylate": 0.1842031627137556,
+        "1-hexanol__pentyl_acetate": 0.9227910622364827,
+        "2,3-butanedione__2-heptanone": 0.7077525297035967,
+        "2,3-butanedione__3-octanol": 0.6004405997739585,
+        "2,3-butanedione__4-methylcyclohexanol": 0.3940360533009178,
+        "2,3-butanedione__benzaldehyde": 0.36143667788556166,
+        "2,3-butanedione__butyl_acetate": 0.5112141876323503,
+        "2,3-butanedione__ethyl_acetate": 0.9154759320762655,
+        "2,3-butanedione__ethyl_lactate": 0.5039336583320586,
+        "2,3-butanedione__isopentyl_acetate": 0.7326260564808702,
+        "2,3-butanedione__methyl_salicylate": 0.17716584586833264,
+        "2,3-butanedione__pentyl_acetate": 0.5653619545460989,
+        "2-heptanone__3-octanol": 0.9589707667291346,
+        "2-heptanone__4-methylcyclohexanol": 0.30905084200029886,
+        "2-heptanone__benzaldehyde": 0.5989367732477827,
+        "2-heptanone__butyl_acetate": 0.7444951420413312,
+        "2-heptanone__ethyl_acetate": 0.46683591067418073,
+        "2-heptanone__ethyl_lactate": 0.6177432138884412,
+        "2-heptanone__isopentyl_acetate": 0.8738906424050963,
+        "2-heptanone__methyl_salicylate": 0.14818850566082717,
+        "2-heptanone__pentyl_acetate": 0.9425012608350792,
+        "3-octanol__4-methylcyclohexanol": 0.25359097286306675,
+        "3-octanol__benzaldehyde": 0.5662785011463279,
+        "3-octanol__butyl_acetate": 0.6762962637684229,
+        "3-octanol__ethyl_acetate": 0.3442832253823895,
+        "3-octanol__ethyl_lactate": 0.5376278123269712,
+        "3-octanol__isopentyl_acetate": 0.7948355233436896,
+        "3-octanol__methyl_salicylate": 0.09358952589387314,
+        "3-octanol__pentyl_acetate": 0.9313184051544551,
+        "4-methylcyclohexanol__benzaldehyde": 0.007951069969107763,
+        "4-methylcyclohexanol__butyl_acetate": 0.1860038233419688,
+        "4-methylcyclohexanol__ethyl_acetate": 0.25441272542140997,
+        "4-methylcyclohexanol__ethyl_lactate": 0.04523517886133776,
+        "4-methylcyclohexanol__isopentyl_acetate": 0.3219309656108545,
+        "4-methylcyclohexanol__methyl_salicylate": 0.19214956265839161,
+        "4-methylcyclohexanol__pentyl_acetate": 0.16656874821626597,
+        "benzaldehyde__butyl_acetate": 0.3825785750418865,
+        "benzaldehyde__ethyl_acetate": 0.1400863921554558,
+        "benzaldehyde__ethyl_lactate": 0.39044224806384614,
+        "benzaldehyde__isopentyl_acetate": 0.5339326838005068,
+        "benzaldehyde__methyl_salicylate": 0.34485076613577587,
+        "benzaldehyde__pentyl_acetate": 0.5468574962167235,
+        "butyl_acetate__ethyl_acetate": 0.3391976577139731,
+        "butyl_acetate__ethyl_lactate": 0.7445992688232678,
+        "butyl_acetate__isopentyl_acetate": 0.8696803086265521,
+        "butyl_acetate__methyl_salicylate": 0.2809832902879097,
+        "butyl_acetate__pentyl_acetate": 0.8006594713255167,
+        "ethyl_acetate__ethyl_lactate": 0.36351514682349,
+        "ethyl_acetate__isopentyl_acetate": 0.5364567748161546,
+        "ethyl_acetate__methyl_salicylate": 0.05309711118109795,
+        "ethyl_acetate__pentyl_acetate": 0.37659821955237877,
+        "ethyl_lactate__isopentyl_acetate": 0.6173996889221869,
+        "ethyl_lactate__methyl_salicylate": 0.1555867543657574,
+        "ethyl_lactate__pentyl_acetate": 0.6503171061152203,
+        "isopentyl_acetate__methyl_salicylate": 0.37640052877040514,
+        "isopentyl_acetate__pentyl_acetate": 0.8414852901827367,
+        "methyl_salicylate__pentyl_acetate": 0.11482711470936452
+      },
+      "mean_pairwise_r": 0.5026030780629863,
+      "campbell_ordering": {
+        "pa_ba": 0.8006594713255167,
+        "pa_el": 0.6503171061152203,
+        "ba_el": 0.7445992688232678,
+        "pa_ba_is_largest": true,
+        "ba_el_is_smallest": false,
+        "ordering_correct": false,
+        "published": {
+          "pa_ba": 0.7,
+          "pa_el": 0.15,
+          "ba_el": 0.11
+        },
+        "published_ordering": "pa_ba > pa_el > ba_el"
+      },
+      "relu_discarded": {
+        "pentyl_acetate": {
+          "n_channels": 20,
+          "n_negative": 9,
+          "fraction_negative": 0.45,
+          "magnitude_total_abs": 3.128784163555545,
+          "magnitude_kept": 1.9902419600688135,
+          "fraction_of_magnitude_kept": 0.6361071445104433
+        },
+        "butyl_acetate": {
+          "n_channels": 20,
+          "n_negative": 9,
+          "fraction_negative": 0.45,
+          "magnitude_total_abs": 3.0873035367359973,
+          "magnitude_kept": 2.1152839712633535,
+          "fraction_of_magnitude_kept": 0.6851558151291155
+        },
+        "ethyl_lactate": {
+          "n_channels": 20,
+          "n_negative": 5,
+          "fraction_negative": 0.25,
+          "magnitude_total_abs": 2.7271689778753645,
+          "magnitude_kept": 2.4200958932961414,
+          "fraction_of_magnitude_kept": 0.8874022522731788
+        },
+        "3-octanol": {
+          "n_channels": 20,
+          "n_negative": 10,
+          "fraction_negative": 0.5,
+          "magnitude_total_abs": 3.0830587461651975,
+          "magnitude_kept": 1.6180069036399671,
+          "fraction_of_magnitude_kept": 0.5248057325059062
+        },
+        "4-methylcyclohexanol": {
+          "n_channels": 20,
+          "n_negative": 6,
+          "fraction_negative": 0.3,
+          "magnitude_total_abs": 3.294160067271965,
+          "magnitude_kept": 2.5501056678040315,
+          "fraction_of_magnitude_kept": 0.7741292516838392
+        },
+        "2-heptanone": {
+          "n_channels": 20,
+          "n_negative": 8,
+          "fraction_negative": 0.4,
+          "magnitude_total_abs": 3.029168214166636,
+          "magnitude_kept": 1.9088921979830054,
+          "fraction_of_magnitude_kept": 0.630170417428656
+        },
+        "benzaldehyde": {
+          "n_channels": 20,
+          "n_negative": 11,
+          "fraction_negative": 0.55,
+          "magnitude_total_abs": 3.0950487177255863,
+          "magnitude_kept": 1.5445198453047926,
+          "fraction_of_magnitude_kept": 0.4990292516105503
+        },
+        "2,3-butanedione": {
+          "n_channels": 20,
+          "n_negative": 9,
+          "fraction_negative": 0.45,
+          "magnitude_total_abs": 3.013284227506289,
+          "magnitude_kept": 2.1383863527244396,
+          "fraction_of_magnitude_kept": 0.7096530533709756
+        },
+        "methyl_salicylate": {
+          "n_channels": 20,
+          "n_negative": 6,
+          "fraction_negative": 0.3,
+          "magnitude_total_abs": 3.6612876427069723,
+          "magnitude_kept": 2.5556469976914404,
+          "fraction_of_magnitude_kept": 0.6980186336307418
+        },
+        "ethyl_acetate": {
+          "n_channels": 20,
+          "n_negative": 8,
+          "fraction_negative": 0.4,
+          "magnitude_total_abs": 3.009489804643716,
+          "magnitude_kept": 2.13706900796135,
+          "fraction_of_magnitude_kept": 0.7101100673821192
+        },
+        "1-hexanol": {
+          "n_channels": 20,
+          "n_negative": 10,
+          "fraction_negative": 0.5,
+          "magnitude_total_abs": 2.8418830505577573,
+          "magnitude_kept": 1.5706693876678812,
+          "fraction_of_magnitude_kept": 0.5526861449698349
+        },
+        "isopentyl_acetate": {
+          "n_channels": 20,
+          "n_negative": 6,
+          "fraction_negative": 0.3,
+          "magnitude_total_abs": 3.345493706165881,
+          "magnitude_kept": 2.4440323574448306,
+          "fraction_of_magnitude_kept": 0.7305445988256918
+        }
+      },
+      "clip_survival": {
+        "pentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8472054824089725,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7723642096930934,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          }
+        },
+        "butyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7821985660833263,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.2
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6413040672794298,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          }
+        },
+        "ethyl_lactate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7487145641522688,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.2
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6053919671758131,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.6
+          }
+        },
+        "3-octanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8833951041666911,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.8499716213557735,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          }
+        },
+        "4-methylcyclohexanol": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8531488224350523,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.3
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7262929083585242,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.5
+          }
+        },
+        "2-heptanone": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8328720057334043,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7247414406208036,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.3
+          }
+        },
+        "benzaldehyde": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8368498994388992,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.2
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7284253268625795,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.4
+          }
+        },
+        "2,3-butanedione": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9207797322710586,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7989062794991636,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          }
+        },
+        "methyl_salicylate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8762663448828761,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.3
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.8216797936730743,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.55
+          }
+        },
+        "ethyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9003661051583197,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.805271794564268,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          }
+        },
+        "1-hexanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8486988811977315,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.2
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7541444144888044,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.25
+          }
+        },
+        "isopentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.834307126176444,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.35
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7173915250549848,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.5
+          }
+        }
+      }
+    },
+    "glomerular": {
+      "space": "glomerular",
+      "n_channels": 29,
+      "fraction_nonzero_mean": 0.810344827586207,
+      "fraction_nonzero_range": [
+        0.3793103448275862,
+        1.0
+      ],
+      "pairwise_correlations": {
+        "1-hexanol__2,3-butanedione": 0.4477412251562874,
+        "1-hexanol__2-heptanone": 0.605745160944182,
+        "1-hexanol__3-octanol": 0.4323115944292584,
+        "1-hexanol__4-methylcyclohexanol": 0.26473975550482565,
+        "1-hexanol__benzaldehyde": 0.37953739383407537,
+        "1-hexanol__butyl_acetate": 0.23723127304150096,
+        "1-hexanol__ethyl_acetate": 0.2276857238706814,
+        "1-hexanol__ethyl_lactate": 0.024270627062923707,
+        "1-hexanol__isopentyl_acetate": 0.25576877497871253,
+        "1-hexanol__methyl_salicylate": -0.042033191463817204,
+        "1-hexanol__pentyl_acetate": 0.6110691979252418,
+        "2,3-butanedione__2-heptanone": 0.40432736890457194,
+        "2,3-butanedione__3-octanol": 0.14234527482491904,
+        "2,3-butanedione__4-methylcyclohexanol": 0.6000291666556024,
+        "2,3-butanedione__benzaldehyde": -0.12476574047364643,
+        "2,3-butanedione__butyl_acetate": -0.05688542154411808,
+        "2,3-butanedione__ethyl_acetate": 0.7245191061479491,
+        "2,3-butanedione__ethyl_lactate": -0.016805644306441374,
+        "2,3-butanedione__isopentyl_acetate": 0.23837224586293862,
+        "2,3-butanedione__methyl_salicylate": -0.010534178436682995,
+        "2,3-butanedione__pentyl_acetate": 0.17039362441446115,
+        "2-heptanone__3-octanol": 0.7540668166864475,
+        "2-heptanone__4-methylcyclohexanol": 0.3550195739140072,
+        "2-heptanone__benzaldehyde": 0.24294030812759523,
+        "2-heptanone__butyl_acetate": 0.472431027341298,
+        "2-heptanone__ethyl_acetate": 0.2755305132730691,
+        "2-heptanone__ethyl_lactate": -0.0745598054238071,
+        "2-heptanone__isopentyl_acetate": 0.6743243142022987,
+        "2-heptanone__methyl_salicylate": -0.11350246243831573,
+        "2-heptanone__pentyl_acetate": 0.66823774846004,
+        "3-octanol__4-methylcyclohexanol": 0.12854649277617242,
+        "3-octanol__benzaldehyde": 0.1617613806277717,
+        "3-octanol__butyl_acetate": 0.5286697170468553,
+        "3-octanol__ethyl_acetate": 0.0004758202013034275,
+        "3-octanol__ethyl_lactate": -0.023160282494838473,
+        "3-octanol__isopentyl_acetate": 0.5174761875185387,
+        "3-octanol__methyl_salicylate": -0.10169513382504963,
+        "3-octanol__pentyl_acetate": 0.7024401127598356,
+        "4-methylcyclohexanol__benzaldehyde": -0.1345074211357029,
+        "4-methylcyclohexanol__butyl_acetate": -0.18149679020275464,
+        "4-methylcyclohexanol__ethyl_acetate": 0.4245990145708158,
+        "4-methylcyclohexanol__ethyl_lactate": -0.14968581418014545,
+        "4-methylcyclohexanol__isopentyl_acetate": 0.21279157919664715,
+        "4-methylcyclohexanol__methyl_salicylate": 0.23536714023019406,
+        "4-methylcyclohexanol__pentyl_acetate": -0.015659276746342526,
+        "benzaldehyde__butyl_acetate": 0.0732130143308972,
+        "benzaldehyde__ethyl_acetate": -0.08518763282549296,
+        "benzaldehyde__ethyl_lactate": -0.19081977243151413,
+        "benzaldehyde__isopentyl_acetate": 0.15275787659199958,
+        "benzaldehyde__methyl_salicylate": 0.11700489448914968,
+        "benzaldehyde__pentyl_acetate": 0.2740024405960079,
+        "butyl_acetate__ethyl_acetate": -0.1312235839601953,
+        "butyl_acetate__ethyl_lactate": 0.3225447292298797,
+        "butyl_acetate__isopentyl_acetate": 0.6841820462144254,
+        "butyl_acetate__methyl_salicylate": -0.005885196617470107,
+        "butyl_acetate__pentyl_acetate": 0.7938865568950279,
+        "ethyl_acetate__ethyl_lactate": -0.10558689992836562,
+        "ethyl_acetate__isopentyl_acetate": 0.2886962928062619,
+        "ethyl_acetate__methyl_salicylate": -0.07577945143730658,
+        "ethyl_acetate__pentyl_acetate": 0.040560065083105244,
+        "ethyl_lactate__isopentyl_acetate": 0.06854244500670277,
+        "ethyl_lactate__methyl_salicylate": -0.06389367497211494,
+        "ethyl_lactate__pentyl_acetate": 0.11791112509594345,
+        "isopentyl_acetate__methyl_salicylate": 0.28610286091232107,
+        "isopentyl_acetate__pentyl_acetate": 0.5796642455395026,
+        "methyl_salicylate__pentyl_acetate": -0.13129575539503047
+      },
+      "mean_pairwise_r": 0.2134071321673196,
+      "campbell_ordering": {
+        "pa_ba": 0.7938865568950279,
+        "pa_el": 0.11791112509594345,
+        "ba_el": 0.3225447292298797,
+        "pa_ba_is_largest": true,
+        "ba_el_is_smallest": false,
+        "ordering_correct": false,
+        "published": {
+          "pa_ba": 0.7,
+          "pa_el": 0.15,
+          "ba_el": 0.11
+        },
+        "published_ordering": "pa_ba > pa_el > ba_el"
+      },
+      "relu_discarded": {
+        "pentyl_acetate": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.2249652668833733,
+          "magnitude_kept": 3.2249652668833733,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "butyl_acetate": {
+          "n_channels": 29,
+          "n_negative": 1,
+          "fraction_negative": 0.034482758620689655,
+          "magnitude_total_abs": 3.135042442307167,
+          "magnitude_kept": 3.1336841479133,
+          "fraction_of_magnitude_kept": 0.999566738116353
+        },
+        "ethyl_lactate": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.0752822682261467,
+          "magnitude_kept": 3.0752822682261467,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "3-octanol": {
+          "n_channels": 29,
+          "n_negative": 1,
+          "fraction_negative": 0.034482758620689655,
+          "magnitude_total_abs": 2.3771978435543133,
+          "magnitude_kept": 2.35843648253649,
+          "fraction_of_magnitude_kept": 0.9921077830906275
+        },
+        "4-methylcyclohexanol": {
+          "n_channels": 29,
+          "n_negative": 2,
+          "fraction_negative": 0.06896551724137931,
+          "magnitude_total_abs": 2.901216391415801,
+          "magnitude_kept": 2.891416803409811,
+          "fraction_of_magnitude_kept": 0.9966222485041154
+        },
+        "2-heptanone": {
+          "n_channels": 29,
+          "n_negative": 1,
+          "fraction_negative": 0.034482758620689655,
+          "magnitude_total_abs": 3.758985371561721,
+          "magnitude_kept": 3.7200940002221614,
+          "fraction_of_magnitude_kept": 0.9896537582631236
+        },
+        "benzaldehyde": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 2.6432416716124862,
+          "magnitude_kept": 2.6432416716124862,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "2,3-butanedione": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 4.15382347261766,
+          "magnitude_kept": 4.15382347261766,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "methyl_salicylate": {
+          "n_channels": 29,
+          "n_negative": 1,
+          "fraction_negative": 0.034482758620689655,
+          "magnitude_total_abs": 2.845624890178442,
+          "magnitude_kept": 2.8391953092068434,
+          "fraction_of_magnitude_kept": 0.997740538117378
+        },
+        "ethyl_acetate": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.8570519778877497,
+          "magnitude_kept": 3.8570519778877497,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "1-hexanol": {
+          "n_channels": 29,
+          "n_negative": 0,
+          "fraction_negative": 0.0,
+          "magnitude_total_abs": 3.6533582527190447,
+          "magnitude_kept": 3.6533582527190447,
+          "fraction_of_magnitude_kept": 1.0
+        },
+        "isopentyl_acetate": {
+          "n_channels": 29,
+          "n_negative": 2,
+          "fraction_negative": 0.06896551724137931,
+          "magnitude_total_abs": 3.6965898578055203,
+          "magnitude_kept": 3.6891834028065205,
+          "fraction_of_magnitude_kept": 0.9979964087756826
+        }
+      },
+      "clip_survival": {
+        "pentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9235604897829441,
+            "n_channels_at_ceiling": 8,
+            "fraction_at_ceiling": 0.27586206896551724
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.72065378034761,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3793103448275862
+          }
+        },
+        "butyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9069205407397416,
+            "n_channels_at_ceiling": 5,
+            "fraction_at_ceiling": 0.1724137931034483
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7438729943754535,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.3448275862068966
+          }
+        },
+        "ethyl_lactate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7801334356522719,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.13793103448275862
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6434391654925209,
+            "n_channels_at_ceiling": 13,
+            "fraction_at_ceiling": 0.4482758620689655
+          }
+        },
+        "3-octanol": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.87584014767648,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.2413793103448276
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7715143372481812,
+            "n_channels_at_ceiling": 11,
+            "fraction_at_ceiling": 0.3793103448275862
+          }
+        },
+        "4-methylcyclohexanol": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.899487446765808,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.13793103448275862
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.827371072276229,
+            "n_channels_at_ceiling": 7,
+            "fraction_at_ceiling": 0.2413793103448276
+          }
+        },
+        "2-heptanone": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9444539962193497,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.3103448275862069
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7609598177528356,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.41379310344827586
+          }
+        },
+        "benzaldehyde": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8538992619800063,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.20689655172413793
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6500604645467041,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.41379310344827586
+          }
+        },
+        "2,3-butanedione": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.8828364156187979,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.20689655172413793
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.6645926476395154,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.3448275862068966
+          }
+        },
+        "methyl_salicylate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.7081862145096625,
+            "n_channels_at_ceiling": 4,
+            "fraction_at_ceiling": 0.13793103448275862
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.5616141131896765,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.3103448275862069
+          }
+        },
+        "ethyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 1.0,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.928470647929657,
+            "n_channels_at_ceiling": 6,
+            "fraction_at_ceiling": 0.20689655172413793
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7788098928995599,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.3103448275862069
+          }
+        },
+        "1-hexanol": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999998,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9429450064984772,
+            "n_channels_at_ceiling": 9,
+            "fraction_at_ceiling": 0.3103448275862069
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.8201810818151944,
+            "n_channels_at_ceiling": 14,
+            "fraction_at_ceiling": 0.4827586206896552
+          }
+        },
+        "isopentyl_acetate": {
+          "1.0": {
+            "r_vs_conc_1": 0.9999999999999999,
+            "n_channels_at_ceiling": 0,
+            "fraction_at_ceiling": 0.0
+          },
+          "5.0": {
+            "r_vs_conc_1": 0.9316926913021475,
+            "n_channels_at_ceiling": 10,
+            "fraction_at_ceiling": 0.3448275862068966
+          },
+          "10.0": {
+            "r_vs_conc_1": 0.7932856444074354,
+            "n_channels_at_ceiling": 12,
+            "fraction_at_ceiling": 0.41379310344827586
+          }
+        }
+      }
+    }
+  },
+  "clip_survival_summary": {
+    "receptor_signed": {
+      "1.0": {
+        "mean_r_vs_conc_1": 1.0,
+        "mean_fraction_at_ceiling": 0.0
+      },
+      "5.0": {
+        "mean_r_vs_conc_1": 0.873138318023975,
+        "mean_fraction_at_ceiling": 0.18686868686868685
+      },
+      "10.0": {
+        "mean_r_vs_conc_1": 0.725274014783604,
+        "mean_fraction_at_ceiling": 0.3434343434343434
+      }
+    },
+    "receptor_relu_l2": {
+      "1.0": {
+        "mean_r_vs_conc_1": 1.0,
+        "mean_fraction_at_ceiling": 0.0
+      },
+      "5.0": {
+        "mean_r_vs_conc_1": 0.8731255733496703,
+        "mean_fraction_at_ceiling": 0.18686868686868685
+      },
+      "10.0": {
+        "mean_r_vs_conc_1": 0.7252459215507924,
+        "mean_fraction_at_ceiling": 0.3434343434343434
+      }
+    },
+    "pca20": {
+      "1.0": {
+        "mean_r_vs_conc_1": 1.0,
+        "mean_fraction_at_ceiling": 0.0
+      },
+      "5.0": {
+        "mean_r_vs_conc_1": 0.8470668861754205,
+        "mean_fraction_at_ceiling": 0.25
+      },
+      "10.0": {
+        "mean_r_vs_conc_1": 0.7454904457188595,
+        "mean_fraction_at_ceiling": 0.4041666666666666
+      }
+    },
+    "glomerular": {
+      "1.0": {
+        "mean_r_vs_conc_1": 1.0,
+        "mean_fraction_at_ceiling": 0.0
+      },
+      "5.0": {
+        "mean_r_vs_conc_1": 0.8815355245562787,
+        "mean_fraction_at_ceiling": 0.2241379310344828
+      },
+      "10.0": {
+        "mean_r_vs_conc_1": 0.7280295843325764,
+        "mean_fraction_at_ceiling": 0.3735632183908046
+      }
+    }
+  },
+  "rmse_vs_published": {
+    "receptor_signed": 0.17220671555475184,
+    "receptor_relu_l2": 0.17213113996621052,
+    "pca20": 0.4701651368863452,
+    "glomerular": 0.13542481725003286
+  },
+  "findings": {
+    "ordering_recoverable_by_any_projection": false,
+    "inversion_present_in_raw_receptor_data": true,
+    "inversion_described": "Campbell reports PA-EL 0.15 > BA-EL 0.11. The measured DoOR responses have BA-EL above PA-EL, so the inversion is in the input data, not in any projection.",
+    "pa_ba_largest_in_every_space": true,
+    "mean_pairwise_r": {
+      "receptor": 0.18445288692623046,
+      "pca20": 0.5026030780629863,
+      "glomerular": 0.2134071321673196
+    },
+    "similarity_inflation_vs_receptor_space": {
+      "pca20": 2.7248317249921703,
+      "glomerular": 1.1569736626169966
+    },
+    "relu_fraction_of_magnitude_kept": {
+      "pca20": 0.669817696943421,
+      "glomerular": 0.9978072895722733
+    },
+    "rmse_improvement_factor_glomerular_over_pca": 3.471779740476121
+  },
+  "prediction_before_rerun": {
+    "similarity": "expected to keep FAILING Part A; the ordering inversion is upstream in the receptor data",
+    "other_benchmarks": "expected to move, because inter-odour similarity falls by roughly the inflation factor above and a third of the discarded input magnitude is restored. Direction not predicted.",
+    "recorded": "before the ablation ladder was run",
+    "OUTCOME": "the similarity prediction was WRONG. Part A passed under the one-to-one projection with the published ordering (PA-BA 0.4678 > PA-EL 0.2518 > BA-EL 0.2215). The prediction reasoned from an input-space correlation to a KC-space one, and the PN-to-KC expansion plus rank threshold is a nonlinear transform that reorders pairs. The second half of the prediction, that other benchmarks would move without a predicted direction, held: discrimination also flipped to PASS and the suite went 2/5 -> 4/5. Recorded rather than edited out; see docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md."
+  },
+  "gate": "ORDERING_IS_UPSTREAM_BUT_PROJECTION_DISTORTS_STRUCTURE",
+  "verdict": "Two separate answers.\n\n(1) The ordering inversion exists in the INPUT data, not in the projection. Campbell reports PA-EL > BA-EL, and the untouched DoOR receptor responses have it the other way round (BA-EL 0.3656 against PA-EL 0.0331). So no projection can be blamed for losing it at the input stage. What IS correct in every space, including the raw data, is that PA-BA is the largest of the three pairs.\n\n    Note on scope, added after the ablation ladder was run: this is a statement about the INPUT space only, and it does not predict the benchmark. Similarity Part A scores KC-space correlations, and the PN-to-KC expansion plus the rank threshold is a nonlinear transform that can and does reorder pairs. An earlier version of this verdict predicted from the line above that Part A would keep failing. It was measured and that prediction was WRONG: under the one-to-one projection Part A passes with the published ordering (PA-BA 0.4678 > PA-EL 0.2518 > BA-EL 0.2215). See docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md. The lesson is that an input-space correlation does not bound a KC-space one, which this script already said under 'scored_on' and which the verdict then ignored.\n\n(2) The projection nevertheless distorts the similarity structure badly, and the repair fixes that. Three measurements, none of which depend on the Campbell triple:\n  * PCA inflates mean pairwise similarity across the 12-odorant panel from r = 0.1845 in the measured data to r = 0.5026, a factor of 2.72. It makes every odour look far more like every other odour than the recordings say. The one-to-one map gives r = 0.2134, a factor of 1.16.\n  * PCA plus ReLU keeps only 67.0 % of the projected response magnitude, discarding a third of the signal, because principal-component signs are arbitrary and the rectifier removes whichever half comes out negative. The one-to-one map keeps 99.8 %.\n  * Against the published Campbell values, RMSE is 0.4702 for PCA and 0.1354 for the one-to-one map, which is 3.5x closer. Two of the three pairs land almost on the published number (PA-BA 0.7939 against 0.70, PA-EL 0.1179 against 0.15).\n\nSo the repair is justified, but not for the reason originally hypothesised. It should be expected to change downstream correlations substantially, because it stops compressing the odour space and stops discarding a third of the input. Measured outcome: the suite went from 2/5 to 4/5, with discrimination and similarity both flipping to PASS and concentration invariance rising from r = 0.5417 to 0.6706.",
+  "config": {
+    "timestamp": "2026-09-05T06:43:15.928750+00:00",
+    "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+    "seed": null,
+    "duration_ms": null,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": null,
+    "dt_ms": null,
+    "projection_method": "sklearn_pca",
+    "reproducible": null,
+    "projection_explained_variance": 0.940047562122345,
+    "projection_magnitude_retained": 0.9471023128865558,
+    "projection_n_channels": 20,
+    "projection_channel_names": null,
+    "projection_report": null,
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "diagnose_glomerular_projection"
+  }
+}

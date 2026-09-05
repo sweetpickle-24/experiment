@@ -14,6 +14,46 @@ numbers.
 
 ## Files Needing Updates
 
+### Category: the receptor-to-channel projection and the neuron classifier (2026-09-04)
+
+Two heuristics stood in for information that was already in the dataset, and both
+now have a measured, citation-backed replacement available behind a flag. Neither
+is the default yet. See
+`docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md` and
+`results/final/glomerular_projection_diagnostic.json`.
+
+**The 40-to-20 PCA projection.** Measured on the 12-odorant panel: PCA inflates
+mean inter-odour similarity from r = 0.1845 in the measured receptor responses to
+r = 0.5026, a factor of 2.72, and its rectifier discards a third of the projected
+magnitude because principal-component signs are arbitrary. The published
+one-to-one map is 3.5x closer to Campbell et al. 2013 Fig 4C.
+
+- [ ] `ARCHITECTURE.md` - section 6 describes the forward path as "SVD projection
+      (40 -> 20 dimensions)" and section 12 as PCA; both should describe the
+      available projections and say which produced which result
+- [ ] `THESIS_DIGITAL_SMELL.md` and `thesis/` - any description of the 20-channel
+      glomerular code as biological. The 20 channels and their `GLOM_LABELS`
+      names (`ester_fruit`, `sulfur_mold`, ...) are not molecular classes; a
+      principal component is a direction of variance over the loaded odorant panel
+- [ ] `docs/02_architecture/SPARSE_CODING_THEORY.md` - check the input-stage
+      description
+
+**The neuron classifier over-matches.** `'AL' in group_str` matches 4,796 neurons
+where only 2,762 are annotated `AL`, because group strings are dot-separated
+neuropil lists and `LAL` contains `AL`. `'PN' in cell_types_str` sweeps in 93
+auditory `WEDPN` and 161 unnamed `CB` neurons.
+
+- [ ] Anything quoting **2,198 PNs** or **10,906 olfactory neurons** as anatomical
+      figures. Under strict classification they are 866 and 9,199. The loose
+      numbers are what every recorded result used, so they are correct as a
+      description of the runs and wrong as a description of the fly:
+      `README.md`, `ARCHITECTURE.md`, `.cursor/rules/Findings.mdc`,
+      `research/REAL_CONNECTOME_POLYGLOT_BENCHMARK.md`, `thesis/`
+- [ ] `hive/substrate/olfactory_subgraph.py` - `strict=True` should probably
+      become the default once a full ladder rung has been scored under it, at
+      which point every earlier result becomes incomparable and must be relabelled
+      rather than deleted
+
 ### Category: the engine is described as probabilistic, and it is not (2026-09-04)
 
 `var_amplitude` is set to 0.01 at initialisation and at every `reset` and is never

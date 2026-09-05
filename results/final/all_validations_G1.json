@@ -1,0 +1,254 @@
+{
+  "suite": "repaired olfactory validation suite",
+  "ablation_rung": "G1",
+  "note": "aggregated from the five per-benchmark result files so every number stays traceable to the run that produced it; each source file carries its own configuration block",
+  "backend_for_reporting": "NumPy",
+  "backend_rationale": "CPU, per the rule fixed before the run in results/final/cpu_vs_mlx_fullrun.json: CPU and MLX agree at 100 ms (Jaccard 0.9446, r 0.9901) but not beyond, with worst Jaccard 0.1030 and worst r 0.0650 over a 2000 ms trajectory",
+  "validations": {
+    "temporal_dynamics": {
+      "validation": "PASS",
+      "f8_validation": "FAIL",
+      "f8_detail": "adaptation 34.21 %, peak 200 ms",
+      "changed": true,
+      "measures": "whether the KC response has an onset within the first 200 ms and is phasic, which are the two things the Drosophila literature asserts about it",
+      "target_corrections": {
+        "removed": [
+          "peak time band 50-150 ms, attributed to Stopfer et al. 2003",
+          "adaptation band 30-70 %, attributed to Nagel & Wilson 2011"
+        ],
+        "why": [
+          "Stopfer, Jayaraman & Laurent (2003) Neuron 39:991-1004 is a LOCUST study of intensity-versus-identity coding using 50 ms bins. It contains no Drosophila KC peak-latency band and no 50-150 ms figure.",
+          "Nagel & Wilson (2011) Nat Neurosci 14:208-216 concerns ORN transduction and spike-generation filters. It contains no KC adaptation percentage.",
+          "This repository's README already records that the 50-150 ms band was not derived from a source: \"The 2026-03-19 temporal dynamics pass came from widening the peak-time band from 100 <= mean <= 500 to 50 <= mean <= 150 in the same editing session, not from a change in the measurement.\" A band moved to meet a result cannot be used to judge one."
+        ],
+        "replaced_with": "T1 onset within the first 200 ms (published and sourced) and T2 the response is phasic (published direction, tested for significance across trials)",
+        "note_on_removing_a_criterion": "peak time and adaptation magnitude are now reported but not scored, because no source gives a band for either in Drosophila KCs. Removing a criterion makes a benchmark easier to pass and that is stated plainly. The alternative was to keep scoring against a number that appears in no paper. T2 is in exchange stricter than the criterion it replaces, because it requires statistical significance across trials rather than a magnitude landing anywhere inside a 40-point window."
+      },
+      "summary": {
+        "T1_onset_within_200ms_all_odorants": true,
+        "T2_phasic_all_odorants": true,
+        "onset_ms_per_odorant": {
+          "benzaldehyde": 100.0,
+          "2-heptanone": 115.625,
+          "isopentyl_acetate": 65.625
+        },
+        "peak_time_ms_per_odorant_reported_not_scored": {
+          "benzaldehyde": 125.0,
+          "2-heptanone": 218.75,
+          "isopentyl_acetate": 350.0
+        },
+        "adaptation_percent_per_odorant_reported_not_scored": {
+          "benzaldehyde": 69.974417065002,
+          "2-heptanone": 36.722278184774105,
+          "isopentyl_acetate": 48.47399931905319
+        },
+        "phasic_p_per_odorant": {
+          "benzaldehyde": 0.00390625,
+          "2-heptanone": 0.00390625,
+          "isopentyl_acetate": 0.00390625
+        },
+        "validation": "PASS"
+      },
+      "source_file": "temporal_G1.json",
+      "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    },
+    "odor_mixtures": {
+      "validation": "PASS",
+      "f8_validation": "PASS",
+      "f8_detail": "30.06 % overlap",
+      "changed": false,
+      "measures": "whether KC recruitment by a binary mixture is sub-additive relative to the linear sum of its components",
+      "target_corrections": {
+        "removed": "mean KC overlap in [30, 50] %",
+        "why": "attributed to Stettler & Axel 2009 and Deisig et al. 2006, neither of which is a Drosophila mushroom-body measurement (mouse piriform cortex and honeybee antennal lobe respectively). No source for a 30-50 % KC overlap band in Drosophila was found. The old test also used exactly one mixture, formed from the first two of three suite odorants, and the F8 result of 30.06 % sat 0.06 points inside the band.",
+        "replaced_with": "sub-additivity of mixture KC recruitment relative to the linear sum, on both odour pairs Honegger et al. 2011 Fig 7 reports",
+        "retained_as_secondary": "the overlap percentage is still computed and reported, with its citation flagged as non-Drosophila, so the old number remains comparable"
+      },
+      "summary": {
+        "subadditivity_index_per_pair": {
+          "3-octanol+4-methylcyclohexanol": 0.4538146969297738,
+          "2-heptanone+pentyl_acetate": 0.48572729894636746
+        },
+        "subadditive_per_pair": {
+          "3-octanol+4-methylcyclohexanol": true,
+          "2-heptanone+pentyl_acetate": true
+        },
+        "published_subadditivity_index": 0.7333333333333334,
+        "legacy_overlap_percent_per_pair": {
+          "3-octanol+4-methylcyclohexanol": 53.125,
+          "2-heptanone+pentyl_acetate": 67.42424242424242
+        },
+        "n_pairs_subadditive": 2,
+        "n_pairs": 2,
+        "validation": "PASS"
+      },
+      "source_file": "mixtures_G1.json",
+      "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    },
+    "discrimination": {
+      "validation": "PASS",
+      "f8_validation": "FAIL",
+      "f8_detail": "JND 5.0 %, target 10-20 %",
+      "changed": true,
+      "measures": "whether KC pattern discriminability weakens along a blend series in the published psychometric order, judged against the model's own trial-to-trial replicate distribution",
+      "target_corrections": {
+        "removed": "JND in 10-20 %, cited as \"Weber's law, Bodyak & Bhatt 2001\"",
+        "why": [
+          "THE CITATION DOES NOT EXIST. No paper by Bodyak and Bhatt in 2001 on this subject could be located. The nearest real work is Bodyak N & Slotnick B (1999) Chem Senses 24:637-645, a MOUSE olfactometer study. This repository's own Findings.mdc already records that the 10-20 % figure \"was rodent data, not validated in flies\".",
+          "No published Drosophila concentration JND at 5-25 % resolution exists.",
+          "The measurement was unfalsifiable as built: every delta in the 5-25 % sweep scored discriminable for every odour, so the reported JND was always 5 %, the smallest delta swept. The JND was set by where the sweep started.",
+          "The fixed 0.9 discriminability threshold sits far above this model's same-stimulus replicate correlation of about r = 0.54, so the old test would call a stimulus discriminable from itself. Correlations of 0.36, 0.45, 0.37 and 0.20 were scored as discriminable while lying below the noise floor."
+        ],
+        "replaced_with": "Campbell et al. 2013 Fig 2A-B blend-ratio series (100:0, 70:30, 60:40), the published Drosophila fine-discrimination benchmark, scored on the psychometric ordering against the model's own replicate distribution",
+        "secondary_added": "Xia & Tully 2007 two-fold intensity step, the one published Drosophila intensity-discrimination result, scored separately"
+      },
+      "summary": {
+        "blend_correlations": {
+          "100:0 vs 0:100": 0.08701958917326366,
+          "70:30 vs 30:70": 0.3297356928613516,
+          "60:40 vs 40:60": 0.4111820327566858
+        },
+        "blend_separable": {
+          "100:0 vs 0:100": true,
+          "70:30 vs 30:70": true,
+          "60:40 vs 40:60": true
+        },
+        "primary_passed": true,
+        "secondary_passed": false,
+        "validation": "PASS"
+      },
+      "source_file": "discrimination_G1.json",
+      "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    },
+    "similarity": {
+      "validation": "PASS",
+      "f8_validation": "FAIL",
+      "f8_detail": "chem-neural correlation -0.1204",
+      "changed": true,
+      "measures": "whether KC pattern similarity is graded and ordered as Campbell et al. 2013 measured it, and whether the KC layer decorrelates its input as Turner et al. 2008 measured it",
+      "target_corrections": {
+        "removed": "chem-neural correlation in [0.3, 0.5]",
+        "why": "the band is attributed to Bhandawat et al. 2007 and Mathew et al. 2013 and appears in neither. Mathew et al. 2013 is a screen of 21 larval ORNs against ~500 odorants and reports no chemical-versus-neural similarity correlation. No source for a 0.3-0.5 band was found. It was also computed from three odorants, hence three pairs, leaving one residual degree of freedom: the same code produced r = -0.97, -0.99 and -0.12 across the F4, F5 and F8 runs.",
+        "replaced_with": "two published measurements with published numbers: Campbell et al. 2013 Fig 4C (PA-BA r = 0.70 > PA-EL 0.15 and BA-EL 0.11, one-way ANOVA + Tukey, n = 24) and Turner et al. 2008 Fig 5 (KC angular separation greater than input for 24/28 pairs, Wilcoxon signed-rank P < 1e-4)",
+        "power": "Part A uses 3 pairs x 8 trials; Part B uses 66 pairs. The removed test used 3 single values."
+      },
+      "summary": {
+        "part_a_passed": true,
+        "part_b_passed": true,
+        "part_a_pa_ba_r": 0.46780376868392143,
+        "part_a_pa_el_r": 0.2517756169615369,
+        "part_a_ba_el_r": 0.22148118500046785,
+        "part_b_fraction_kc_greater": 0.8484848484848485,
+        "validation": "PASS"
+      },
+      "source_file": "similarity_G1.json",
+      "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    },
+    "learning": {
+      "validation": "FAIL",
+      "f8_validation": "PASS",
+      "f8_detail": "MBON 0.03327 -> 0.0000044 (99.99 %), KC 316 -> 315",
+      "changed": true,
+      "measures": "signed, dopamine-gated, odour-specific depression of the MBON response to a paired odour",
+      "target_corrections": {
+        "removed": "MIN_CHANGE_PCT = 1.0 on |MBON_post - MBON_pre|",
+        "why": "unsigned and directionless, so it passed on a 99.99 % collapse of the MBON response (0.03327 -> 0.0000044) caused by the `w /= max(w)` renormalisation in _apply_hebbian_stdp, which updated all 446,388 synapses in the network. A signal dying is not a memory forming and a 1 % unsigned threshold cannot distinguish them. Hige et al. 2015 measures a signed depression that requires dopaminergic pairing and is odour-specific; none of those three was tested.",
+        "replaced_with": "three criteria taken from the paper: depression is signed, requires dopamine, and spares a non-overlapping odour"
+      },
+      "summary": {
+        "readout": "KC->MBON coupling current",
+        "rule_variant_scored": "thresholded",
+        "paired_odor_depression_pct": 18.958485699140454,
+        "control_odor_depression_pct": 17.290962006797773,
+        "odor_only_paired_depression_pct": 0.0,
+        "per_variant_validation": {
+          "thresholded": "FAIL",
+          "raw": "PASS"
+        },
+        "specificity_power": {
+          "observed_mean_difference": 0.009277587984727678,
+          "pooled_sd": 0.01083125067464802,
+          "cohens_d": 0.8565574062876326,
+          "alpha": 0.05,
+          "target_power": 0.8,
+          "required_n_per_group": 17,
+          "n_used": 8,
+          "method": "two-sample one-sided normal approximation, n = 2 * ((z_alpha + z_power) / d)^2",
+          "note": "computed from the observed effect, so it is a consequence of the measurement, not a choice. Does not alter the verdict at the declared n."
+        },
+        "depression_ceiling_pct": 18.826112883689017,
+        "published_comparison": "Hige et al. 2015 charge transfer 90.0 +/- 3.7 %, spike rate 80.0 +/- 5.7 %",
+        "n_criteria_passed": 2,
+        "validation": "FAIL"
+      },
+      "source_file": "learning_G1.json",
+      "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    }
+  },
+  "unscored": {
+    "concentration_invariance": {
+      "summary": {
+        "pattern_correlation_mean": 0.6706153636249317,
+        "n_concentration_pairs": 50,
+        "n_odorants": 5,
+        "pattern_correlation_has_no_published_threshold": true,
+        "sparseness_pinned_by_readout": true,
+        "sparseness_spread_max_minus_min": 0.0,
+        "pinned_sparseness_value": 0.059859821935972723,
+        "n_kc_total": 5279,
+        "n_kc_active_pinned": 316,
+        "previously_reported": {
+          "F8_run": 0.2719,
+          "published_claim_now_withdrawn": 0.7244,
+          "withdrawn_because": "the 0.7244 mean included isoamyl acetate, which is absent from the DoOR matrix and returned a zero vector that self-correlates at exactly 1.0000 across all ten concentration pairs; on real odorants only the same run gives 0.5866. See README.md."
+        }
+      },
+      "why_not_scored": "reported separately, as the repository has always treated it, and because neither quantity below can be scored against a published Drosophila number: the correlation has no published threshold, and the sparseness the published paper measured is pinned to a constant by this readout.",
+      "source_file": "concentration_invariance_G1.json"
+    }
+  },
+  "config_agreement": {
+    "keys_checked": [
+      "backend",
+      "dt_ms",
+      "projection_method",
+      "glomerular_mapping",
+      "gamma",
+      "sigma_noise",
+      "num_neurons",
+      "projection_explained_variance",
+      "door_matrix_synthetic"
+    ],
+    "mismatches": null,
+    "git_commit_per_benchmark": {
+      "temporal_dynamics": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+      "odor_mixtures": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+      "discrimination": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+      "similarity": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+      "learning": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty"
+    }
+  },
+  "score": {
+    "passed": 4,
+    "total": 5
+  },
+  "f8_baseline_score": {
+    "passed": 2,
+    "total": 5
+  },
+  "config": {
+    "timestamp": "2026-09-05T17:15:50.903030+00:00",
+    "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+    "seed": null,
+    "duration_ms": null,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": null,
+    "projection_method": null,
+    "reproducible": null,
+    "suite": "run_repaired_suite",
+    "n_benchmarks": 5
+  }
+}

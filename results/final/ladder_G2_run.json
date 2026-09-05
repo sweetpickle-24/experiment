@@ -1,0 +1,70 @@
+{
+  "rung": "G2",
+  "label": "G1 + strict neuron classification",
+  "environment": {
+    "FLYBRAIN_PROJECTION": "glomerular",
+    "FLYBRAIN_GLOM_MAPPING": "glomerulus",
+    "FLYBRAIN_STRICT": "1"
+  },
+  "benchmarks": {
+    "temporal": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 1852.0,
+      "output": "temporal_G2.json",
+      "stderr_tail": null
+    },
+    "mixtures": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 172.9,
+      "output": "mixtures_G2.json",
+      "stderr_tail": null
+    },
+    "discrimination": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 233.2,
+      "output": "discrimination_G2.json",
+      "stderr_tail": null
+    },
+    "similarity": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 459.3,
+      "output": "similarity_G2.json",
+      "stderr_tail": null
+    },
+    "learning": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 5440.4,
+      "output": "learning_G2.json",
+      "stderr_tail": null
+    },
+    "concentration_invariance": {
+      "status": "ok",
+      "returncode": 0,
+      "elapsed_s": 769.3,
+      "output": "concentration_invariance_G2.json",
+      "stderr_tail": null
+    }
+  },
+  "total_elapsed_s": 8927.0,
+  "failed": [],
+  "score_returncode": 0,
+  "config": {
+    "timestamp": "2026-09-05T16:43:08.163384+00:00",
+    "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+    "seed": null,
+    "duration_ms": null,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": null,
+    "dt_ms": null,
+    "projection_method": null,
+    "reproducible": null,
+    "suite": "run_glomerular_ladder"
+  }
+}

@@ -138,13 +138,22 @@ class DoorClient:
     - Map 40 receptors → 20 glomerular channels
     """
     
-    #: Projections this client can build. 'sklearn_pca' is the documented and
-    #: default path. 'uncentered_svd' is retained only so the pre-2026-09-03
-    #: runs remain reproducible for comparison; it is not PCA.
-    PROJECTIONS = ('sklearn_pca', 'uncentered_svd')
+    #: Projections this client can build.
+    #:
+    #: 'glomerular'     The published one-to-one receptor->glomerulus assignment
+    #:                  (Couto et al. 2005 Table 1), which is what the animal
+    #:                  does. Channel count follows the map, not a parameter.
+    #: 'sklearn_pca'    Mean-centred PCA into a fixed number of components. The
+    #:                  historical default; a computational choice with no
+    #:                  biological counterpart. See the module
+    #:                  hive/data/receptor_glomerulus_map.py for the four ways it
+    #:                  damages the input, all measured.
+    #: 'uncentered_svd' Retained only so pre-2026-09-03 runs remain reproducible.
+    #:                  Not PCA.
+    PROJECTIONS = ('sklearn_pca', 'uncentered_svd', 'glomerular')
 
     def __init__(self, data_dir='data', allow_synthetic=False,
-                 projection='sklearn_pca'):
+                 projection='sklearn_pca', restrict_glomeruli=None):
         """
         Initialize DOoR client.
         
@@ -159,6 +168,16 @@ class DoorClient:
                 absent rather than silently substituting something else.
                 'uncentered_svd' explicitly requests the old fallback, for
                 reproducing pre-2026-09-03 numbers.
+                'glomerular' uses the published one-to-one receptor-to-
+                glomerulus assignment instead of a learned basis. The channel
+                count is then a property of the map and of which glomeruli have
+                projection neurons, not a free parameter, so n_components is
+                ignored.
+            restrict_glomeruli: glomerulus names to keep as channels, used only
+                by projection='glomerular'. Defaults to the glomeruli that have
+                annotated uniglomerular PNs in the connectome, because a channel
+                with no neuron to drive would occupy a slot and contribute
+                nothing. Pass an empty sequence to disable the restriction.
         """
         if projection not in self.PROJECTIONS:
             raise ValueError(
@@ -171,11 +190,29 @@ class DoorClient:
         self.receptor_names = DOOR_RECEPTORS
         self.pca_projection = None
         self.projection = projection
+        self.restrict_glomeruli = restrict_glomeruli
         # Set by _compute_pca_projection on first use, and always equal to
-        # self.projection. Recorded in result files; the two projections are
-        # not equivalent.
+        # self.projection. Recorded in result files; the projections are not
+        # equivalent to each other.
         self.projection_method = None
         self.projection_explained_variance = None
+        #: Fraction of squared response magnitude the projection retains,
+        #: computed identically for all three projections. Unlike
+        #: projection_explained_variance, which for PCA is
+        #: explained_variance_ratio_ and has no counterpart for a lookup, this is
+        #: defined the same way everywhere and is therefore the field to compare
+        #: projections on.
+        self.projection_magnitude_retained = None
+        #: Channel names, only populated for projection='glomerular'. None for
+        #: the PCA paths, where a component has no name because it has no
+        #: biological referent.
+        self.channel_names = None
+        #: Number of channels the projection produces, set on first use.
+        self.n_channels = None
+        #: Coverage report from the glomerular map: which receptors were mapped,
+        #: which were excluded and why, which channels were dropped for having
+        #: no projection neurons. None for the PCA paths.
+        self.projection_report = None
         self.is_synthetic = False
         self.allow_synthetic = allow_synthetic
         
@@ -344,19 +381,22 @@ class DoorClient:
     
     def map_to_glomerular_pattern(self, receptor_response: np.ndarray, n_components=20) -> np.ndarray:
         """
-        Map 40 DOoR receptors → 20 glomerular channels.
-        
-        Uses PCA projection to reduce dimensionality while preserving
-        information content.
-        
+        Map receptor responses onto glomerular channels.
+
         Args:
-            receptor_response: 40-dim receptor response
-            n_components: Number of glomerular channels (default: 20)
-        
+            receptor_response: response vector, one entry per receptor in the
+                loaded matrix.
+            n_components: number of channels, for the two PCA-style projections
+                only. **Ignored when projection='glomerular'**, where the channel
+                count is determined by how many glomeruli the published map
+                reaches and which of those have projection neurons.
+
         Returns:
-            20-dim glomerular pattern
+            Glomerular pattern, length ``self.n_channels``. Rectified to be
+            non-negative and L2 normalised, identically for every projection, so
+            that a comparison between projections isolates the projection.
         """
-        # Compute PCA projection matrix (once)
+        # Build the projection matrix (once)
         if self.pca_projection is None:
             self._compute_pca_projection(n_components)
         
@@ -385,10 +425,15 @@ class DoorClient:
         Which projection runs is decided by self.projection, set in __init__,
         NOT by whether scikit-learn happens to be importable:
 
-        'sklearn_pca'    Default. PCA.fit subtracts the column mean before
-                         decomposing, so the components are the principal axes
-                         of variation about the mean response. Raises if
-                         scikit-learn is absent.
+        'glomerular'     The published one-to-one receptor->glomerulus map. Not
+                         learned from the data at all: it is a lookup, because in
+                         the animal every sensory neuron expressing a given
+                         receptor converges on one glomerulus. Channel count
+                         follows the map. Measured against the two PCA paths in
+                         results/final/glomerular_projection_diagnostic.json.
+        'sklearn_pca'    PCA.fit subtracts the column mean before decomposing, so
+                         the components are the principal axes of variation about
+                         the mean response. Raises if scikit-learn is absent.
         'uncentered_svd' SVD of the raw response matrix with no mean-centering.
                          On a non-negative matrix the leading right singular
                          vector points along the mean response, so one of the
@@ -396,17 +441,22 @@ class DoorClient:
                          the remainder are not the principal axes of variation.
                          Retained only to reproduce pre-2026-09-03 numbers.
 
-        These give different 20-dim patterns, hence different KC activity and
-        different downstream correlations. Until 2026-09-03 the choice was made
-        implicitly by an ImportError handler, so an environment without
-        scikit-learn silently produced uncentered SVD while every docstring and
-        result file said PCA. The selection is now explicit and a missing
-        dependency is an error, not a substitution.
+        These give different patterns, hence different KC activity and different
+        downstream correlations. Until 2026-09-03 the choice was made implicitly
+        by an ImportError handler, so an environment without scikit-learn
+        silently produced uncentered SVD while every docstring and result file
+        said PCA. The selection is now explicit and a missing dependency is an
+        error, not a substitution.
         """
         logger.info(
-            "Computing receptor->glomerular projection: %d -> %d dimensions (%s)",
-            len(self.receptor_names), n_components, self.projection,
+            "Computing receptor->glomerular projection: %d receptors (%s)",
+            len(self.receptor_names), self.projection,
         )
+
+        if self.projection == 'glomerular':
+            self._compute_glomerular_projection()
+            self._record_magnitude_retained()
+            return
 
         if self.projection == 'sklearn_pca':
             try:
@@ -428,6 +478,7 @@ class DoorClient:
             self.pca_projection = pca.components_.T  # shape: (n_receptors, n_components)
             self.projection_method = 'sklearn_pca'
             self.projection_explained_variance = float(np.sum(pca.explained_variance_ratio_))
+            self.n_channels = int(self.pca_projection.shape[1])
 
             logger.info(
                 "Projection: sklearn PCA (mean-centred), %.1f%% variance explained",
@@ -442,6 +493,7 @@ class DoorClient:
 
             self.pca_projection = Vt[:n_components].T  # shape: (n_receptors, n_components)
             self.projection_method = 'uncentered_svd'
+            self.n_channels = int(self.pca_projection.shape[1])
 
             total_var = float(np.sum(S ** 2))
             self.projection_explained_variance = (
@@ -455,7 +507,112 @@ class DoorClient:
                 "axes of variation (%.1f%% of squared magnitude retained).",
                 self.projection_explained_variance * 100,
             )
+
+        self._record_magnitude_retained()
+
+    def _record_magnitude_retained(self):
+        """
+        Fraction of squared response magnitude the projection retains.
+
+        Computed the same way for every projection, which
+        ``projection_explained_variance`` is not: for PCA that field is
+        ``explained_variance_ratio_``, and a lookup table has no eigenvalues to
+        report. Recorded separately rather than overwriting the existing field,
+        because older result files carry the PCA meaning and a consumer needs to
+        be able to compare eras.
+        """
+        matrix = np.asarray(self.response_matrix, dtype=np.float64)
+        total = float(np.sum(matrix ** 2))
+        retained = float(np.sum((matrix @ self.pca_projection) ** 2))
+        self.projection_magnitude_retained = (
+            retained / total if total > 0 else 0.0)
     
+    def _compute_glomerular_projection(self):
+        """
+        Build the one-to-one receptor -> glomerulus projection.
+
+        This is a lookup, not a decomposition. Every olfactory sensory neuron
+        expresses one tuning receptor and all neurons expressing the same
+        receptor converge on a single glomerulus (Vosshall et al. 2000), so the
+        assignment is published rather than learned: Couto, Alenius & Dickson
+        (2005) Curr Biol 15:1535-1547, Table 1. See
+        hive/data/receptor_glomerulus_map.py for the per-receptor citations and
+        for the exclusion rule.
+
+        Channel count is a *consequence*, not a parameter. It is the number of
+        glomeruli that (a) the map reaches from a receptor with data in this
+        matrix and (b) have annotated uniglomerular projection neurons in the
+        connectome. Channels failing (b) are dropped, because a channel with no
+        neuron to drive would occupy a slot in the stimulus vector and
+        contribute nothing.
+
+        A lookup table has no eigenvalues, so there is no
+        explained-variance-ratio to report. Both fields are still filled:
+        `projection_explained_variance` gets the retained squared magnitude so
+        the field is never None, and `projection_magnitude_retained` gets the
+        same figure computed the same way as for the PCA paths, which is the
+        field to compare projections on.
+        """
+        from .receptor_glomerulus_map import (
+            annotated_glomeruli, build_projection,
+        )
+
+        restrict = self.restrict_glomeruli
+        if restrict is None:
+            restrict = annotated_glomeruli() or None
+            if restrict is None:
+                logger.warning(
+                    "No connectome cell-type annotations found, so glomerular "
+                    "channels are NOT restricted to glomeruli that have "
+                    "projection neurons. Some channels may drive nothing."
+                )
+        elif len(restrict) == 0:
+            restrict = None
+
+        projection, channels, report = build_projection(
+            self.receptor_names, restrict_to=restrict)
+
+        if not channels:
+            raise RuntimeError(
+                "projection='glomerular' produced no channels: none of the "
+                f"{len(self.receptor_names)} receptors in the loaded matrix has "
+                "a sourced glomerular assignment that also has projection "
+                "neurons. Check that the DoOR matrix receptor names match "
+                "hive/data/receptor_glomerulus_map.RECEPTOR_GLOMERULUS."
+            )
+
+        self.pca_projection = projection
+        self.projection_method = 'glomerular'
+        self.channel_names = list(channels)
+        self.n_channels = len(channels)
+        self.projection_report = report
+
+        # Fraction of squared response magnitude retained. Defined for any
+        # linear projection, so it is comparable across all three paths.
+        matrix = np.asarray(self.response_matrix, dtype=np.float64)
+        total = float(np.sum(matrix ** 2))
+        retained = float(np.sum((matrix @ projection) ** 2))
+        self.projection_explained_variance = (
+            retained / total if total > 0 else 0.0)
+
+        logger.info(
+            "Projection: one-to-one glomerular, %d/%d receptors mapped -> %d "
+            "channels, %.1f%% of squared magnitude retained",
+            report['n_receptors_mapped'], len(self.receptor_names),
+            self.n_channels, self.projection_explained_variance * 100,
+        )
+        if report['unmapped_receptors']:
+            logger.info(
+                "Receptors excluded from the glomerular map: %s",
+                ", ".join(sorted(report['unmapped_receptors'])),
+            )
+        if report['channels_dropped_no_projection_neurons']:
+            logger.warning(
+                "Glomeruli dropped for having no annotated projection "
+                "neurons: %s",
+                report['channels_dropped_no_projection_neurons'],
+            )
+
     def get_glomerular_pattern(self, odorant_name: str) -> np.ndarray:
         """
         Get glomerular pattern directly for an odorant.

@@ -1,0 +1,76 @@
+{
+  "table": {
+    "G0_F9_baseline": {
+      "projection": "sklearn_pca",
+      "pn_mapping": "position",
+      "validations": {
+        "temporal_dynamics": "PASS",
+        "odor_mixtures": "PASS",
+        "discrimination": "FAIL",
+        "similarity": "FAIL",
+        "learning": "FAIL"
+      },
+      "score": [
+        2,
+        5
+      ],
+      "invariance_r": 0.5417411964307352,
+      "num_neurons": 10906,
+      "n_channels": null
+    },
+    "G1": {
+      "projection": "glomerular",
+      "pn_mapping": "glomerulus",
+      "validations": {
+        "temporal_dynamics": "PASS",
+        "odor_mixtures": "PASS",
+        "discrimination": "PASS",
+        "similarity": "PASS",
+        "learning": "FAIL"
+      },
+      "score": [
+        4,
+        5
+      ],
+      "invariance_r": 0.6706153636249317,
+      "num_neurons": 10906,
+      "n_channels": 29
+    },
+    "G2": {
+      "projection": "glomerular",
+      "pn_mapping": "glomerulus",
+      "validations": {
+        "temporal_dynamics": "PASS",
+        "odor_mixtures": "PASS",
+        "discrimination": "PASS",
+        "similarity": "PASS",
+        "learning": "PASS"
+      },
+      "score": [
+        5,
+        5
+      ],
+      "invariance_r": 0.6602911310854799,
+      "num_neurons": 9199,
+      "n_channels": 29
+    }
+  },
+  "rungs": {
+    "G1": "glomerular projection + glomerulus PN assignment",
+    "G2": "G1 + strict neuron classification"
+  },
+  "config": {
+    "timestamp": "2026-09-05T17:15:51.463697+00:00",
+    "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+    "seed": null,
+    "duration_ms": null,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": null,
+    "dt_ms": null,
+    "projection_method": null,
+    "reproducible": null,
+    "suite": "run_glomerular_ladder_compare"
+  }
+}

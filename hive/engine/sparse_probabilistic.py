@@ -101,14 +101,22 @@ class SparseProbabilisticBrain:
     DEFAULT_AMPLITUDE_MIN = 0.0
     DEFAULT_AMPLITUDE_MAX = 1.0e4
 
-    #: How glomerular channels are mapped onto projection neurons. 'position'
-    #: clusters PNs by connectome coordinates; 'index' is the pre-2026-09-03
-    #: assignment by position in the neuron list. See
-    #: _build_pn_channel_assignment.
-    GLOMERULAR_MAPPINGS = ('position', 'index')
+    #: How glomerular channels are mapped onto projection neurons.
+    #:
+    #: 'glomerulus' uses the connectome's own cell-type annotations, so channel
+    #:              k drives exactly the PNs labelled with glomerulus k. Requires
+    #:              channel names, i.e. DoorClient(projection='glomerular').
+    #: 'position'   clusters PNs by connectome coordinates with k-means, as a
+    #:              spatial proxy for glomerular identity.
+    #: 'index'      the pre-2026-09-03 assignment by position in the neuron list,
+    #:              which carries no anatomical meaning at all.
+    #:
+    #: See _build_pn_channel_assignment.
+    GLOMERULAR_MAPPINGS = ('glomerulus', 'position', 'index')
 
     def __init__(self, connectome, config=None, use_mlx=True, fast_mode=False,
-                 glomerular_mapping='position'):
+                 glomerular_mapping='position', channel_names=None,
+                 strict_classification=False):
         """
         Initialise sparse probabilistic brain.
 
@@ -127,6 +135,18 @@ class SparseProbabilisticBrain:
                          dt=0.1 ms.  Suitable for real-time demos; not used
                          during biological validation runs. An explicit 'dt' in
                          config takes precedence over fast_mode.
+            channel_names : glomerulus names for the stimulus channels, in
+                         channel order, as produced by
+                         DoorClient(projection='glomerular').channel_names.
+                         Required by glomerular_mapping='glomerulus', which needs
+                         to know which glomerulus each channel *is* in order to
+                         find its projection neurons. Ignored by the other two
+                         mappings, which do not use channel identity.
+            strict_classification : forwarded to classify_olfactory_neuron when
+                         resolving region membership. **Must match whatever was
+                         passed to extract_olfactory_pathway**, or the engine's
+                         idea of which neurons are PNs will differ from the set
+                         the subgraph was built from.
         """
         print("\n" + "="*70)
         print("SPARSE PROBABILISTIC BRAIN (Memory Efficient)")
@@ -142,8 +162,22 @@ class SparseProbabilisticBrain:
                 f"Unknown glomerular_mapping {glomerular_mapping!r}; "
                 f"expected one of {self.GLOMERULAR_MAPPINGS}."
             )
+        if glomerular_mapping == 'glomerulus' and not channel_names:
+            raise ValueError(
+                "glomerular_mapping='glomerulus' needs channel_names so it can "
+                "tell which glomerulus each channel is. Pass "
+                "DoorClient(projection='glomerular').channel_names, or use "
+                "glomerular_mapping='position' for the k-means spatial proxy."
+            )
         self.glomerular_mapping = glomerular_mapping
+        self.channel_names = list(channel_names) if channel_names else None
+        self.strict_classification = bool(strict_classification)
         self._pn_channel_source = None
+        #: Filled by _build_pn_channel_assignment: how many PNs each channel
+        #: drives, and which PNs could not be placed. Recorded rather than
+        #: assumed, because an unplaced PN driven by the wrong channel is a
+        #: silent defect.
+        self.channel_assignment_report = None
 
         unknown = set(self.config) - self._RECOGNISED_CONFIG_KEYS
         if unknown:
@@ -209,15 +243,20 @@ class SparseProbabilisticBrain:
         self._odor_stimulus = None
         self._stim_step = 0
         self._pn_idx_cache = None
-        self._stim_n_channels = NUM_GLOM_CHANNELS
+        # Channel count follows channel_names when they were supplied, because a
+        # glomerular projection produces however many channels the published map
+        # reaches (29 at the time of writing), not the 20-channel default.
+        n_channels = (len(self.channel_names) if self.channel_names
+                      else NUM_GLOM_CHANNELS)
+        self._stim_n_channels = n_channels
         self._stim_channel_of_neuron, self._stim_pn_mask = \
-            self._build_pn_channel_assignment(NUM_GLOM_CHANNELS)
+            self._build_pn_channel_assignment(n_channels)
         self._stim_chan_mx = None
         self._stim_mask_mx = None
         self._sync_stimulus_maps()
-        self._zero_stim_row = (mx.zeros(NUM_GLOM_CHANNELS, dtype=mx.float32)
+        self._zero_stim_row = (mx.zeros(n_channels, dtype=mx.float32)
                                if self.use_mlx
-                               else np.zeros(NUM_GLOM_CHANNELS, dtype=np.float32))
+                               else np.zeros(n_channels, dtype=np.float32))
 
         # ── Build compiled step (JIT) if MLX available ───────────────────
         self._compiled_step = None
@@ -787,7 +826,8 @@ class SparseProbabilisticBrain:
         pn_id_set = set()
         if hasattr(self.connectome, 'neurons'):
             for nid, neuron in self.connectome.neurons.items():
-                if classify_olfactory_neuron(neuron) == 'PN':
+                if classify_olfactory_neuron(
+                        neuron, strict=self.strict_classification) == 'PN':
                     pn_id_set.add(nid)
 
         pn_indices = np.array(
@@ -811,14 +851,30 @@ class SparseProbabilisticBrain:
         and mask 0, which is cheaper than a branch and keeps the compiled graph
         shape-static.
 
-        Two assignments are available, selected by self.glomerular_mapping:
+        Three assignments are available, selected by self.glomerular_mapping:
 
-        'position'  (default) Cluster PNs by their connectome coordinates with
-                    GlomerularMapper, so one channel drives one spatially
-                    coherent group of projection neurons. A glomerulus is a
-                    spatially localised unit in the antennal lobe, and the PNs
-                    of a glomerulus are the ones sharing an ORN type, so
-                    position is the available proxy for glomerular identity.
+        'glomerulus' Read the glomerulus straight off the connectome's cell-type
+                    annotation. Uniglomerular olfactory PNs are named
+                    ``<GLOMERULUS>_<subtype>PN`` in the FlyWire annotations -
+                    ``DA1_lPN``, ``DM2_adPN``, ``VM5d_adPN`` - so channel k,
+                    which *is* a named glomerulus under
+                    DoorClient(projection='glomerular'), drives exactly the PNs
+                    labelled with that glomerulus. No clustering and no proxy:
+                    this is the mapping the animal has.
+
+                    PNs whose annotation names no glomerulus - multiglomerular
+                    ``M_*`` PNs, and anything the type string does not identify -
+                    cannot be assigned to one channel and are dropped from the
+                    drive rather than defaulted to channel 0. The count is
+                    reported.
+
+        'position'  (previous default) Cluster PNs by their connectome
+                    coordinates with GlomerularMapper, so one channel drives one
+                    spatially coherent group of projection neurons. A glomerulus
+                    is a spatially localised unit in the antennal lobe, and the
+                    PNs of a glomerulus are the ones sharing an ORN type, so
+                    position is a proxy for glomerular identity. It is only a
+                    proxy: k-means knows nothing about glomerular boundaries.
 
         'index'     The pre-2026-09-03 behaviour: channel = floor(local_rank /
                     pns_per_ch), where local_rank is the neuron's position in
@@ -834,7 +890,15 @@ class SparseProbabilisticBrain:
         pn_mask = np.zeros(self.num_neurons, dtype=np.float32)
         pn_mask[pn_indices] = 1.0
 
-        if self.glomerular_mapping == 'position':
+        if self.glomerular_mapping == 'glomerulus':
+            result = self._assign_by_glomerulus_annotation(
+                pn_indices, channel_of_neuron, pn_mask, n_channels)
+            if result is not None:
+                return result
+            print("  No PN could be assigned from its glomerulus annotation; "
+                  "falling back to position clustering")
+
+        if self.glomerular_mapping in ('glomerulus', 'position'):
             from ..interface.olfactory import GlomerularMapper
 
             pn_ids = [self.neuron_ids[i] for i in pn_indices]
@@ -860,6 +924,13 @@ class SparseProbabilisticBrain:
                     print(f"  {unplaced} PN(s) had no connectome position and are "
                           f"excluded from the odour drive")
                 self._pn_channel_source = 'position'
+                self.channel_assignment_report = {
+                    'mapping': 'position',
+                    'n_pns_considered': int(len(pn_indices)),
+                    'n_pns_placed': int(assigned[pn_indices].sum()),
+                    'n_pns_unplaced': unplaced,
+                    'n_clusters': len(clusters),
+                }
                 return channel_of_neuron, pn_mask
 
             print("  GlomerularMapper produced no clusters; "
@@ -870,6 +941,96 @@ class SparseProbabilisticBrain:
         channel_of_neuron[pn_indices] = np.clip(
             local_rank // pns_per_ch, 0, n_channels - 1)
         self._pn_channel_source = 'index'
+        self.channel_assignment_report = {
+            'mapping': 'index',
+            'n_pns_considered': int(n_pns),
+            'n_pns_placed': int(n_pns),
+            'n_pns_unplaced': 0,
+            'pns_per_channel_nominal': int(pns_per_ch),
+        }
+        return channel_of_neuron, pn_mask
+
+    def _assign_by_glomerulus_annotation(self, pn_indices, channel_of_neuron,
+                                         pn_mask, n_channels):
+        """
+        Assign PNs to channels from the connectome's own glomerulus annotations.
+
+        Returns ``(channel_of_neuron, pn_mask)`` on success, or None if not a
+        single PN could be placed, which the caller treats as "fall back to
+        clustering" rather than proceeding with an all-channel-0 drive.
+
+        Requires self.channel_names, because the assignment is a name match: it
+        needs to know that channel 7 is glomerulus ``DM2`` in order to find the
+        neurons annotated ``DM2_adPN``.
+        """
+        from ..data.receptor_glomerulus_map import (
+            GLOM_PN_PATTERN, normalise_glomerulus,
+        )
+
+        if not self.channel_names:
+            return None
+
+        channel_of_glom = {
+            normalise_glomerulus(name): ch
+            for ch, name in enumerate(self.channel_names[:n_channels])
+        }
+
+        assigned = np.zeros(self.num_neurons, dtype=bool)
+        per_channel = {name: 0 for name in self.channel_names[:n_channels]}
+        unplaced_types: dict = {}
+
+        for i in pn_indices:
+            neuron = self.connectome.neurons.get(self.neuron_ids[i])
+            cell_types = getattr(neuron, 'cell_types', None) or []
+            glom = None
+            for raw in cell_types:
+                match = GLOM_PN_PATTERN.match(str(raw).strip())
+                if match:
+                    candidate = normalise_glomerulus(match.group(1))
+                    if candidate in channel_of_glom:
+                        glom = candidate
+                        break
+            if glom is None:
+                # Multiglomerular PNs and unannotated neurons name no single
+                # glomerulus. Leaving them on channel 0 would drive them with
+                # whichever glomerulus happens to sort first, so they are
+                # dropped and counted.
+                label = str(cell_types[0]) if cell_types else '<no cell type>'
+                unplaced_types[label] = unplaced_types.get(label, 0) + 1
+                continue
+            channel_of_neuron[i] = channel_of_glom[glom]
+            assigned[i] = True
+            per_channel[self.channel_names[channel_of_glom[glom]]] += 1
+
+        n_assigned = int(assigned[pn_indices].sum())
+        if n_assigned == 0:
+            return None
+
+        pn_mask[pn_indices] = assigned[pn_indices].astype(np.float32)
+        n_unplaced = int(len(pn_indices) - n_assigned)
+        empty = [name for name, count in per_channel.items() if count == 0]
+
+        print(f"  Glomerulus annotation mapping: {n_assigned} of "
+              f"{len(pn_indices)} PNs placed across {n_channels} channels")
+        if n_unplaced:
+            top = sorted(unplaced_types.items(), key=lambda kv: -kv[1])[:5]
+            print(f"  {n_unplaced} PN(s) name no channel glomerulus and are "
+                  f"excluded from the odour drive; most common: "
+                  f"{', '.join(f'{t} x{c}' for t, c in top)}")
+        if empty:
+            print(f"  {len(empty)} channel(s) drive no PN: {empty}")
+
+        self._pn_channel_source = 'glomerulus'
+        self.channel_assignment_report = {
+            'mapping': 'glomerulus',
+            'n_pns_considered': int(len(pn_indices)),
+            'n_pns_placed': n_assigned,
+            'n_pns_unplaced': n_unplaced,
+            'pns_per_channel': dict(per_channel),
+            'channels_driving_no_pn': empty,
+            'unplaced_cell_types': dict(
+                sorted(unplaced_types.items(), key=lambda kv: -kv[1])),
+        }
         return channel_of_neuron, pn_mask
 
     def inject_odor(self, glom_pattern, strength: float = 50.0,
@@ -1082,7 +1243,8 @@ class SparseProbabilisticBrain:
 
         region_ids = {
             nid for nid, neuron in self.connectome.neurons.items()
-            if classify_olfactory_neuron(neuron) == region
+            if classify_olfactory_neuron(
+                neuron, strict=self.strict_classification) == region
         }
         if not region_ids:
             cache[region] = None

@@ -74,9 +74,21 @@ def load(name):
         return json.load(f), path
 
 
+def suffixed(fname: str, suffix: str) -> str:
+    """``mixtures_repaired.json`` + ``G1`` -> ``mixtures_G1.json``."""
+    if not suffix:
+        return fname
+    stem = fname[:-len('.json')].replace('_repaired', '')
+    return f'{stem}_{suffix}.json'
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--output', default='all_validations_F9_corrected.json')
+    ap.add_argument('--suffix', default='',
+                    help='score an ablation rung instead of the default files: '
+                         "--suffix G1 reads temporal_G1.json, mixtures_G1.json "
+                         'and so on. Used by scripts/run_glomerular_ladder.py.')
     ap.add_argument('--allow-config-mismatch', action='store_true',
                     help='score anyway when the five files disagree on '
                          'configuration (records the mismatch)')
@@ -86,9 +98,14 @@ def main():
     print("REPAIRED OLFACTORY VALIDATION SUITE")
     print("=" * 74)
 
-    loaded, missing = {}, []
+    if args.suffix:
+        print(f"Scoring ablation rung {args.suffix!r}")
+
+    loaded, missing, source_files = {}, [], {}
     for bench, fname in BENCHMARKS.items():
-        payload, path = load(fname)
+        resolved = suffixed(fname, args.suffix)
+        source_files[bench] = resolved
+        payload, path = load(resolved)
         if payload is None:
             missing.append((bench, path))
         else:
@@ -144,7 +161,7 @@ def main():
             'measures': payload.get('measures'),
             'target_corrections': payload.get('target_corrections'),
             'summary': payload['summary'],
-            'source_file': BENCHMARKS[bench],
+            'source_file': source_files[bench],
             'git_commit': commits[bench],
         }
         arrow = '' if verdict == f8_verdict else '  <-- changed'
@@ -164,14 +181,15 @@ def main():
     # ── Unscored ─────────────────────────────────────────────────────────────
     unscored = {}
     for name, fname in UNSCORED.items():
-        payload, path = load(fname)
+        resolved = suffixed(fname, args.suffix)
+        payload, path = load(resolved)
         if payload is None:
             print(f"\n(unscored) {name}: not produced ({path})")
             continue
         unscored[name] = {
             'summary': payload['summary'],
             'why_not_scored': payload.get('why_not_scored'),
-            'source_file': fname,
+            'source_file': resolved,
         }
         print(f"\n(unscored) {name}:")
         for k, v in payload['summary'].items():
@@ -180,6 +198,7 @@ def main():
 
     out_payload = {
         'suite': 'repaired olfactory validation suite',
+        'ablation_rung': args.suffix or None,
         'note':
             'aggregated from the five per-benchmark result files so every '
             'number stays traceable to the run that produced it; each source '

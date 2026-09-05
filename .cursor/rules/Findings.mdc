@@ -30,6 +30,126 @@ save all findingsabout the waves,the brain and how all the stuff works into the 
 
 ## Key Findings Recorded:
 
+### Glomerular Projection Repair (2026-09-05) ✅ 2/5 → 4/5 → 5/5
+
+Full report: `docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md`. Ladder:
+**G0 = 2/5** (F9 baseline) → **G1 = 4/5** (`all_validations_G1.json`, glomerular
+projection) → **G2 = 5/5** (`all_validations_G2.json`, + strict neuron
+classification). NumPy backend, 8 trials per stimulus on seeds 1001-1008, and the
+**same scoring code, criteria, seeds and odorant panel** throughout — only the
+input pipeline changed. No benchmark regressed from PASS to FAIL at any rung.
+
+**This is a correction to the experiment, not new evidence about the physics.**
+Both approximations replaced were heuristics standing in for information already
+present in the repository's own data.
+
+**A measurable amount of what looked like model failure was an approximation in
+the input pipeline.** The stimulus path compressed 33 measured receptor responses
+into 20 principal components and drove PNs grouped by k-means on position. In the
+animal the mapping is one-to-one and published, and both halves were already in
+this repository's own data: the DoOR matrix names its receptors, and the FlyWire
+annotations name **60 glomeruli across 304 uniglomerular PNs** in the form
+`DM2_adPN`. The projection did not need to be learned, it needed to be looked up
+(Couto, Alenius & Dickson 2005, Curr Biol 15:1535, Table 1; 29 of 33 measured
+receptors mapped, each entry carrying its own citation).
+
+**Measured defects in the PCA step, without running the simulation**
+(`results/final/glomerular_projection_diagnostic.json`, 12-odorant panel):
+- **PCA inflated inter-odour similarity 2.72×**: mean pairwise r = 0.1845 in the
+  measured receptor responses against **0.5026** after projection. It made every
+  odour look far more like every other odour than the recordings say. The
+  one-to-one map gives 0.2134.
+- **The rectifier discarded a third of the signal.** DoOR responses are signed
+  (**478 negative entries** = real inhibition), and `np.maximum(projected, 0)` is
+  applied after a projection whose component signs are *arbitrary*. Magnitude
+  kept: **0.670** for PCA against 0.998 for the one-to-one map.
+- **RMSE against Campbell 2013 Fig 4C: 0.4702 for PCA, 0.1354 one-to-one**, i.e.
+  3.5× closer.
+- `GLOM_LABELS` named the 20 channels `ester_fruit`, `sulfur_mold` and so on. A
+  principal component is a direction of variance over whichever odorant panel was
+  loaded, not a molecular class.
+
+**Two benchmarks flipped FAIL → PASS, none regressed:**
+- **discrimination**: the blend series became **monotone**, 0.0870 → 0.3297 →
+  0.4112, both steps significant (p = 3.7e-20, 1.1e-10), all three pairs separable.
+  F9 *fell* at the first step, which is why it failed. Caveat: the secondary
+  Xia & Tully 2007 intensity criterion **regressed** to FAIL (p = 0.0967).
+- **similarity**: Part A ordering became correct — PA-BA **0.4678** > PA-EL
+  **0.2518** > BA-EL **0.2215**, against published 0.70 > 0.15 > 0.11, ANOVA
+  F = 397.220, p = 8.4e-64. Under F9 the largest correlation was on the pair that
+  should be smallest (BA-EL 0.4287). Part B decorrelation went 39/66 → **56/66**
+  pairs, Wilcoxon p = 0.0197 → **3.3e-10**.
+- **concentration invariance**: r = 0.5417 → **0.6706**, consistent across all five
+  odorants (0.6519-0.6953). Still unscored: no published threshold exists, and the
+  sparseness Honegger measures is pinned at 0.059860 by the rank threshold.
+- **learning FAILS under G1 and PASSES under G2, and the effect size is the real
+  finding**: paired/control depression 34.70/12.98 % (F9) → 18.96/17.29 % (G1) →
+  16.42/9.61 % (G2), criteria 2/3 → 2/3 → **3/3**. The specificity **Cohen's d
+  went 0.038 → 0.857 → 2.305**, so the trials needed for 80 % power went
+  **8,576 → 17 → 3**. The declared n = 8 went from hopeless to comfortable without
+  changing, because the signal changed by a factor of 60. G1 makes specificity
+  *worse* first (gap 21.7 → 1.7 points), so it is the **strict classifier**, not
+  the projection, that fixes it — consistent with `kc_odor_specificity.json`:
+  depression proportional to raw KC amplitude is dominated by the odour-invariant
+  bulk, and removing 1,332 spurious PNs and 102 spurious KCs from that bulk is what
+  makes the odour-specific component visible.
+  **Caveat in the other direction**: depression *magnitude* moved further from
+  published, 34.70 % → 16.42 % against Hige's 80-90 %. The model now reproduces the
+  three-way *pattern* while being further from the *magnitude*.
+
+**A PRE-REGISTERED PREDICTION WAS WRONG, AND THAT IS THE MOST USEFUL PART.** The
+diagnostic measured that the specific inversion (BA-EL above PA-EL) is present in
+the *untouched* receptor responses — 0.3656 against 0.0331 — and concluded that no
+projection could recover the ordering, so similarity Part A should keep failing. It
+passed. The error was reasoning from an **input-space** correlation to a
+**KC-space** one: the PN→KC expansion plus the rank threshold is a nonlinear
+transform and it reorders pairs. The diagnostic had flagged that the two are not
+like-for-like under its own `scored_on` field, and the verdict ignored its own
+caveat. The prediction is kept in the result file under `prediction_before_rerun`
+with an `OUTCOME` field rather than edited out. **Theory this suggests: an
+input-space similarity measurement does not bound the corresponding readout-space
+one in an expansion-plus-threshold circuit, so diagnostics computed upstream of a
+nonlinearity cannot be used to predict benchmarks downstream of it.**
+
+**A SECOND DEFECT FOUND ON THE WAY: the neuron classifier over-matches badly.**
+Wiring the glomerulus mapping in surfaced it immediately, because only **137 of
+2,198 "PNs"** could be given a glomerulus and the failures included `PFL3`
+(central complex) and `LC33` (visual).
+- `'PN' in cell_types_str` sweeps in **93 `WEDPN*`** (auditory wedge) and
+  **161 `CB####`** (unnamed central brain) — about 30 % of the 854 matches.
+- Worse and less obvious: `'AL' in group_str` matches **4,796** neurons where only
+  **2,762** are annotated `AL`. Group strings are dot-separated neuropil lists and
+  **`LAL` contains `AL`** — the lateral accessory lobe, a central-complex output
+  region with no olfactory role. That is how central-complex and visual neurons
+  entered the olfactory subgraph.
+- `strict=True` requires a whole dot-separated token and takes the subgraph from
+  **10,906 → 9,199** neurons, PN from **2,198 → 866**, LN 721 → 448, KC 5,279 →
+  5,177. Off by default because it makes every earlier result incomparable.
+
+**A THIRD BUG OF THE SAME CLASS, found while checking the 5/5.** G2's result file
+briefly claimed the readout **no longer pins sparseness** — which would have been a
+significant and false finding. The check was
+`bool(np.std(all_sparse) == 0.0)`, a strict float equality on a *computed* standard
+deviation. All 200 recorded values were identical at 310/5177 = 0.059880239521, and
+`np.std` still returned **2.08e-17** rather than exactly zero. It had always
+returned True until the KC count changed underneath it (5,279 → 5,177 under strict
+classification). Replaced with `max - min <= 1e-12`, which is exact for identical
+floats; both rungs re-run and spread now reports 0.00e+00. **Theory: a check that
+has only ever seen one input value has not been tested, it has been exercised.**
+
+**Confounds stated rather than hidden:** G1 changes channel count 20 → 29, and
+per-channel carrier frequencies were only ever specified for 20 channels, so they
+are resampled by interpolation — arbitrary, and a second difference from the
+baseline. G1 also drives **137 PNs where F9 drove 2,198**, so targeting improved and
+total drive fell 16× at the same time; the two cannot be separated in G1. G2 changes
+the subgraph (10,906 → 9,199 neurons, 5,279 → 5,177 KCs), so it is a better
+description of the fly and a worse basis for comparison with this project's own
+history — which is why both rungs are kept. The rank threshold still pins sparseness
+(316/5,279 at G1, 310/5,177 at G2), and KC identities still do not converge under
+timestep refinement (Jaccard 0.4827), so **all of this is improved comparisons, not
+improved absolute claims**. A 5/5 resting on set identity is a 5/5 conditioned on
+both limitations.
+
 ### Benchmark Validity Audit (2026-09-04) ✅ SUPERSEDES EVERY TARGET BELOW
 
 Full report: `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md`. Score:

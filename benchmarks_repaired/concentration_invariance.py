@@ -87,6 +87,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from benchmark_harness import (  # noqa: E402
+    TARGET_SPARSITY,  # noqa: E402
     REFERENCE_STRENGTH, TRIAL_DURATION_MS, TRIAL_SEEDS, binarise, build,
     mean_pattern, panel_block, protocol_block, trial_set,
 )
@@ -125,10 +126,16 @@ def run(use_mlx=False, output='concentration_invariance_repaired.json'):
 
     per_odor = {}
     all_pair_r = []
+    #: Kenyon cell count, taken from the readout rather than hardcoded, because
+    #: strict neuron classification changes it (5,279 loose, 5,177 strict) and the
+    #: rank threshold is int(n_kc * target_sparsity).
+    n_kc_total = None
     for name in ODORANTS:
         pattern = door.get_glomerular_pattern(name)
         by_conc = {c: trial_set(brain, pattern, strength=scaled_strength(c))
                    for c in CONCENTRATIONS}
+        if n_kc_total is None:
+            n_kc_total = int(np.asarray(by_conc[CONCENTRATIONS[0]][0]).size)
 
         # (a) Pattern correlation between every pair of concentrations, on the
         #     mean pattern at each, binarised as the repository has always done.
@@ -174,11 +181,23 @@ def run(use_mlx=False, output='concentration_invariance_repaired.json'):
     overall_r = float(np.mean(all_pair_r)) if all_pair_r else None
 
     # Is sparseness in fact pinned? Asserted from the data, not assumed.
+    #
+    # Tested on peak-to-peak rather than `np.std(...) == 0.0`. That earlier test
+    # was a strict float equality on a *computed* standard deviation, and it gave
+    # a false negative the first time the Kenyon cell count changed: under strict
+    # neuron classification there are 5,177 KCs rather than 5,279, all 200
+    # recorded values were identical at 310/5177 = 0.059880239521, and np.std
+    # still returned 2.08e-17 instead of exactly zero. max - min is exact for
+    # identical floats, so it does not have that failure mode, and the tolerance
+    # is there only to absorb the last bit.
     all_sparse = [v for o in per_odor.values()
                   for vals in o['sparseness_per_concentration'].values()
                   for v in vals]
-    sparseness_pinned = bool(np.std(all_sparse) == 0.0)
+    sparseness_spread = float(np.ptp(all_sparse)) if all_sparse else 0.0
+    sparseness_pinned = bool(sparseness_spread <= 1e-12)
     pinned_value = float(all_sparse[0]) if all_sparse else None
+    n_kc_active = (int(round(pinned_value * n_kc_total))
+                   if pinned_value and n_kc_total else None)
 
     print("\n" + "-" * 70)
     print(f"Pattern correlation, mean over {len(all_pair_r)} concentration "
@@ -187,9 +206,10 @@ def run(use_mlx=False, output='concentration_invariance_repaired.json'):
           f"the 0.70 it used to be scored against is not in Turner et al. 2008")
     print(f"Sparseness (Honegger et al. 2011's quantity): "
           f"{pinned_value:.6f}, identical at every concentration: "
-          f"{sparseness_pinned}")
-    print(f"  pinned by the rank threshold at int(5279 * 0.06) = 316 KCs, so "
-          f"the published comparison is unavailable")
+          f"{sparseness_pinned}  (spread {sparseness_spread:.2e})")
+    print(f"  pinned by the rank threshold at "
+          f"int({n_kc_total} * {TARGET_SPARSITY}) = {n_kc_active} of "
+          f"{n_kc_total} KCs, so the published comparison is unavailable")
 
     payload = {
         'measurement': 'concentration_invariance',
@@ -240,7 +260,10 @@ def run(use_mlx=False, output='concentration_invariance_repaired.json'):
                 'constant by construction, so the published result would be '
                 'reproduced trivially and would mean nothing.',
             'sparseness_pinned_verified_from_data': sparseness_pinned,
+            'sparseness_spread_max_minus_min': sparseness_spread,
             'pinned_sparseness_value': pinned_value,
+            'n_kc_total': n_kc_total,
+            'n_kc_active_pinned': n_kc_active,
             'honegger_ceiling': HONEGGER_SPARSENESS_CEILING,
             'consequence':
                 'readout sparsity is fixed for this repair, so this is '
@@ -268,7 +291,10 @@ def run(use_mlx=False, output='concentration_invariance_repaired.json'):
             'n_odorants': len(ODORANTS),
             'pattern_correlation_has_no_published_threshold': True,
             'sparseness_pinned_by_readout': sparseness_pinned,
+            'sparseness_spread_max_minus_min': sparseness_spread,
             'pinned_sparseness_value': pinned_value,
+            'n_kc_total': n_kc_total,
+            'n_kc_active_pinned': n_kc_active,
             'previously_reported': {
                 'F8_run': 0.2719,
                 'published_claim_now_withdrawn': 0.7244,

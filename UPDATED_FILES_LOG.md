@@ -10,6 +10,111 @@ files known to still need updating.
 
 ## Updates on 2026-09-04
 
+### Glomerular projection repair, and the README rewritten as a project description
+
+**Reason**: the receptor-to-glomerular-channel step compressed 33 measured
+receptor responses into 20 principal components. In the animal the relationship is
+one-to-one and published, and both halves of it were already present in the data:
+the DoOR matrix names its receptors, and the FlyWire cell-type annotations name 60
+glomeruli across 304 uniglomerular projection neurons. Measured before changing
+anything, the PCA step inflated mean inter-odour similarity by 2.72x and discarded
+a third of the projected magnitude through its rectifier.
+
+**Outcome**: ablation ladder **2/5 -> 4/5 -> 5/5**, same scoring code, criteria,
+seeds and odorant panel throughout. G1 (glomerular projection) flipped
+discrimination and similarity to PASS; G2 (+ strict neuron classification) flipped
+learning, whose specificity effect size went from Cohen's d = 0.038 to 2.305. No
+benchmark regressed from PASS to FAIL. Concentration invariance 0.5417 -> 0.6603.
+This is a correction to the experiment rather than new evidence about the physics,
+and it changes none of the standing limitations.
+
+**Files created**: 4 code/test modules, 2 markdown, result artifacts per rung
+
+- [x] `hive/data/receptor_glomerulus_map.py` - Created. The published one-to-one
+      receptor-to-glomerulus assignment, 29 of the 33 measured receptors, each
+      entry carrying its own citation (Couto, Alenius & Dickson 2005 Curr Biol
+      15:1535 Table 1, cross-checked against Fishilevich & Vosshall 2005 and DoOR
+      2.0 Table 1). Four receptors with real data are **excluded rather than
+      guessed** because no glomerular assignment could be sourced (Or45a, Or45b,
+      Or59a, Or85c), and Or83b is excluded because it is Orco, a co-receptor with
+      no glomerulus. Non-injective cases documented with a stated combination
+      rule (DL4 receives Or49a and Or85f). VM7 fans out to VM7d/VM7v because
+      Couto predates that subdivision. Also holds `annotated_glomeruli()`, which
+      reads the glomeruli that actually have projection neurons.
+- [x] `tests/diagnose_glomerular_projection.py` - Created. Compares the
+      12-odorant panel in three input spaces without running the simulation, so
+      the projection is tested in isolation from the network for the cost of a
+      matrix multiply. Answers the question
+      `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md` listed as untraced.
+- [x] `scripts/run_glomerular_ladder.py` - Created. Runs the ablation ladder,
+      one rung per configuration, and scores each rung with the existing
+      aggregator rather than reimplementing the scoring.
+- [x] `docs/03_validation/LIMITATIONS.md` - Created. Twelve sections covering
+      what the model does not do and what its numbers cannot support, gathered so
+      the README can describe the project without either being diluted. Includes
+      a newly recorded defect: the variance fields are computed every step and
+      read by nothing, so `sigma_noise` provably cannot change any output.
+- [x] `docs/03_validation/GLOMERULAR_PROJECTION_REPAIR.md` - Created. The
+      diagnostic, the cited map, the ladder, and a plain verdict.
+- [x] `hive/data/door_client.py` - Added `projection='glomerular'` as a third
+      option; `_compute_pca_projection` became a dispatcher. Channel count is now
+      a consequence of the map rather than a parameter. Added
+      `projection_magnitude_retained`, computed identically for all three
+      projections, because `projection_explained_variance` means
+      `explained_variance_ratio_` for PCA and has no counterpart for a lookup.
+      Defaults unchanged.
+- [x] `hive/interface/olfactory.py` - Channel count parameterised throughout;
+      `NUM_GLOM_CHANNELS` is now a default rather than a fixed property.
+      `OdorStimulusDriver` no longer rejects a pattern whose length is not 20.
+      `OdorReceptorArray` takes `num_channels` and a `frequency_mode`
+      (`literature_spread` or `uniform`); at 20 channels the historical
+      frequencies and phases are reproduced bit-for-bit, verified.
+- [x] `hive/engine/sparse_probabilistic.py` - Added `'glomerulus'` to
+      `GLOMERULAR_MAPPINGS`, which reads each PN's glomerulus off the connectome
+      cell-type annotation instead of clustering positions. PNs naming no channel
+      glomerulus are dropped from the drive and counted rather than defaulted to
+      channel 0. Added `channel_assignment_report` for all three mappings.
+- [x] `hive/substrate/olfactory_subgraph.py` - Added opt-in `strict` mode to
+      `classify_olfactory_neuron`. It fixes two over-matches: the cell-type test
+      `'PN' in cell_types_str` sweeps in 93 auditory `WEDPN` and 161 unnamed `CB`
+      neurons, and the region test `'AL' in group_str` matches **4,796** neurons
+      where only **2,762** are annotated `AL`, because group strings are
+      dot-separated neuropil lists and `LAL` contains `AL`. That second one is how
+      `PFL3` (central complex) and `LC33` (visual) were classified as olfactory
+      projection neurons. Strict mode takes the subgraph from 10,906 to 9,199
+      neurons and PN from 2,198 to 866. Off by default.
+- [x] `benchmark_harness.py` - `build()` now reads the stimulus-path
+      configuration from the environment, so an ablation ladder can vary it across
+      subprocesses without editing six argument parsers. Unrecognised values
+      raise rather than falling back.
+- [x] `validation_utils.py` - Threaded `strict_classification` through
+      `init_olfactory_brain`; the DoOR client is now built before the brain so
+      channel names are available to the engine. Provenance block gained the
+      channel count, channel names, the PN assignment report, the requested
+      mapping, and the projection report.
+- [x] `scripts/run_repaired_suite.py` - Added `--suffix` so a ladder rung can be
+      scored by the same code that produced the F9 baseline.
+- [x] `benchmarks_repaired/concentration_invariance.py` - Fixed the
+      sparseness-pinned check, which was `bool(np.std(all_sparse) == 0.0)`, a
+      strict float equality on a computed standard deviation. It gave a **false
+      negative** the first time the Kenyon cell count changed: under strict
+      classification all 200 values were identical at 310/5177 and `np.std`
+      returned 2.08e-17 rather than zero, so the result file briefly claimed the
+      readout no longer pinned sparseness. Now `max - min <= 1e-12`, which is
+      exact for identical floats, with the spread and both KC counts recorded.
+      The KC total is read from the readout instead of hardcoded as 5,279. Both
+      rungs re-run.
+- [x] `README.md` - Rewritten as a project description rather than a record of
+      corrections. Removed the validity-audit banner, the superseded-number
+      tables, the historical-defect narrative and the limitations section; added a
+      "How the smell input works" section distinguishing measured data from
+      modelled components from computational choices, which did not previously
+      exist anywhere. Honest material moved to
+      `docs/03_validation/LIMITATIONS.md` and linked from a "Validation
+      methodology" section.
+- [x] `OUTDATED_FILES.md` - Added the receptor-projection category.
+- [x] `UPDATED_FILES_LOG.md` - This entry.
+
 ### README brought in line with the post-audit measurements
 
 **Reason**: the README header correctly pointed at the validity audit, but four

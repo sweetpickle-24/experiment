@@ -1,0 +1,977 @@
+{
+  "measurement": "concentration_invariance",
+  "scored": false,
+  "why_not_scored": "reported separately, as the repository has always treated it, and because neither quantity below can be scored against a published Drosophila number: the correlation has no published threshold, and the sparseness the published paper measured is pinned to a constant by this readout.",
+  "target_corrections": {
+    "removed": "r > 0.70, attributed to Turner et al. 2008",
+    "why": "Turner et al. 2008 contains no concentration series and no correlation threshold. Read in full: all 71 KCs were recorded at a single 1:1,000 effective dilution, and a second dataset of 40 KCs used one different single-concentration protocol. The paper measures KC response probability (6 % against 59 % in OSNs) and angular separation between odour pairs.",
+    "probable_origin": "Campbell et al. 2013 Fig 4C, same laboratory, reports mean r = 0.70 for the pentyl acetate / butyl acetate ODOUR PAIR (n = 24), significantly greater than PA-EL 0.15 and BA-EL 0.11. That is similarity between two chemically similar odorants, not invariance across concentrations of one odorant. The number appears to have migrated between measurements.",
+    "correct_reference": "Honegger KS, Campbell RAA, Turner GC (2011) J Neurosci 31:11772-11785 is the Drosophila KC concentration study, and the quantity it found invariant is POPULATION SPARSENESS, not pattern correlation: \"the proportion of responding KCs remained < 0.2\". Its statistics: significant concentration effect overall (p < 0.0001, F(4,73) = 32.9), significant in the high-to-low order (p < 0.0001, F(3,25) = 22.5), and NOT significant in the low-to-high order (p = 0.71, F(3,32) = 0.47)."
+  },
+  "known_limitation": {
+    "what": "Honegger et al. 2011's quantity cannot be tested in this model.",
+    "why": "the KC readout applies a rank threshold at int(n_kc * target_sparsity), producing exactly int(5279 * 0.06) = 316 non-zero KCs for every stimulus at every concentration. Population sparseness is pinned to a constant by construction, so the published result would be reproduced trivially and would mean nothing.",
+    "sparseness_pinned_verified_from_data": true,
+    "sparseness_spread_max_minus_min": 0.0,
+    "pinned_sparseness_value": 0.059880239520958084,
+    "n_kc_total": 5177,
+    "n_kc_active_pinned": 310,
+    "honegger_ceiling": 0.2,
+    "consequence": "readout sparsity is fixed for this repair, so this is recorded as a limitation rather than engineered around."
+  },
+  "protocol": {
+    "n_trials_per_stimulus": 8,
+    "trial_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+    ],
+    "seed_selection_rule": "declared in the plan before any result was seen; eight trials matches Campbell et al. 2013 six presentations per stimulus, rounded up",
+    "reset": "deterministic=False (seeded random initial phase)",
+    "reset_rationale": "with reset(deterministic=True) the trajectory carries no randomness at all: measured 2026-09-04, the same stimulus at seeds 42, 7 and 1234 gives bit-identical KC readouts, so repeats cannot be averaged and the noise floor is exactly r = 1.0. reset(deterministic=False) is the engine signature default and changes an initial condition, not a model parameter, a noise level or the readout sparsity",
+    "trial_duration_ms": 100.0,
+    "reference_strength": 50.0,
+    "target_sparsity": 0.06,
+    "active_percentile": 90,
+    "representation": "binary active-KC vector",
+    "noise_floor": "every separability claim is judged against the within-stimulus replicate distribution from these same seeds, never against a fixed constant",
+    "separability_design": "seed-matched: both stimuli run on the same seed list, and the same-seed diagonal is excluded from the between distribution so that both distributions consist only of differing-initial-phase pairs. An unmatched design (same odorant, seeds 1001-1008 vs 2001-2008) reported the stimulus separable from itself at p = 0.0017",
+    "odorants": [
+      "benzaldehyde",
+      "2-heptanone",
+      "isopentyl_acetate",
+      "ethyl_acetate",
+      "3-octanol"
+    ],
+    "concentrations": [
+      0.1,
+      0.5,
+      1.0,
+      5.0,
+      10.0
+    ],
+    "concentration_order": "ascending",
+    "concentration_order_rationale": "matches Honegger et al. 2011's low-to-high condition, which is the one in which sparseness is invariant (p = 0.71, F(3,32) = 0.47); the high-to-low order is significantly modulated (p < 0.0001). Declared in advance for that reason.",
+    "strength_scaling": "REFERENCE_STRENGTH * log10(1 + 10 * conc), the Weber-Fechner compression used by tests/concentration_invariance_test.py, unchanged so the numbers stay comparable"
+  },
+  "panel": {
+    "odorants": [
+      "benzaldehyde",
+      "2-heptanone",
+      "isopentyl_acetate",
+      "ethyl_acetate",
+      "3-octanol"
+    ],
+    "selection_rule": "by paper provenance only; no odorant added, removed or reordered after a number was seen",
+    "provenance": {
+      "benzaldehyde": "Turner et al. 2008 Fig 3I, the odour whose recorded PN responses drove the model KC population",
+      "2-heptanone": "Honegger et al. 2011 Fig 7B",
+      "isopentyl_acetate": "Honegger et al. 2011 Fig 6C (isoamyl acetate)",
+      "ethyl_acetate": "Honegger et al. 2011; Wang et al. 2004 MB calcium imaging",
+      "3-octanol": "Campbell et al. 2013 Fig 2A (OCT); Honegger et al. 2011 Fig 7A; Hige et al. 2015 Fig 1E-F"
+    }
+  },
+  "per_odorant": {
+    "benzaldehyde": {
+      "pairwise_correlation": {
+        "0.1x_vs_0.5x": 0.571137114045044,
+        "0.1x_vs_1.0x": 0.6064250862606151,
+        "0.1x_vs_5.0x": 0.5452592677536257,
+        "0.1x_vs_10.0x": 0.6417130584761859,
+        "0.5x_vs_1.0x": 0.6910998018531829,
+        "0.5x_vs_5.0x": 0.7511637292706195,
+        "0.5x_vs_10.0x": 0.7468734487408025,
+        "1.0x_vs_5.0x": 0.682519240793549,
+        "1.0x_vs_10.0x": 0.7404380279460773,
+        "5.0x_vs_10.0x": 0.7447283084758933
+      },
+      "pairwise_correlation_mean": 0.6721357083615596,
+      "sparseness_per_concentration": {
+        "0.1": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "0.5": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "1.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "5.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "10.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ]
+      },
+      "sparseness_mean_per_concentration": {
+        "0.1": 0.059880239520958084,
+        "0.5": 0.059880239520958084,
+        "1.0": 0.059880239520958084,
+        "5.0": 0.059880239520958084,
+        "10.0": 0.059880239520958084
+      },
+      "sparseness_anova": {
+        "f": NaN,
+        "p_value": NaN,
+        "test": "one-way ANOVA over concentrations",
+        "caveat": "meaningless here: the rank threshold pins sparseness to a constant, so there is no variance for the test to find"
+      }
+    },
+    "2-heptanone": {
+      "pairwise_correlation": {
+        "0.1x_vs_0.5x": 0.6460518562901049,
+        "0.1x_vs_1.0x": 0.5967136301972107,
+        "0.1x_vs_5.0x": 0.575262227548126,
+        "0.1x_vs_10.0x": 0.6267455939059285,
+        "0.5x_vs_1.0x": 0.6932449421180911,
+        "0.5x_vs_5.0x": 0.646051856290105,
+        "0.5x_vs_10.0x": 0.6331810147006542,
+        "1.0x_vs_5.0x": 0.637471295230471,
+        "1.0x_vs_10.0x": 0.5988587704621192,
+        "5.0x_vs_10.0x": 0.650342136819922
+      },
+      "pairwise_correlation_mean": 0.6303923323562732,
+      "sparseness_per_concentration": {
+        "0.1": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "0.5": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "1.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "5.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "10.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ]
+      },
+      "sparseness_mean_per_concentration": {
+        "0.1": 0.059880239520958084,
+        "0.5": 0.059880239520958084,
+        "1.0": 0.059880239520958084,
+        "5.0": 0.059880239520958084,
+        "10.0": 0.059880239520958084
+      },
+      "sparseness_anova": {
+        "f": NaN,
+        "p_value": NaN,
+        "test": "one-way ANOVA over concentrations",
+        "caveat": "meaningless here: the rank threshold pins sparseness to a constant, so there is no variance for the test to find"
+      }
+    },
+    "isopentyl_acetate": {
+      "pairwise_correlation": {
+        "0.1x_vs_0.5x": 0.6481969965550141,
+        "0.1x_vs_1.0x": 0.5902782094024855,
+        "0.1x_vs_5.0x": 0.6074393315217531,
+        "0.1x_vs_10.0x": 0.5838427886077602,
+        "0.5x_vs_1.0x": 0.7575991500653451,
+        "0.5x_vs_5.0x": 0.7146963447671758,
+        "0.5x_vs_10.0x": 0.7404380279460773,
+        "1.0x_vs_5.0x": 0.7018255031777253,
+        "1.0x_vs_10.0x": 0.7211317655619011,
+        "5.0x_vs_10.0x": 0.701825503177725
+      },
+      "pairwise_correlation_mean": 0.6767273620782961,
+      "sparseness_per_concentration": {
+        "0.1": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "0.5": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "1.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "5.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "10.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ]
+      },
+      "sparseness_mean_per_concentration": {
+        "0.1": 0.059880239520958084,
+        "0.5": 0.059880239520958084,
+        "1.0": 0.059880239520958084,
+        "5.0": 0.059880239520958084,
+        "10.0": 0.059880239520958084
+      },
+      "sparseness_anova": {
+        "f": NaN,
+        "p_value": NaN,
+        "test": "one-way ANOVA over concentrations",
+        "caveat": "meaningless here: the rank threshold pins sparseness to a constant, so there is no variance for the test to find"
+      }
+    },
+    "ethyl_acetate": {
+      "pairwise_correlation": {
+        "0.1x_vs_0.5x": 0.6388314066023798,
+        "0.1x_vs_1.0x": 0.6410224015522334,
+        "0.1x_vs_5.0x": 0.634449416702673,
+        "0.1x_vs_10.0x": 0.6169214571038454,
+        "0.5x_vs_1.0x": 0.7575991500653444,
+        "0.5x_vs_5.0x": 0.5581011054288585,
+        "0.5x_vs_10.0x": 0.536649702779774,
+        "1.0x_vs_5.0x": 0.5838427886077598,
+        "1.0x_vs_10.0x": 0.5516656846341335,
+        "5.0x_vs_10.0x": 0.7039706434426333
+      },
+      "pairwise_correlation_mean": 0.6223053756919634,
+      "sparseness_per_concentration": {
+        "0.1": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "0.5": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "1.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "5.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "10.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ]
+      },
+      "sparseness_mean_per_concentration": {
+        "0.1": 0.059880239520958084,
+        "0.5": 0.059880239520958084,
+        "1.0": 0.059880239520958084,
+        "5.0": 0.059880239520958084,
+        "10.0": 0.059880239520958084
+      },
+      "sparseness_anova": {
+        "f": NaN,
+        "p_value": NaN,
+        "test": "one-way ANOVA over concentrations",
+        "caveat": "meaningless here: the rank threshold pins sparseness to a constant, so there is no variance for the test to find"
+      }
+    },
+    "3-octanol": {
+      "pairwise_correlation": {
+        "0.1x_vs_0.5x": 0.6288907341708376,
+        "0.1x_vs_1.0x": 0.6031490509919356,
+        "0.1x_vs_5.0x": 0.6567775576146477,
+        "0.1x_vs_10.0x": 0.5967136301972106,
+        "0.5x_vs_1.0x": 0.7940665345687886,
+        "0.5x_vs_5.0x": 0.7597442903302534,
+        "0.5x_vs_10.0x": 0.7447283084758941,
+        "1.0x_vs_5.0x": 0.7254220460917177,
+        "1.0x_vs_10.0x": 0.7211317655619008,
+        "5.0x_vs_10.0x": 0.7683248513898868
+      },
+      "pairwise_correlation_mean": 0.6998948769393074,
+      "sparseness_per_concentration": {
+        "0.1": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "0.5": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "1.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "5.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ],
+        "10.0": [
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084,
+          0.059880239520958084
+        ]
+      },
+      "sparseness_mean_per_concentration": {
+        "0.1": 0.059880239520958084,
+        "0.5": 0.059880239520958084,
+        "1.0": 0.059880239520958084,
+        "5.0": 0.059880239520958084,
+        "10.0": 0.059880239520958084
+      },
+      "sparseness_anova": {
+        "f": NaN,
+        "p_value": NaN,
+        "test": "one-way ANOVA over concentrations",
+        "caveat": "meaningless here: the rank threshold pins sparseness to a constant, so there is no variance for the test to find"
+      }
+    }
+  },
+  "summary": {
+    "pattern_correlation_mean": 0.6602911310854799,
+    "n_concentration_pairs": 50,
+    "n_odorants": 5,
+    "pattern_correlation_has_no_published_threshold": true,
+    "sparseness_pinned_by_readout": true,
+    "sparseness_spread_max_minus_min": 0.0,
+    "pinned_sparseness_value": 0.059880239520958084,
+    "n_kc_total": 5177,
+    "n_kc_active_pinned": 310,
+    "previously_reported": {
+      "F8_run": 0.2719,
+      "published_claim_now_withdrawn": 0.7244,
+      "withdrawn_because": "the 0.7244 mean included isoamyl acetate, which is absent from the DoOR matrix and returned a zero vector that self-correlates at exactly 1.0000 across all ten concentration pairs; on real odorants only the same run gives 0.5866. See README.md."
+    }
+  },
+  "config": {
+    "timestamp": "2026-09-05T17:15:39.585447+00:00",
+    "git_commit": "0e0d7b561a0892d1c7490e0b2ed138653b2bc534-dirty",
+    "seed": null,
+    "duration_ms": 100.0,
+    "python": "3.14.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "backend": "NumPy",
+    "dt_ms": 0.1,
+    "projection_method": "glomerular",
+    "reproducible": true,
+    "fast_mode": false,
+    "gamma": 0.1,
+    "sigma_noise": 0.1,
+    "num_neurons": 9199,
+    "deterministic_accumulation": true,
+    "amplitude_min": 0.0,
+    "amplitude_max": 10000.0,
+    "glomerular_mapping": "glomerulus",
+    "glomerular_mapping_requested": "glomerulus",
+    "strict_classification": true,
+    "n_stim_channels": 29,
+    "channel_names": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "channel_assignment": {
+      "mapping": "glomerulus",
+      "n_pns_considered": 866,
+      "n_pns_placed": 137,
+      "n_pns_unplaced": 729,
+      "pns_per_channel": {
+        "D": 6,
+        "DA4L": 2,
+        "DC2": 4,
+        "DL1": 4,
+        "DL3": 10,
+        "DL4": 2,
+        "DM1": 2,
+        "DM2": 4,
+        "DM3": 4,
+        "DM4": 4,
+        "DM5": 5,
+        "DM6": 6,
+        "VA1D": 8,
+        "VA1V": 13,
+        "VA2": 2,
+        "VA3": 4,
+        "VA4": 2,
+        "VA5": 6,
+        "VA6": 2,
+        "VA7L": 2,
+        "VC1": 2,
+        "VC2": 2,
+        "VC3": 8,
+        "VC4": 5,
+        "VM2": 4,
+        "VM5D": 9,
+        "VM5V": 6,
+        "VM7D": 5,
+        "VM7V": 4
+      },
+      "channels_driving_no_pn": [],
+      "unplaced_cell_types": {
+        "HRN_VP4": 29,
+        "HRN_VP1d": 16,
+        "HRN_VP5": 16,
+        "DA1_lPN": 15,
+        "HRN_VP1l": 13,
+        "M_vPNml53": 13,
+        "TRN_VP1m": 13,
+        "DA2_lPN": 11,
+        "M_lPNm11D": 11,
+        "DL2d_adPN": 10,
+        "VP1l+_lvPN": 9,
+        "M_adPNm5": 8,
+        "M_vPNml84": 8,
+        "CB4219": 8,
+        "DL2v_adPN": 8,
+        "M_vPNml83": 8,
+        "M_lPNm11A": 7,
+        "M_lvPNm48": 7,
+        "CB1668": 7,
+        "CB1013": 7,
+        "TRN_VP2": 7,
+        "TRN_VP3a": 7,
+        "CB3417": 7,
+        "M_VPNml66": 6,
+        "VP5+_l2PN": 6,
+        "M_lvPNm41": 6,
+        "M_vPNml60": 6,
+        "M_lvPNm46": 6,
+        "VA7m_lPN": 6,
+        "CB2527": 6,
+        "M_lvPNm37": 6,
+        "M_lvPNm45": 6,
+        "M_vPNml72": 6,
+        "M_vPNml63": 6,
+        "VP3+_l2PN": 6,
+        "M_vPNml87": 6,
+        "CB1545": 6,
+        "M_lvPNm47": 5,
+        "CB1473": 5,
+        "VC5_lvPN": 5,
+        "M_lvPNm35": 5,
+        "VL2a_vPN": 5,
+        "DC3_adPN": 5,
+        "VM4_lvPN": 5,
+        "CB2571": 5,
+        "M_lvPNm25": 5,
+        "CB3383": 4,
+        "CB1988": 4,
+        "M_l2PNm16": 4,
+        "VM1_lPN": 4,
+        "M_lvPNm24": 4,
+        "M_vPNml50": 4,
+        "ALIN3": 4,
+        "CB1676": 4,
+        "DL2d_vPN": 4,
+        "VM3_adPN": 4,
+        "M_l2PN3t18": 4,
+        "M_adPNm4": 4,
+        "VP1m+_lvPN": 4,
+        "M_vPNml65": 4,
+        "M_adPNm8": 4,
+        "M_lvPNm40": 4,
+        "ALIN1": 4,
+        "M_vPNml69": 4,
+        "M_vPNml67": 4,
+        "DC4_vPN": 4,
+        "DP1m_vPN": 4,
+        "M_lvPNm43": 4,
+        "CB1673": 4,
+        "CB1048": 4,
+        "M_vPNml75": 4,
+        "CB3326": 4,
+        "CB2569": 4,
+        "DA3_adPN": 4,
+        "CB0650": 4,
+        "M_spPN5t10": 3,
+        "CB3633": 3,
+        "CB2661": 3,
+        "M_lvPNm29": 3,
+        "M_vPNml86": 3,
+        "CB2845": 3,
+        "CB2471": 3,
+        "ALON3": 3,
+        "M_lvPNm42": 3,
+        "M_lvPNm26": 3,
+        "CB1321": 3,
+        "CB2345": 3,
+        "CB3206": 3,
+        "VL2a_adPN": 2,
+        "DA4m_adPN": 2,
+        "VP5+VP3_l2PN": 2,
+        "DNp44": 2,
+        "M_l2PNl20": 2,
+        "M_vPNml57": 2,
+        "M_lvPNm39": 2,
+        "M_l2PNl22": 2,
+        "<no cell type>": 2,
+        "VP2_adPN": 2,
+        "VL2p_vPN": 2,
+        "VM4_adPN": 2,
+        "CB1461": 2,
+        "M_l2PN10t19b": 2,
+        "VP1m+VP2_lvPN1": 2,
+        "CB3623": 2,
+        "VP4+_vPN": 2,
+        "VP3+VP1l_ivPN": 2,
+        "M_lvPNm44": 2,
+        "VP1d+VP4_l2PN1": 2,
+        "DA1_vPN": 2,
+        "M_smPN6t2": 2,
+        "M_l2PNm14": 2,
+        "M_l2PN10t19a": 2,
+        "VP2+_adPN": 2,
+        "M_vPNml52": 2,
+        "CB1824": 2,
+        "CB0683": 2,
+        "DC4_adPN": 2,
+        "M_lvPNm31": 2,
+        "M_vPNml80": 2,
+        "M_adPNm7": 2,
+        "M_imPNl92": 2,
+        "M_adPNm3": 2,
+        "VP4+VL1_l2PN": 2,
+        "ALBN1": 2,
+        "VP1l+VP3_ilPN": 2,
+        "VL1_ilPN": 2,
+        "MZ_lv2PN": 2,
+        "M_spPN4t9": 2,
+        "M_l2PNl23": 2,
+        "CB2161": 2,
+        "DL5_adPN": 2,
+        "CB3172": 2,
+        "ALIN2": 2,
+        "DP1m_adPN": 2,
+        "M_l2PNl21": 2,
+        "LPN": 2,
+        "VL2p_adPN": 2,
+        "VP1m_l2PN": 2,
+        "CB3575": 2,
+        "Z_vPNml1": 2,
+        "VP5+Z_adPN": 2,
+        "M_lPNm11B": 2,
+        "M_lv2PN9t49b": 2,
+        "M_smPNm1": 2,
+        "DC1_adPN": 2,
+        "VP1m+VP5_ilPN": 2,
+        "M_lv2PN9t49a": 2,
+        "M_l2PNm15": 2,
+        "M_vPNml54": 2,
+        "CB3679": 2,
+        "TRN_VP3b": 2,
+        "M_lPNm11C": 2,
+        "VP3+_vPN": 2,
+        "VP2_l2PN": 2,
+        "CB1266": 2,
+        "VP1d_il2PN": 2,
+        "LHAD4a1": 2,
+        "VM6_adPN": 2,
+        "DP1l_vPN": 2,
+        "AL-MBDL1": 2,
+        "M_l2PNm17": 2,
+        "VL1_vPN": 2,
+        "M_ilPN8t91": 2,
+        "VP4_vPN": 2,
+        "M_vPNml64": 2,
+        "V_ilPN": 2,
+        "M_lvPNm27": 2,
+        "VP2+VC5_l2PN": 2,
+        "M_vPNml55": 2,
+        "VP1d+VP4_l2PN2": 2,
+        "OA-VUMa5": 2,
+        "CSD": 2,
+        "M_vPNml51": 2,
+        "M_lvPNm28": 2,
+        "V_l2PN": 2,
+        "M_vPNml79": 2,
+        "M_vPNml77": 2,
+        "AL-AST1": 2,
+        "OA-VUMa2": 2,
+        "M_adPNm6": 2,
+        "CB1686": 2,
+        "DP1l_adPN": 2,
+        "ALON1": 2,
+        "CB1132": 1,
+        "LAL031": 1,
+        "DNc01": 1,
+        "SA_VTV_5": 1,
+        "AC_neuron": 1,
+        "CB4218": 1,
+        "CB1141": 1,
+        "CB2908": 1,
+        "ALIN8": 1,
+        "DNp32": 1
+      }
+    },
+    "time_varying_odor_drive": true,
+    "projection_explained_variance": 0.9636437571183871,
+    "projection_magnitude_retained": 0.9636437571183871,
+    "projection_n_channels": 29,
+    "projection_channel_names": [
+      "D",
+      "DA4L",
+      "DC2",
+      "DL1",
+      "DL3",
+      "DL4",
+      "DM1",
+      "DM2",
+      "DM3",
+      "DM4",
+      "DM5",
+      "DM6",
+      "VA1D",
+      "VA1V",
+      "VA2",
+      "VA3",
+      "VA4",
+      "VA5",
+      "VA6",
+      "VA7L",
+      "VC1",
+      "VC2",
+      "VC3",
+      "VC4",
+      "VM2",
+      "VM5D",
+      "VM5V",
+      "VM7D",
+      "VM7V"
+    ],
+    "projection_report": {
+      "n_receptors_in_matrix": 40,
+      "n_receptors_mapped": 29,
+      "n_channels": 29,
+      "channel_names": [
+        "D",
+        "DA4L",
+        "DC2",
+        "DL1",
+        "DL3",
+        "DL4",
+        "DM1",
+        "DM2",
+        "DM3",
+        "DM4",
+        "DM5",
+        "DM6",
+        "VA1D",
+        "VA1V",
+        "VA2",
+        "VA3",
+        "VA4",
+        "VA5",
+        "VA6",
+        "VA7L",
+        "VC1",
+        "VC2",
+        "VC3",
+        "VC4",
+        "VM2",
+        "VM5D",
+        "VM5V",
+        "VM7D",
+        "VM7V"
+      ],
+      "receptors_per_channel": {
+        "D": [
+          "Or69a"
+        ],
+        "DA4L": [
+          "Or43a"
+        ],
+        "DC2": [
+          "Or13a"
+        ],
+        "DL1": [
+          "Or10a"
+        ],
+        "DL3": [
+          "Or65a"
+        ],
+        "DL4": [
+          "Or49a",
+          "Or85f"
+        ],
+        "DM1": [
+          "Or42b"
+        ],
+        "DM2": [
+          "Or22a"
+        ],
+        "DM3": [
+          "Or47a"
+        ],
+        "DM4": [
+          "Or59b"
+        ],
+        "DM5": [
+          "Or85a"
+        ],
+        "DM6": [
+          "Or67a"
+        ],
+        "VA1D": [
+          "Or88a"
+        ],
+        "VA1V": [
+          "Or47b"
+        ],
+        "VA2": [
+          "Or92a"
+        ],
+        "VA3": [
+          "Or67b"
+        ],
+        "VA4": [
+          "Or85d"
+        ],
+        "VA5": [
+          "Or49b"
+        ],
+        "VA6": [
+          "Or82a"
+        ],
+        "VA7L": [
+          "Or46a"
+        ],
+        "VC1": [
+          "Or85e"
+        ],
+        "VC2": [
+          "Or71a"
+        ],
+        "VC3": [
+          "Or35a"
+        ],
+        "VC4": [
+          "Or67c"
+        ],
+        "VM2": [
+          "Or43b"
+        ],
+        "VM5D": [
+          "Or85b"
+        ],
+        "VM5V": [
+          "Or98a"
+        ],
+        "VM7D": [
+          "Or42a"
+        ],
+        "VM7V": [
+          "Or42a"
+        ]
+      },
+      "multi_receptor_channels": {
+        "DL4": [
+          "Or49a",
+          "Or85f"
+        ]
+      },
+      "unmapped_receptors": {
+        "Or45a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or45a among 'other responding units' rather than against a glomerulus; it is a larval receptor. 55 odorants measured, excluded rather than guessed.",
+        "Or45b": "not in Couto 2005 Table 1, same as Or45a. 48 odorants measured, excluded rather than guessed.",
+        "Or56a": "all-zero column in the shipped matrix (no DoOR data merged).",
+        "Or59a": "not in Couto 2005 Table 1. DoOR 2.0 Table 1 lists Or59a among 'other responding units'. 54 odorants measured, excluded rather than guessed.",
+        "Or63a": "all-zero column in the shipped matrix (no DoOR data merged).",
+        "Or83a": "all-zero column in the shipped matrix (no DoOR data merged).",
+        "Or83b": "Orco, the obligate co-receptor. Expressed in essentially every olfactory sensory neuron rather than defining one, so it has no glomerulus. Absent from Couto Table 1 for that reason. (Its column in the shipped matrix is all-zero in any case.)",
+        "Or85c": "not in Couto 2005 Table 1. Later work pairs it parenthetically with Or85b in VM5d - 'VM5d (Or85b/(Or85c))' - but that is a secondary, parenthetical assignment and Or85c has responses for only 51 odorants. Excluded under the citation rule; revisit if a primary source is found.",
+        "Or98b": "all-zero column in the shipped matrix (no DoOR data merged).",
+        "Gr21a": "CO2 co-receptor, targets glomerulus V together with Gr63a (Couto Table 1). All-zero column in the shipped matrix, so it contributes nothing regardless.",
+        "Gr63a": "CO2 co-receptor, partner of Gr21a, same glomerulus V. All-zero column in the shipped matrix."
+      },
+      "channels_dropped_no_projection_neurons": {},
+      "combination_rule": "mean of the contributing receptors' responses. Two glomeruli in this map receive more than one measured receptor: DL4 (Or49a and Or85f, which are co-expressed in the same ab10B neuron) and, in principle, VC1 (Or85e with Or33c, though Or33c is absent from the matrix). The mean is used rather than the sum so that a glomerulus is not made systematically stronger merely because more of its receptors happen to have been measured. Both are defensible; the choice is recorded because it is a choice.",
+      "aliases_applied": {
+        "VM7": [
+          "VM7D",
+          "VM7V"
+        ]
+      },
+      "primary_source": "Couto, Alenius & Dickson (2005) Curr Biol 15:1535-1547, Table 1"
+    },
+    "door_matrix_synthetic": false,
+    "door_n_odorants": 372,
+    "suite": "concentration_invariance_repaired"
+  }
+}

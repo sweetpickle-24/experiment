@@ -162,6 +162,14 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
             "amplitude_min": getattr(brain, "amplitude_min", None),
             "amplitude_max": getattr(brain, "amplitude_max", None),
             "glomerular_mapping": getattr(brain, "_pn_channel_source", None),
+            "glomerular_mapping_requested": getattr(
+                brain, "glomerular_mapping", None),
+            "strict_classification": getattr(
+                brain, "strict_classification", None),
+            "n_stim_channels": getattr(brain, "_stim_n_channels", None),
+            "channel_names": getattr(brain, "channel_names", None),
+            "channel_assignment": getattr(
+                brain, "channel_assignment_report", None),
             "time_varying_odor_drive": bool(
                 getattr(brain, "has_time_varying_drive", False)),
         })
@@ -173,6 +181,16 @@ def run_metadata(brain=None, duration_ms=None, seed=None, door_client=None, **ex
         meta["projection_explained_variance"] = getattr(
             door_client, "projection_explained_variance", None
         )
+        # Computed identically for every projection, unlike
+        # projection_explained_variance. This is the field to compare on.
+        meta["projection_magnitude_retained"] = getattr(
+            door_client, "projection_magnitude_retained", None
+        )
+        meta["projection_n_channels"] = getattr(door_client, "n_channels", None)
+        meta["projection_channel_names"] = getattr(
+            door_client, "channel_names", None)
+        meta["projection_report"] = getattr(
+            door_client, "projection_report", None)
         meta["door_matrix_synthetic"] = getattr(door_client, "is_synthetic", None)
         meta["door_n_odorants"] = len(getattr(door_client, "odorant_names", []) or [])
 
@@ -241,7 +259,8 @@ DEFAULT_BRAIN_CONFIG = {
 
 
 def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
-                         projection='sklearn_pca', glomerular_mapping='position'):
+                         projection='sklearn_pca', glomerular_mapping='position',
+                         strict_classification=False):
     """
     Initialise the olfactory system for validation experiments.
 
@@ -255,11 +274,21 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
                     'dt', 'gamma' and 'sigma_noise'. Anything else raises, rather
                     than being silently discarded as it was before 2026-09-03.
         projection: receptor->glomerular projection. 'sklearn_pca' (default) is
-                    the documented path; 'uncentered_svd' reproduces the
+                    the documented path; 'glomerular' is the published one-to-one
+                    receptor-to-glomerulus map, whose channel count follows the
+                    map rather than being 20; 'uncentered_svd' reproduces the
                     pre-2026-09-03 fallback for comparison.
-        glomerular_mapping: how channels map onto PNs. 'position' (default)
-                    clusters PNs by connectome coordinates; 'index' reproduces
-                    the pre-2026-09-03 assignment by neuron-list order.
+        glomerular_mapping: how channels map onto PNs. 'glomerulus' reads the
+                    glomerulus off the connectome cell-type annotation and needs
+                    projection='glomerular' to supply channel names; 'position'
+                    (default) clusters PNs by connectome coordinates as a spatial
+                    proxy; 'index' reproduces the pre-2026-09-03 assignment by
+                    neuron-list order.
+        strict_classification: exclude auditory wedge PNs and unnamed
+                    central-brain neurons from the PN population. Off by default
+                    because it changes the subgraph size. Applied consistently to
+                    both the extraction and the engine's region lookups, which
+                    must agree.
 
     Returns:
         tuple: (brain, door_client, connectome)
@@ -272,7 +301,20 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
     full_connectome = Connectome(data_dir=str(connectome_dir()))
     full_connectome.load()
 
-    connectome = extract_olfactory_pathway(full_connectome)
+    connectome = extract_olfactory_pathway(
+        full_connectome, strict=strict_classification)
+
+    # The DoOR client is built first when the mapping needs channel names, since
+    # the engine cannot resolve 'glomerulus' without knowing which glomerulus
+    # each channel is.
+    door_client = DoorClient(projection=projection)
+    # Build the projection now rather than on first lookup, so that
+    # door_client.projection_method and channel_names are populated before
+    # run_metadata reads them. Same matrix either way; this only fixes when it is
+    # computed.
+    door_client.map_to_glomerular_pattern(
+        np.zeros(len(door_client.receptor_names), dtype=np.float32)
+    )
 
     brain = SparseProbabilisticBrain(
         connectome=connectome,
@@ -280,14 +322,8 @@ def init_olfactory_brain(use_mlx=True, fast_mode=False, seed=42, config=None,
         use_mlx=use_mlx,
         fast_mode=fast_mode,
         glomerular_mapping=glomerular_mapping,
-    )
-
-    door_client = DoorClient(projection=projection)
-    # Build the projection now rather than on first lookup, so that
-    # door_client.projection_method is populated before run_metadata reads it.
-    # Same matrix either way; this only fixes when it is computed.
-    door_client.map_to_glomerular_pattern(
-        np.zeros(len(door_client.receptor_names), dtype=np.float32)
+        channel_names=door_client.channel_names,
+        strict_classification=strict_classification,
     )
 
     return brain, door_client, connectome

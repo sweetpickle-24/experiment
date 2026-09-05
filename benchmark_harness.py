@@ -42,6 +42,7 @@ are significantly *lower* than that null. No fixed constant is used anywhere.
 """
 
 import itertools
+import os
 import sys
 from pathlib import Path
 
@@ -376,8 +377,69 @@ def panel_block(names=None):
     }
 
 
+# ── Stimulus-path configuration, for ablation ladders ────────────────────────
+#
+# The five benchmarks all build their engine through build(), so a ladder that
+# varies the input pipeline needs one place to say so. These read the
+# environment rather than taking arguments, because each benchmark runs as its
+# own process (`python -m benchmarks_repaired.X`) and an environment variable is
+# the only channel that survives the process boundary without editing all six
+# modules' argument parsers.
+#
+# Defaults reproduce the F9 configuration exactly, so an unset environment gives
+# the same engine as before this was added. Nothing here can be applied silently:
+# build() prints the configuration, and validation_utils.run_metadata reads the
+# values back off the constructed brain and DoOR client, so a result file records
+# what actually ran rather than what was requested.
+
+#: Environment variable -> (init_olfactory_brain kwarg, default, allowed values)
+_ENV_CONFIG = {
+    'FLYBRAIN_PROJECTION': ('projection', 'sklearn_pca',
+                            ('sklearn_pca', 'uncentered_svd', 'glomerular')),
+    'FLYBRAIN_GLOM_MAPPING': ('glomerular_mapping', 'position',
+                              ('glomerulus', 'position', 'index')),
+    'FLYBRAIN_STRICT': ('strict_classification', '0', ('0', '1')),
+}
+
+
+def stimulus_path_config():
+    """
+    Resolved stimulus-path configuration for this process.
+
+    Raises on an unrecognised value rather than falling back to the default,
+    for the same reason the engine rejects unknown config keys: a run that
+    silently ignored what it was told cannot be attributed afterwards.
+    """
+    resolved = {}
+    for env_name, (kwarg, default, allowed) in _ENV_CONFIG.items():
+        value = os.environ.get(env_name, default)
+        if value not in allowed:
+            raise ValueError(
+                f"{env_name}={value!r} is not recognised; expected one of "
+                f"{allowed}. Refusing to fall back to {default!r}, because a "
+                "run that ignored its own configuration cannot be attributed."
+            )
+        resolved[kwarg] = value
+    resolved['strict_classification'] = resolved['strict_classification'] == '1'
+    return resolved
+
+
 def build(use_mlx, seed=42):
-    """Engine built exactly as the suite builds it."""
-    return init_olfactory_brain(use_mlx=use_mlx, seed=seed,
-                                projection='sklearn_pca',
-                                glomerular_mapping='position')
+    """
+    Engine built exactly as the suite builds it.
+
+    Stimulus-path options come from the environment; see stimulus_path_config.
+    With none set this is the F9 configuration: mean-centred PCA into 20
+    channels, PN assignment by k-means on connectome position, loose neuron
+    classification.
+    """
+    cfg = stimulus_path_config()
+    non_default = {k: v for k, v in cfg.items()
+                   if v != {'projection': 'sklearn_pca',
+                            'glomerular_mapping': 'position',
+                            'strict_classification': False}[k]}
+    if non_default:
+        print(f"[benchmark_harness] non-default stimulus path: {non_default}")
+    else:
+        print("[benchmark_harness] stimulus path: F9 defaults")
+    return init_olfactory_brain(use_mlx=use_mlx, seed=seed, **cfg)

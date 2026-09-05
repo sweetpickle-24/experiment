@@ -22,11 +22,18 @@ CONFIG_PATH = Path(__file__).resolve().parents[1] / 'config.yaml'
 
 # ----------------------------
 # Real-world note on glomerular channels:
-# Fly AL has ~50 glomeruli. We model 20 channels (glomerular units) to keep
-# computation manageable while preserving combinatorial structure.
-# Each glomerular channel has a preferred molecular feature axis.
-# Channels are organized as: [esters/fruit, alcohols/yeast, ketones/sweet,
-# amines/social, terpenoids/plant, sulfurous/danger, CO2/stress, misc...]
+# Fly AL has ~50 glomeruli. The historical default models 20 channels
+# (glomerular units) to keep computation manageable while preserving
+# combinatorial structure. Each of those 20 channels was given a preferred
+# molecular feature axis; see GLOM_LABELS.
+#
+# NUM_GLOM_CHANNELS is the DEFAULT, not a fixed property of the module. When
+# DoorClient runs projection='glomerular' the channel count is instead a
+# consequence of the published receptor-to-glomerulus map and of which glomeruli
+# have projection neurons in the connectome (29 at the time of writing), and the
+# channels are named glomeruli rather than molecular axes. Everything in this
+# module therefore takes its channel count from the pattern it is handed, and
+# falls back to NUM_GLOM_CHANNELS only when nothing else says otherwise.
 # ----------------------------
 NUM_GLOM_CHANNELS = 20
 
@@ -215,28 +222,82 @@ class OdorReceptorArray:
     rhythmic waves at the sniff/breathing frequency (real fly sniffs ~10Hz).
     """
     
-    def __init__(self, config: dict):
+    #: The historical 20 channel frequencies, one per molecular axis in
+    #: GLOM_LABELS. Kept verbatim so a 20-channel run is bit-identical to every
+    #: run before the channel count was parameterised.
+    #:
+    #: Volatile light molecules (fruit esters): higher freq (beta/gamma, 15-40 Hz)
+    #: Heavy/pheromone molecules: lower freq (theta, 4-10 Hz)
+    #: This is approximating real sniff-cycle modulation.
+    LITERATURE_FREQUENCIES_20 = (
+        20.0, 18.0, 22.0, 8.0, 12.0, 16.0,   # 0-5: fruit/ester axes -> beta
+        14.0, 6.0, 10.0, 5.0, 9.0, 12.0,     # 6-11: yeast/CO2/acid/amine -> mixed
+        7.0, 6.0, 5.0, 5.0, 11.0, 13.0,      # 12-17: danger/social/plant -> theta/alpha
+        7.0, 4.0,                             # 18-19: bitter/clean -> theta
+    )
+
+    #: Mean of the 20, used by frequency_mode='uniform'.
+    UNIFORM_FREQUENCY_HZ = float(np.mean(LITERATURE_FREQUENCIES_20))
+
+    FREQUENCY_MODES = ('literature_spread', 'uniform')
+
+    def __init__(self, config: dict, num_channels: int = None,
+                 frequency_mode: str = 'literature_spread'):
+        """
+        Args:
+            config: packaged olfactory configuration.
+            num_channels: number of glomerular channels. Defaults to
+                NUM_GLOM_CHANNELS (20). With projection='glomerular' this is the
+                number of glomeruli the published map reaches.
+            frequency_mode: how per-channel carrier frequencies are assigned.
+
+                'literature_spread' (default) reproduces the historical 20
+                values exactly when num_channels == 20. For any other channel
+                count there is **no published per-glomerulus carrier frequency**,
+                so the 20 values are resampled onto the new channel count by
+                linear interpolation. That resampling is arbitrary: it preserves
+                the range and the rough distribution and nothing else.
+
+                'uniform' gives every channel the mean of the 20. Use it to
+                remove carrier frequency as a variable when comparing two
+                channel counts, since 'literature_spread' cannot be held fixed
+                across a change in channel count and is therefore a confound in
+                any such comparison.
+        """
+        if frequency_mode not in self.FREQUENCY_MODES:
+            raise ValueError(
+                f"Unknown frequency_mode {frequency_mode!r}; expected one of "
+                f"{self.FREQUENCY_MODES}."
+            )
+
         self.config = config
-        self.num_channels = NUM_GLOM_CHANNELS
-        
-        # Channel frequencies tuned by molecular axis:
-        # Volatile light molecules (fruit esters): higher freq (beta/gamma, 15-40 Hz)
-        # Heavy/pheromone molecules: lower freq (theta, 4-10 Hz)
-        # This is approximating real sniff-cycle modulation
-        self.channel_frequencies = np.array([
-            20.0, 18.0, 22.0, 8.0,  12.0, 16.0,  # 0-5: fruit/ester axes → beta
-            14.0, 6.0,  10.0, 5.0,   9.0, 12.0,  # 6-11: yeast/CO2/acid/amine → mixed
-            7.0,  6.0,  5.0,  5.0,  11.0, 13.0,  # 12-17: danger/social/plant → theta/alpha
-            7.0,  4.0                              # 18-19: bitter/clean → theta
-        ])  # Hz
-        
-        # Random phase offsets (simulate different ORN populations arriving at different phases)
-        np.random.seed(99)
-        self.channel_phases = np.random.uniform(0, 2*np.pi, self.num_channels)
-        
+        self.num_channels = int(NUM_GLOM_CHANNELS if num_channels is None
+                                else num_channels)
+        self.frequency_mode = frequency_mode
+
+        base = np.array(self.LITERATURE_FREQUENCIES_20, dtype=np.float64)
+        if frequency_mode == 'uniform':
+            self.channel_frequencies = np.full(self.num_channels,
+                                               self.UNIFORM_FREQUENCY_HZ)
+        elif self.num_channels == len(base):
+            # Exact historical values; no interpolation, so a 20-channel run is
+            # unchanged to the bit.
+            self.channel_frequencies = base
+        else:
+            self.channel_frequencies = np.interp(
+                np.linspace(0.0, len(base) - 1.0, self.num_channels),
+                np.arange(len(base)), base,
+            )
+
+        # Random phase offsets (simulate different ORN populations arriving at
+        # different phases). Seeded, so the offsets are a pure function of the
+        # channel count.
+        rng = np.random.RandomState(99)
+        self.channel_phases = rng.uniform(0, 2 * np.pi, self.num_channels)
+
         # Current activation (set each step from plume)
         self.activation = np.zeros(self.num_channels)
-        
+
         # Adaptation state per channel
         self.adaptation = np.ones(self.num_channels)  # 1.0 = fully responsive
         self.tau_adapt = 200.0  # ms - receptor adaptation time constant (real: ~200ms)
@@ -332,7 +393,11 @@ class OdorPlume:
         So channel ratios are preserved across the whiff - identity is stable.
         Turbulence adds small per-channel noise.
         """
-        n_ch = NUM_GLOM_CHANNELS
+        # Channel count comes from the odour pattern, not from the module
+        # default, so a plume built for a 29-channel glomerular pattern has 29
+        # channels. Reading NUM_GLOM_CHANNELS here would silently truncate or
+        # zero-pad the pattern.
+        n_ch = int(np.asarray(self.odor.glom_pattern).reshape(-1).size)
         trace = np.zeros((self.num_steps, n_ch))
         
         # --- Whiff train ---
@@ -381,10 +446,15 @@ class OdorPlume:
             noise[i] = x
         return noise
     
+    @property
+    def num_channels(self) -> int:
+        """Channel count of the generated trace, i.e. of the odour pattern."""
+        return int(self.concentration_trace.shape[1])
+
     def get_concentration(self, step_idx: int) -> np.ndarray:
         if 0 <= step_idx < self.num_steps:
             return self.concentration_trace[step_idx]
-        return np.zeros(NUM_GLOM_CHANNELS)
+        return np.zeros(self.num_channels)
 
 
 def load_olfactory_config(dt_ms: float) -> dict:
@@ -491,7 +561,19 @@ class OdorStimulusDriver:
 
     def __init__(self, glom_pattern, dt_ms: float, strength: float = REFERENCE_STRENGTH,
                  config: Optional[dict] = None, odor_name: str = 'stimulus',
-                 seed: Optional[int] = None):
+                 seed: Optional[int] = None,
+                 frequency_mode: str = 'literature_spread'):
+        """
+        Args:
+            glom_pattern: glomerular activation vector. Its length sets the
+                channel count for the whole driver: the plume, the carrier and
+                the adaptation state all follow it. This used to be required to
+                equal NUM_GLOM_CHANNELS, which made a 29-channel glomerular
+                pattern unusable.
+            frequency_mode: forwarded to OdorReceptorArray. See its docstring for
+                why 'literature_spread' is a confound when the channel count
+                changes.
+        """
         self.dt = float(dt_ms)
         self.strength = float(strength)
         self.concentration = self.strength / self.REFERENCE_STRENGTH
@@ -500,14 +582,16 @@ class OdorStimulusDriver:
         self.seed = self.PLUME_SEED if seed is None else int(seed)
 
         pattern = np.asarray(glom_pattern, dtype=np.float64).reshape(-1)
-        if pattern.size != NUM_GLOM_CHANNELS:
-            raise ValueError(
-                f"glom_pattern has {pattern.size} channels, expected {NUM_GLOM_CHANNELS}."
-            )
+        if pattern.size == 0:
+            raise ValueError("glom_pattern is empty; expected at least one channel.")
+        self.num_channels = int(pattern.size)
         self.odor = Odor(name=odor_name, glom_pattern=pattern,
                          family='unknown', description='driver stimulus')
 
-        self.receptors = OdorReceptorArray(self.config)
+        self.receptors = OdorReceptorArray(self.config,
+                                           num_channels=self.num_channels,
+                                           frequency_mode=frequency_mode)
+        self.frequency_mode = frequency_mode
         self._steps_per_chunk = max(1, int(round(self.PLUME_CHUNK_MS / self.dt)))
         self._chunks: Dict[int, np.ndarray] = {}
 
@@ -545,13 +629,13 @@ class OdorStimulusDriver:
         """
         Channel forcing for steps [step0, step0 + num_steps).
 
-        Returns an array of shape (num_steps, NUM_GLOM_CHANNELS).
+        Returns an array of shape ``(num_steps, self.num_channels)``.
 
         Adaptation is a recursion, so this must be called in order and exactly
         once per step; the driver's adaptation state advances as a side effect,
         which is what carries adaptation across successive ``evolve`` calls.
         """
-        out = np.zeros((num_steps, NUM_GLOM_CHANNELS), dtype=np.float32)
+        out = np.zeros((num_steps, self.num_channels), dtype=np.float32)
         for i in range(num_steps):
             step = step0 + i
             self.receptors.set_activation(self.concentration_at_step(step))
@@ -651,7 +735,7 @@ class OlfactoryStimulus:
     
     def get_concentration_vector(self, t: float) -> np.ndarray:
         if not self.is_active(t):
-            return np.zeros(NUM_GLOM_CHANNELS)
+            return np.zeros(self.plume.num_channels)
         step_idx = int((t - self.onset) / self._dt)
         return self.plume.get_concentration(step_idx)
 
@@ -683,7 +767,7 @@ class OlfactorySystem:
         self.odor_library = create_odor_library()
         
         print(f"Olfactory system initialized:")
-        print(f"  {NUM_GLOM_CHANNELS} glomerular channels")
+        print(f"  {self.receptors.num_channels} glomerular channels")
         print(f"  {len(self.glomerular_mapper.glomerular_clusters)} PN clusters")
         print(f"  {len(pn_ids)} projection neurons")
         print(f"  {len(self.odor_library)} odors in library")
