@@ -10,6 +10,62 @@ files known to still need updating.
 
 ## Updates on 2026-09-04
 
+### README brought in line with the post-audit measurements
+
+**Reason**: the README header correctly pointed at the validity audit, but four
+sections below it still carried claims the audit and the 2026-09-03 fix work had
+superseded. A reader following the header and a reader following the body got
+different answers.
+**Files updated**: 3 markdown, 1 config
+
+- [x] `README.md` - Corrected:
+      - **Performance**: the discarded 86.34x speedup was quoted in three places
+        (the practical-consequence line, the performance table, and the table's
+        source column, all pointing at `cpu_vs_mlx_validation.json`, which is now
+        in `results/superseded/`). Replaced with the verified **10.00x median**
+        from `results/final/cpu_vs_mlx_speedup.json`, plus the cross-backend
+        agreement measurement and the pre-registered rule it failed
+        (`cpu_vs_mlx_fullrun.json`).
+      - **Known limitations**: "the DoOR 40-receptor to 20-glomerulus mapping is a
+        random projection" is fixed and was also mislabelled — the fallback was
+        uncentered SVD, not a random projection. "Missing odorants fail silently"
+        is fixed; lookups raise `OdorantNotFoundError`.
+      - **"The GPU path is not reproducible, and seeding does not fix it"**:
+        retitled to record that both defects are fixed, with the segment-reduction
+        mechanism and the `mlx_determinism.json` evidence, and kept as history
+        because it is why pre-2026-09-03 artifacts should be read with suspicion.
+      - **Benchmark outcomes**: led with the 1/5 pre-audit run as "most recent".
+        Now leads with the repaired suite (**2/5**,
+        `all_validations_F9_corrected.json`) and demotes the old table to a
+        clearly-labelled superseded section with its target column marked invalid.
+        "Why there is no summary score" rewritten as "why a score is quoted now",
+        addressing each of the four original reasons, and stating what 2/5 still
+        does not mean.
+      - **Connectome counts**: `5,342,446` was labelled "synapses". It is the
+        **edge** count. Verified directly from `connections_princeton.csv.gz`:
+        summing `syn_count` over all 5,342,446 rows gives **50,666,648** synapses,
+        which is **93 %** of the 54.5 M published by Dorkenwald et al. 2024. Also
+        fixed a citation to `results/final/full_brain_smell_results.json`, which
+        lives in `results/superseded/`, and named the FlyWire release (v783).
+      - **New disclosures**: the variance fields do not participate in the
+        dynamics (`var_amplitude` never updated, `var_phase` write-only), so
+        `sigma_noise` cannot change any output; the coupling carries no
+        excitation/inhibition sign despite `nt_type` being loaded; the MBON
+        amplitude readout is non-monotone in synaptic weight; the model class and
+        substrate are both already occupied in the literature (Ódor, Deco &
+        Kelling, Kuramoto on the full FlyWire connectome at 124,891 nodes); the
+        dt non-convergence promoted from the header banner to its own section; the
+        stale 372-odorant fingerprint database; the unrescaled coordinate units.
+      - **What was built**: expanded to name the deterministic segment reduction,
+        the receptor front-end and its seeded plume, the measurement harness, and
+        the provenance block, which were previously undescribed.
+      - **Running it**: pointed at `scripts/run_repaired_suite.py` and documented
+        that `.venv/bin/python` is required.
+- [x] `UPDATED_FILES_LOG.md` - This entry.
+- [x] `OUTDATED_FILES.md` - Two new categories: documents describing the engine as
+      probabilistic/mean-field, and documents citing Caron 2013 as proof of random
+      PN->KC wiring.
+
 ### Benchmark validity repair: every target checked against its source paper
 
 **Reason**: the five olfactory benchmarks were scored against targets that, in

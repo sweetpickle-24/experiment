@@ -14,6 +14,77 @@ numbers.
 
 ## Files Needing Updates
 
+### Category: the engine is described as probabilistic, and it is not (2026-09-04)
+
+`var_amplitude` is set to 0.01 at initialisation and at every `reset` and is never
+updated by any step function. `var_phase` *is* updated in all three step paths, but
+the coupling term multiplies by a hardcoded `exp(-0.1/2)` constant
+(`_var_correction_scalar`) rather than reading the live field, so `var_phase` is
+write-only. Nothing downstream consumes either. Consequences:
+
+- **`sigma_noise` provably cannot change any output.** It enters only
+  `_sigma_sq_dt`, which enters only the `var_phase` recursion, which is read by
+  nothing. It is nonetheless recorded as a configuration parameter in every result
+  file by `validation_utils.run_metadata()`.
+- The engine as written is a **deterministic** damped harmonic-oscillator network on
+  a sparse graph. "Probabilistic", "mean-field" and "Fokker-Planck" overstate it.
+
+Anything describing the engine as probabilistic or mean-field, or presenting
+`Var[phi]` / `Var[A]` as state that influences the trajectory:
+
+- [ ] `ARCHITECTURE.md` - §2 "Mean-Field Probabilistic Waves" lists `Var[phi]` and
+      `Var[A]` as per-neuron state and §1 says the system uses "mean-field
+      Fokker-Planck equations instead of individual spike trains"
+- [ ] `docs/02_architecture/PROBABILISTIC_WAVE_IMPLEMENTATION.md`
+- [ ] `docs/02_architecture/FORMULA_VALIDATION.md` - check the variance update
+      against what the coupling actually reads
+- [ ] `hive/engine/sparse_probabilistic.py` - the class docstring says "Still
+      probabilistic (mean-field)". Either wire `var_phase` into the coupling or
+      delete both fields and rename. The structural fix is an assertion per
+      subsystem that destroying it must change the output, as
+      `tests/test_weights_on_signal_path.py` already does for the plasticity path
+- [ ] `.cursor/rules/Findings.mdc` - refers to a "phase-coupled mean-field network"
+      throughout
+
+### Category: random PN->KC wiring is no longer the published position (2026-09-04)
+
+Zheng et al. 2022, *Structured sampling of olfactory input by the fly mushroom
+body*, Current Biology 32(15):3334-3349.e6, mapped PN->KC connections at synaptic
+resolution in FAFB and found that food-responsive PN types **over-converge on
+individual KCs above chance** against constructed nulls. The wiring is not purely
+random. Caron et al. 2013 remains the source for the ~7-PN-per-KC in-degree.
+
+- [ ] `ARCHITECTURE.md` - §6 states "Random wiring: Each KC receives input from ~7
+      random PNs (Caron et al. 2013)" and lists it as a property of the connectome
+- [ ] `.cursor/rules/Findings.mdc` - "Anatomical Basis: Caron et al. (2013) proved
+      random PN->KC wiring"
+- [ ] `THESIS_DIGITAL_SMELL.md` - check §1.3 sparse coding theory
+- [ ] `docs/02_architecture/SPARSE_CODING_THEORY.md`
+
+### Category: the model class and substrate are already occupied (2026-09-04)
+
+Phase oscillators on structural connectomes are standard in human whole-brain
+modelling (Kuramoto in The Virtual Brain; Hopf/Stuart-Landau for phase *plus*
+per-node amplitude, Deco et al. 2017, Sci. Rep. 7:3095). Ódor, Deco & Kelling have
+published Kuramoto at one-oscillator-per-neuron on the Drosophila connectome: the
+hemibrain in 2022 (Phys. Rev. Research 4:023057, 21,662 nodes / 3,413,160 edges) and
+the **full FlyWire v630 connectome in 2025** (arXiv:2503.20708, **124,891 nodes /
+3,794,615 edges**), using RK4 and adaptive Bulirsch-Stoer rather than forward Euler,
+on GPU. Eight times the nodes and a better integrator.
+
+What those papers do not do is drive the model with a sensory stimulus or compare it
+against fly physiology; they are criticality studies and their own text calls it a
+"brain toy model". That is the only gap this project occupies. Any claim of a novel
+model class, a first-of-its-kind phase model on a fly connectome, or a scale record
+is false.
+
+- [ ] `docs/05_publication/MANUSCRIPT_PUBLICATION.md` - check novelty claims
+- [ ] `docs/05_publication/EXECUTIVE_SUMMARY.md` - same
+- [ ] `docs/05_publication/PUBLICATION_SUMMARY.md` - same
+- [ ] `docs/04_discoveries/ALL_NOVEL_DISCOVERIES.md` - same
+- [ ] `THESIS_DIGITAL_SMELL.md` and `thesis/` - same
+- [ ] `ARCHITECTURE.md` - §15 "Computational Firsts"
+
 ### Category: targets that are not in the papers they cite (2026-09-04)
 
 `docs/03_validation/BENCHMARK_VALIDITY_AUDIT.md` records, per benchmark, the
